@@ -7,7 +7,7 @@
 #                                                                          #
 #  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
 #                                                                          #
-#  The latest stabke version can be downloaded from the web-site:          #
+#  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
 #                                                                          #
 #  A github repository, with the most up to date version of the code,      #
