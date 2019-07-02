@@ -1,4 +1,4 @@
-############################################################################
+	############################################################################
 #  This Python file is part of PyFEM, the code that accompanies the book:  #
 #                                                                          #
 #    'Non-Linear Finite Element Analysis of Solids and Structures'         #
@@ -54,7 +54,7 @@ def vectorToElementCoordinates ( a, el_coords ):
   if len(a_bar) % len(R) != 0:
     raise RuntimeError('Vector does not have the right shape to be rotated')
 
-  for i in range(len(a_bar)/len(R)):
+  for i in range(len(a_bar)//len(R)):
     a_bar[len(R)*i:len(R)*(i+1)] = dot( R, a[len(R)*i:len(R)*(i+1)] )
 
   return a_bar
@@ -89,7 +89,7 @@ def vectorToGlobalCoordinates ( a_bar, el_coords ):
   if len(a) % len(R) != 0:
     raise RuntimeError('Vector does not have the right shape to be rotated')
 
-  for i in range(len(a)/len(R)):
+  for i in range(len(a)//len(R)):
     a[len(R)*i:len(R)*(i+1)] = dot( R.transpose(), a_bar[len(R)*i:len(R)*(i+1)] )
 
   return a
@@ -104,10 +104,10 @@ def matrixToGlobalCoordinates ( a_bar, el_coords ):
   if a.shape[0] % len(R) != 0 or a.shape[1] % len(R) != 0:
     raise RuntimeError('Matrix does not have the right shape to be rotated')
 
-  for i in range(a.shape[0]/len(R)):
+  for i in range(a.shape[0]//len(R)):
     iran = list(range( len(R)*i, len(R)*(i+1)))
 
-    for j in range(a.shape[1]/len(R)):
+    for j in range(a.shape[1]//len(R)):
       jran = list(range( len(R)*j, len(R)*(j+1)))
 
       a[ix_(iran,jran)] = dot( dot( R.transpose(), a_bar[ix_(iran,jran)] ), R )

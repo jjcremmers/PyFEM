@@ -24,7 +24,7 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from pyfem.util.BaseModule import BaseModule
-#from pylab import plot, show, xlabel, ylabel, draw, ion, figure, gcf
+from pylab import plot, show, xlabel, ylabel, draw, ion, figure, gcf
 from numpy import ndarray,zeros
 
 class GraphWriter( BaseModule ):
@@ -51,24 +51,24 @@ class GraphWriter( BaseModule ):
 
       self.columndata.append( colProps )
 
-#    if self.onScreen and hasattr( globdat , "onScreen" ):
-#      self.onScreen = False
-#    else:
-#      globdat.onScreen = True
-#
-#      self.fig = gcf()
-#      self.fig.show()
-#      self.fig.canvas.draw()
+    if self.onScreen and hasattr( globdat , "onScreen" ):
+      self.onScreen = False
+    else:
+      globdat.onScreen = True
+
+      self.fig = gcf()
+      self.fig.show()
+      self.fig.canvas.draw()
 
     self.outfile = open( self.filename ,'w' )
 
-#    if self.onScreen:
-#      self.output = []
+    if self.onScreen:
+      self.output = []
 
-#     xlabel(self.columns[0])
-#     ylabel(self.columns[1])
+      xlabel(self.columns[0])
+      ylabel(self.columns[1])
   
-#      ion()
+      ion()
 
     self.run( props , globdat ) 
 
@@ -101,11 +101,11 @@ class GraphWriter( BaseModule ):
 
     self.outfile.write('\n')
 
-#    if self.onScreen: 
-#      self.output.append( a )
+    if self.onScreen: 
+      self.output.append( a )
 
-#      plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
-#      self.fig.canvas.draw()
+      plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
+      self.fig.canvas.draw()
     
     if not globdat.active:
       self.outfile.close
