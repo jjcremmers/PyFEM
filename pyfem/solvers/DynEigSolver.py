@@ -69,12 +69,12 @@ class DynEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    print '\n======================================'
-    print ' eigenfrequencies'
-    print '======================================'
-    print ' Mode  Eigen   Freq'
+    print('\n======================================')
+    print(' eigenfrequencies')
+    print('======================================')
+    print(' Mode  Eigen   Freq')
     
     for i,f in enumerate(eigenvals):
-      print ' %3i : %6.4e rad/s  %6.4e Hz' %(i+1,f,f/(2.0*pi))
+      print(' %3i : %6.4e rad/s  %6.4e Hz' %(i+1,f,f/(2.0*pi)))
       
-    print '======================================\n'
+    print('======================================\n')
