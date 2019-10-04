@@ -63,6 +63,8 @@ class Plate ( Element ):
 
     self.inertia = material.getMassInertia()
 
+    self.outputLabels = ["epsx","epsy","gamxy","s23","s13","s12"]
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -161,13 +163,27 @@ class Plate ( Element ):
       elemdat.stiff += stiff * d.weight
  
      
-#-------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getInternalForce ( self, elemdat ):
 
-    elemdat.fint = 0.
+    sData = getElemShapeData( elemdat.coords )
 
+    elemdat.outlabel.append(self.outputLabels)
+    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),6) )
+
+    for iData in sData:
+      eps0 = dot(iData.dhdx[:,0],elemdat.state[2:20:5])
+      
+      elemdat.outdata += eps0 #outer( ones(len(self)), sigma )
+      
+    elemdat.outdata *= 1.0 / len(sData)  
+
+#------------------------------------------------------------------------------
 #
+#------------------------------------------------------------------------------
 
   def getMassMatrix ( self, elemdat ):
       
