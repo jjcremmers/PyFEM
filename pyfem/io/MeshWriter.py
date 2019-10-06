@@ -73,12 +73,14 @@ class MeshWriter ( BaseModule ):
     vtkfile.write('<PointData>\n')
     vtkfile.write('<DataArray type="Float64" Name="displacement" NumberOfComponents="3" format="ascii" >\n')
 	
+    dispDofs = ["u","v","w"]
+
     for nodeID in list(globdat.nodes.keys()):
-      for dofType in globdat.dofs.dofTypes:
-        vtkfile.write(str(state[globdat.dofs.getForType(nodeID,dofType)])+' ')
-   
-      if len(globdat.dofs.dofTypes) == 2:
-        vtkfile.write(' 0.\n')
+      for dispDof in dispDofs:
+        if dispDof in globdat.dofs.dofTypes:
+          vtkfile.write(str(state[globdat.dofs.getForType(nodeID,dispDof)])+' ')
+        else: 
+          vtkfile.write(' 0.\n')
  
     vtkfile.write('</DataArray>\n')
   
@@ -111,41 +113,50 @@ class MeshWriter ( BaseModule ):
 
     #--Store elements-----------------------------
 
+    rank = globdat.nodes.rank
+
     for element in globdat.elements.iterElementGroup( self.elementGroup ):
       el_nodes = globdat.nodes.getIndices(element.getNodes())
 
-      if len(globdat.dofs.dofTypes) == 2:
+      if rank == 2:
         if len(el_nodes) == 3 or len(el_nodes) == 4:
           for node in el_nodes:
             vtkfile.write(str(node)+' ')
-  
         elif len(el_nodes) == 6 or len(el_nodes) == 8:
           for node in el_nodes[::2]:
             vtkfile.write(str(node)+' ')
 
-      if len(globdat.dofs.dofTypes) == 3:
+      elif rank == 3:
         if len(el_nodes) == 8:
           for node in el_nodes:
             vtkfile.write(str(node)+' ')
-  
+ 
       vtkfile.write('\n')
   
     vtkfile.write('</DataArray>\n')
     vtkfile.write('<DataArray type="Int64" Name="offsets" format="ascii">\n')
 
     for i,element in enumerate(globdat.elements.iterElementGroup( self.elementGroup )):
-      el_nodes = globdat.nodes.getIndices(element.getNodes())
-      vtkfile.write(str(len(el_nodes)*(i+1))+'\n')
+      nNel = len(globdat.nodes.getIndices(element.getNodes()))
+
+      if rank == 2 and nNel == 8:
+        nNel = 4
+      vtkfile.write(str(nNel*(i+1))+'\n')
 
     vtkfile.write('</DataArray>\n')
     vtkfile.write('<DataArray type="UInt8" Name="types" format="ascii" RangeMin="9" RangeMax="9">\n')
 
     for element in globdat.elements.iterElementGroup( self.elementGroup ):
       nNel = len(globdat.nodes.getIndices(element.getNodes()))
-      if len(globdat.dofs.dofTypes) == 2:
-        vtkfile.write('9\n')
+
+      if rank == 2:
+        if nNel == 3 or nNel ==6:
+          vtkfile.write('5\n')
+        else:
+          vtkfile.write('9\n')
       else:
-        vtkfile.write('12\n')
+        if nNel == 8:
+          vtkfile.write('12\n')
 
     vtkfile.write('</DataArray>\n')
     vtkfile.write('</Cells>\n')
