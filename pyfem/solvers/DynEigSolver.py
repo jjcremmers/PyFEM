@@ -36,12 +36,10 @@ class DynEigSolver ( BaseModule ):
 
   def __init__( self , props , globdat ):
 
-    self.tol     = 1.0e-3
-    self.iterMax = 10 
+    self.tol        = 1.0e-3
+    self.eigenCount = 5
 
-    BaseModule.__init__( self , props )
-
-    self.fext  = zeros( len(globdat.dofs) )  
+    BaseModule.__init__( self , props ) 
  
 #------------------------------------------------------------------------------
 #
@@ -53,7 +51,7 @@ class DynEigSolver ( BaseModule ):
          
     M,mlump = assembleMassMatrix      ( props , globdat )
 
-    eigenvals , eigenvecs = globdat.dofs.eigensolve( K , M )
+    eigenvals , eigenvecs = globdat.dofs.eigensolve( K , M , self.eigenCount )
 
     globdat.state = eigenvecs
   
@@ -69,12 +67,12 @@ class DynEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    print('\n======================================')
-    print(' eigenfrequencies')
-    print('======================================')
-    print(' Mode  Eigen   Freq')
+    print('\n  ================================================')
+    print('   Eigenfrequencies')
+    print('  ================================================')
+    print('   Mode |   Eigenvalue       |  Frequency')
     
     for i,f in enumerate(eigenvals):
-      print(' %3i : %6.4e rad/s  %6.4e Hz' %(i+1,f,f/(2.0*pi)))
+      print('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,f,f/(2.0*pi)))
       
-    print('======================================\n')
+    print('  ================================================\n')
