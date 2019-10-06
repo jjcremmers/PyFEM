@@ -24,11 +24,12 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
+import sys,os
+sys.path.insert(0, os.getcwd() )
+
 from pyfem.io.InputReader   import InputReader
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
-
-import sys
 
 props,globdat = InputReader( sys.argv )
 
