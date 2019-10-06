@@ -7,7 +7,7 @@
 #                                                                          #
 #  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
 #                                                                          #
-#  The latest stabke version can be downloaded from the web-site:          #
+#  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
 #                                                                          #
 #  A github repository, with the most up to date version of the code,      #
@@ -80,9 +80,6 @@ class Plate ( Element ):
 
     sData = getElemShapeData( elemdat.coords )
     
- #   elemdat.outlabel.append(self.outputLabels)
- #   elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
-
     for d in sData:
 
       stiff = zeros(shape=(20,20))
@@ -117,13 +114,6 @@ class Plate ( Element ):
       M46 = self.D[0,2]*d.dhdx[:,0] + self.D[2,2]*d.dhdx[:,1]
       M56 = self.D[1,2]*d.dhdx[:,1] + self.D[2,2]*d.dhdx[:,0]
 
-      Q41 = self.A55*d.h
-      Q42 = self.A45*d.h
-      Q51 = self.A45*d.h
-      Q52 = self.A44*d.h
-      Q31 = self.A55*d.dhdx[:,0]+self.A45*d.dhdx[:,1]
-      Q32 = self.A45*d.dhdx[:,0]+self.A44*d.dhdx[:,1]
-
       for i in range(4):
         for j in range(4):
  
@@ -141,27 +131,52 @@ class Plate ( Element ):
           stiff[5*i+3,5*j+1] += d.dhdx[i,0]*M21[j]+d.dhdx[i,1]*M26[j]
           stiff[5*i+4,5*j+1] += d.dhdx[i,0]*M26[j]+d.dhdx[i,1]*M22[j]
 
+          #K4
+          stiff[5*i+0,5*j+3] += d.dhdx[i,0]*N41[j]+d.dhdx[i,1]*N46[j]
+          stiff[5*i+1,5*j+3] += d.dhdx[i,0]*N46[j]+d.dhdx[i,1]*N42[j]
+          stiff[5*i+3,5*j+3] += d.dhdx[i,0]*M41[j]+d.dhdx[i,1]*M46[j]
+          stiff[5*i+4,5*j+3] += d.dhdx[i,0]*M46[j]+d.dhdx[i,1]*M42[j]
+
+          #K5
+          stiff[5*i+0,5*j+4] += d.dhdx[i,0]*N51[j]+d.dhdx[i,1]*N56[j]
+          stiff[5*i+1,5*j+4] += d.dhdx[i,0]*N56[j]+d.dhdx[i,1]*N52[j]
+          stiff[5*i+3,5*j+4] += d.dhdx[i,0]*M51[j]+d.dhdx[i,1]*M56[j]
+          stiff[5*i+4,5*j+4] += d.dhdx[i,0]*M56[j]+d.dhdx[i,1]*M52[j]
+
+      elemdat.stiff += stiff * d.weight
+
+    sData = getElemShapeData( elemdat.coords , -1 )
+    
+    for d in sData:
+
+      stiff = zeros(shape=(20,20))
+
+      Q41 = self.A55*d.h
+      Q42 = self.A45*d.h
+      Q51 = self.A45*d.h
+      Q52 = self.A44*d.h
+      Q31 = self.A55*d.dhdx[:,0]+self.A45*d.dhdx[:,1]
+      Q32 = self.A45*d.dhdx[:,0]+self.A44*d.dhdx[:,1]
+
+      for i in range(4):
+        for j in range(4):
+ 
           #K3
           stiff[5*i+2,5*j+2] += d.dhdx[i,0]*Q31[j]+d.dhdx[i,1]*Q32[j]
           stiff[5*i+3,5*j+2] += d.h[i]*Q31[j]
           stiff[5*i+4,5*j+2] += d.h[i]*Q32[j]
 
           #K4
-          stiff[5*i+0,5*j+3] += d.dhdx[i,0]*N41[j]+d.dhdx[i,1]*N46[j]
-          stiff[5*i+1,5*j+3] += d.dhdx[i,0]*N46[j]+d.dhdx[i,1]*N42[j]
           stiff[5*i+2,5*j+3] += d.dhdx[i,0]*Q41[j]+d.dhdx[i,1]*Q42[j]
-          stiff[5*i+3,5*j+3] += d.dhdx[i,0]*M41[j]+d.dhdx[i,1]*M46[j]+d.h[i]*Q41[j]
-          stiff[5*i+4,5*j+3] += d.dhdx[i,0]*M46[j]+d.dhdx[i,1]*M42[j]+d.h[i]*Q42[j]
+          stiff[5*i+3,5*j+3] += d.h[i]*Q41[j]
+          stiff[5*i+4,5*j+3] += d.h[i]*Q42[j]
 
           #K5
-          stiff[5*i+0,5*j+4] += d.dhdx[i,0]*N51[j]+d.dhdx[i,1]*N56[j]
-          stiff[5*i+1,5*j+4] += d.dhdx[i,0]*N56[j]+d.dhdx[i,1]*N52[j]
           stiff[5*i+2,5*j+4] += d.dhdx[i,0]*Q51[j]+d.dhdx[i,1]*Q52[j]
-          stiff[5*i+3,5*j+4] += d.dhdx[i,0]*M51[j]+d.dhdx[i,1]*M56[j]+d.h[i]*Q51[j]
-          stiff[5*i+4,5*j+4] += d.dhdx[i,0]*M56[j]+d.dhdx[i,1]*M52[j]+d.h[i]*Q52[j]
+          stiff[5*i+3,5*j+4] += d.h[i]*Q51[j]
+          stiff[5*i+4,5*j+4] += d.h[i]*Q52[j]
 
       elemdat.stiff += stiff * d.weight
- 
      
 #------------------------------------------------------------------------------
 #

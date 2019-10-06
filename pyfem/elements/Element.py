@@ -7,7 +7,7 @@
 #                                                                          #
 #  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
 #                                                                          #
-#  The latest stabke version can be downloaded from the web-site:          #
+#  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
 #                                                                          #
 #  A github repository, with the most up to date version of the code,      #
@@ -23,6 +23,7 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from numpy import outer, ones, zeros
 from pyfem.materials.MaterialManager import MaterialManager
 

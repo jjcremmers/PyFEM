@@ -1,11 +1,36 @@
-# (c) Joris Remmers (2013-2019)
-#
-#
-#
+############################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:  #
+#                                                                          #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
+#                                                                          #
+#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#                                                                          #
+#  The latest stable version can be downloaded from the web-site:          #
+#     http://www.wiley.com/go/deborst                                      #
+#                                                                          #
+#  A github repository, with the most up to date version of the code,      #
+#  can be found here:                                                      #
+#     https://github.com/jjcremmers/PyFEM                                  #
+#                                                                          #
+#  The code is open source and intended for educational and scientific     #
+#  purposes only. If you use PyFEM in your research, the developers would  #
+#  be grateful if you could cite the book.                                 #  
+#                                                                          #
+#  Disclaimer:                                                             #
+#  The authors reserve all rights but do not guarantee that the code is    #
+#  free from errors. Furthermore, the authors shall not be liable in any   #
+#  event caused by the use of the program.                                 #
+############################################################################
 
 from numpy import zeros,ones,dot,transpose
 from numpy.linalg import inv
 from math import sin,cos,pi,sqrt,tan,atan
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
 class TransverseIsotropic:
   
@@ -48,6 +73,10 @@ class TransverseIsotropic:
 
     self.rho = props.rho
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
   def getQ( self ):
 
     if not hasattr( self , 'Q' ):
@@ -60,6 +89,10 @@ class TransverseIsotropic:
       self.Q[2,2] = self.G12
   
     return self.Q
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getU( self ):
 
@@ -76,6 +109,10 @@ class TransverseIsotropic:
 
     return self.U
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
   def getS( self ):
 
     self.S = zeros( shape=(3,3) )
@@ -87,6 +124,10 @@ class TransverseIsotropic:
     self.S[2,2] = 1./self.G12
 
     return self.S
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
   
   def getV( self ):
 
@@ -102,6 +143,10 @@ class TransverseIsotropic:
       self.V[4] = 2.*(self.V[0]-self.V[3])
 
     return self.V
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getQbar( self , theta ):
 
@@ -130,6 +175,10 @@ class TransverseIsotropic:
 
     return Qbar
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
   def getQshearbar( self , theta ):
 
     Qshear = zeros( shape=(2,2) )
@@ -142,6 +191,10 @@ class TransverseIsotropic:
     Qshear[0,1] = Qshear[1,0]
 
     return Qshear
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getSbar( self , theta ):
 
@@ -170,13 +223,9 @@ class TransverseIsotropic:
 
     return Sbar
 
+#------------------------------------------------------------------------------
 #
-#
-#
-
-#
-#
-#
+#------------------------------------------------------------------------------
 
 class Layer:
 
@@ -185,6 +234,10 @@ class Layer:
     self.mat   = props.material
     self.theta = props.theta
     self.thick = props.thick
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
 class Laminate:
 
@@ -220,6 +273,10 @@ class Laminate:
     if hasattr( props , "shearCorrection" ):
       self.shearCorr = props.shearCorrection
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
   def getA( self ):
 
     self.A = zeros( shape = ( 3,3) )
@@ -231,6 +288,10 @@ class Laminate:
       self.A 	+= self.materials[name].getQbar( theta ) * (self.h[i+1]-self.h[i])
 
     return self.A
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getB( self ):
 
@@ -246,6 +307,10 @@ class Laminate:
 
   def getD( self ):
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
     self.D = zeros( shape = ( 3,3) )
 
     for i,layer in enumerate(self.layers):
@@ -256,12 +321,20 @@ class Laminate:
 
     return self.D
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
   def getQbar( self , i ):
 
     name  = self.layers[i].name
     theta = self.layers[i].theta
 
     return self.materials[name].getQbar( theta )
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getAshear( self ):
   
@@ -274,6 +347,10 @@ class Laminate:
       self.Ashear += self.shearCorr*self.materials[name].getQshearbar( theta )*(self.h[i+1]-self.h[i])
     
     return self.Ashear
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 
   def getMassInertia( self ):
 
