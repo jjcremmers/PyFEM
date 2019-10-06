@@ -49,19 +49,21 @@ class Plate ( Element ):
   def __init__ ( self, elnodes , props ):
     Element.__init__( self, elnodes , props )
 
-    material = Laminate( props )
+    self.material = Laminate( props )
 
-    self.A = material.getA()
-    self.B = material.getB()
-    self.D = material.getD()
+    self.A = self.material.getA()
+    self.B = self.material.getB()
+    self.D = self.material.getD()
 
-    Ashear = material.getAshear()
+    Ashear = self.material.getAshear()
 
     self.A44 = Ashear[0,0]
     self.A45 = Ashear[0,1]
     self.A55 = Ashear[1,1]
 
-    self.inertia = material.getMassInertia()
+    self.inertia = self.material.getMassInertia()
+
+    print(self.inertia)
 
     self.outputLabels = ["epsx","epsy","gamxy","s23","s13","s12"]
 
@@ -184,14 +186,34 @@ class Plate ( Element ):
 
   def getInternalForce ( self, elemdat ):
 
-    sData = getElemShapeData( elemdat.coords )
+    sData = getElemShapeData( elemdat.coords , -1 )
 
     elemdat.outlabel.append(self.outputLabels)
     elemdat.outdata  = zeros( shape=(len(elemdat.nodes),6) )
 
+    eps0  = zeros(3)
+    epss  = zeros(2)
+    kappa = zeros(3)
+
     for iData in sData:
-      eps0 = dot(iData.dhdx[:,0],elemdat.state[2:20:5])
-      
+      eps0[0] = dot(iData.dhdx[:,0],elemdat.state[0:20:5])
+      eps0[1] = dot(iData.dhdx[:,1],elemdat.state[1:20:5])
+      eps0[2] = dot(iData.dhdx[:,1],elemdat.state[0:20:5])+
+                dot(iData.dhdx[:,0],elemdat.state[1:20:5])
+      epss[0] = dot(iData.dhdx[:,1],elemdat.state[2:20:5])+
+                dot(iData.h        ,elemdat.state[4:20:5])
+      epss[1] = dot(iData.dhdx[:,0],elemdat.state[2:20:5])+
+                dot(iData.h        ,elemdat.state[3:20:5])
+
+      kappa[0]= dot(iData.dhdx[:,0],elemdat.state[3:20:5])
+      kappa[1]= dot(iData.dhdx[:,1],elemdat.state[4:20:5])
+      kappa[2]= dot(iData.dhdx[:,1],elemdat.state[3:20:5])+
+                dot(iData.dhdx[:,0],elemdat.state[4:20:5])
+
+      for pp in postProcess:
+        eps   = eps0 + pp.z*kappa
+        sigma = com
+
       elemdat.outdata += eps0 #outer( ones(len(self)), sigma )
       
     elemdat.outdata *= 1.0 / len(sData)  

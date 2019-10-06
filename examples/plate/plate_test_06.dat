@@ -1,0 +1,176 @@
+############################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:  #
+#                                                                          #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
+#                                                                          #
+#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#                                                                          #
+#  The latest stable version can be downloaded from the web-site:          #
+#     http://www.wiley.com/go/deborst                                      #
+#                                                                          #
+#  A github repository, with the most up to date version of the code,      #
+#  can be found here:                                                      #
+#     https://github.com/jjcremmers/PyFEM                                  #
+#                                                                          #
+#  The code is open source and intended for educational and scientific     #
+#  purposes only. If you use PyFEM in your research, the developers would  #
+#  be grateful if you could cite the book.                                 #  
+#                                                                          #
+#  Disclaimer:                                                             #
+#  The authors reserve all rights but do not guarantee that the code is    #
+#  free from errors. Furthermore, the authors shall not be liable in any   #
+#  event caused by the use of the program.                                 #
+############################################################################
+<Nodes>
+  0   0.0    0.0 ; 
+  1 100.0    0.0 ;
+  2 200.0    0.0 ; 
+  3 300.0    0.0 ;
+  4 400.0    0.0 ; 
+  5 500.0    0.0 ;
+  6 600.0    0.0 ;
+  7   0.0  100.0 ; 
+  8 100.0  100.0 ;
+  9 200.0  100.0 ; 
+ 10 300.0  100.0 ;
+ 11 400.0  100.0 ; 
+ 12 500.0  100.0 ;
+ 13 600.0  100.0 ;
+ 14   0.0  200.0 ; 
+ 15 100.0  200.0 ;
+ 16 200.0  200.0 ; 
+ 17 300.0  200.0 ;
+ 18 400.0  200.0 ; 
+ 19 500.0  200.0 ;
+ 20 600.0  200.0 ;
+ 21   0.0  300.0 ; 
+ 22 100.0  300.0 ;
+ 23 200.0  300.0 ; 
+ 24 300.0  300.0 ;
+ 25 400.0  300.0 ; 
+ 26 500.0  300.0 ;
+ 27 600.0  300.0 ;
+ 28   0.0  400.0 ; 
+ 29 100.0  400.0 ;
+ 30 200.0  400.0 ; 
+ 31 300.0  400.0 ;
+ 32 400.0  400.0 ; 
+ 33 500.0  400.0 ;
+ 34 600.0  400.0 ;
+</Nodes>
+
+<Elements>
+  1 "ContElem"  0  1  8  7;
+  2 "ContElem"  1  2  9  8;
+  3 "ContElem"  2  3 10  9;
+  4 "ContElem"  3  4 11 10;
+  5 "ContElem"  4  5 12 11;
+  6 "ContElem"  5  6 13 12;
+  7 "ContElem"  7  8 15 14;
+  8 "ContElem"  8  9 16 15;
+  9 "ContElem"  9 10 17 16;
+ 10 "ContElem" 10 11 18 17;
+ 11 "ContElem" 11 12 19 18;
+ 12 "ContElem" 12 13 20 19;
+ 13 "ContElem" 14 15 22 21;
+ 14 "ContElem" 15 16 23 22;
+ 15 "ContElem" 16 17 24 23;
+ 16 "ContElem" 17 18 25 24;
+ 17 "ContElem" 18 19 26 25;
+ 18 "ContElem" 19 20 27 26;
+ 19 "ContElem" 21 22 29 28;
+ 20 "ContElem" 22 23 30 29;
+ 21 "ContElem" 23 24 31 30;
+ 22 "ContElem" 24 25 32 31;
+ 23 "ContElem" 25 26 33 32;
+ 24 "ContElem" 26 27 34 33;
+</Elements>
+
+<NodeConstraints>
+ u[0] = 0.0;
+ v[0] = 0.0;
+ w[0] = 0.0;
+
+ u[1] = 0.0;
+ v[1] = 0.0;
+ w[1] = 0.0;
+
+ u[2] = 0.0;
+ v[2] = 0.0;
+ w[2] = 0.0;
+
+ u[3] = 0.0;
+ v[3] = 0.0;
+ w[3] = 0.0;
+
+ u[4] = 0.0;
+ v[4] = 0.0;
+ w[4] = 0.0;
+
+ u[5] = 0.0;
+ v[5] = 0.0;
+ w[5] = 0.0;
+
+ u[6] = 0.0;
+ v[6] = 0.0;
+ w[6] = 0.0;
+
+ u[7] = 0.0;
+ v[7] = 0.0;
+ w[7] = 0.0;
+
+ u[13] = 0.0;
+ v[13] = 0.0;
+ w[13] = 0.0;
+
+ u[14] = 0.0;
+ v[14] = 0.0;
+ w[14] = 0.0;
+
+ u[20] = 0.0;
+ v[20] = 0.0;
+ w[20] = 0.0;
+
+ u[21] = 0.0;
+ v[21] = 0.0;
+ w[21] = 0.0;
+
+ u[27] = 0.0;
+ v[27] = 0.0;
+ w[27] = 0.0;
+
+ u[28] = 0.0;
+ v[28] = 0.0;
+ w[28] = 0.0;
+
+ u[29] = 0.0;
+ v[29] = 0.0;
+ w[29] = 0.0;
+
+ u[30] = 0.0;
+ v[30] = 0.0;
+ w[30] = 0.0;
+
+ u[31] = 0.0;
+ v[31] = 0.0;
+ w[31] = 0.0;
+
+ u[32] = 0.0;
+ v[32] = 0.0;
+ w[32] = 0.0;
+
+ u[33] = 0.0;
+ v[33] = 0.0;
+ w[33] = 0.0;
+
+ u[34] = 0.0;
+ v[34] = 0.0;
+ w[34] = 0.0;
+
+</NodeConstraints>
+
+<ExternalForces>
+ w[9] = 10.0;
+</ExternalForces>
