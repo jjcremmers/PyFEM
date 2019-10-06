@@ -7,7 +7,7 @@
 #                                                                          #
 #  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
 #                                                                          #
-#  The latest stabke version can be downloaded from the web-site:          #
+#  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
 #                                                                          #
 #  A github repository, with the most up to date version of the code,      #
@@ -157,16 +157,16 @@ class DofSpace:
    
     return x
     
-  def eigensolve( self, A , B ):
+  def eigensolve( self, A , B , count=5 ):
 
     C = self.getConstraintsMatrix()
 
     A_constrained = dot( dot( C.transpose(), A ), C )
     B_constrained = dot( dot( C.transpose(), B ), C )
 
-    eigvals , eigvecs = eigsh( A_constrained, 5 , B_constrained , sigma = 0. , which = 'LM' )
+    eigvals , eigvecs = eigsh( A_constrained, count , B_constrained , sigma = 0. , which = 'LM' )
 
-    x = zeros(shape=(len(self),5))
+    x = zeros(shape=(len(self),count))
 
     for i,psi in enumerate(eigvecs.transpose()):
       x[:,i] = C * psi
