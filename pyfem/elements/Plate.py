@@ -198,23 +198,23 @@ class Plate ( Element ):
     for iData in sData:
       eps0[0] = dot(iData.dhdx[:,0],elemdat.state[0:20:5])
       eps0[1] = dot(iData.dhdx[:,1],elemdat.state[1:20:5])
-      eps0[2] = dot(iData.dhdx[:,1],elemdat.state[0:20:5])+
+      eps0[2] = dot(iData.dhdx[:,1],elemdat.state[0:20:5])+\
                 dot(iData.dhdx[:,0],elemdat.state[1:20:5])
-      epss[0] = dot(iData.dhdx[:,1],elemdat.state[2:20:5])+
+      epss[0] = dot(iData.dhdx[:,1],elemdat.state[2:20:5])+\
                 dot(iData.h        ,elemdat.state[4:20:5])
-      epss[1] = dot(iData.dhdx[:,0],elemdat.state[2:20:5])+
+      epss[1] = dot(iData.dhdx[:,0],elemdat.state[2:20:5])+\
                 dot(iData.h        ,elemdat.state[3:20:5])
 
       kappa[0]= dot(iData.dhdx[:,0],elemdat.state[3:20:5])
       kappa[1]= dot(iData.dhdx[:,1],elemdat.state[4:20:5])
-      kappa[2]= dot(iData.dhdx[:,1],elemdat.state[3:20:5])+
+      kappa[2]= dot(iData.dhdx[:,1],elemdat.state[3:20:5])+\
                 dot(iData.dhdx[:,0],elemdat.state[4:20:5])
 
-      for pp in postProcess:
-        eps   = eps0 + pp.z*kappa
-        sigma = com
+#      for pp in postProcess:
+#        eps   = eps0 + pp.z*kappa
+#        sigma = com
 
-      elemdat.outdata += eps0 #outer( ones(len(self)), sigma )
+      elemdat.outdata += 0.0#eps0 #outer( ones(len(self)), sigma )
       
     elemdat.outdata *= 1.0 / len(sData)  
 
