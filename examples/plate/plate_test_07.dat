@@ -1,0 +1,354 @@
+############################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:  #
+#                                                                          #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
+#                                                                          #
+#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#                                                                          #
+#  The latest stable version can be downloaded from the web-site:          #
+#     http://www.wiley.com/go/deborst                                      #
+#                                                                          #
+#  A github repository, with the most up to date version of the code,      #
+#  can be found here:                                                      #
+#     https://github.com/jjcremmers/PyFEM                                  #
+#                                                                          #
+#  The code is open source and intended for educational and scientific     #
+#  purposes only. If you use PyFEM in your research, the developers would  #
+#  be grateful if you could cite the book.                                 #  
+#                                                                          #
+#  Disclaimer:                                                             #
+#  The authors reserve all rights but do not guarantee that the code is    #
+#  free from errors. Furthermore, the authors shall not be liable in any   #
+#  event caused by the use of the program.                                 #
+############################################################################
+<Nodes>
+  0   0.0    0.0 ; 
+  1  50.0    0.0 ;
+  2 100.0    0.0 ;
+  3 150.0    0.0 ;
+  4 200.0    0.0 ;
+  5 250.0    0.0 ; 
+  6 300.0    0.0 ;
+  7 350.0    0.0 ;
+  8 400.0    0.0 ; 
+  9 450.0    0.0 ;
+ 10 500.0    0.0 ;
+ 11 550.0    0.0 ;
+ 12 600.0    0.0 ;
+ 13   0.0   50.0 ; 
+ 14  50.0   50.0 ;
+ 15 100.0   50.0 ;
+ 16 150.0   50.0 ;
+ 17 200.0   50.0 ;
+ 18 250.0   50.0 ; 
+ 19 300.0   50.0 ;
+ 20 350.0   50.0 ;
+ 21 400.0   50.0 ; 
+ 22 450.0   50.0 ;
+ 23 500.0   50.0 ;
+ 24 550.0   50.0 ;
+ 25 600.0   50.0 ;
+ 26   0.0  100.0 ; 
+ 27  50.0  100.0 ;
+ 28 100.0  100.0 ;
+ 29 150.0  100.0 ;
+ 30 200.0  100.0 ;
+ 31 250.0  100.0 ; 
+ 32 300.0  100.0 ;
+ 33 350.0  100.0 ;
+ 34 400.0  100.0 ; 
+ 35 450.0  100.0 ;
+ 36 500.0  100.0 ;
+ 37 550.0  100.0 ;
+ 38 600.0  100.0 ;
+ 39   0.0  150.0 ; 
+ 40  50.0  150.0 ;
+ 41 100.0  150.0 ;
+ 42 150.0  150.0 ;
+ 43 200.0  150.0 ;
+ 44 250.0  150.0 ; 
+ 45 300.0  150.0 ;
+ 46 350.0  150.0 ;
+ 47 400.0  150.0 ; 
+ 48 450.0  150.0 ;
+ 49 500.0  150.0 ;
+ 50 550.0  150.0 ;
+ 51 600.0  150.0 ;
+ 52   0.0  200.0 ; 
+ 53  50.0  200.0 ;
+ 54 100.0  200.0 ;
+ 55 150.0  200.0 ;
+ 56 200.0  200.0 ;
+ 57 250.0  200.0 ; 
+ 58 300.0  200.0 ;
+ 59 350.0  200.0 ;
+ 60 400.0  200.0 ; 
+ 61 450.0  200.0 ;
+ 62 500.0  200.0 ;
+ 63 550.0  200.0 ;
+ 64 600.0  200.0 ;
+ 65   0.0  250.0 ; 
+ 66  50.0  250.0 ;
+ 67 100.0  250.0 ;
+ 68 150.0  250.0 ;
+ 69 200.0  250.0 ;
+ 70 250.0  250.0 ; 
+ 71 300.0  250.0 ;
+ 72 350.0  250.0 ;
+ 73 400.0  250.0 ; 
+ 74 450.0  250.0 ;
+ 75 500.0  250.0 ;
+ 76 550.0  250.0 ;
+ 77 600.0  250.0 ;
+ 78   0.0  300.0 ; 
+ 79  50.0  300.0 ;
+ 80 100.0  300.0 ;
+ 81 150.0  300.0 ;
+ 82 200.0  300.0 ;
+ 83 250.0  300.0 ; 
+ 84 300.0  300.0 ;
+ 85 350.0  300.0 ;
+ 86 400.0  300.0 ; 
+ 87 450.0  300.0 ;
+ 88 500.0  300.0 ;
+ 89 550.0  300.0 ;
+ 90 600.0  300.0 ;
+ 91   0.0  350.0 ; 
+ 92  50.0  350.0 ;
+ 93 100.0  350.0 ;
+ 94 150.0  350.0 ;
+ 95 200.0  350.0 ;
+ 96 250.0  350.0 ; 
+ 97 300.0  350.0 ;
+ 98 350.0  350.0 ;
+ 99 400.0  350.0 ; 
+100 450.0  350.0 ;
+101 500.0  350.0 ;
+102 550.0  350.0 ;
+103 600.0  350.0 ;
+104   0.0  400.0 ; 
+105  50.0  400.0 ;
+106 100.0  400.0 ;
+107 150.0  400.0 ;
+108 200.0  400.0 ;
+109 250.0  400.0 ; 
+110 300.0  400.0 ;
+111 350.0  400.0 ;
+112 400.0  400.0 ; 
+113 450.0  400.0 ;
+114 500.0  400.0 ;
+115 550.0  400.0 ;
+116 600.0  400.0 ;
+</Nodes>
+
+<Elements>
+  1 "ContElem"  0  1 14 13;
+  2 "ContElem"  1  2 15 14;
+  3 "ContElem"  2  3 16 15;
+  4 "ContElem"  3  4 17 16;
+  5 "ContElem"  4  5 18 17;
+  6 "ContElem"  5  6 19 18;
+  7 "ContElem"  6  7 20 19;
+  8 "ContElem"  7  8 21 20;
+  9 "ContElem"  8 19 22 21;
+ 10 "ContElem"  9 10 23 22;
+ 11 "ContElem" 10 11 24 23;
+ 12 "ContElem" 11 12 25 24;
+  1 "ContElem" 13  1 14 13;
+  2 "ContElem" 14  2 15 14;
+  3 "ContElem" 15  3 16 15;
+  4 "ContElem"  6  4 17 16;
+  5 "ContElem"  7  5 18 17;
+  6 "ContElem"  8  6 19 18;
+  7 "ContElem"  9  7 20 19;
+  8 "ContElem"  0  8 21 20;
+  9 "ContElem"  1 19 22 21;
+ 10 "ContElem"  2 10 23 22;
+ 11 "ContElem" 13 11 24 23;
+ 12 "ContElem" 14 12 25 24;
+  1 "ContElem"  6  1 14 13;
+  2 "ContElem"  7  2 15 14;
+  3 "ContElem"  8  3 16 15;
+  4 "ContElem"  9  4 17 16;
+  5 "ContElem"  0  5 18 17;
+  6 "ContElem"  1  6 19 18;
+  7 "ContElem"  2  7 20 19;
+  8 "ContElem"  3  8 21 20;
+  9 "ContElem"  4 19 22 21;
+ 10 "ContElem"  5 10 23 22;
+ 11 "ContElem" 16 11 24 23;
+ 12 "ContElem" 17 12 25 24;
+  1 "ContElem"  9  1 14 13;
+  2 "ContElem"  0  2 15 14;
+  3 "ContElem"  1  3 16 15;
+  4 "ContElem"  2  4 17 16;
+  5 "ContElem"  3  5 18 17;
+  6 "ContElem"  4  6 19 18;
+  7 "ContElem"  5  7 20 19;
+  8 "ContElem"  6  8 21 20;
+  9 "ContElem"  7 19 22 21;
+ 10 "ContElem"  8 10 23 22;
+ 11 "ContElem" 19 11 24 23;
+ 12 "ContElem" 10 12 25 24;
+  1 "ContElem"  2  1 14 13;
+  2 "ContElem"  3  2 15 14;
+  3 "ContElem"  4  3 16 15;
+  4 "ContElem"  5  4 17 16;
+  5 "ContElem"  6  5 18 17;
+  6 "ContElem"  7  6 19 18;
+  7 "ContElem"  8  7 20 19;
+  8 "ContElem"  9  8 21 20;
+  9 "ContElem"  0 19 22 21;
+ 10 "ContElem"  1 10 23 22;
+ 11 "ContElem" 12 11 24 23;
+ 12 "ContElem" 13 12 25 24;
+  1 "ContElem"  5  1 14 13;
+  2 "ContElem"  5  2 15 14;
+  3 "ContElem"  6  3 16 15;
+  4 "ContElem"  3  4 17 16;
+  5 "ContElem"  4  5 18 17;
+  6 "ContElem"  5  6 19 18;
+  7 "ContElem"  6  7 20 19;
+  8 "ContElem"  7  8 21 20;
+  9 "ContElem"  8 19 22 21;
+ 10 "ContElem"  9 10 23 22;
+ 11 "ContElem" 10 11 24 23;
+ 12 "ContElem" 11 12 25 24;
+  1 "ContElem"  0  1 14 13;
+  2 "ContElem"  1  2 15 14;
+  3 "ContElem"  2  3 16 15;
+  4 "ContElem"  3  4 17 16;
+  5 "ContElem"  4  5 18 17;
+  6 "ContElem"  5  6 19 18;
+  7 "ContElem"  6  7 20 19;
+  8 "ContElem"  7  8 21 20;
+  9 "ContElem"  8 19 22 21;
+ 10 "ContElem"  9 10 23 22;
+ 11 "ContElem" 10 11 24 23;
+ 12 "ContElem" 11 12 25 24;
+  1 "ContElem"  0  1 14 13;
+  2 "ContElem"  1  2 15 14;
+  3 "ContElem"  2  3 16 15;
+  4 "ContElem"  3  4 17 16;
+  5 "ContElem"  4  5 18 17;
+  6 "ContElem"  5  6 19 18;
+  7 "ContElem"  6  7 20 19;
+  8 "ContElem"  7  8 21 20;
+  9 "ContElem"  8 19 22 21;
+ 10 "ContElem"  9 10 23 22;
+ 11 "ContElem" 10 11 24 23;
+ 12 "ContElem" 11 12 25 24;
+  1 "ContElem"  0  1 14 13;
+  2 "ContElem"  1  2 15 14;
+  3 "ContElem"  2  3 16 15;
+  4 "ContElem"  3  4 17 16;
+  5 "ContElem"  4  5 18 17;
+  6 "ContElem"  5  6 19 18;
+  7 "ContElem"  6  7 20 19;
+  8 "ContElem"  7  8 21 20;
+  9 "ContElem"  8 19 22 21;
+ 10 "ContElem"  9 10 23 22;
+ 11 "ContElem" 10 11 24 23;
+ 12 "ContElem" 11 12 25 24;
+  1 "ContElem"  0  1 14 13;
+  2 "ContElem"  1  2 15 14;
+  3 "ContElem"  2  3 16 15;
+  4 "ContElem"  3  4 17 16;
+  5 "ContElem"  4  5 18 17;
+  6 "ContElem"  5  6 19 18;
+  7 "ContElem"  6  7 20 19;
+  8 "ContElem"  7  8 21 20;
+  9 "ContElem"  8 19 22 21;
+ 10 "ContElem"  9 10 23 22;
+ 11 "ContElem" 10 11 24 23;
+ 12 "ContElem" 11 12 25 24;
+</Elements>
+
+<NodeConstraints>
+ u[0] = 0.0;
+ v[0] = 0.0;
+ w[0] = 0.0;
+
+ u[1] = 0.0;
+ v[1] = 0.0;
+ w[1] = 0.0;
+
+ u[2] = 0.0;
+ v[2] = 0.0;
+ w[2] = 0.0;
+
+ u[3] = 0.0;
+ v[3] = 0.0;
+ w[3] = 0.0;
+
+ u[4] = 0.0;
+ v[4] = 0.0;
+ w[4] = 0.0;
+
+ u[5] = 0.0;
+ v[5] = 0.0;
+ w[5] = 0.0;
+
+ u[6] = 0.0;
+ v[6] = 0.0;
+ w[6] = 0.0;
+
+ u[7] = 0.0;
+ v[7] = 0.0;
+ w[7] = 0.0;
+
+ u[13] = 0.0;
+ v[13] = 0.0;
+ w[13] = 0.0;
+
+ u[14] = 0.0;
+ v[14] = 0.0;
+ w[14] = 0.0;
+
+ u[20] = 0.0;
+ v[20] = 0.0;
+ w[20] = 0.0;
+
+ u[21] = 0.0;
+ v[21] = 0.0;
+ w[21] = 0.0;
+
+ u[27] = 0.0;
+ v[27] = 0.0;
+ w[27] = 0.0;
+
+ u[28] = 0.0;
+ v[28] = 0.0;
+ w[28] = 0.0;
+
+ u[29] = 0.0;
+ v[29] = 0.0;
+ w[29] = 0.0;
+
+ u[30] = 0.0;
+ v[30] = 0.0;
+ w[30] = 0.0;
+
+ u[31] = 0.0;
+ v[31] = 0.0;
+ w[31] = 0.0;
+
+ u[32] = 0.0;
+ v[32] = 0.0;
+ w[32] = 0.0;
+
+ u[33] = 0.0;
+ v[33] = 0.0;
+ w[33] = 0.0;
+
+ u[34] = 0.0;
+ v[34] = 0.0;
+ w[34] = 0.0;
+
+</NodeConstraints>
+
+<ExternalForces>
+ w[9] = 10.0;
+</ExternalForces>

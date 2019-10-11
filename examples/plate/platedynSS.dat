@@ -1,0 +1,273 @@
+############################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:  #
+#                                                                          #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
+#                                                                          #
+#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#                                                                          #
+#  The latest stable version can be downloaded from the web-site:          #
+#     http://www.wiley.com/go/deborst                                      #
+#                                                                          #
+#  A github repository, with the most up to date version of the code,      #
+#  can be found here:                                                      #
+#     https://github.com/jjcremmers/PyFEM                                  #
+#                                                                          #
+#  The code is open source and intended for educational and scientific     #
+#  purposes only. If you use PyFEM in your research, the developers would  #
+#  be grateful if you could cite the book.                                 #  
+#                                                                          #
+#  Disclaimer:                                                             #
+#  The authors reserve all rights but do not guarantee that the code is    #
+#  free from errors. Furthermore, the authors shall not be liable in any   #
+#  event caused by the use of the program.                                 #
+############################################################################
+
+<Nodes>
+  0 0.0  0.0 ; 
+  1 1.0  0.0 ;
+  2 2.0  0.0 ;
+  3 3.0  0.0 ; 
+  4 4.0  0.0 ;
+  5 5.0  0.0 ;
+  6 6.0  0.0 ; 
+  7 7.0  0.0 ;
+  8 8.0  0.0 ;
+
+ 10 0.0  1.0 ; 
+ 11 1.0  1.0 ;
+ 12 2.0  1.0 ;
+ 13 3.0  1.0 ; 
+ 14 4.0  1.0 ;
+ 15 5.0  1.0 ;
+ 16 6.0  1.0 ; 
+ 17 7.0  1.0 ;
+ 18 8.0  1.0 ;
+
+ 20 0.0  2.0 ; 
+ 21 1.0  2.0 ;
+ 22 2.0  2.0 ;
+ 23 3.0  2.0 ; 
+ 24 4.0  2.0 ;
+ 25 5.0  2.0 ;
+ 26 6.0  2.0 ; 
+ 27 7.0  2.0 ;
+ 28 8.0  2.0 ;
+
+ 30 0.0  3.0 ; 
+ 31 1.0  3.0 ;
+ 32 2.0  3.0 ;
+ 33 3.0  3.0 ; 
+ 34 4.0  3.0 ;
+ 35 5.0  3.0 ;
+ 36 6.0  3.0 ; 
+ 37 7.0  3.0 ;
+ 38 8.0  3.0 ;
+
+ 40 0.0  4.0 ; 
+ 41 1.0  4.0 ;
+ 42 2.0  4.0 ;
+ 43 3.0  4.0 ; 
+ 44 4.0  4.0 ;
+ 45 5.0  4.0 ;
+ 46 6.0  4.0 ; 
+ 47 7.0  4.0 ;
+ 48 8.0  4.0 ;
+
+ 50 0.0  5.0 ; 
+ 51 1.0  5.0 ;
+ 52 2.0  5.0 ;
+ 53 3.0  5.0 ; 
+ 54 4.0  5.0 ;
+ 55 5.0  5.0 ;
+ 56 6.0  5.0 ; 
+ 57 7.0  5.0 ;
+ 58 8.0  5.0 ;
+
+ 60 0.0  6.0 ; 
+ 61 1.0  6.0 ;
+ 62 2.0  6.0 ;
+ 63 3.0  6.0 ; 
+ 64 4.0  6.0 ;
+ 65 5.0  6.0 ;
+ 66 6.0  6.0 ; 
+ 67 7.0  6.0 ;
+ 68 8.0  6.0 ;
+</Nodes>
+
+<Elements>
+  1 "ContElem"  0  1 11 10;
+  2 "ContElem"  1  2 12 11;
+  3 "ContElem"  2  3 13 12;
+  4 "ContElem"  3  4 14 13;
+  5 "ContElem"  4  5 15 14;
+  6 "ContElem"  5  6 16 15;
+  7 "ContElem"  6  7 17 16;
+  8 "ContElem"  7  8 18 17;
+
+ 11 "ContElem" 10 11 21 20;
+ 12 "ContElem" 11 12 22 21;
+ 13 "ContElem" 12 13 23 22;
+ 14 "ContElem" 13 14 24 23;
+ 15 "ContElem" 14 15 25 24;
+ 16 "ContElem" 15 16 26 25;
+ 17 "ContElem" 16 17 27 26;
+ 18 "ContElem" 17 18 28 27;
+
+ 21 "ContElem" 20 21 31 30;
+ 22 "ContElem" 21 22 32 31;
+ 23 "ContElem" 22 23 33 32;
+ 24 "ContElem" 23 24 34 33;
+ 25 "ContElem" 24 25 35 34;
+ 26 "ContElem" 25 26 36 35;
+ 27 "ContElem" 26 27 37 36;
+ 28 "ContElem" 27 28 38 37;
+
+ 31 "ContElem" 30 31 41 40;
+ 32 "ContElem" 31 32 42 41;
+ 33 "ContElem" 32 33 43 42;
+ 34 "ContElem" 33 34 44 43;
+ 35 "ContElem" 34 35 45 44;
+ 36 "ContElem" 35 36 46 45;
+ 37 "ContElem" 36 37 47 46;
+ 38 "ContElem" 37 38 48 47;
+
+ 41 "ContElem" 40 41 51 50;
+ 42 "ContElem" 41 42 52 51;
+ 43 "ContElem" 42 43 53 52;
+ 44 "ContElem" 43 44 54 53;
+ 45 "ContElem" 44 45 55 54;
+ 46 "ContElem" 45 46 56 55;
+ 47 "ContElem" 46 47 57 56;
+ 48 "ContElem" 47 48 58 57;
+
+ 51 "ContElem" 50 51 61 60;
+ 52 "ContElem" 51 52 62 61;
+ 53 "ContElem" 52 53 63 62;
+ 54 "ContElem" 53 54 64 63;
+ 55 "ContElem" 54 55 65 64;
+ 56 "ContElem" 55 56 66 65;
+ 57 "ContElem" 56 57 67 66;
+ 58 "ContElem" 57 58 68 67;
+</Elements>
+
+<NodeConstraints>
+ u[0] = 0.0;
+ v[0] = 0.0;
+ w[0] = 0.0;
+
+ u[1] = 0.0;
+ v[1] = 0.0;
+ w[1] = 0.0;
+
+ u[2] = 0.0;
+ v[2] = 0.0;
+ w[2] = 0.0;
+
+ u[3] = 0.0;
+ v[3] = 0.0;
+ w[3] = 0.0;
+
+ u[4] = 0.0;
+ v[4] = 0.0;
+ w[4] = 0.0;
+
+ u[5] = 0.0;
+ v[5] = 0.0;
+ w[5] = 0.0;
+
+ u[6] = 0.0;
+ v[6] = 0.0;
+ w[6] = 0.0;
+
+ u[7] = 0.0;
+ v[7] = 0.0;
+ w[7] = 0.0;
+
+ u[8] = 0.0;
+ v[8] = 0.0;
+ w[8] = 0.0;
+
+ u[10] = 0.0;
+ v[10] = 0.0;
+ w[10] = 0.0;
+
+ u[20] = 0.0;
+ v[20] = 0.0;
+ w[20] = 0.0;
+
+ u[30] = 0.0;
+ v[30] = 0.0;
+ w[30] = 0.0;
+
+ u[40] = 0.0;
+ v[40] = 0.0;
+ w[40] = 0.0;
+
+ u[50] = 0.0;
+ v[50] = 0.0;
+ w[50] = 0.0;
+
+ u[18] = 0.0;
+ v[18] = 0.0;
+ w[18] = 0.0;
+
+ u[28] = 0.0;
+ v[28] = 0.0;
+ w[28] = 0.0;
+
+ u[38] = 0.0;
+ v[38] = 0.0;
+ w[38] = 0.0;
+
+ u[48] = 0.0;
+ v[48] = 0.0;
+ w[48] = 0.0;
+
+ u[58] = 0.0;
+ v[58] = 0.0;
+ w[58] = 0.0;
+
+ u[60] = 0.0;
+ v[60] = 0.0;
+ w[60] = 0.0;
+
+ u[61] = 0.0;
+ v[61] = 0.0;
+ w[61] = 0.0;
+
+ u[62] = 0.0;
+ v[62] = 0.0;
+ w[62] = 0.0;
+
+ u[63] = 0.0;
+ v[63] = 0.0;
+ w[63] = 0.0;
+
+ u[64] = 0.0;
+ v[64] = 0.0;
+ w[64] = 0.0;
+
+ u[65] = 0.0;
+ v[65] = 0.0;
+ w[65] = 0.0;
+
+ u[66] = 0.0;
+ v[66] = 0.0;
+ w[66] = 0.0;
+
+ u[67] = 0.0;
+ v[67] = 0.0;
+ w[67] = 0.0;
+
+ u[68] = 0.0;
+ v[68] = 0.0;
+ w[68] = 0.0;
+
+
+</NodeConstraints>
+
+<ExternalForces>
+
+</ExternalForces>

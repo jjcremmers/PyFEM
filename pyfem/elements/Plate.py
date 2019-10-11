@@ -27,11 +27,18 @@
 from .Element import Element
 from pyfem.util.transformations import getRotationMatrix
 from pyfem.util.shapeFunctions  import getElemShapeData	
-from pyfem.elements.Composite   import Laminate
+from pyfem.elements.Composite   import Laminate,stressTransformation
 
-from numpy import zeros, dot, array, eye, outer, mat, empty,sqrt
+from numpy import zeros, ones, dot, array, eye, outer, mat, empty,sqrt
 from scipy.linalg import norm
 from math import atan2, sin, cos, tan
+
+#==============================================================================
+#
+#==============================================================================
+
+class postProcessPoint:
+  pass
 
 #------------------------------------------------------------------------------
 #
@@ -63,9 +70,9 @@ class Plate ( Element ):
 
     self.inertia = self.material.getMassInertia()
 
-    print(self.inertia)
+    self.initPostProcessing()
 
-    self.outputLabels = ["epsx","epsy","gamxy","s23","s13","s12"]
+    self.outputLabels = self.postProcess[0].labels+self.postProcess[1].labels
 
 #------------------------------------------------------------------------------
 #
@@ -192,7 +199,6 @@ class Plate ( Element ):
     elemdat.outdata  = zeros( shape=(len(elemdat.nodes),6) )
 
     eps0  = zeros(3)
-    epss  = zeros(2)
     kappa = zeros(3)
 
     for iData in sData:
@@ -200,21 +206,16 @@ class Plate ( Element ):
       eps0[1] = dot(iData.dhdx[:,1],elemdat.state[1:20:5])
       eps0[2] = dot(iData.dhdx[:,1],elemdat.state[0:20:5])+\
                 dot(iData.dhdx[:,0],elemdat.state[1:20:5])
-      epss[0] = dot(iData.dhdx[:,1],elemdat.state[2:20:5])+\
-                dot(iData.h        ,elemdat.state[4:20:5])
-      epss[1] = dot(iData.dhdx[:,0],elemdat.state[2:20:5])+\
-                dot(iData.h        ,elemdat.state[3:20:5])
 
       kappa[0]= dot(iData.dhdx[:,0],elemdat.state[3:20:5])
       kappa[1]= dot(iData.dhdx[:,1],elemdat.state[4:20:5])
       kappa[2]= dot(iData.dhdx[:,1],elemdat.state[3:20:5])+\
                 dot(iData.dhdx[:,0],elemdat.state[4:20:5])
 
-#      for pp in postProcess:
-#        eps   = eps0 + pp.z*kappa
-#        sigma = com
-
-      elemdat.outdata += 0.0#eps0 #outer( ones(len(self)), sigma )
+      for i,pp in enumerate(self.postProcess):
+        eps   = eps0 + pp.z*kappa
+        sigma = stressTransformation( dot(pp.Qbar,eps) , pp.theta )
+        elemdat.outdata[:,i*3:i*3+3] += outer( ones(4), sigma )
       
     elemdat.outdata *= 1.0 / len(sData)  
 
@@ -245,3 +246,29 @@ class Plate ( Element ):
           mass[5*i+4,5*j+4] += self.inertia[0]*shp
 
       elemdat.mass += mass * d.weight
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+  def initPostProcessing( self ):
+ 
+    layerCount = self.material.layerCount()
+
+    self.postProcess = []
+  
+    pp        = postProcessPoint()
+    pp.z      = -0.5*self.material.thick
+    pp.Qbar   = self.material.getQbar(0)
+    pp.theta  = self.material.layers[0].theta
+    pp.labels = ["s11bot","s22bot","s12bot"]
+    self.postProcess.append(pp)
+
+    pp        = postProcessPoint()
+    pp.z      = 0.5*self.material.thick
+    pp.Qbar   = self.material.getQbar(layerCount-1)
+    pp.theta  = self.material.layers[layerCount-1].theta
+    pp.labels = ["s11top","s22top","s12top"]
+    self.postProcess.append(pp)
+
+    

@@ -7,7 +7,7 @@
 #                                                                          #
 #  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
 #                                                                          #
-#  The latest stabke version can be downloaded from the web-site:          #
+#  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
 #                                                                          #
 #  A github repository, with the most up to date version of the code,      #
@@ -102,22 +102,28 @@ if osName[:5] == "linux":
 
   print("\n LINUX INSTALLATION")
   print(" ===============================================================\n")
-  print(" When using a bash shell, add the following lines")
+  print(" When using a bash shell, add the following line")
   print(" to ~/.bashrc :\n")
-  print('   export PYTHONPATH="'+path+'"')
+  #print('   export PYTHONPATH="'+path+'"')
   print("   alias  pyfem='python3 "+path+"/PyFEM.py'\n")
   print(" When using csh or tcsh add the following lines to")
   print(" ~/.cshrc or ~/.tcshrc :\n")
-  print("   setenv PYTHONPATH "+path)
+  #print("   setenv PYTHONPATH "+path)
   print("   alias  pyfem 'python3 "+path+"/PyFEM.py'\n")
+  print(" ===============================================================\n")
+  print("  Installation succesful")
+  print("  See the user manual for further instructions.\n\n")
 
 elif osName[:6] == "darwin":
 
   print("\n MAC-OS INSTALLATION")
   print(" ===============================================================\n")
-  print(" Add the following lines to ~/.bashrc :\n")
-  print('   export PYTHONPATH="'+path+'"')
-  print("   alias  pyfem='python3 "+path+"/PyFEM.py'\n")
+  print(" Add the following line to ~/.bashrc :\n")
+  #print('   export PYTHONPATH="'+path+'"')
+  print("    alias  pyfem='python3 "+path+"/PyFEM.py'\n")
+  print(" ===============================================================\n")
+  print("  Installation succesful")
+  print("  See the user manual for further instructions.\n\n")
 
 elif osName[:3] == "win":
 
@@ -135,12 +141,14 @@ elif osName[:3] == "win":
 
   print("\n WINDOWS INSTALLATION")
   print(" ===============================================================\n")
-  print(" Add the following path to PYTHONPATH and PATH:\n")
-  print("   ",path,"\n")
-  print(" See the user manual for instructions\n\n")
+  #print(" Add the following path to PYTHONPATH and PATH:\n")
+  #print("   ",path,"\n")
+  print(" ===============================================================\n")
+  print("  Installation successful!")
+  print("  See the user manual for instructions.\n\n")
 
 else:
   print("Operating system ",osName," not known.")
 
-input("Press Enter to continue...")
+input("  Press Enter to continue...")
 

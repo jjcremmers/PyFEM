@@ -1,0 +1,76 @@
+############################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:  #
+#                                                                          #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
+#                                                                          #
+#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#                                                                          #
+#  The latest stable version can be downloaded from the web-site:          #
+#     http://www.wiley.com/go/deborst                                      #
+#                                                                          #
+#  A github repository, with the most up to date version of the code,      #
+#  can be found here:                                                      #
+#     https://github.com/jjcremmers/PyFEM                                  #
+#                                                                          #
+#  The code is open source and intended for educational and scientific     #
+#  purposes only. If you use PyFEM in your research, the developers would  #
+#  be grateful if you could cite the book.                                 #  
+#                                                                          #
+#  Disclaimer:                                                             #
+#  The authors reserve all rights but do not guarantee that the code is    #
+#  free from errors. Furthermore, the authors shall not be liable in any   #
+#  event caused by the use of the program.                                 #
+############################################################################
+<Nodes>
+  0 0.0  0.0 ; 
+  1 0.2  0.0 ;
+  2 0.4  0.0 ;
+  3 0.6  0.0 ; 
+  4 0.8  0.0 ;
+  5 1.0  0.0 ;
+  6 1.2  0.0 ; 
+  7 1.4  0.0 ;
+  8 1.6  0.0 ;
+
+ 10 0.0  0.2 ; 
+ 11 0.2  0.2 ;
+ 12 0.4  0.2 ;
+ 13 0.6  0.2 ; 
+ 14 0.8  0.2 ;
+ 15 1.0  0.2 ;
+ 16 1.2  0.2 ; 
+ 17 1.4  0.2 ;
+ 18 1.6  0.2 ;
+</Nodes>
+
+<Elements>
+  1 "ContElem"  0  1 11 10;
+  2 "ContElem"  1  2 12 11;
+  3 "ContElem"  2  3 13 12;
+  4 "ContElem"  3  4 14 13;
+  5 "ContElem"  4  5 15 14;
+  6 "ContElem"  5  6 16 15;
+  7 "ContElem"  6  7 17 16;
+  8 "ContElem"  7  8 18 17;
+</Elements>
+
+<NodeConstraints>
+ u[0] = 0.0;
+ v[0] = 0.0;
+ w[0] = 0.0;
+ rx[0] = 0.0;
+ ry[0] = 0.0;
+
+ u[10] = 0.0;
+ v[10] = 0.0;
+ w[10] = 0.0;
+ rx[10] = 0.0;
+ ry[10] = 0.0;
+
+</NodeConstraints>
+
+<ExternalForces>
+
+</ExternalForces>

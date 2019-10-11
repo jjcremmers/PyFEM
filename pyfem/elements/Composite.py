@@ -335,10 +335,20 @@ class Laminate:
 
   def getQbar( self , i ):
 
-    name  = self.layers[i].name
+    name  = self.layers[i].mat
     theta = self.layers[i].theta
 
     return self.materials[name].getQbar( theta )
+
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+  def getQ( self , i ):
+
+    name  = self.layers[i].mat
+
+    return self.materials[name].getQ()
 
 #------------------------------------------------------------------------------
 #
@@ -372,3 +382,29 @@ class Laminate:
       massInert[2] += 1./3.*self.materials[name].rho*(self.h[i+1]**3-self.h[i]**3)
     
     return massInert
+
+#==============================================================================
+#  Utility functions
+#==============================================================================
+
+#------------------------------------------------------------------------------
+#  stressTransformation 
+#    Transforms stress from 12 coordinate system to xy coordinate system
+#------------------------------------------------------------------------------
+
+def stressTransformation( sigma , theta ):
+
+  signew = zeros( 3 )
+
+  rad = theta*pi/180.
+
+  c = cos(rad)
+  s = sin(rad)
+
+  signew[0] = sigma[0]*c*c + sigma[1]*s*s + 2.*sigma[2]*c*s
+  signew[1] = sigma[0]*s*s + sigma[1]*c*c - 2.*sigma[2]*c*s
+  signew[2] = ( sigma[1] - sigma[0] )*c*s + sigma[2]*( c*c - s*s )
+   
+  return signew
+
+
