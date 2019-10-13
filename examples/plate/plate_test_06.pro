@@ -42,9 +42,9 @@ ContElem =
 
   carb =
   {
-    type = "PlaneStress";
-    E    = 1.e6;
-    nu   = 0.25;
+    E    = [1.e6,1.e5];
+    nu12 = 0.25;
+    G12  = 2.e5;
     rho  = 1.0e3;
   };
 
