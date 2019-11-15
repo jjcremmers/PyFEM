@@ -115,38 +115,46 @@ class GlobalData ( Properties ):
 #
 #---------------------------------------------------------------------------------
 
-  def printNodes( self , inodes=None ):
+  def printNodes( self , fileName = None , inodes=None ):
+
+    if fileName is None:
+      f = None
+    else:
+      f = open(fileName,"w")
 
     if inodes is None:
       inodes = list(self.nodes.keys()) 
 	
-    print('   Node | ', end=' ')
+    print('   Node | ', file = f , end=' ')
     
     for dofType in self.dofs.dofTypes:
-      print("  %-10s" % dofType, end=' ')
+      print("  %-10s" % dofType, file = f , end=' ')
 
     if hasattr( self , 'fint' ):
       for dofType in self.dofs.dofTypes:
-        print(" fint-%-6s" % dofType, end=' ')
+        print(" fint-%-6s" % dofType, file = f ,end=' ')
 
     for name in self.outputNames:
-      print(" %-11s" % name, end=' ')
+      print(" %-11s" % name , file = f , end=' ')
 
-    print() 
-    print(('-' * 100))
+    print(" ", file = f ) 
+    print(('-' * 100), file = f )
 
     for nodeID in inodes:
-      print('  %4i  | ' % nodeID, end=' ')
+      print('  %4i  | ' % nodeID, file = f , end=' ')
       for dofType in self.dofs.dofTypes:
-        print(' %10.3e ' % self.state[self.dofs.getForType(nodeID,dofType)], end=' ')
+        print(' %10.3e ' % self.state[self.dofs.getForType(nodeID,dofType)], file = f , end=' ')
       for dofType in self.dofs.dofTypes:
-        print(' %10.3e ' % self.fint[self.dofs.getForType(nodeID,dofType)], end=' ')
+        print(' %10.3e ' % self.fint[self.dofs.getForType(nodeID,dofType)], file = f , end=' ')
 
       for name in self.outputNames:
-        print(' %10.3e ' %  self.getData( name , nodeID ), end=' ')
+        print(' %10.3e ' %  self.getData( name , nodeID ), file = f , end=' ')
      
-      print()
-    print()
+      print(" ", file = f )
+    print(" ", file = f )
+
+    if fileName is not None:
+      f.close()
 
 #------------------------------------------------------------------------------
 #

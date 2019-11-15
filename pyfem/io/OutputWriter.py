@@ -39,8 +39,6 @@ class OutputWriter( BaseModule ):
 
     if not hasattr( self , "filename" ):
       self.filename  = self.prefix + self.extension
-    
-    self.outfile = open( self.filename ,'w' )
 
 #------------------------------------------------------------------------------
 #
@@ -50,4 +48,7 @@ class OutputWriter( BaseModule ):
 
     print("  Writing output file ..........\n")
 
-    globdat.printNodes()
+    if self.onScreen:
+      globdat.printNodes()
+    
+    globdat.printNodes(self.filename)
