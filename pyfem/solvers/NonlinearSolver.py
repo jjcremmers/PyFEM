@@ -80,12 +80,14 @@ class NonlinearSolver( BaseModule ):
     K,fint = assembleTangentStiffness( props, globdat )
     
     error = 1.
+
+    globdat.dofs.setConstrainFactor( 1.0 )
     
     while error > self.tol:
 
       globdat.iiter += 1
 	      
-      da = globdat.dofs.solve( K, fext-fint )
+      da = globdat.dofs.solve( K, fext - fint )
 
       Da[:] += da[:]
       a [:] += da[:]
@@ -97,7 +99,7 @@ class NonlinearSolver( BaseModule ):
       # In the case of a prescribed displacement, the external force is zero
       # and hence its norm is zero. In that case, the norm of the residue is not
       # divided by the norm of the external force.
-  
+
       norm = globdat.dofs.norm( fext )
   
       if norm < 1.0e-16:
@@ -106,6 +108,8 @@ class NonlinearSolver( BaseModule ):
         error = globdat.dofs.norm( fext-fint ) / norm
 
       print('  Iter', globdat.iiter, ':', error)
+
+      globdat.dofs.setConstrainFactor( 0.0 )
 
       if globdat.iiter == self.iterMax:
         raise RuntimeError('Newton-Raphson iterations did not converge!')
