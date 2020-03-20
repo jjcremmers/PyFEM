@@ -68,7 +68,7 @@ class ElementSet( itemList ):
     
   def readFromFile( self, fname ):
     
-    print("  Reading elements .............")
+    print("  Reading elements .............",end = '')
 
     fin = open( fname )
   
@@ -138,8 +138,8 @@ class ElementSet( itemList ):
 #          if len(b) > 1 and type(eval(b[0])) == int:
           if len(b) == 8 and type(eval(b[0])) == int:        
             self.add( eval(b[0]), "ContElem" , [eval(nodeID) for nodeID in b[5:]] )
-      
       if line.startswith('$EndElements'):
+        print(len(self)," elements.")
         return 
 
 #

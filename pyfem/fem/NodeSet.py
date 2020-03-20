@@ -37,7 +37,7 @@ class NodeSet( itemList ):
     
   def readFromFile( self, fname ):
     
-    print("  Reading nodes ................")
+    print("  Reading nodes ................",end = '')
 
     fin = open( fname )
   
@@ -72,11 +72,13 @@ class NodeSet( itemList ):
         ln = line.replace('\n','').replace('\t','').replace(' ','').replace('\r','').replace(';','')
         ln = ln.split('=',1)
         self.readGmshFile( ln[1][1:-1] )
+        print(len(self)," nodes.")
         return
 
   def readGmshFile( self, fname ):
     
     fin = open( fname )
+    self.rank = 2
 
     while True:
     
@@ -105,7 +107,7 @@ class NodeSet( itemList ):
           line = fin.readline()
           line = re.sub('\s{2,}',' ',line)
           b    = line.strip().split(' ')
-
+       
           if len(b) > 1 and type(eval(b[0])) == int:
             self.add( eval(b[0]), [eval(crd) for crd in b[1:3]] )
       
