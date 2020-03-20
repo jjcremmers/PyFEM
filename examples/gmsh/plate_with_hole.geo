@@ -25,7 +25,7 @@ Circle(8) = {8,9,5};
 Line Loop(1) = {4,1,-2,3} ;
 Line Loop(2) = {5,6,7,8};
 
-Plane Surface(1) = {1,-2};
+Plane Surface(1) = {1};
 
 Physical Surface("My surface") = {1};
 

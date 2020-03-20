@@ -1,6 +1,8 @@
 gmsh = "plate_with_hole.msh"
 
 <NodeConstraints>
+ u[2] = 0.01;
+ u[3] = 0.01;
  u[28] = 0.01;
  u[29] = 0.01;
  u[30] = 0.01;
@@ -21,6 +23,8 @@ gmsh = "plate_with_hole.msh"
  u[45] = 0.01;
  u[46] = 0.01;
 
+ u[1] = 0.0;
+ u[4] = 0.0;
  u[66] = 0.0;
  u[67] = 0.0;
  u[68] = 0.0;

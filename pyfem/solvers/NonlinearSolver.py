@@ -46,6 +46,9 @@ class NonlinearSolver( BaseModule ):
 
     BaseModule.__init__( self , props )
 
+    if self.maxLam > 1.0e19 and self.maxCycle == sys.maxsize:
+      self.maxCycle = 5
+
     globdat.lam = 0.0
 
     print("\n  Starting nonlinear solver ....\n")
