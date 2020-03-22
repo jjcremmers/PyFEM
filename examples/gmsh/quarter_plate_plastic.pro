@@ -24,36 +24,53 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-import copy
+input = "quarter_plate_plastic.dat";
 
-class BaseMaterial:
+ContElem =
+{
+  type = "SmallStrainContinuum";
 
-  def __init__ ( self, props ):
+  material =
+  {
+    type = "IsotropicKinematicHardening";
+    E    = 1.e6;
+    nu   = 0.25;
+    syield = 10000.;
+    hard  = 1.e4;
+  };
+};
 
-    for name,val in props:
-      setattr( self, name, val )
+solver =
+{
+  type     = "NonlinearSolver";
+  maxCycle = 20;
+};
 
-    self.oldHistory = {}
-    self.newHistory = {}
-    self.iIter = -1
+outputModules = ["vtk","graph"];
 
-  def setIter( self, iIter ):
-    
-    self.iIter = iIter
+vtk =
+{
+  type = "MeshWriter";
+};
 
-  def setHistoryParameter( self , name , val ):
+graph =
+{
+  type = "GraphWriter";
+  onScreen = true;
 
-    self.newHistory[name]=val
-    return
-       
-  def getHistoryParameter( self , name ):
+  columns = [ "disp" , "load" ];
 
-    if type(self.oldHistory[name]) == float:
-      return self.oldHistory[name]
-    else:
-      return self.oldHistory[name].copy()
-    
-  def commitHistory( self ):
+  disp =
+  {
+    type = "state";
+    node = 4;
+    dof  = "v";
+  };
 
-    self.oldHistory = copy.deepcopy(self.newHistory)
-  
+  load =
+  {
+    type = "fint";
+    node = 4;
+    dof  = "v";
+  };
+};
