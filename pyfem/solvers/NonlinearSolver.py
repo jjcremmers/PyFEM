@@ -27,6 +27,7 @@ from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness
+from math import sin
 
 import sys
 
@@ -43,6 +44,8 @@ class NonlinearSolver( BaseModule ):
 
     self.maxCycle = sys.maxsize
     self.maxLam   = 1.0e20
+    self.dtime    = 0.1
+    self.loadFunc = "t"
 
     BaseModule.__init__( self , props )
 
@@ -51,6 +54,8 @@ class NonlinearSolver( BaseModule ):
 
     globdat.lam = 0.0
 
+    self.loadfunc = eval ( "lambda t : " + str(self.loadFunc) )
+ 
     print("\n  Starting nonlinear solver ....\n")
 
 #------------------------------------------------------------------------------
@@ -60,8 +65,12 @@ class NonlinearSolver( BaseModule ):
   def run( self , props , globdat ):
 
     globdat.cycle += 1
+    globdat.time  += self.dtime
 
-    globdat.lam = 1.0 * globdat.cycle
+    globdat.lam  = self.loadfunc( globdat.time )
+    lam0         = self.loadfunc( globdat.time - self.dtime )
+
+    globdat.dlam = globdat.lam - lam0
     
     dofCount = len(globdat.dofs)
 
@@ -76,6 +85,8 @@ class NonlinearSolver( BaseModule ):
     print('=================================')
     print(' Load step %i' % globdat.cycle)
     print('=================================')
+    print('  loadFactor       : ',globdat.lam)
+    print('  incr. loadFactor : ',globdat.dlam)
     print('  NR iter : L2-norm residual')
      
     globdat.iiter = 0 
@@ -84,7 +95,7 @@ class NonlinearSolver( BaseModule ):
     
     error = 1.
 
-    globdat.dofs.setConstrainFactor( 1.0 )
+    globdat.dofs.setConstrainFactor( globdat.dlam )
     
     while error > self.tol:
 

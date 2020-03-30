@@ -43,7 +43,10 @@ ContElem =
 solver =
 {
   type     = "NonlinearSolver";
-  maxCycle = 20;
+  maxCycle = 40;
+
+  dtime    = 1.0;
+  loadFunc = "t*(t<20.)+(40.-t)*(t>=20.)";
 };
 
 outputModules = ["vtk","graph"];
