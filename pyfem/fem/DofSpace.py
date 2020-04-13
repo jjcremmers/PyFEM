@@ -23,12 +23,14 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from numpy import array, dot, zeros
 import scipy.linalg
 from scipy.sparse import coo_matrix
 from scipy.sparse.linalg import spsolve
 from scipy.sparse.linalg import eigsh
 from pyfem.util.itemList import itemList
+from pyfem.util.fileParser import readNodeTable
 
 class DofSpace:
 
@@ -58,8 +60,9 @@ class DofSpace:
     
   def readFromFile( self, fname ):
     
-    print("  Reading constraints ..........")
+    print("  Reading constraints ..........\n")
 
+    '''   
     fin = open( fname )
 
     while True:
@@ -82,8 +85,12 @@ class DofSpace:
               
               dofType = c[0]
               nodeID  = eval(c[1].split(']')[0])
-              
-              self.constrain( nodeID , dofType , eval(b[1]))
+    '''
+
+    nodeTable = readNodeTable( fname , "NodeConstraints" )
+
+    for data in nodeTable[0].data:
+      self.constrain( data[1] , data[0] , data[2] )
               
   def constrain ( self, nodeID, dofTypes , val = 0. ):
 
