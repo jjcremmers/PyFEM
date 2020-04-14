@@ -46,6 +46,7 @@ class NonlinearSolver( BaseModule ):
     self.maxLam   = 1.0e20
     self.dtime    = 0.1
     self.loadFunc = "t"
+    self.loadCases= []
 
     BaseModule.__init__( self , props )
 
@@ -55,6 +56,8 @@ class NonlinearSolver( BaseModule ):
     globdat.lam = 0.0
 
     self.loadfunc = eval ( "lambda t : " + str(self.loadFunc) )
+
+    print(self.loadCases)
  
     print("\n  Starting nonlinear solver ....\n")
 
@@ -66,36 +69,22 @@ class NonlinearSolver( BaseModule ):
 
     globdat.cycle += 1
     globdat.time  += self.dtime
-
-    globdat.lam  = self.loadfunc( globdat.time )
-    lam0         = self.loadfunc( globdat.time - self.dtime )
-
-    globdat.dlam = globdat.lam - lam0
     
     dofCount = len(globdat.dofs)
 
     a     = globdat.state
     Da    = globdat.Dstate
-    fhat  = globdat.fhat
 
     Da[:] = zeros( dofCount )
     fint  = zeros( dofCount ) 
-    fext  = globdat.lam*fhat
 
-    print('=================================')
-    print(' Load step %i' % globdat.cycle)
-    print('=================================')
-    print('  loadFactor       : ',globdat.lam)
-    print('  incr. loadFactor : ',globdat.dlam)
-    print('  NR iter : L2-norm residual')
-     
     globdat.iiter = 0 
 
     K,fint = assembleTangentStiffness( props, globdat )
     
     error = 1.
 
-    globdat.dofs.setConstrainFactor( globdat.dlam )
+    fext = self.setLoadAndConstraints( globdat )
     
     while error > self.tol:
 
@@ -138,4 +127,42 @@ class NonlinearSolver( BaseModule ):
     
     if globdat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
+
+  def setLoadAndConstraints( self , globdat ):
+
+    print('=================================')
+    print(' Load step %i' % globdat.cycle)
+    print('=================================')
+
+    globdat.lam  = self.loadfunc( globdat.time )
+    lam0         = self.loadfunc( globdat.time - self.dtime )
+
+    globdat.dlam = globdat.lam - lam0
+    globdat.dofs.setConstrainFactor( globdat.dlam )
+
+    print('---- MAIN LOAD ------')
+    print('  loadFactor       : ',globdat.lam)
+    print('  incr. loadFactor : ',globdat.dlam)
+
+    for loadCase in self.loadCases:
+      loadProps = getattr( self.myProps, loadCase )
+      
+      loadfunc = eval ( "lambda t : " + str(loadProps.loadFunc) )
+      lam  = loadfunc( globdat.time )
+      lam0 = loadfunc( globdat.time - self.dtime )
+      dlam = lam - lam0
+      globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
+
+      print('---- ',loadCase,' ------')
+      print('  loadFactor       : ',lam)
+      print('  incr. loadFactor : ',dlam)
+
+    fhat  = globdat.fhat
+    
+    return globdat.lam*fhat
+
+
+
+    print('  NR iter : L2-norm residual')
+
       

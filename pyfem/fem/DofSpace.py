@@ -45,9 +45,12 @@ class DofSpace:
     for ind,ID in enumerate(elements.nodes):
       self.IDmap.add( ID, ind )
 
+    self.allConstrainedDofs = []
     self.constrainedDofs = []
     self.constrainedVals = []
-    self.constrainedFac  = 1.
+    self.constrainedFac  = []
+    self.constrainedName = []
+
 
   def __str__ ( self ):
     return str(self.dofs)
@@ -55,61 +58,54 @@ class DofSpace:
   def __len__ ( self ):
     return len(self.dofs.flatten())
 
-  def setConstrainFactor( self , fac ):
-    self.constrainedFac = fac
+  def setConstrainFactor( self , fac , loadCase = "None" ):
+
+    if loadCase == "None":
+      self.constrainedFac[0] = fac
+    else:
+      self.constrainedFac[self.constrainedName.index(loadCase)] = fac
     
   def readFromFile( self, fname ):
     
     print("  Reading constraints ..........\n")
 
-    '''   
-    fin = open( fname )
-
-    while True:
-      line = fin.readline()  
-  
-      if line.startswith('<NodeConstraints>') == True:
-        while True:
-          line = fin.readline()  
-
-          if line.startswith('</NodeConstraints>') == True:
-            return
-        
-          a = line.strip().split(';')
-      
-          if len(a) == 2:
-            b = a[0].split('=')
-        
-            if len(b) == 2:
-              c = b[0].split('[')
-              
-              dofType = c[0]
-              nodeID  = eval(c[1].split(']')[0])
-    '''
-
     nodeTable = readNodeTable( fname , "NodeConstraints" )
-
-    for data in nodeTable[0].data:
-      self.constrain( data[1] , data[0] , data[2] )
+   
+    for nodeTab in nodeTable:
+      self.constrain( nodeTab )
               
-  def constrain ( self, nodeID, dofTypes , val = 0. ):
+  def constrain ( self, nodeTable ):
 
-    if not nodeID in self.nodes:
-      raise RuntimeError('Node ID ' + str(nodeID) + ' does not exist')
+    cDofs = []
+    cVals = []
 
-    ind = self.IDmap.get( nodeID )
+    for item in nodeTable.data:
+      nodeID   = item[1]
+      dofTypes = item[0]
+      val      = item[2]
 
-    if isinstance( dofTypes, str ):
-      dofTypes = [dofTypes]
+      if not nodeID in self.nodes:
+        raise RuntimeError('Node ID ' + str(nodeID) + ' does not exist')
 
-    #Check if the dofTypes exist
-    for dofType in dofTypes:
-      if dofType not in self.dofTypes:
-        raise RuntimeError('DOF type "' + dofType + '" does not exist')
+      ind = self.IDmap.get( nodeID )
+
+      if isinstance( dofTypes, str ):
+        dofTypes = [dofTypes]
+
+      #Check if the dofTypes exist
+      for dofType in dofTypes:
+        if dofType not in self.dofTypes:
+          raise RuntimeError('DOF type "' + dofType + '" does not exist')
       
-    for dofType in dofTypes:    
-      self.constrainedDofs.append( self.dofs[ind,self.dofTypes.index(dofType)] )
-      self.constrainedVals.append( val )
+      for dofType in dofTypes:  
+        cDofs.append  ( self.dofs[ind,self.dofTypes.index(dofType)] )
+        cVals.append  ( val )
+
+    self.allConstrainedDofs += cDofs
+    self.constrainedDofs.append( cDofs )
+    self.constrainedVals.append( cVals )
+    self.constrainedFac .append( 1.0 )
+    self.constrainedName.append( nodeTable.subLabel )
 
   def getForType ( self, nodeIDs, dofType ):
     return self.dofs[self.IDmap.get( nodeIDs ),self.dofTypes.index(dofType)]
@@ -119,7 +115,7 @@ class DofSpace:
 
   def getConstraintsMatrix ( self ):
 
-    n_constrained = len( self.constrainedDofs )
+    n_constrained = len( self.allConstrainedDofs )
     n             = len( self )
 
     row = list(range(n))
@@ -130,7 +126,7 @@ class DofSpace:
     
     for i in range(n):
       
-      if i in self.constrainedDofs:
+      if i in self.allConstrainedDofs:
         continue
 
       col[i]=j
@@ -146,7 +142,9 @@ class DofSpace:
       C = self.getConstraintsMatrix()
 
       a = zeros(len(self))
-      a[self.constrainedDofs] = self.constrainedFac * array(self.constrainedVals)
+
+      for i in range(3):
+        a[self.constrainedDofs[i]] = self.constrainedFac[i] * array(self.constrainedVals[i])
 
       A_constrained = C.transpose() * (A * C )
       b_constrained = C.transpose()* ( b - A * a )
@@ -155,12 +153,13 @@ class DofSpace:
 
       x = C * x_constrained
 
-      x[self.constrainedDofs] = self.constrainedFac * array(self.constrainedVals)
+      for i in range(3):   
+        x[self.constrainedDofs[i]] = self.constrainedFac[i] * array(self.constrainedVals[i])
     
     elif len(A.shape) == 1:
       x = b / A
 
-      x[self.constrainedDofs] = self.constrainedFac * array(self.constrainedVals)
+      x[self.constrainedDofs[0]] = self.constrainedFac[0] * array(self.constrainedVals[0])
    
     return x
     

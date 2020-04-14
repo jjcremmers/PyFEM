@@ -23,20 +23,70 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
-class BaseModule:
 
-  def __init__ ( self, props ):
+input = "biaxial_test.dat";
 
-    if hasattr(props,'currentModule') and hasattr(props,props.currentModule):
-      currentModule = props.currentModule
-    else:
-      currentModule = self.__class__.__name__
-      
-      if currentModule.endswith("olver") is "olver":
-        currentModule = "solver"
-      
-    if hasattr(props,currentModule):
-      self.myProps = getattr(props,currentModule)
+ContElem =
+{
+  type = "SmallStrainContinuum";
 
-      for name,val in self.myProps:
-        setattr( self, name, val )
+  material =
+  {
+    type = "IsotropicKinematicHardening";
+    E    = 1.e6;
+    nu   = 0.25;
+    syield = 10000.;
+    hard  = 1.e4;
+  };
+};
+
+solver =
+{
+  type     = "NonlinearSolver";
+  maxCycle = 40;
+
+  dtime    = 1.0;
+
+  loadCases = ["loadCase1","loadCase2"];
+
+  loadCase1 =
+  {
+    nodeTable = "nodes1";
+    loadFunc  = "t*(t<20.)+20.0*(t>=20.)";
+  };
+
+  loadCase2 =
+  {
+    nodeTable = "nodes2";
+    loadFunc  = "(t-20.0)*(t>=20.)";
+  };
+};
+
+outputModules = ["vtk","graph"];
+
+vtk =
+{
+  type = "MeshWriter";
+};
+
+graph =
+{
+  type = "GraphWriter";
+  onScreen = true;
+
+  columns = [ "disp" , "load" ];
+
+  disp =
+  {
+    type = "state";
+    node = 4;
+    dof  = "v";
+  };
+
+  load =
+  {
+    type = "fint";
+    node = 4;
+    dof  = "v";
+  };
+};
