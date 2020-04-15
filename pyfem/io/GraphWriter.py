@@ -96,7 +96,7 @@ class GraphWriter(BaseModule):
             data = data * col.factor
 
             a.append(data)
-            clean_line = clean_output_line(str(data))
+            clean_line = self._clean_output_line(str(data))
             self.outfile.write(clean_line+' ',)
             self.outfile.flush()
 
@@ -112,7 +112,7 @@ class GraphWriter(BaseModule):
         if not globdat.active:
             self.outfile.close
 
-    def clean_outputline(line):
+    def _clean_output_line(self, line):
         return str(line) \
         .replace('   ', ' ') \
         .replace('  ', ' ') \
