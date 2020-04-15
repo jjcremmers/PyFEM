@@ -8,5 +8,6 @@ R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel<br>
 
 ![alt text](https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg)
 
-The code is open source and intended for educational and scientific purposes only. If you use PyFEM in your research, the 
+The code is open source and intended for educational and scientific purposes only.
+If you use PyFEM in your research, the 
 developers would be grateful if you could cite the book in your work.
