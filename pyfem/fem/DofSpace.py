@@ -58,10 +58,11 @@ class DofSpace:
   def __len__ ( self ):
     return len(self.dofs.flatten())
 
-  def setConstrainFactor( self , fac , loadCase = "None" ):
+  def setConstrainFactor( self , fac , loadCase = "All_" ):
 
-    if loadCase == "None":
-      self.constrainedFac[0] = fac
+    if loadCase == "All_":
+      for i in range(len(self.constrainedDofs)):
+        self.constrainedFac[i] = fac
     else:
       self.constrainedFac[self.constrainedName.index(loadCase)] = fac
     
@@ -143,7 +144,7 @@ class DofSpace:
 
       a = zeros(len(self))
 
-      for i in range(3):
+      for i in range(len(self.constrainedDofs)):
         a[self.constrainedDofs[i]] = self.constrainedFac[i] * array(self.constrainedVals[i])
 
       A_constrained = C.transpose() * (A * C )
@@ -153,7 +154,7 @@ class DofSpace:
 
       x = C * x_constrained
 
-      for i in range(3):   
+      for i in range(len(self.constrainedDofs)):   
         x[self.constrainedDofs[i]] = self.constrainedFac[i] * array(self.constrainedVals[i])
     
     elif len(A.shape) == 1:

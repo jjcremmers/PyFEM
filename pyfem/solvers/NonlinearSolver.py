@@ -59,7 +59,7 @@ class NonlinearSolver( BaseModule ):
 
     print(self.loadCases)
  
-    print("\n  Starting nonlinear solver ....\n")
+    print("\n  Starting nonlinear solver .........\n")
 
 #------------------------------------------------------------------------------
 #
@@ -85,6 +85,8 @@ class NonlinearSolver( BaseModule ):
     error = 1.
 
     fext = self.setLoadAndConstraints( globdat )
+
+    print('\n  NR iter  : L2-norm residual')
     
     while error > self.tol:
 
@@ -110,7 +112,7 @@ class NonlinearSolver( BaseModule ):
       else:
         error = globdat.dofs.norm( fext-fint ) / norm
 
-      print('  Iter', globdat.iiter, ':', error)
+      print('    Iteration %4i   : %6.4e'%(globdat.iiter,error) )
 
       globdat.dofs.setConstrainFactor( 0.0 )
 
@@ -128,21 +130,22 @@ class NonlinearSolver( BaseModule ):
     if globdat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
 
+    print('\n')
+
   def setLoadAndConstraints( self , globdat ):
 
-    print('=================================')
-    print(' Load step %i' % globdat.cycle)
-    print('=================================')
-
+    print(40*('='),"\n    Load step %i"%globdat.cycle)
+    print(40*('='),"\n")
+    
     globdat.lam  = self.loadfunc( globdat.time )
     lam0         = self.loadfunc( globdat.time - self.dtime )
 
     globdat.dlam = globdat.lam - lam0
     globdat.dofs.setConstrainFactor( globdat.dlam )
 
-    print('---- MAIN LOAD ------')
-    print('  loadFactor       : ',globdat.lam)
-    print('  incr. loadFactor : ',globdat.dlam)
+    print('  ---- main load -------------------------')
+    print('    loadFactor       : %4.2f'%globdat.lam)
+    print('    incr. loadFactor : %4.2f'%globdat.dlam)
 
     for loadCase in self.loadCases:
       loadProps = getattr( self.myProps, loadCase )
@@ -153,16 +156,12 @@ class NonlinearSolver( BaseModule ):
       dlam = lam - lam0
       globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
 
-      print('---- ',loadCase,' ------')
-      print('  loadFactor       : ',lam)
-      print('  incr. loadFactor : ',dlam)
+      print('  ---- ',loadCase,' ---------------------')
+      print('    loadFactor       : %4.2f'%lam)
+      print('    incr. loadFactor : %4.2f'%dlam)
 
     fhat  = globdat.fhat
     
     return globdat.lam*fhat
-
-
-
-    print('  NR iter : L2-norm residual')
 
       
