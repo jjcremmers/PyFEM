@@ -84,9 +84,7 @@ class FiniteStrainContinuum( Element ):
       elemdat.stiff += dot ( Bnl.transpose() , dot( T , Bnl ) ) * iData.weight
       elemdat.fint  += dot ( B.transpose() , sigma ) * iData.weight
       
-      elemdat.outdata += outer( ones(len(elemdat.nodes)), sigma )
-      
-    elemdat.outdata *= 1.0 / len(sData)  
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
 #------------------------------------------------------------------------------
 #
@@ -109,9 +107,8 @@ class FiniteStrainContinuum( Element ):
       sigma,tang = self.mat.getStress( self.kin )
        
       elemdat.fint    += dot ( B.transpose() , sigma ) * iData.weight
-      elemdat.outdata += outer( ones(len(elemdat.nodes)), sigma )
-      
-    elemdat.outdata *= 1.0 / len(sData)  
+
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() ) 
 
 #------------------------------------------------------------------------------
 #

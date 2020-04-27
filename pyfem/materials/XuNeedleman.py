@@ -41,6 +41,9 @@ class XuNeedleman( BaseMaterial ):
     self.vnmax = self.Gc/(2.71828183*self.Tult);
     self.vtmax = self.q*self.Gc/(1.16580058*self.Tult);
 
+    #Set the labels for the output data in this material model
+    self.outLabels = [ "Tn" , "Ts" ]
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -89,5 +92,7 @@ class XuNeedleman( BaseMaterial ):
     tang[0,1] = 2.0*t46
     tang[1,0] = 2.0*t46
     tang[1,1] = 2.0*t41*t16*t19*t21-4.0*t41*t16*t17/t52*t21
+
+    self.outData = stress
 
     return stress,tang

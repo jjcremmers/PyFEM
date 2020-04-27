@@ -39,6 +39,8 @@ class PowerLawModeI( BaseMaterial ):
     self.deltan2 = self.deltan *self.deltan
     self.deltan3 = self.deltan2*self.deltan
 
+    self.outLabels = [ "Tn" , "Ts" ]
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -52,5 +54,7 @@ class PowerLawModeI( BaseMaterial ):
 
    stress[0] = self.Gc/self.deltan2*exp(-jump/self.deltan)*jump
    tang[0,0] = self.Gc/self.deltan2*exp(-jump/self.deltan)*(1.0-jump/self.deltan)
+
+   self.outData = stress
 
    return stress,tang

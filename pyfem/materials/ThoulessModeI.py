@@ -40,6 +40,9 @@ class ThoulessModeI( BaseMaterial ):
     self.d2    = self.d2d3 * self.d3
     self.dummy = self.Tult / self.d1
 
+    #Set the labels for the output data in this material model
+    self.outLabels = [ "Tn" , "Ts" ]
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -61,5 +64,7 @@ class ThoulessModeI( BaseMaterial ):
     else:	
       stress[0] = 0.0
       tang[0,0] = 0.0
+
+    self.outData = trac
 
     return stress,tang

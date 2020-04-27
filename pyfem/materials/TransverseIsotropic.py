@@ -54,9 +54,14 @@ class TransverseIsotropic( BaseMaterial ):
     self.H[4,4] = self.G12;
     self.H[5,5] = self.G12;
 
+    #Set the labels for the output data in this material model
+    self.outLabels = [ "S11" , "S22" , "S33" , "S23" , "S13" , "S12" ]
+
   def getStress( self, deformation ):
 
     sigma = dot( self.H, deformation.strain )
+
+    self.outData = sigma
 
     return sigma, self.H
 

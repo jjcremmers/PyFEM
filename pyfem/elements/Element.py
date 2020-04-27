@@ -78,28 +78,21 @@ class Element ( list ):
 #
 #------------------------------------------------------------------------------
 
-  def appendNodalOutput ( self , outputNames , globdat , outmat , outw = None ):
+  def appendNodalOutput( self , labels , data , weight = 1.0 ):
 
-    if outw == None:
-      outw = ones( outmat.shape[0] )
+    for i,name in enumerate(labels):
+      if not hasattr( self.globdat , name ):
+        self.globdat.outputNames.append( name )
 
-    for i,name in enumerate(outputNames):
-      if not hasattr( globdat , name ):
-        globdat.outputNames.append( name )
+        setattr( self.globdat, name             , zeros( len(self.globdat.nodes) ) )
+        setattr( self.globdat, name + 'Weights' , zeros( len(self.globdat.nodes) ) )
 
-        setattr( globdat, name             , zeros( len(globdat.nodes) ) )
-        setattr( globdat, name + 'Weights' , zeros( len(globdat.nodes) ) )
+      outMat     = getattr( self.globdat , name )
+      outWeights = getattr( self.globdat , name + 'Weights' )
 
-      outMat     = getattr( globdat , name )
-      outWeights = getattr( globdat , name + 'Weights' )
-
-      #if outmat.shape[1] != outMat.shape[1] or outmat.shape[0] != len(self):
-      #  raise RuntimeError("Appended output vector has incorrect size.")
-
-      indi = globdat.nodes.getIndices( self )
-
-      outMat[ indi ]     += outmat[:,i]
-      outWeights[ indi ] += outw
+      for idx in self.globdat.nodes.getIndices( self ):
+        outMat[ idx ]     += data[i]
+        outWeights[ idx ] += weight
 
 #------------------------------------------------------------------------------
 #

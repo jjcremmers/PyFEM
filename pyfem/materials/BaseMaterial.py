@@ -35,6 +35,9 @@ class BaseMaterial:
 
     self.oldHistory = {}
     self.newHistory = {}
+
+    self.outLabels = []
+
     self.iIter = -1
 
   def setIter( self, iIter ):

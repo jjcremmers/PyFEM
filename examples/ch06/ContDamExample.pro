@@ -55,6 +55,7 @@ solver =
 
   fixedStep = true;
   maxLam    = 100.0; 
+  dtime     = 1.0;
 };
 
 outputModules = ["graph","mesh"];

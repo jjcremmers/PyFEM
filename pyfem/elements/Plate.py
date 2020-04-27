@@ -215,9 +215,8 @@ class Plate ( Element ):
       for i,pp in enumerate(self.postProcess):
         eps   = eps0 + pp.z*kappa
         sigma = stressTransformation( dot(pp.Qbar,eps) , pp.theta )
-        elemdat.outdata[:,i*3:i*3+3] += outer( ones(4), sigma )
-      
-    elemdat.outdata *= 1.0 / len(sData)  
+
+        self.appendNodalOutput( elemdat.outdata[:,i*3:i*3+3] , sigma )
 
 #------------------------------------------------------------------------------
 #

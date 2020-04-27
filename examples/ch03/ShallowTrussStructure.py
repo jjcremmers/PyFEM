@@ -22,7 +22,7 @@ iterMax = 5
 # Store data in properties   #
 ##############################
 
-from pyfem.utils.dataStructures import Properties
+from pyfem.util.dataStructures import Properties
 
 props = Properties()
 props.TrussElem  = Properties( { 'type' : 'Truss'  , 'E' : 5e6 , 'Area' : 1.0 } )
@@ -65,7 +65,7 @@ dofs.constrain( 3, ['u','v'] )
 # Store in global data dictionary #
 ###################################
 
-from pyfem.utils.dataStructures import GlobalData
+from pyfem.util.dataStructures import GlobalData
 
 globdat = GlobalData( nodes, elements, dofs )
 
@@ -95,10 +95,10 @@ output = [ [0.,0.] ]
 #Load step iterator
 for i in range(N):
   
-  print '================================='
-  print ' Load step %i' % i
-  print '================================='
-  print '  NR iter : L2-norm residual'
+  print('=================================')
+  print(' Load step %i' % i)
+  print('=================================')
+  print('  NR iter : L2-norm residual')
 
   #############################################  
   # Step 2:                                   #
@@ -155,7 +155,7 @@ for i in range(N):
     #Increment the Newton-Raphson iteration counter
     iiter += 1
 
-    print '  Iter', iiter, ':', error
+    print('  Iter', iiter, ':', error)
 
     if iiter == iterMax:
       raise RuntimeError('Newton-Raphson iterations did not converge!')
@@ -170,7 +170,7 @@ for i in range(N):
   #Store the output
   output.append( [ a[loadDof], fint[loadDof] ] )
 
-  print '================================='
+  print('=================================')
   
 
 ###############################

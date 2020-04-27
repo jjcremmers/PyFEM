@@ -46,11 +46,14 @@ class PlaneStress( BaseMaterial ):
     self.H[1,1] = self.H[0,0]
     self.H[2,2] = self.E/(2.0*(1.0+self.nu))
 
+    #..
+    self.outLabels = [ "S11" , "S22" , "S12" ]
+
   def getStress( self, deformation ):
 
     sigma = dot( self.H, deformation.strain )
 
-    self.setHistoryParameter('kappa',sigma[0])
+    self.outData = sigma
 
     return sigma, self.H
 

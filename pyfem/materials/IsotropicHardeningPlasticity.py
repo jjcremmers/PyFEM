@@ -65,6 +65,10 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
 
     self.commitHistory()
 
+    #Set the labels for the output data in this material model
+    self.outLabels = [ "S11" , "S22" , "S33" , "S23" , "S13" , "S12" , "Epl" ]
+    self.outData   = zeros(7)
+
 #------------------------------------------------------------------------------
 #  pre:  kinematics object containing current strain (kinemtics.strain)
 #  post: stress vector and tangent matrix
@@ -152,6 +156,9 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
     self.setHistoryParameter( 'eqplas', eqplas )
 
     # Store output eplas
+
+    self.outData[:6] = sigma
+    self.outData[6]  = eqplas
 
     return sigma , tang           
  

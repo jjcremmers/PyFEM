@@ -64,9 +64,7 @@ class SmallStrainContinuum3D( Element ):
       elemdat.stiff += dot ( b.transpose() , dot ( tang , b ) ) * iData.weight
       elemdat.fint  += dot ( b.transpose() , sigma ) * iData.weight
 
-      elemdat.outdata += outer( ones(len(elemdat.nodes)), sigma )
-    
-    elemdat.outdata *= 1.0 / len(sData) 
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
   
      
@@ -91,9 +89,8 @@ class SmallStrainContinuum3D( Element ):
       sigma,tang = self.mat.getStress( kin )
 
       elemdat.fint    += dot ( b.transpose() , sigma ) * iData.weight
-      elemdat.outdata += outer( ones(len(self)), sigma )
-      
-    elemdat.outdata *= 1.0 / len(sData)  
+
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
 #----------------------------------------------------------------------
     

@@ -55,5 +55,14 @@ class MaterialManager ( list ):
      
     return self.mat.getStress( kinematic )
 
+  def outLabels( self ):
+    return self.mat.outLabels
+
+  def outData( self ):
+    return self.mat.outData
+
+  def getHistory( self , label ):
+    return self.mat.getHistoryParameter( label )
+
   def commitHistory( self ):
     self.mat.commitHistory()

@@ -60,6 +60,9 @@ class PlaneStrainDamage( BaseMaterial ):
     self.setHistoryParameter( 'kappa', 0. )
     self.commitHistory()
 
+    self.outLabels = [ "S11" , "S22" , "S12" , "damage" ]
+    self.outData   = zeros(4)
+
 #------------------------------------------------------------------------------
 #  pre:  kinematics object containing current strain (kinemtics.strain)
 #  post: stress vector and tangent matrix
@@ -88,6 +91,9 @@ class PlaneStrainDamage( BaseMaterial ):
 
     if progDam:
       tang += -domegadkappa * outer( effStress , detadstrain )
+
+    self.outData[0:3] = stress
+    self.outData[3]   = omega
 
     return stress , tang           
  

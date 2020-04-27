@@ -82,6 +82,8 @@ def assembleArray ( props, globdat, rank, action ):
       elemdat.nodes    = el_nodes
       elemdat.props    = el_props
       elemdat.iElm     = iElm 
+
+      element.globdat  = globdat
       
       if hasattr( element , "matProps" ):
         elemdat.matprops = element.matProps
@@ -92,8 +94,8 @@ def assembleArray ( props, globdat, rank, action ):
       #Get the element contribution by calling the specified action
       getattr( element, action )( elemdat )
 
-      for label in elemdat.outlabel:	
-        element.appendNodalOutput( label , globdat , elemdat.outdata )
+      #for label in elemdat.outlabel:	
+      #  element.appendNodalOutput( label , globdat , elemdat.outdata )
 
       #Assemble in the global array
       if rank == 1:

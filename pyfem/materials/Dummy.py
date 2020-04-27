@@ -35,9 +35,13 @@ class Dummy( BaseMaterial ):
 
     self.H = self.D*eye(2)
 
+    self.outLabels = [ "Tn" , "Ts" ]
+
   def getStress( self, deformation ):
 
     sigma = dot( self.H, deformation.strain )
+
+    self.outData = sigma
 
     return sigma, self.H
 

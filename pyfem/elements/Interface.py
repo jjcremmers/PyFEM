@@ -82,7 +82,7 @@ class Interface( Element ):
       elemdat.stiff += dot ( B.transpose() , dot ( tang , B ) ) * iData.weight
       elemdat.fint  += dot ( B.transpose() , sigma ) * iData.weight
       
-      elemdat.outdata += outer( self.m[i:i+4], hstack([sigma,kin.strain]) )
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
     
 #------------------------------------------------------------------------------
 #
@@ -107,7 +107,7 @@ class Interface( Element ):
      
       elemdat.fint  += dot ( B.transpose() , sigma ) * iData.weight
       
-      elemdat.outdata += outer( self.m[i:i+4], hstack([sigma,kin.strain]) )
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
 
 #------------------------------------------------------------------------------
