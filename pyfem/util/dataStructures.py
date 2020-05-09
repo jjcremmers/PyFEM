@@ -24,6 +24,9 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from numpy import zeros
+from pyfem.util.logger import getLogger
+
+logger = getLogger()
 
 class Properties:
   
@@ -84,7 +87,7 @@ class GlobalData ( Properties ):
 
   def readFromFile( self , fname ):
 
-    print("  Reading external forces ......")
+    logger.info("Reading external forces ......")
 
     fin = open( fname )
   

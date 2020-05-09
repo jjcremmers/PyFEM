@@ -24,6 +24,9 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from pyfem.util.BaseModule import BaseModule
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -45,7 +48,7 @@ class MeshWriter ( BaseModule ):
     if not globdat.cycle%self.interval == 0:
       return
 
-    print("  Writing mesh .................\n")
+    logger.info("Writing mesh .................")
 
     dim = globdat.state.ndim    
 

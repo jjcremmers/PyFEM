@@ -25,6 +25,9 @@
 ############################################################################
 import re
 from pyfem.util.itemList import itemList
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 class ElementSet( itemList ):
 
@@ -68,7 +71,7 @@ class ElementSet( itemList ):
     
   def readFromFile( self, fname ):
     
-    print("  Reading elements .............",end = '')
+    logger.info("Reading elements .............")
 
     fin = open( fname )
   
@@ -121,7 +124,7 @@ class ElementSet( itemList ):
           b = a[0].strip().split(' ')
       
           if eval(b[0]) < 2.0:
-            print("error")
+            logger.error("Error")
             sys.exit()
           
           break
@@ -139,7 +142,7 @@ class ElementSet( itemList ):
           if len(b) == 8 and type(eval(b[0])) == int:        
             self.add( eval(b[0]), "ContElem" , [eval(nodeID) for nodeID in b[5:]] )
       if line.startswith('$EndElements'):
-        print(len(self)," elements.")
+        logger.info(len(self)," elements.")
         return 
 
 #

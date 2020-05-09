@@ -27,6 +27,9 @@ from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness, commit
+from pyfem.util.logger import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -43,7 +46,7 @@ class LinearSolver ( BaseModule ):
 
     self.fext  = zeros( len(globdat.dofs) )  
  
-    print("\n  Starting linear solver .......\n")
+    logger.info("Starting linear solver .......")
  
 #------------------------------------------------------------------------------
 #

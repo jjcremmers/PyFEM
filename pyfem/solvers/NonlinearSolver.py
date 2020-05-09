@@ -31,6 +31,10 @@ from math import sin
 
 import sys
 
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
+
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -59,7 +63,7 @@ class NonlinearSolver( BaseModule ):
 
     print(self.loadCases)
  
-    print("\n  Starting nonlinear solver .........\n")
+    logger.info("Starting nonlinear solver .........")
 
 #------------------------------------------------------------------------------
 #
@@ -86,7 +90,7 @@ class NonlinearSolver( BaseModule ):
 
     fext = self.setLoadAndConstraints( globdat )
 
-    print('\n  NR iter  : L2-norm residual')
+    logger.info('  NR iter  : L2-norm residual')
     
     while error > self.tol:
 
@@ -112,7 +116,7 @@ class NonlinearSolver( BaseModule ):
       else:
         error = globdat.dofs.norm( fext-fint ) / norm
 
-      print('    Iteration %4i   : %6.4e'%(globdat.iiter,error) )
+      logger.info('    Iteration %4i   : %6.4e'%(globdat.iiter,error) )
 
       globdat.dofs.setConstrainFactor( 0.0 )
 
@@ -130,22 +134,19 @@ class NonlinearSolver( BaseModule ):
     if globdat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
 
-    print('\n')
-
   def setLoadAndConstraints( self , globdat ):
 
-    print(40*('='),"\n    Load step %i"%globdat.cycle)
-    print(40*('='),"\n")
-    
+    logger.info("    Load step %i"%globdat.cycle)
+ 
     globdat.lam  = self.loadfunc( globdat.time )
     lam0         = self.loadfunc( globdat.time - self.dtime )
 
     globdat.dlam = globdat.lam - lam0
     globdat.dofs.setConstrainFactor( globdat.dlam )
 
-    print('  ---- main load -------------------------')
-    print('    loadFactor       : %4.2f'%globdat.lam)
-    print('    incr. loadFactor : %4.2f'%globdat.dlam)
+    logger.info('  ---- main load --------------------\n-----')
+    logger.info('    loadFactor       : %4.2f'%globdat.lam)
+    logger.info('    incr. loadFactor : %4.2f'%globdat.dlam)
 
     for loadCase in self.loadCases:
       loadProps = getattr( self.myProps, loadCase )
@@ -156,9 +157,9 @@ class NonlinearSolver( BaseModule ):
       dlam = lam - lam0
       globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
 
-      print('  ---- ',loadCase,' ---------------------')
-      print('    loadFactor       : %4.2f'%lam)
-      print('    incr. loadFactor : %4.2f'%dlam)
+      logger.info('  ---- ',loadCase,' ---------------------')
+      logger.info('    loadFactor       : %4.2f'%lam)
+      logger.info('    incr. loadFactor : %4.2f'%dlam)
 
     fhat  = globdat.fhat
     

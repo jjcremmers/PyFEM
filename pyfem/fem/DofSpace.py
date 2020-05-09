@@ -31,6 +31,9 @@ from scipy.sparse.linalg import spsolve
 from scipy.sparse.linalg import eigsh
 from pyfem.util.itemList import itemList
 from pyfem.util.fileParser import readNodeTable
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 class DofSpace:
 
@@ -68,7 +71,7 @@ class DofSpace:
     
   def readFromFile( self, fname ):
     
-    print("  Reading constraints ..........\n")
+    logger.info("Reading constraints ..........")
 
     nodeTable = readNodeTable( fname , "NodeConstraints" )
    

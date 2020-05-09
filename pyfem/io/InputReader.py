@@ -31,6 +31,7 @@ from pyfem.fem.ElementSet import ElementSet
 from pyfem.fem.DofSpace   import DofSpace
 
 from pyfem.util.fileParser import fileParser
+from pyfem.util.logger     import setLogger
 
 import getopt,os.path
 
@@ -51,6 +52,10 @@ def InputRead( fname ):
 
   dataFileName = props.input
 
+  logger = setLogger( props )
+
+  logger.warning("IOTEST")
+
   nodes = NodeSet()
   nodes.readFromFile( dataFileName )
   
@@ -69,3 +74,4 @@ def InputRead( fname ):
   globdat.prefix = os.path.splitext(fname)[0]
 	
   return props,globdat
+

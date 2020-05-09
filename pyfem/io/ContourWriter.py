@@ -24,6 +24,9 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from pyfem.util.BaseModule import BaseModule
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 class ContourWriter( BaseModule ):
  
@@ -47,7 +50,7 @@ class ContourWriter( BaseModule ):
     if not globdat.cycle%self.interval == 0:
       return
      
-    print("  Writing contour file ......\n")
+    logger.info("Writing contour file ......\n")
  
     crd = globdat.nodes.getNodeCoords(self.nodes[0])
     outfile = open( self.prefix + '-contour-' + str(self.k) + '.out' ,'w' )

@@ -27,6 +27,10 @@ from numpy import array
 from pyfem.util.itemList import itemList
 import re,sys
 
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
+
 class NodeSet( itemList ):
 
   def __init__( self ):
@@ -37,7 +41,7 @@ class NodeSet( itemList ):
     
   def readFromFile( self, fname ):
     
-    print("  Reading nodes ................",end = '')
+    logger.info("Reading nodes ................")
 
     fin = open( fname )
   
@@ -72,7 +76,7 @@ class NodeSet( itemList ):
         ln = line.replace('\n','').replace('\t','').replace(' ','').replace('\r','').replace(';','')
         ln = ln.split('=',1)
         self.readGmshFile( ln[1][1:-1] )
-        print(len(self)," nodes.")
+        logger.info(len(self)," nodes.")
         return
 
   def readGmshFile( self, fname ):
