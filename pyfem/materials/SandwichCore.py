@@ -50,11 +50,16 @@ class SandwichCore( BaseMaterial ):
     self.H[2,2] = self.E3
     self.H[3,3] = self.factor * (self.G13 + self. G23)*0.5                               
     self.H[4,4] = self.G23                                  
-    self.H[5,5] = self.G13                                 
+    self.H[5,5] = self.G13    
+
+    #Set the labels for the output data in this material model
+    self.outLabels = [ "S11" , "S22" , "S33" , "S23" , "S13" , "S12" ]                             
 
   def getStress( self, deformation ):
 
     sigma = dot( self.H, deformation.eps )
+
+    self.outData = sigma
 
     return sigma, self.H
 
