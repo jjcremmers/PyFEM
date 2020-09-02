@@ -16,7 +16,7 @@
 #                                                                          #
 #  The code is open source and intended for educational and scientific     #
 #  purposes only. If you use PyFEM in your research, the developers would  #
-#  be grateful if you could cite the book.                                 #  
+#  be grateful if you could cite the book.                                 #
 #                                                                          #
 #  Disclaimer:                                                             #
 #  The authors reserve all rights but do not guarantee that the code is    #
@@ -25,87 +25,97 @@
 ############################################################################
 from pyfem.util.BaseModule import BaseModule
 from pylab import plot, show, xlabel, ylabel, draw, ion, figure, gcf
-from numpy import ndarray,zeros
+from numpy import ndarray, zeros
 
-class GraphWriter( BaseModule ):
 
-  def __init__ ( self, props , globdat ):
+class GraphWriter(BaseModule):
 
-    self.prefix    = globdat.prefix
-    self.extension = ".out"
-    self.onScreen  = False
+    def __init__(self, props, globdat):
 
-    BaseModule.__init__( self , props )
+        self.prefix = globdat.prefix
+        self.extension = ".out"
+        self.onScreen = False
 
-    if not hasattr( self , "filename" ):
-      self.filename  = self.prefix + self.extension
-    
-    self.columndata = []
+        BaseModule.__init__(self, props)
 
-    for i,col in enumerate ( self.columns ):
+        if not hasattr(self, "filename"):
+            self.filename = self.prefix + self.extension
 
-      colProps = getattr( self , col )
-      
-      if not hasattr( colProps , "factor" ):
-        colProps.factor = 1.0
+        self.columndata = []
 
-      self.columndata.append( colProps )
+        for i, col in enumerate(self.columns):
 
-    if self.onScreen and hasattr( globdat , "onScreen" ):
-      self.onScreen = False
-    else:
-      globdat.onScreen = True
+            colProps = getattr(self, col)
 
-      self.fig = gcf()
-      self.fig.show()
-      self.fig.canvas.draw()
+            if not hasattr(colProps, "factor"):
+                colProps.factor = 1.0
 
-    self.outfile = open( self.filename ,'w' )
+            self.columndata.append(colProps)
 
-    if self.onScreen:
-      self.output = []
-
-      xlabel(self.columns[0])
-      ylabel(self.columns[1])
-  
-      ion()
-
-    self.run( props , globdat ) 
-
-#------------------------------------------------------------------------------
-#
-#------------------------------------------------------------------------------
-
-  def run( self , props , globdat ):
-
-    a = []
-
-    for i,col in enumerate(self.columndata):
-      if col.type in globdat.outputNames:
-        data = globdat.getData( col.type , col.node )
-      elif hasattr(globdat,col.type):
-        b = getattr( globdat , col.type )
-        if type(b) is ndarray:
-          data = b[globdat.dofs.getForType(col.node,col.dof)]
+        if self.onScreen and hasattr(globdat, "onScreen"):
+            self.onScreen = False
         else:
-          data = b
-      else:
-        data = globdat.getData( col.type , col.node )
-        
-      data = data * col.factor
+            globdat.onScreen = True
 
-      a.append(data)
-   
-      self.outfile.write(str(data)+' ',)
-      self.outfile.flush()
+            self.fig = gcf()
+            self.fig.show()
+            self.fig.canvas.draw()
 
-    self.outfile.write('\n')
+        self.outfile = open(self.filename, 'w')
 
-    if self.onScreen: 
-      self.output.append( a )
+        if self.onScreen:
+            self.output = []
 
-      plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
-      self.fig.canvas.draw()
-    
-    if not globdat.active:
-      self.outfile.close
+            xlabel(self.columns[0])
+            ylabel(self.columns[1])
+
+            ion()
+
+        self.run(props, globdat)
+
+# ------------------------------------------------------------------------------
+#
+# ------------------------------------------------------------------------------
+
+    def run(self, props, globdat):
+
+        a = []
+
+        for i, col in enumerate(self.columndata):
+            if col.type in globdat.outputNames:
+                data = globdat.getData(col.type, col.node)
+            elif hasattr(globdat, col.type):
+                b = getattr(globdat, col.type)
+                if type(b) is ndarray:
+                    data = b[globdat.dofs.getForType(col.node, col.dof)]
+                else:
+                    data = b
+            else:
+                data = globdat.getData(col.type, col.node)
+
+            data = data * col.factor
+
+            a.append(data)
+            clean_line = self._clean_output_line(str(data))
+            self.outfile.write(clean_line+' ',)
+            self.outfile.flush()
+
+        self.outfile.write('\n')
+
+        if self.onScreen:
+            self.output.append(a)
+
+            plot([x[0] for x in self.output], [x[1]
+                                               for x in self.output], 'ro-')
+            self.fig.canvas.draw()
+
+        if not globdat.active:
+            self.outfile.close
+
+    def _clean_output_line(self, line):
+        return str(line) \
+        .replace('   ', ' ') \
+        .replace('  ', ' ') \
+        .replace(' ]', ']') \
+        .replace('[ ', '[') \
+        .replace('\n', '')
