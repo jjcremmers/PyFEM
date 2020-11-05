@@ -26,6 +26,7 @@
 import re
 from pyfem.util.itemList import itemList
 from pyfem.util.logger   import getLogger
+from pyfem.util.dataStructures import solverStatus
 
 logger = getLogger()
 
@@ -37,6 +38,7 @@ class ElementSet( itemList ):
     
     self.nodes  = nodes
     self.props  = props
+    self.solverStat = solverStatus()
     self.groups = {}
 
     ###############################
@@ -166,7 +168,8 @@ class ElementSet( itemList ):
     #cmdStr = 'from pyfem.elements.' + modelType + ' import ' + modelType + ' as element' 
     #exec(cmdStr)
  
-    modelProps.rank = self.nodes.rank
+    modelProps.rank       = self.nodes.rank
+    modelProps.solverStat = self.solverStat
 
     element = getattr(__import__('pyfem.elements.'+modelType , globals(), locals(), modelType , 0 ), modelType )
 

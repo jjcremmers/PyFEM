@@ -60,16 +60,17 @@ class DissipatedEnergySolver( BaseModule ):
 
   def run( self , props , globdat ):
 
-    globdat.cycle += 1
+    stat = globdat.solverStatus
+    
+    stat.increaseStep()
    
     a    = globdat.state
     Da   = globdat.Dstate
     fhat = globdat.fhat
  
-    self.printHeader( globdat.cycle )
+    self.printHeader( stat.cycle )
       
     error         = 1.
-    globdat.iiter = 0
     lam0          = globdat.lam
 
     K,fint = assembleTangentStiffness( props, globdat )  
@@ -114,16 +115,16 @@ class DissipatedEnergySolver( BaseModule ):
       # Increment the Newton-Raphson iteration counter
       # and print error
 
-      globdat.iiter += 1
+      stat.iiter += 1
 
-      self.printIteration( globdat.iiter , error )
+      self.printIteration( stat.iiter , error )
 
     # If converged, calculate the amount of energy that has been dissipated in the \
     # previous step.
 
     dissnrg = 0.5 * dot( ( lam0 * Da - (globdat.lam-lam0) * ( a - Da ) ),fhat )
 
-    self.printConverged( globdat.iiter , dissnrg )
+    self.printConverged( stat.iiter , dissnrg )
 
     Da[:]  = zeros( len(globdat.dofs) )
   
@@ -136,7 +137,7 @@ class DissipatedEnergySolver( BaseModule ):
         globdat.lam += self.Dlam
     else:
       self.Dlam = 0.
-      globdat.dtau *= pow(0.5,0.25*(globdat.iiter-self.optiter))
+      globdat.dtau *= pow(0.5,0.25*(stat.iiter-self.optiter))
       if globdat.dtau > self.maxdTau:
         globdat.dtau = self.maxdTau
     
@@ -144,7 +145,7 @@ class DissipatedEnergySolver( BaseModule ):
 
     globdat.fint = fint
 
-    if globdat.lam > self.maxLam or globdat.cycle > self.maxCycle:
+    if globdat.lam > self.maxLam or stat.cycle > self.maxCycle:
       globdat.active=False
 
 

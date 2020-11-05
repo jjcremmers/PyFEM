@@ -42,15 +42,17 @@ class Element ( list ):
   def __init__ ( self, elnodes , props ):
     list.__init__( self, elnodes )
 
-    self.history = {}
-    self.current = {}
+    self.history    = {}
+    self.current    = {}
+    self.solverStat = props.solverStat
 
     for name,val in props:
-      if name is "material":
+      if name == "material":
         self.matProps = val
+        self.matProps.solverStat = self.solverStat
         self.mat = MaterialManager( self.matProps )
-      else:
-        setattr( self, name, val )
+      
+      setattr( self, name, val )
 
 #------------------------------------------------------------------------------
 #

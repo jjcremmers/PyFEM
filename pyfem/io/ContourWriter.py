@@ -47,7 +47,7 @@ class ContourWriter( BaseModule ):
 	
   def run( self , props , globdat ):
 
-    if not globdat.cycle%self.interval == 0:
+    if not globdat.solverStatus.cycle%self.interval == 0:
       return
      
     logger.info("Writing contour file ......\n")

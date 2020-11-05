@@ -24,6 +24,7 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from pyfem.util.dataStructures import Properties
+import re
 
 def containsValue( db , val ):
 
@@ -49,8 +50,33 @@ def containsValue( db , val ):
       if db[key] == val:
         return True
   return False
+  
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
-def getType( a ):
+def isNodeDof( nodeDof ):
+
+  return type(nodeDof) == str and '[' in nodeDof
+
+#--------------------------------
+#
+#--------------------------------------
+
+def decodeNodeDof( nodeDof ):
+            
+  a       = nodeDof.split('[')
+  dofType = a[0]
+                       
+  nodeID  = eval(a[1].split(']')[0])
+  
+  return dofType,nodeID
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def cleanVariable( a ):
 
   if a == 'true':
     return True
@@ -61,16 +87,32 @@ def getType( a ):
       return eval(a)
     except:
       return a
+      
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def getType( a ):
+
+  return type(cleanVariable(a))
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
 def storeValue( db , key , a ):
 
   if type(a) == list:
     tmp=[]
     for v in a:
-      tmp.append(getType(v))
+      tmp.append(cleanVariable(v))
     db.store( key , tmp )
   else:
-    db.store( key , getType(a) )
+    db.store( key , cleanVariable(a) )
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
 def readItem( l1 , db ):
 
@@ -168,15 +210,25 @@ def deepFileParser( fileName , db ):
 
   return db
 
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
-class nodeTable : pass
+class nodeTable :
+
+  def __init__( self , label , subLabel = "None" ):
+  
+    self.label    = label   
+    self.subLabel = subLabel     
+    self.data     = []
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
 def readNodeTable( fileName , label ):
 
-  fin = open( fileName , 'r' )
+  fin        = open( fileName , 'r' )
 
   startLabel = str('<'+label)
   endLabel   = str('</'+label)
@@ -184,14 +236,9 @@ def readNodeTable( fileName , label ):
   output = []
 
   for line in fin:
- 
-    if line.startswith(startLabel) == True:
+    if line.strip().startswith(startLabel) == True:
 
-      nt = nodeTable()
-
-      nt.label    = label
-      nt.subLabel = "None"
-      nt.data     = []
+      nt = nodeTable( label )
 
       if 'name' in line:
         subLabel = line.split('=')[1].replace('\n','').replace('>','').replace(' ','').replace('\"','').replace('\'','')
@@ -199,22 +246,50 @@ def readNodeTable( fileName , label ):
 
       for line in fin:
 
-        if line.startswith(endLabel) == True:
+        if line.strip().startswith(endLabel) == True:
           output.append(nt)
           break
         
         a = line.strip().split(';')
-      
+        
         if len(a) == 2:
           b = a[0].split('=')
-        
+       
           if len(b) == 2:
-            c = b[0].split('[')
+            if not isNodeDof(b[0]):
+              raise RuntimeError(str(b[0]) + ' is not a NodeDof')
               
-            dofType = c[0]
-            nodeID  = eval(c[1].split(']')[0])
+            dofType,nodeID = decodeNodeDof(b[0])
+            
+            rhs = b[1]
+            
+            if getType(rhs) is float or getType(rhs) is int:                 
+              nt.data.append([ dofType,nodeID,float(eval(b[1])) ])
+            else:
+              rhs = rhs.replace(" ","").replace("+"," +").replace("-"," -")
+              c=rhs.split(" ")
              
-            nt.data.append([ dofType,nodeID,eval(b[1]) ])
-  
+              rhs = 0.0
+              
+              for s in c:
+                if getType(s) is float:
+                  rhs += cleanVariable(s)
+                else:
+                  c1 = s.split("*")
+                  factor = 1.0
+                  for c2 in c1:
+                    if getType(c2) is float:
+                      factor = cleanVariable(c2)
+                    else:
+                      if isNodeDof(c2):
+                        if '-' in c2:
+                          factor = -1.0;
+                        c2 = c2.replace("-","")
+                        
+                        slaveDofType,slaveNodeID = decodeNodeDof( c2 )
+                        
+              dt = [ dofType,nodeID,rhs,slaveDofType,slaveNodeID,factor ]
+              nt.data.append(dt)
+                                                    
   return output
 

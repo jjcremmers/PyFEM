@@ -39,9 +39,6 @@ class LinearSolver ( BaseModule ):
 
   def __init__( self , props , globdat ):
 
-    self.tol     = 1.0e-3
-    self.iterMax = 10 
-
     BaseModule.__init__( self , props )
 
     self.fext  = zeros( len(globdat.dofs) )  
@@ -54,7 +51,7 @@ class LinearSolver ( BaseModule ):
    
   def run( self , props , globdat ):
 
-    globdat.cycle += 1
+    globdat.solverStatus.increaseStep()
       
     K,fint = assembleTangentStiffness( props, globdat )
 

@@ -24,10 +24,40 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from numpy import zeros
-from pyfem.util.logger import getLogger
+from pyfem.util.logger     import getLogger
 
 logger = getLogger()
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def cleanVariable( a ):
+
+  if a == 'true':
+    return True
+  elif a == 'false':
+    return False
+  else:
+    try:
+      return eval(a)
+    except:
+      return a
+
+class solverStatus:
+
+  def __init__( self ):
+    self.cycle  = 0
+    self.iiter  = 0
+    self.time   = 0.0
+    self.dtime  = 0.0
+  
+  def increaseStep( self ):
+  
+    self.cycle += 1
+    self.time  += self.dtime
+    self.iiter =  0
+    
 class Properties:
   
   def __init__ ( self, dictionary = {} ):
@@ -63,7 +93,20 @@ class Properties:
     return iter(propsList)
 
   def store ( self , key , val ):
-    setattr( self , key , val )
+    
+    if not '.' in key:
+      setattr( self , key , val )
+    else:
+      kets = key.split(".")
+    
+      props = self
+      for y in kets[:-1]:
+        props = getattr(props,y)
+      
+      setattr(props,kets[-1],cleanVariable(val))
+#
+#
+#      
 
 class GlobalData ( Properties ):
   
@@ -78,10 +121,8 @@ class GlobalData ( Properties ):
 
     self.velo   = zeros( len( self.dofs ) )
     self.acce   = zeros( len( self.dofs ) )
-
-    self.cycle  = 0
-    self.iiter  = 0
-    self.time   = 0.0
+    
+    self.solverStatus = elements.solverStat
    
     self.outputNames = []
 

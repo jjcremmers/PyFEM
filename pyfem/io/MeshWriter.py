@@ -40,12 +40,16 @@ class MeshWriter ( BaseModule ):
     self.elementGroup = "All"
     self.k            = 0
     self.interval     = 1
+    self.extraFields  = []
 
     BaseModule.__init__( self , props )
+    
+    if type(self.extraFields) is str:
+      self.extraFields = [self.extraFields]
 
   def run( self , props , globdat ):
     
-    if not globdat.cycle%self.interval == 0:
+    if not globdat.solverStatus.cycle%self.interval == 0:
       return
 
     logger.info("Writing mesh .................")
@@ -86,6 +90,14 @@ class MeshWriter ( BaseModule ):
           vtkfile.write(' 0.\n')
  
     vtkfile.write('</DataArray>\n')
+    
+    for field in self.extraFields:
+      vtkfile.write('<DataArray type="Float64" Name="'+field+'" NumberOfComponents="1" format="ascii" >\n')
+	
+      for nodeID in list(globdat.nodes.keys()):      
+        vtkfile.write(str(state[globdat.dofs.getForType(nodeID,field)])+' ')
+  
+      vtkfile.write('</DataArray>\n')
   
     for name in globdat.outputNames:
       stress = globdat.getData( name , list(range(len(globdat.nodes))) )

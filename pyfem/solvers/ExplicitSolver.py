@@ -46,15 +46,18 @@ class ExplicitSolver ( BaseModule ):
     M,self.Mlumped = assembleMassMatrix( props , globdat )
  
     self.loadfunc = eval ( "lambda t : " + str(self.lam) )
+    
+    globdat.solverStatus.dtime = self.dtime
 
     print("\n  Starting explicit solver .....\n")
 
   def run( self , props , globdat ):
 
-    globdat.cycle += 1
-    globdat.time  += self.dtime
-
-    lam  = self.loadfunc( globdat.time )
+    stat = globdat.solverStatus
+    
+    stat.increaseStep()
+ 
+    lam  = self.loadfunc( stat.time )
     
     disp = globdat.state
     velo = globdat.velo
@@ -63,8 +66,8 @@ class ExplicitSolver ( BaseModule ):
     fint = globdat.fint
     fhat = globdat.fhat
     
-    velo += 0.5*self.dtime * acce;
-    disp += self.dtime * velo
+    velo += 0.5*stat.dtime * acce;
+    disp += stat.dtime * velo
     
     fint  = assembleInternalForce( props, globdat )
 
@@ -72,7 +75,7 @@ class ExplicitSolver ( BaseModule ):
 
     acce = globdat.dofs.solve( self.Mlumped , lam*fhat-fint )
        
-    velo += 0.5 * self.dtime * acce
+    velo += 0.5 * stat.dtime * acce
 
     globdat.acce[:] = acce[:]
   
@@ -80,7 +83,7 @@ class ExplicitSolver ( BaseModule ):
 
     self.printStep( globdat )
     
-    if globdat.cycle == self.maxCycle:
+    if stat.cycle == self.maxCycle:
       globdat.active = False
 
 #------------------------------------------------------------------------------
@@ -89,10 +92,12 @@ class ExplicitSolver ( BaseModule ):
 
   def printStep( self , globdat ):
  
-    if globdat.cycle%20 == 0 or globdat.cycle == 1:
+    stat = globdat.solverStatus
+    
+    if stat.cycle%20 == 0 or stat.cycle == 1:
       print("  Cycle     Time         Kin.Energy")
       print("  ---------------------------------------")
   
-    print(' %5i ' % globdat.cycle, end=' ')
-    print(' %10.3e ' % globdat.time, end=' ')  
+    print(' %5i ' % stat.cycle, end=' ')
+    print(' %10.3e ' % stat.time, end=' ')  
     print(' %10.3e ' % float(0.5*dot(globdat.velo,(self.Mlumped*globdat.velo))))

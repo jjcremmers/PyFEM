@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2020. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -68,8 +71,8 @@ def assembleArray ( props, globdat, rank, action ):
       el_coords = globdat.nodes.getNodeCoords( el_nodes )
 
       #Get the element degrees of freedom
-      el_dofs = globdat.dofs.get( el_nodes )
-
+      el_dofs = globdat.dofs.getForTypes( el_nodes , element.dofTypes )
+      
       #Get the element state
       el_a  = globdat.state [el_dofs]
       el_Da = globdat.Dstate[el_dofs]
@@ -92,7 +95,8 @@ def assembleArray ( props, globdat, rank, action ):
         element.mat.reset()
 
       #Get the element contribution by calling the specified action
-      getattr( element, action )( elemdat )
+      if hasattr( element , action ):
+        getattr( element, action )( elemdat )
 
       #for label in elemdat.outlabel:	
       #  element.appendNodalOutput( label , globdat , elemdat.outdata )
@@ -100,7 +104,7 @@ def assembleArray ( props, globdat, rank, action ):
       #Assemble in the global array
       if rank == 1:
         B[el_dofs] += elemdat.fint
-      elif rank == 2 and action is "getTangentStiffness":  
+      elif rank == 2 and action == "getTangentStiffness":  
         #A[ix_(el_dofs,el_dofs)] += elemdat.stiff
 
         row = append(row,repeat(el_dofs,len(el_dofs)))
@@ -111,7 +115,7 @@ def assembleArray ( props, globdat, rank, action ):
         val = append(val,elemdat.stiff.reshape(len(el_dofs)*len(el_dofs)))
 
         B[el_dofs] += elemdat.fint
-      elif rank == 2 and action is "getMassMatrix": 
+      elif rank == 2 and action == "getMassMatrix": 
 
         row = append(row,repeat(el_dofs,len(el_dofs)))
 

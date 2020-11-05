@@ -36,18 +36,22 @@ class TransverseIsotropic:
   
   def __init__( self , props ):
 
-    if type(props.E) is list:
-      if len(props.E) is 2:
-        self.E1 = props.E[0]
-        self.E2 = props.E[1]
-      elif len(E) is 1:
-        self.E1 = props.E[0]
-        self.E2 = props.E[0]
+    if hasattr( props , "E1" ):
+      self.E1 = props.E1
+      self.E2 = props.E2
+    elif hasattr( props , "E" ):
+      if type(props.E) is list:
+        if len(props.E) is 2:
+          self.E1 = props.E[0]
+          self.E2 = props.E[1]
+        elif len(E) is 1:
+          self.E1 = props.E[0]
+          self.E2 = props.E[0]
+        else:
+          print('error')
       else:
-        print('error')
-    else:
-      self.E1    = props.E
-      self.E2    = props.E
+        self.E1    = props.E
+        self.E2    = props.E
 
     if hasattr( props , "nu12" ):
       self.nu12  = props.nu12

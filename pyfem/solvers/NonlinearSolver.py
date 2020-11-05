@@ -44,11 +44,11 @@ class NonlinearSolver( BaseModule ):
   def __init__( self , props , globdat ):
 
     self.tol      = 1.0e-3
-    self.iterMax  = 10 
+    self.iterMax  = 10
 
     self.maxCycle = sys.maxsize
     self.maxLam   = 1.0e20
-    self.dtime    = 0.1
+    self.dtime    = 0.01
     self.loadFunc = "t"
     self.loadCases= []
 
@@ -58,6 +58,7 @@ class NonlinearSolver( BaseModule ):
       self.maxCycle = 5
 
     globdat.lam = 0.0
+    globdat.solverStatus.dtime = self.dtime
 
     self.loadfunc = eval ( "lambda t : " + str(self.loadFunc) )
 
@@ -71,21 +72,20 @@ class NonlinearSolver( BaseModule ):
 
   def run( self , props , globdat ):
 
-    globdat.cycle += 1
-    globdat.time  += self.dtime
+    stat = globdat.solverStatus
+    
+    stat.increaseStep()
     
     dofCount = len(globdat.dofs)
-
+    
     a     = globdat.state
     Da    = globdat.Dstate
 
     Da[:] = zeros( dofCount )
     fint  = zeros( dofCount ) 
 
-    globdat.iiter = 0 
-
     K,fint = assembleTangentStiffness( props, globdat )
-    
+        
     error = 1.
 
     fext = self.setLoadAndConstraints( globdat )
@@ -94,7 +94,7 @@ class NonlinearSolver( BaseModule ):
     
     while error > self.tol:
 
-      globdat.iiter += 1
+      stat.iiter += 1
 	      
       da = globdat.dofs.solve( K, fext - fint )
 
@@ -116,11 +116,11 @@ class NonlinearSolver( BaseModule ):
       else:
         error = globdat.dofs.norm( fext-fint ) / norm
 
-      logger.info('    Iteration %4i   : %6.4e'%(globdat.iiter,error) )
+      logger.info('    Iteration %4i   : %6.4e'%(stat.iiter,error) )
 
       globdat.dofs.setConstrainFactor( 0.0 )
 
-      if globdat.iiter == self.iterMax:
+      if stat.iiter == self.iterMax:
         raise RuntimeError('Newton-Raphson iterations did not converge!')
 
     # Converged
@@ -131,15 +131,15 @@ class NonlinearSolver( BaseModule ):
 
     globdat.fint = fint
     
-    if globdat.cycle == self.maxCycle or globdat.lam > self.maxLam:
+    if stat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
 
   def setLoadAndConstraints( self , globdat ):
 
-    logger.info("    Load step %i"%globdat.cycle)
+    logger.info("    Load step %i"%globdat.solverStatus.cycle)
  
-    globdat.lam  = self.loadfunc( globdat.time )
-    lam0         = self.loadfunc( globdat.time - self.dtime )
+    globdat.lam  = self.loadfunc( globdat.solverStatus.time )
+    lam0         = self.loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
 
     globdat.dlam = globdat.lam - lam0
     globdat.dofs.setConstrainFactor( globdat.dlam )
@@ -152,8 +152,8 @@ class NonlinearSolver( BaseModule ):
       loadProps = getattr( self.myProps, loadCase )
       
       loadfunc = eval ( "lambda t : " + str(loadProps.loadFunc) )
-      lam  = loadfunc( globdat.time )
-      lam0 = loadfunc( globdat.time - self.dtime )
+      lam  = loadfunc( globdat.solverStatus.time )
+      lam0 = loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
       dlam = lam - lam0
       globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
 

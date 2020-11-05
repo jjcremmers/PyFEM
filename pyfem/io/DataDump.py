@@ -24,94 +24,41 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from pyfem.util.BaseModule import BaseModule
-from pylab import plot, show, xlabel, ylabel, draw, ion, figure, gcf
-from numpy import ndarray,zeros
+import pickle
 
-class GraphWriter( BaseModule ):
+class DataDump( BaseModule ):
 
   def __init__ ( self, props , globdat ):
 
     self.prefix    = globdat.prefix
-    self.extension = ".out"
-    self.onScreen  = False
-
+    self.extension = ".dump"
+    self.lastOnly  = False
+   
     BaseModule.__init__( self , props )
-
-    if not hasattr( self , "filename" ):
-      self.filename  = self.prefix + self.extension
     
-    self.columndata = []
-
-    for i,col in enumerate ( self.columns ):
-
-      colProps = getattr( self , col )
+    if not hasattr( props , "interval" ):
+      self.interval = 1
       
-      if not hasattr( colProps , "factor" ):
-        colProps.factor = 1.0
-
-      self.columndata.append( colProps )
-
-    if self.onScreen and hasattr( globdat , "onScreen" ):
-      self.onScreen = False
-    else:
-      globdat.onScreen = True
-
-      self.fig = gcf()
-      self.fig.show()
-      self.fig.canvas.draw()
-
-    self.outfile = open( self.filename ,'w' )
-
-    if self.onScreen:
-      self.output = []
-
-      xlabel(self.columns[0])
-      ylabel(self.columns[1])
-  
-      ion()
-
-    self.run( props , globdat ) 
+    if self.lastOnly:
+      self.interval = 1
 
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 
   def run( self , props , globdat ):
-
-    a = []
-
-    for i,col in enumerate(self.columndata):
-      if col.type in globdat.outputNames:
-        data = globdat.getData( col.type , col.node )
-        
-      elif hasattr(globdat,col.type):
-        b = getattr( globdat , col.type )
-        if type(b) is ndarray:
-          if type(col.node) is list:
-            data = 0.0
-            for nod in col.node:
-              data += b[globdat.dofs.getForType(nod,col.dof)]
-          else:
-            data = b[globdat.dofs.getForType(col.node,col.dof)]
-        else:
-          data = b
-      elif col.type in globdat.outputNames:
-        data = globdat.getData( col.type , col.node )
-        
-      data = data * col.factor
-
-      a.append(data)
-   
-      self.outfile.write(str(data)+' ',)
-      self.outfile.flush()
-
-    self.outfile.write('\n')
-
-    if self.onScreen: 
-      self.output.append( a )
-
-      plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
-      self.fig.canvas.draw()
+  
+    cycle = globdat.solverStatus.cycle
     
-    if not globdat.active:
-      self.outfile.close
+    if cycle % self.interval == 0:
+      data = {}
+      data["props"]   = props
+      data["globdat"] = globdat
+      
+      if self.lastOnly:
+        name = str(self.prefix + self.extension)
+      else:
+        name = str(self.prefix + "_" + str(cycle) + self.extension)
+      
+      pickle.dump( data , open(name, "wb" ) )
+    

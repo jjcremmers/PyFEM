@@ -42,16 +42,17 @@ class RiksSolver( BaseModule ):
     self.fixedStep = False
     self.maxFactor = 1.0e20
 
-    self.totalFactor = 1.0
-    self.factor    = 1.0
+    globdat.totalFactor = 1.0
+    globdat.factor    = 1.0
     self.maxLam    = 1.0e20
 
     dofCount    = len(globdat.dofs)
 
     BaseModule.__init__( self , props )
 
-    self.Daprev    = zeros( dofCount )
-    self.Dlamprev  = 1.0
+    if not hasattr(globdat,"Daprev"):
+      globdat.Daprev    = zeros( dofCount )
+      globdat.Dlamprev  = 1.0
 
     globdat.lam    = 1.0
 
@@ -63,28 +64,32 @@ class RiksSolver( BaseModule ):
 
   def run( self , props , globdat ):
 
-    globdat.cycle += 1
+    stat = globdat.solverStatus
+    
+    stat.increaseStep()
    
     a    = globdat.state
     Da   = globdat.Dstate
     fhat = globdat.fhat
  
-    self.printHeader( globdat.cycle )
+    self.printHeader( stat.cycle )
       
     # Initialize Newton-Raphson iteration parameters  
 
     error = 1.
-    globdat.iiter = 0
-
+ 
     # Predictor
 
-    if globdat.cycle == 1:    
+    if stat.cycle == 1:    
       K,fint = assembleTangentStiffness( props, globdat )      
       Da1    = globdat.dofs.solve( K , globdat.lam*fhat )
       Dlam1  = globdat.lam
     else:
-      Da1    = self.factor * self.Daprev
-      Dlam1  = self.factor * self.Dlamprev
+#      Da1    = self.factor * self.Daprev
+#      Dlam1  = self.factor * self.Dlamprev
+
+      Da1    = globdat.factor * globdat.Daprev
+      Dlam1  = globdat.factor * globdat.Dlamprev
       globdat.lam += Dlam1
   
     a [:] += Da1[:]
@@ -98,17 +103,17 @@ class RiksSolver( BaseModule ):
 
     while error > self.tol:
 
-      globdat.iiter += 1
+      stat.iiter += 1
 
       d1 = globdat.dofs.solve( K , fhat )
       d2 = globdat.dofs.solve( K , res )
- 
+       
       ddlam = -dot(Da1,d2)/dot(Da1,d1)
       dda   = ddlam*d1 + d2
        
       Dlam        += ddlam
       globdat.lam += ddlam
-
+      
       Da[:] += dda[:]
       a [:] += dda[:]
 
@@ -118,30 +123,30 @@ class RiksSolver( BaseModule ):
  
       error  = globdat.dofs.norm( res ) / globdat.dofs.norm( globdat.lam*fhat )
 
-      self.printIteration( globdat.iiter,error)
+      self.printIteration( stat.iiter,error)
 
-      if globdat.iiter == self.iterMax:
+      if stat.iiter == self.iterMax:
         raise RuntimeError('Newton-Raphson iterations did not converge!')
 
     # Converged
 
-    self.printConverged( globdat.iiter )
+    self.printConverged( stat.iiter )
     
     globdat.elements.commitHistory()
 
     globdat.fint = fint
 
     if not self.fixedStep:
-      self.factor = pow(0.5,0.25*(globdat.iiter-self.optiter))
-      self.totalFactor *= self.factor
+      globdat.factor = pow(0.5,0.25*(stat.iiter-self.optiter))
+      globdat.totalFactor *= globdat.factor
 
-    if self.totalFactor > self.maxFactor:
-      self.factor = 1.0
+    if globdat.totalFactor > self.maxFactor:
+      globdat.factor = 1.0
 
-    self.Daprev[:] = Da[:]
-    self.Dlamprev  = Dlam
+    globdat.Daprev[:] = Da[:]
+    globdat.Dlamprev  = Dlam
 
-    if globdat.lam > self.maxLam or globdat.cycle > 1000 or a[globdat.dofs.getForType(4,'v')] > 5:
+    if globdat.lam > self.maxLam or stat.cycle > 1000 or a[globdat.dofs.getForType(4,'v')] > 5:
       globdat.active=False
 
 #------------------------------------------------------------------------------

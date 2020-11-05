@@ -24,37 +24,54 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-from pyfem.materials.BaseMaterial import BaseMaterial
-from numpy import zeros, dot
+from .Element import Element
+from pyfem.util.shapeFunctions  import getElemShapeData
+from numpy import dot, outer, ix_
 
-class PlaneStress( BaseMaterial ):
-
-  def __init__ ( self, props ):
-
-    #Call the BaseMaterial constructor
-    BaseMaterial.__init__( self, props )
-
-    #Create the hookean matrix
-    self.H = zeros( (3,3) )
-
-    self.H[0,0] = self.E/(1.-self.nu*self.nu)
-    self.H[0,1] = self.H[0,0]*self.nu
-    self.H[1,0] = self.H[0,1]
-    self.H[1,1] = self.H[0,0]
-    self.H[2,2] = self.E/(2.0*(1.0+self.nu))
-
-    #..
-    self.outLabels = [ "S11" , "S22" , "S12" ]
-
-  def getStress( self, deformation ):
-
-    sigma = dot( self.H, deformation.strain )
-
-    self.outData = sigma
-
-    return sigma, self.H
-
-  def getTangent( self ):
+class ThermoSurface( Element ):
   
-    return self.H
+  def __init__ ( self, elnodes , props ):
+  
+    self.emissivity = 0.0
+    self.convection = 0.0
+    self.extTemp    = 0.0
+    
+    Element.__init__( self, elnodes , props )
 
+    self.dofTypes = [ 'temp' ]
+    self.Boltzman = 5.670373e-8
+    self.extTemp4 = self.extTemp**4
+        
+  def __type__ ( self ):
+    return name
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getTangentStiffness ( self, elemdat ):
+       
+    sData = getElemShapeData( elemdat.coords , elemType = "Line2" )
+                                  
+    for iData in sData:
+      temp     = sum( iData.h * elemdat.state )
+                    
+      elemdat.stiff += outer ( iData.h , iData.h ) * \
+        ( self.convection + 4.0 * self.Boltzman * self.emissivity * temp**3 ) * iData.weight
+           
+      elemdat.fint += iData.h * ( self.convection * ( temp - self.extTemp ) + \
+        self.Boltzman * self.emissivity * ( temp**4 - self.extTemp4 ) ) * iData.weight
+           
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getInternalForce ( self, elemdat ):
+     
+    sData = getElemShapeData( elemdat.coords , elemType = "Line2" )
+                       
+    for iData in sData:         
+      temp     = sum( iData.h * elemdat.state )
+                               
+      elemdat.fint += iData.h * ( self.convection * ( temp - self.extTemp ) + \
+        self.Boltzman * self.emissivity * ( temp**4 - self.extTemp4 ) ) * iData.weight
