@@ -1,0 +1,12 @@
+gmsh = "two_fibres.msh"
+
+<NodeConstraints>
+
+ u[Right] = 2.5;
+ v[Right] = 0.0;
+  u[Left] = 0.0;
+ v[Left] = 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+</ExternalForces>
