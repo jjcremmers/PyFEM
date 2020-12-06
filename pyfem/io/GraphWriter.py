@@ -24,6 +24,7 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 from pyfem.util.BaseModule import BaseModule
+from pyfem.util.dataStructures import Properties
 from pylab import plot, show, xlabel, ylabel, draw, ion, figure, gcf
 from numpy import ndarray,zeros
 
@@ -44,10 +45,20 @@ class GraphWriter( BaseModule ):
 
     for i,col in enumerate ( self.columns ):
 
-      colProps = getattr( self , col )
+      if hasattr( self , col ):
+        colProps = getattr( self , col )    
+      else:
+        colProps = Properties()
+        
+      if not hasattr( colProps , "type" ):
+        colProps.type = col   
       
       if not hasattr( colProps , "factor" ):
         colProps.factor = 1.0
+        
+      if hasattr( colProps , "node" ):
+        if type(colProps.node) == str:
+          colProps.node = globdat.nodes.groups[colProps.node]
 
       self.columndata.append( colProps )
 
@@ -81,6 +92,7 @@ class GraphWriter( BaseModule ):
     a = []
 
     for i,col in enumerate(self.columndata):
+            
       if col.type in globdat.outputNames:
         data = globdat.getData( col.type , col.node )
         
@@ -90,14 +102,16 @@ class GraphWriter( BaseModule ):
           if type(col.node) is list:
             data = 0.0
             for nod in col.node:
-              data += b[globdat.dofs.getForType(nod,col.dof)]
+              data += b[globdat.dofs.getForType(int(nod),col.dof)]
           else:
             data = b[globdat.dofs.getForType(col.node,col.dof)]
         else:
           data = b
       elif col.type in globdat.outputNames:
         data = globdat.getData( col.type , col.node )
-        
+      elif hasattr(globdat.solverStatus,col.type):
+        data = getattr(globdat.solverStatus,col.type)
+   
       data = data * col.factor
 
       a.append(data)

@@ -55,27 +55,6 @@ def containsValue( db , val ):
 #
 #-------------------------------------------------------------------------------
 
-def isNodeDof( nodeDof ):
-
-  return type(nodeDof) == str and '[' in nodeDof
-
-#--------------------------------
-#
-#--------------------------------------
-
-def decodeNodeDof( nodeDof ):
-            
-  a       = nodeDof.split('[')
-  dofType = a[0]
-                       
-  nodeID  = eval(a[1].split(']')[0])
-  
-  return dofType,nodeID
-
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
 def cleanVariable( a ):
 
   if a == 'true':
@@ -87,6 +66,29 @@ def cleanVariable( a ):
       return eval(a)
     except:
       return a
+      
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def isNodeDof( nodeDof ):
+
+  return type(nodeDof) == str and '[' in nodeDof
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def decodeNodeDof( nodeDof , nodes ):
+            
+  a       = nodeDof.split('[')
+  dofType = a[0]  
+  nodeID  = cleanVariable(a[1].split(']')[0])
+  
+  if type(nodeID) == str:
+    return dofType,nodes.groups[nodeID]
+  else:
+    return dofType,[nodeID]
       
 #-------------------------------------------------------------------------------
 #
@@ -146,6 +148,10 @@ def readItem( l1 , db ):
    
     return l2[1]
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
 def readBlock( ln , db ):
 
   while True:
@@ -183,6 +189,10 @@ def readBlock( ln , db ):
     else:     
       ln = readItem( l1 , db )
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
 def fileParser( fileName ):
 
   db = Properties()
@@ -201,6 +211,10 @@ def fileParser( fileName ):
   readBlock( ln , db )
 
   return db
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
 def deepFileParser( fileName , db ):
 
@@ -226,7 +240,7 @@ class nodeTable :
 #
 #-------------------------------------------------------------------------------
 
-def readNodeTable( fileName , label ):
+def readNodeTable( fileName , label , nodes = None ):
 
   fin        = open( fileName , 'r' )
 
@@ -254,17 +268,18 @@ def readNodeTable( fileName , label ):
         
         if len(a) == 2:
           b = a[0].split('=')
-       
+      
           if len(b) == 2:
             if not isNodeDof(b[0]):
               raise RuntimeError(str(b[0]) + ' is not a NodeDof')
               
-            dofType,nodeID = decodeNodeDof(b[0])
-            
+            dofType,nodeIDs = decodeNodeDof(b[0],nodes)
+                        
             rhs = b[1]
             
-            if getType(rhs) is float or getType(rhs) is int:                 
-              nt.data.append([ dofType,nodeID,float(eval(b[1])) ])
+            if getType(rhs) is float or getType(rhs) is int:  
+              for nodeID in nodeIDs:             
+                nt.data.append([ dofType,int(nodeID),float(eval(b[1])) ])
             else:
               rhs = rhs.replace(" ","").replace("+"," +").replace("-"," -")
               c=rhs.split(" ")
@@ -287,9 +302,10 @@ def readNodeTable( fileName , label ):
                         c2 = c2.replace("-","")
                         
                         slaveDofType,slaveNodeID = decodeNodeDof( c2 )
-                        
-              dt = [ dofType,nodeID,rhs,slaveDofType,slaveNodeID,factor ]
-              nt.data.append(dt)
+              
+              for nodeID in nodeIDs:        
+                dt = [ dofType,int(nodeID),rhs,slaveDofType,slaveNodeID,factor ]
+                nt.data.append(dt)
                                                     
   return output
 

@@ -88,7 +88,7 @@ class DofSpace:
       
     logger.info("Reading constraints ..........")
 
-    nodeTable = readNodeTable( fname , "NodeConstraints" )
+    nodeTable = readNodeTable( fname , "NodeConstraints" , self.nodes )
    
     self.cons = self.createConstrainer( nodeTable )
               

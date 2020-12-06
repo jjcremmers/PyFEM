@@ -23,6 +23,7 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 import re
 from pyfem.util.itemList import itemList
 from pyfem.util.logger   import getLogger
@@ -41,14 +42,9 @@ class ElementSet( itemList ):
     self.solverStat = solverStatus()
     self.groups = {}
 
-    ###############################
-    # Create the material manager #
-    ###############################
-
-    #from pyfem.materials.MaterialManager import MaterialManager
-
-    #if hasattr( props, 'material' ):
-    #  self.matman = MaterialManager( props.materials )
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def __iter__ ( self ):
 
@@ -60,16 +56,40 @@ class ElementSet( itemList ):
        
     return iter( elements )
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+    
+  def __repr__( self ):
+    msg =  "Elementset contains %i elements.\n" % len(self)
+    
+    if len(self.groups) > 0:
+      msg += "-----------------------------------------\n"
+      msg += "Number of elementgroups ... %i\n" % len(self.groups)
+      
+      for name in self.groups:
+        msg += "  %s contains %i elements \n" % (name,len(self.groups[name]))
+    
+    return msg
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def getDofTypes ( self ):
 
     dofTypes = []
 
     for element in self:
       for dofType in element.dofTypes:
-	      if dofType not in dofTypes:
-	        dofTypes.append( dofType )
+        if dofType not in dofTypes:
+          dofTypes.append( dofType )
 
     return dofTypes
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
     
   def readFromFile( self, fname ):
     
@@ -103,93 +123,70 @@ class ElementSet( itemList ):
         ln = ln.split('=',1)
         self.readGmshFile( ln[1][1:-1] )
         return
-
+        
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
   def readGmshFile( self , fname ):
 
-    fin = open( fname )
-
-    while True:
+    import meshio
     
-      line = fin.readline()  
-  
-      if line.startswith('$MeshFormat') == True:
-      
-        while True:
-          line = fin.readline()  
-          line = re.sub('\s{2,}',' ',line)
-
-          a = line.split(';')
-          b = a[0].strip().split(' ')
-      
-          if eval(b[0]) < 2.0:
-            logger.error("Error")
-            sys.exit()
-          
-          break
-
-      if line.startswith('$Elements') == True:
-  
-        nElements = eval(fin.readline())
+    mesh = meshio.read(fname,file_format="gmsh")
     
-        for i in range(nElements):
-          line = fin.readline()
-          line = re.sub('\s{2,}',' ',line)
-          b    = line.strip().split(' ')
-
-#          if len(b) > 1 and type(eval(b[0])) == int:
-          if len(b) == 8 and type(eval(b[0])) == int:        
-            self.add( eval(b[0]), "ContElem" , [eval(nodeID) for nodeID in b[5:]] )
-      if line.startswith('$EndElements'):
-        logger.info(len(self)," elements.")
-        return 
-
-#
+    elemID = 0
+    
+    for i,key in enumerate(mesh.cell_sets_dict): 
+      for iNodes in mesh.cells[i][1]:
+        self.add( elemID , key , iNodes.tolist() )
+        elemID = elemID + 1
+        
+    print(self)    
+                          
+#-------------------------------------------------------------------------------
 #  add element
-#
+#-------------------------------------------------------------------------------
+
   def add ( self, ID, modelName, elementNodes ):  
 
     #Check if the model exists
-    if not hasattr( self.props, modelName ):
-      RuntimeError('Missing properties for model ' + modelName)
+          
+    if hasattr( self.props, modelName ):
 
-    modelProps = getattr( self.props, modelName )
+      modelProps = getattr( self.props, modelName )
 
-    #Check if the model has a type
-    if not hasattr( modelProps, 'type' ):
-      RuntimeError('Missing type for model ' + modelName)
+      #Check if the model has a type
+      if not hasattr( modelProps, 'type' ):
+        raise RuntimeError('Missing type for model ' + modelName)
       
-    modelType = getattr( modelProps, 'type' )
-
-    #Load the element (Python 2.x)
-    #cmdStr = 'from pyfem.elements.' + modelType + ' import ' + modelType + ' as element' 
-    #exec(cmdStr)
+      modelType = getattr( modelProps, 'type' )
  
-    modelProps.rank       = self.nodes.rank
-    modelProps.solverStat = self.solverStat
+      modelProps.rank       = self.nodes.rank
+      modelProps.solverStat = self.solverStat
 
-    element = getattr(__import__('pyfem.elements.'+modelType , globals(), locals(), modelType , 0 ), modelType )
+      element = getattr(__import__('pyfem.elements.'+modelType , globals(), locals(), modelType , 0 ), modelType )
 
-    #Create the element
+      #Create the element
  
-    elem = element( elementNodes , modelProps )
+      elem = element( elementNodes , modelProps )
 
-    #  Check if the node IDs are valid:
+      #  Check if the node IDs are valid:
 
-    for nodeID in elem.getNodes():
-      if not nodeID in self.nodes:
-        raise RuntimeError('Node ID ' + str(nodeID) + ' does not exist')
+      for nodeID in elem.getNodes():
+        if not nodeID in self.nodes:
+          raise RuntimeError('Node ID ' + str(nodeID) + ' does not exist')
 
-    #  Add the element to the element set:
+      #  Add the element to the element set:
 
-    itemList.add( self, ID, elem )
+      itemList.add( self, ID, elem )
 
-    #  Add the element to the correct group:
+      #  Add the element to the correct group:
 
-    self.addToGroup( modelName, ID )
+      self.addToGroup( modelName, ID )
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def addToGroup( self, modelType, ID ):
 
@@ -198,11 +195,23 @@ class ElementSet( itemList ):
     else:
       self.groups[modelType].append( ID )
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def addGroup ( self, groupName,  groupIDs ):
     self.groups[groupName] = groupIDs
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def iterGroupNames ( self ):
     return self.groups
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def iterElementGroup ( self, groupName ):
     if groupName == "All":
@@ -210,11 +219,19 @@ class ElementSet( itemList ):
     else:
       return iter( self.get( self.groups[groupName] ) )
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def elementGroupCount( self, groupName ):
     if groupName == "All":
       return len(self)
     else:
       return len(self.groups[groupName])
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def commitHistory ( self ):
 

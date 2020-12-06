@@ -32,7 +32,7 @@ class BaseModule:
     else:
       currentModule = self.__class__.__name__
       
-      if currentModule.endswith("olver") is "olver":
+      if currentModule.endswith("olver") == "olver":
         currentModule = "solver"
       
     if hasattr(props,currentModule):

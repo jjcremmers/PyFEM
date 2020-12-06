@@ -28,8 +28,12 @@ from .Element import Element
 from pyfem.util.shapeFunctions  import getElemShapeData
 from pyfem.util.kinematics      import Kinematics
 
-from numpy import zeros, dot, outer, ones, eye, sqrt
+from numpy import zeros, dot, outer, ones, eye, sqrt, reshape
 from scipy.linalg import eigvals
+
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -38,6 +42,9 @@ from scipy.linalg import eigvals
 class FiniteStrainContinuum( Element ):
   
   def __init__ ( self, elnodes , props ):
+  
+    self.method = "TL"
+    
     Element.__init__( self, elnodes , props )
 
     self.rank = props.rank
@@ -62,7 +69,19 @@ class FiniteStrainContinuum( Element ):
 
   def getTangentStiffness ( self, elemdat ):
 
-    n = self.dofCount()
+    if self.method == "TL":
+      return self.getTLTangentStiffness( elemdat )
+    elif self.method == "UL":
+      return self.getULTangentStiffness( elemdat )
+    else:
+      print("Error")
+  
+#
+#
+#
+
+    
+  def getTLTangentStiffness ( self, elemdat ):
 
     sData = getElemShapeData( elemdat.coords )
     
@@ -71,7 +90,7 @@ class FiniteStrainContinuum( Element ):
    
     for iData in sData:
 
-      self.kin = self.getKinematics( iData.dhdx , elemdat.state ) 
+      self.kin = self.getKinematics( iData.dhdx , elemdat ) 
       B        = self.getBmatrix   ( iData.dhdx , self.kin.F )
       
       sigma,tang = self.mat.getStress( self.kin )
@@ -83,6 +102,37 @@ class FiniteStrainContinuum( Element ):
    
       elemdat.stiff += dot ( Bnl.transpose() , dot( T , Bnl ) ) * iData.weight
       elemdat.fint  += dot ( B.transpose() , sigma ) * iData.weight
+      
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getULTangentStiffness ( self, elemdat ):
+  
+    elemdat.state0 = elemdat.state - elemdat.Dstate
+    
+    sData0 = getElemShapeData( elemdat.coords )
+    sDataC = getElemShapeData( elemdat.coords + reshape(elemdat.state0,(8,3)) )
+    
+    elemdat.outlabel.append(self.outputLabels)
+    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
+       
+    for iData0,iDataC in zip(sData0,sDataC):
+
+      self.kin = self.getKinematics( iData0.dhdx , elemdat ) 
+      B        = self.getULBmatrix ( iDataC.dhdx )
+            
+      sigma,tang = self.mat.getStress( self.kin )
+        
+      elemdat.stiff += dot ( B.transpose() , dot ( tang , B ) ) * iDataC.weight
+
+      T   = self.stress2matrix( sigma )
+      Bnl = self.getBNLmatrix ( iDataC.dhdx )
+   
+      elemdat.stiff += dot ( Bnl.transpose() , dot( T , Bnl ) ) * iDataC.weight
+      elemdat.fint  += dot ( B.transpose() , sigma ) * iDataC.weight
       
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
@@ -101,7 +151,7 @@ class FiniteStrainContinuum( Element ):
 
     for iData in sData:
             
-      self.kin = self.getKinematics( iData.dhdx , elemdat.state ) 
+      self.kin = self.getKinematics( iData.dhdx , elemdat ) 
       B        = self.getBmatrix   ( iData.dhdx , self.kin.F )
       
       sigma,tang = self.mat.getStress( self.kin )
@@ -130,16 +180,21 @@ class FiniteStrainContinuum( Element ):
 #
 #------------------------------------------------------------------------------
 
-  def getKinematics( self , dphi , elstate ):
+  def getKinematics( self , dphi , elemdat ):
   
     kin = Kinematics(self.rank,self.nstr)
-
+    
+    elstate  = elemdat.state
+    elstate0 = elstate - elemdat.Dstate
+    
     kin.F = eye(self.rank)
+    kin.F0 = eye(self.rank)
   
     for i in range(len(dphi)):
       for j in range(self.rank):
         for k in range(self.rank):
           kin.F[j,k] += dphi[i,k]*elstate[self.rank*i+j]
+          kin.F0[j,k] += dphi[i,k]*elstate0[self.rank*i+j]
 
     kin.E = 0.5*(dot(kin.F.transpose(),kin.F)-eye(self.rank))
 
@@ -201,6 +256,39 @@ class FiniteStrainContinuum( Element ):
         B[5,3*i+2] = dp[0]*F[2,1]+dp[1]*F[2,0]
  
     return B
+    
+    
+  def getULBmatrix( self , dphi  ):
+
+    B = zeros( shape=(self.nstr, self.rank*len(dphi) ) )
+
+    if self.rank == 2:
+      for iNel,dp in enumerate( dphi ):
+        i = 2 * iNel
+        
+        B[0,i  ] = dp[0]	
+        B[1,i+1] = dp[1]
+
+        B[2,i  ] = dp[1]
+        B[2,i+1] = dp[0]
+    elif self.rank == 3:
+      for iNel,dp in enumerate( dphi ):
+        i = 3 * iNel
+        
+        B[0,i  ] = dp[0]
+        B[1,i+1] = dp[1]
+        B[2,i+2] = dp[2]
+
+        B[3,i+1] = dp[2]
+        B[3,i+2] = dp[1]
+
+        B[4,i  ] = dp[2]
+        B[4,i+2] = dp[0]
+
+        B[5,i  ] = dp[1]
+        B[5,i+1] = dp[0]
+
+    return B    
 
 #------------------------------------------------------------------------------
 #
@@ -261,7 +349,7 @@ class FiniteStrainContinuum( Element ):
         Bnl[7,3*i+2] = dp[1]
         Bnl[8,3*i+2] = dp[2]
 
-    return Bnl
+    return Bnl	    
 
 #------------------------------------------------------------------------------
 #

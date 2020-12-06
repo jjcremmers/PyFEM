@@ -24,34 +24,9 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-import copy
-
-class BaseMaterial:
+class BaseFailure:
 
   def __init__ ( self, props ):
 
     for name,val in props:
-      setattr( self, name, val )
-
-    self.oldHistory = {}
-    self.newHistory = {}
-
-    self.outLabels  = []
-    self.solverStat = props.solverStat
-
-  def setHistoryParameter( self , name , val ):
-
-    self.newHistory[name]=val
-    return
-       
-  def getHistoryParameter( self , name ):
-
-    if type(self.oldHistory[name]) == float:
-      return self.oldHistory[name]
-    else:
-      return self.oldHistory[name].copy()
-    
-  def commitHistory( self ):
-
-    self.oldHistory = copy.deepcopy(self.newHistory)
-  
+      setattr( self, name, val )  

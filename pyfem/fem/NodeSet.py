@@ -25,102 +25,158 @@
 ############################################################################
 from numpy import array
 from pyfem.util.itemList import itemList
-import re,sys
+from pyfem.util.fileParser import getType
+import re,sys,meshio
 
 from pyfem.util.logger   import getLogger
 
 logger = getLogger()
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
 class NodeSet( itemList ):
 
   def __init__( self ):
     self.rank = -1
+    self.groups = {}
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def getNodeCoords( self, nodeIDs ):
     return array( self.get( nodeIDs ) )
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
     
   def readFromFile( self, fname ):
     
     logger.info("Reading nodes ................")
 
-    fin = open( fname )
-  
-    while True:
+    fin = open( fname , 'r' )
     
-      line = fin.readline()  
-  
-      if line.startswith('<Nodes>') == True:
-      
-        while True:
-          line = fin.readline()  
+    line = fin.readline() 
+    
+    while line:    
+      if line.replace(" ","").startswith('<Nodes>'):
+        self.readNodalCoords( fin )
 
-          if line.startswith('</Nodes>') == True:
-            return
-  
-          line = re.sub('\s{2,}',' ',line)
-          a = line.split(';')
-     
-          for a in a[:-1]:
-            b = a.strip().split(' ')
-            
-            if b[0].startswith("//") or b[0].startswith("#"):
-              break
-            if len(b) > 1 and type(eval(b[0])) == int:
-              if self.rank == -1:
-                self.rank = len(b)-1
-
-              self.add( eval(b[0]), [eval(crd) for crd in b[1:]] )
-            
-
-      elif line.startswith('gmsh') == True:
+      if line.replace(" ","").startswith('gmsh'):
         ln = line.replace('\n','').replace('\t','').replace(' ','').replace('\r','').replace(';','')
         ln = ln.split('=',1)
-        self.readGmshFile( ln[1][1:-1] )
-        logger.info(len(self)," nodes.")
-        return
+        self.readGmshFile( ln[1][1:-1] )       
+        break        
+       
+      line = fin.readline() 
+      
+    fin = open( fname , 'r' )
+    
+    line = fin.readline() 
+    
+    while line:  
+      if line.replace(" ","").startswith('<NodeGroup'):
+        if 'name' in line:
+          label = line.split('=')[1].replace('\n','').replace('>','').replace(' ','').replace('\"','').replace('\'','')
+          self.readNodegroup( fin , label )
+       
+      line = fin.readline()       
+          
+    for key in self.groups:
+      self.groups[key] = list(set(self.groups[key]))
+      
+    print(self)
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def readGmshFile( self, fname ):
-    
-    fin = open( fname )
-    self.rank = 2
-
-    while True:
-    
-      line = fin.readline()  
   
-      if line.startswith('$MeshFormat') == True:
-      
-        while True:
-          line = fin.readline()  
-          line = re.sub('\s{2,}',' ',line)
+    mesh = meshio.read(fname,file_format="gmsh")
 
-          a = line.split(';')
-          b = a[0].strip().split(' ')
-      
-          if eval(b[0]) < 2.0:
-            print("error")
-            sys.exit()
-          
-          break
+    self.rank = 2#len(mesh.points[0])
+    
+    for nodeID,p in enumerate(mesh.points):
+      self.add(nodeID,p[:self.rank])
 
-      if line.startswith('$Nodes'):
+    for key in mesh.cell_sets_dict:
+      for typ in mesh.cell_sets_dict[key]:
+        for idx in mesh.cell_sets_dict[key][typ]:         
+          iNodes = mesh.cells_dict[typ][idx]
+          for nodeID in iNodes:
+            self.addToGroup( key , nodeID )
   
-        nNodes = eval(fin.readline())
-
-        for i in range(nNodes):
-          line = fin.readline()
-          line = re.sub('\s{2,}',' ',line)
-          b    = line.strip().split(' ')
-       
-          if len(b) > 1 and type(eval(b[0])) == int:
-            self.add( eval(b[0]), [eval(crd) for crd in b[1:3]] )
-      
-      if line.startswith('$EndNodes'):
-        return 
-
-#------
+#-------------------------------------------------------------------------------
 #
-#-------
+#-------------------------------------------------------------------------------
+
+  def addToGroup( self, modelType, ID ):
+
+    if modelType not in self.groups:
+      self.groups[modelType] = [ID]
+    else:
+      self.groups[modelType].append( ID )
+      
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def __repr__( self ):
-    return "Nodeset contains %i nodes.\n" % len(self)
+    msg =  "Nodeset contains %i nodes.\n" % len(self)
+    
+    if len(self.groups) > 0:
+      msg += "-----------------------------------------\n"
+      msg += "Number of nodegroups ... %i\n" % len(self.groups)
+      
+      for name in self.groups:
+        msg += "  %s contains %i nodes \n" % (name,len(self.groups[name]))
+    
+    return msg
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def readNodalCoords( self , fin ):
+    
+    while True:
+      line = fin.readline()  
+
+      if line.replace(" ", "").startswith('</Nodes>'):
+        return
+  
+      line = re.sub('\s{2,}',' ',line)
+      a = line.split(';')
+     
+      for a in a[:-1]:
+        b = a.strip().split(' ')
+            
+        if b[0].startswith("//") or b[0].startswith("#"):
+          break
+        if len(b) > 1 and type(eval(b[0])) == int:
+          if self.rank == -1:
+            self.rank = len(b)-1
+
+          self.add( eval(b[0]), [eval(crd) for crd in b[1:]] ) 
+          
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def readNodegroup( self , fin , key ):
+    
+    while True:
+      line = fin.readline()
+      
+      if line.replace(" " ,"").startswith('</NodeGro'):
+        return
+        
+      a = line.split()
+      
+      for b in a:
+        if getType(b) == int:
+          self.addToGroup( key ,b )

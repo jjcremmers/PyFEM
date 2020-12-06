@@ -51,6 +51,8 @@ class ThermoSurface( Element ):
 
   def getTangentStiffness ( self, elemdat ):
        
+    # A thermo mechanical surface element
+    
     sData = getElemShapeData( elemdat.coords , elemType = "Line2" )
                                   
     for iData in sData:

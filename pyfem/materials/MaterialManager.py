@@ -32,29 +32,46 @@ class MaterialManager ( list ):
 
     matType = matProps.type
 
-    # Python 2.x
-    #cmdStr = 'from pyfem.materials.' + matType + ' import ' + matType + ' as material'
-    #exec(cmdStr)
-
-    material = getattr(__import__('pyfem.materials.'+matType , globals(), locals(), matType , 0 ), matType )
+    self.material = getattr(__import__('pyfem.materials.'+matType , globals(), locals(), matType , 0 ), matType )
     
-    self.mat = material( matProps )
-    self.iIter = -1
+    self.matlist     = []
+    self.matProps    = matProps
+    self.iSam        = -1
+    self.failureFlag = False
+    
+    if hasattr(matProps,'failureType'):
+    
+      failureType = matProps.failureType
+      
+      failure = getattr(__import__('pyfem.materials.'+failureType , \
+        globals(), locals(), failureType , 0 ), failureType )
+ 
+      self.failure = failure( matProps )
+      self.failureFlag = True
 
   def reset( self ):
 
-    self.iIter  = -1
+    self.iSam  = -1
 
   def getStress ( self, kinematic , iSam = -1 ):
 
     if iSam == -1:
-      self.iIter += 1
-      iSam = self.iIter
-
-    self.mat.setIter( iSam )
+      self.iSam += 1
+    else:
+      self.iSam = iSam
+            
+    while self.iSam >= len(self.matlist):
+      self.matlist.append(self.material( self.matProps ))
+        
+    self.mat = self.matlist[self.iSam]
      
-    return self.mat.getStress( kinematic )
-
+    result = self.mat.getStress( kinematic )
+    
+    if self.failureFlag:
+      self.failure.check(result[0],kinematic)
+      
+    return result
+    
   def outLabels( self ):
     return self.mat.outLabels
 
@@ -65,4 +82,5 @@ class MaterialManager ( list ):
     return self.mat.getHistoryParameter( label )
 
   def commitHistory( self ):
-    self.mat.commitHistory()
+    for mat in self.matlist:
+      mat.commitHistory()

@@ -24,34 +24,20 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-import copy
+from pyfem.materials.BaseFailure import BaseFailure
+from pyfem.materials.MatUtils    import vonMisesStress
 
-class BaseMaterial:
+class VonMises( BaseFailure ):
 
   def __init__ ( self, props ):
 
-    for name,val in props:
-      setattr( self, name, val )
-
-    self.oldHistory = {}
-    self.newHistory = {}
-
-    self.outLabels  = []
-    self.solverStat = props.solverStat
-
-  def setHistoryParameter( self , name , val ):
-
-    self.newHistory[name]=val
-    return
-       
-  def getHistoryParameter( self , name ):
-
-    if type(self.oldHistory[name]) == float:
-      return self.oldHistory[name]
-    else:
-      return self.oldHistory[name].copy()
+    BaseFailure.__init__( self, props )
     
-  def commitHistory( self ):
+    self.smax = props.smax
 
-    self.oldHistory = copy.deepcopy(self.newHistory)
-  
+  def check( self, stress , deformation ):
+
+    FI = vonMisesStress( stress ) / self.smax
+    
+    print(FI)
+    return FI
