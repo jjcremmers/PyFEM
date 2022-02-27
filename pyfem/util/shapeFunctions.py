@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,8 +26,9 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from math import sqrt
-from numpy import array, dot, ndarray, empty, zeros , ones
+from numpy import array, dot, ndarray, empty, zeros , ones, cross
 from scipy.linalg import norm , det , inv
 from scipy.special.orthogonal import p_roots as gauss_scheme
 
@@ -78,7 +82,7 @@ def getShapeLine2 ( xi ):
 def getShapeLine3 ( xi ):
 
   #Check the dimension of physical space
-  if len(xi) != 1:
+  if type(xi) != float:
     raise NotImplementedError('1D only')
 
   sData       = shapeData()
@@ -89,9 +93,9 @@ def getShapeLine3 ( xi ):
   sData.xi    = xi
 
   #Calculate shape functions
-  phi[0] = 0.5*(1.0-xi)-0.5*(1.0-xi*xi)
-  phi[1] = 1-xi*xi
-  phi[2] = 0.5*(1.0+xi)-0.5*(1.0-xi*xi)
+  sData.h[0] = 0.5*(1.0-xi)-0.5*(1.0-xi*xi)
+  sData.h[1] = 1-xi*xi
+  sData.h[2] = 0.5*(1.0+xi)-0.5*(1.0-xi*xi)
 
   #Calculate derivatives of shape functions
   sData.dhdxi[0,0] = -0.5+xi
@@ -319,32 +323,75 @@ def getShapeTetra4 ( xi ):
   sData.xi    = xi
 
   #Calculate shape functions
-  sData.h[0] = 0.25*(1.0-xi[0])*(1.0-xi[1])
-  sData.h[1] = 0.25*(1.0+xi[0])*(1.0-xi[1])
-  sData.h[2] = 0.25*(1.0+xi[0])*(1.0+xi[1])
-  sData.h[3] = 0.25*(1.0-xi[0])*(1.0+xi[1])
+  sData.h[0] = 1.0-xi[0]-xi[1]-xi[2]
+  sData.h[1] = xi[0]
+  sData.h[2] = xi[1]
+  sData.h[3] = xi[2]
 
   #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -0.25*(1.0-xi[1])
-  sData.dhdxi[1,0] =  0.25*(1.0-xi[1])
-  sData.dhdxi[2,0] =  0.25*(1.0+xi[1])
-  sData.dhdxi[3,0] = -0.25*(1.0+xi[1])
+  sData.dhdxi[0,0] = -1.0
+  sData.dhdxi[1,0] =  1.0
+  sData.dhdxi[2,0] =  0.0
+  sData.dhdxi[3,0] =  0.0
 
-  sData.dhdxi[0,1] = -0.25*(1.0-xi[0])
-  sData.dhdxi[1,1] = -0.25*(1.0+xi[0])
-  sData.dhdxi[2,1] =  0.25*(1.0+xi[0])
-  sData.dhdxi[3,1] =  0.25*(1.0-xi[0])
+  sData.dhdxi[0,1] = -1.0
+  sData.dhdxi[1,1] =  0.0
+  sData.dhdxi[2,1] =  1.0
+  sData.dhdxi[3,1] =  0.0
 
-  sData.dhdxi[0,2] = -0.25*(1.0-xi[0])
-  sData.dhdxi[1,2] = -0.25*(1.0+xi[0])
-  sData.dhdxi[2,2] =  0.25*(1.0+xi[0])
-  sData.dhdxi[3,2] =  0.25*(1.0-xi[0])
+  sData.dhdxi[0,2] = -1.0
+  sData.dhdxi[1,2] =  0.0
+  sData.dhdxi[2,2] =  0.0
+  sData.dhdxi[3,2] =  1.0
 
   return sData
+  
+#----------------------------------------------------------------------
+
+def getShapePyramid5 ( xi ):
+
+  #Check the dimension of physical space
+  if len(xi) != 3:
+    raise NotImplementedError('3D only')
+
+  sData       = shapeData()
+ 
+  #Set length of lists
+  sData.h     = empty( 5 )
+  sData.dhdxi = empty( shape=(5,3) )
+  sData.xi    = xi
+
+  #Calculate shape functions
+  sData.h[0] = 0.125*(1.0-xi[0])*(1.0-xi[1])*(1.0-xi[2])
+  sData.h[1] = 0.125*(1.0+xi[0])*(1.0-xi[1])*(1.0-xi[2])
+  sData.h[2] = 0.125*(1.0+xi[0])*(1.0+xi[1])*(1.0-xi[2])
+  sData.h[3] = 0.125*(1.0-xi[0])*(1.0+xi[1])*(1.0-xi[2])
+  sData.h[4] = 0.5*(1.0+xi[2])
+
+  #Calculate derivatives of shape functions
+  sData.dhdxi[0,0] = -0.125*(1.0-xi[1])*(1.0-xi[2])
+  sData.dhdxi[1,0] =  0.125*(1.0-xi[1])*(1.0-xi[2])
+  sData.dhdxi[2,0] =  0.125*(1.0+xi[1])*(1.0-xi[2])
+  sData.dhdxi[3,0] = -0.125*(1.0+xi[1])*(1.0-xi[2])
+  sData.dhdxi[4,0] =  0.0  
+
+  sData.dhdxi[0,1] = -0.125*(1.0-xi[0])*(1.0-xi[2])
+  sData.dhdxi[1,1] = -0.125*(1.0+xi[0])*(1.0-xi[2])
+  sData.dhdxi[2,1] =  0.125*(1.0+xi[0])*(1.0-xi[2])
+  sData.dhdxi[3,1] =  0.125*(1.0-xi[0])*(1.0-xi[2])
+  sData.dhdxi[4,1] =  0.0  
+
+  sData.dhdxi[0,2] = -0.125*(1.0-xi[0])*(1.0-xi[1])
+  sData.dhdxi[1,2] = -0.125*(1.0+xi[0])*(1.0-xi[1])
+  sData.dhdxi[2,2] = -0.125*(1.0+xi[0])*(1.0+xi[1])
+  sData.dhdxi[3,2] = -0.125*(1.0-xi[0])*(1.0+xi[1])
+  sData.dhdxi[4,2] =  0.5  
+
+  return sData  
 
 #----------------------------------------------------------------------
 
-def getShapePenta6 ( xi ):
+def getShapePrism6 ( xi ):
 
   #Check the dimension of physical space
   if len(xi) != 3:
@@ -352,35 +399,57 @@ def getShapePenta6 ( xi ):
 
   #Initialise tuples
   
-  sData = shapeData()
+  sData      = shapeData()
+  sDataLine2 = shapeData()
+  SDataTria3 = shapeData()
    
   sData.h     = empty( 6 )
   sData.dhdxi = empty( shape=(6,3) )
   sData.xi    = xi
 
-  #Calculate shape functions
-  sData.h[0] = 0.25*(1.0-xi[0])*(1.0-xi[1])
-  sData.h[1] = 0.25*(1.0+xi[0])*(1.0-xi[1])
-  sData.h[2] = 0.25*(1.0+xi[0])*(1.0+xi[1])
-  sData.h[3] = 0.25*(1.0-xi[0])*(1.0+xi[1])
-
-  #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -0.25*(1.0-xi[1])
-  sData.dhdxi[1,0] =  0.25*(1.0-xi[1])
-  sData.dhdxi[2,0] =  0.25*(1.0+xi[1])
-  sData.dhdxi[3,0] = -0.25*(1.0+xi[1])
-
-  sData.dhdxi[0,1] = -0.25*(1.0-xi[0])
-  sData.dhdxi[1,1] = -0.25*(1.0+xi[0])
-  sData.dhdxi[2,1] =  0.25*(1.0+xi[0])
-  sData.dhdxi[3,1] =  0.25*(1.0-xi[0])
-
-  sData.dhdxi[0,2] = -0.25*(1.0-xi[0])
-  sData.dhdxi[1,2] = -0.25*(1.0+xi[0])
-  sData.dhdxi[2,2] =  0.25*(1.0+xi[0])
-  sData.dhdxi[3,2] =  0.25*(1.0-xi[0])
-
+  sDataLine2  = getShapeLine2( xi[2] )
+  sDataTria3  = getShapeTria3( xi[:2] )
+  
+  for i in range(3):
+    for j in range(2):
+      sData.h[i*2+j] = sDataLine2.h[j]*sDataTria3.h[i]
+    
+      sData.dhdxi[i*2+j,0] = sDataLine2.h[j]*sDataTria3.dhdxi[i,0]
+      sData.dhdxi[i*2+j,1] = sDataLine2.h[j]*sDataTria3.dhdxi[i,1]
+      sData.dhdxi[i*2+j,2] = sDataLine2.dhdxi[j,0]*sDataTria3.h[i]
+        
   return sData
+  
+#----------------------------------------------------------------------
+
+def getShapePrism18 ( xi ):
+
+  #Check the dimension of physical space
+  if len(xi) != 3:
+    raise NotImplementedError('3D only')
+
+  #Initialise tuples
+  
+  sData      = shapeData()
+  sDataLine2 = shapeData()
+  SDataTria3 = shapeData()
+   
+  sData.h     = empty( 18 )
+  sData.dhdxi = empty( shape=(18,3) )
+  sData.xi    = xi
+
+  sDataLine3  = getShapeLine3( xi[3] )
+  sDataTria6  = getShapeTria6( xi[:2] )
+  
+  for i in range(6):
+    for j in range(3):
+      sData.h[i*3+j] = sDataLine3.h[j]*sDataTria6.h[i]
+    
+      sData.dhdxi[i*3+j,0] = sDataLine3.h[j]*sDataTria6.dhdxi[i,0]
+      sData.dhdxi[i*3+j,1] = sDataLine3.h[j]*sDataTria6.dhdxi[i,1]
+      sData.dhdxi[i*3+j,2] = sDataLine3.dhdxi[j,0]*sDataTria6.h[i]
+        
+  return sData  
 
 #------------------------------------------------------------------------------
 #
@@ -467,10 +536,14 @@ def getElemType( elemCoords ):
   elif rank == 3:
     if nNel == 4:
       return "Tetra4"
+    elif nNel == 5:
+      return "Pyramid5"      
     elif nNel == 6:
-      return "Penta6"
+      return "Prism6"
     elif nNel == 8:
-      return "Hexa8"
+      return "Hexa8" 
+    elif nNel == 18:
+      return "Prism18"
     else:
       raise NotImplementedError('No 3D element with '+str(nNel)+' nodes available')
   else:
@@ -510,6 +583,36 @@ def tria_scheme( order ):
     weight = [ w1,w1,w1,w4,w4,w4,w7 ]
   
   return xi,weight
+  
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+def tetra_scheme( order ):
+
+  if order == 1:
+    third = 1./3.
+    
+    xi = [[third,third,third]]
+    weight = [ 0.5*third ]
+  else:
+    raise NotImplementedError('Only order 1 integration implemented')
+    
+  return xi,weight
+  
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+def pyramid_scheme( order ):
+
+  if order == 1:     
+    xi = [[0.,0.,-0.5]]
+    weight = [128.0/27.0]#[8.0/3.0] #[ 18.967 ]
+  else:
+    raise NotImplementedError('Only order 1 integration implemented')
+    
+  return xi,weight  
           
 #-----------------------------------------------------------------------
 
@@ -533,6 +636,14 @@ def getIntegrationPoints( elemType , order , scheme ):
     elif elemType == "Tria6":
       stdOrder = 1  
     xi,weight = tria_scheme( orderArray[stdOrder + order] )
+    
+  elif elemType[:-1] == "Tetra":
+    stdOrder = 1
+    xi,weight = tetra_scheme( stdOrder + order )
+    
+  elif elemType == "Pyramid5":
+    stdOrder = 1
+    xi,weight = pyramid_scheme( stdOrder + order )    
 
   elif elemType[:-1] == "Quad":  
     if elemType == "Quad4":
@@ -551,7 +662,7 @@ def getIntegrationPoints( elemType , order , scheme ):
   elif elemType[:-1] == "Hexa":  
     if elemType == "Hexa8":
       stdOrder = 2
- 
+      
     stdOrder += order
 
     ip,w  = gauss_scheme( stdOrder )
@@ -561,6 +672,23 @@ def getIntegrationPoints( elemType , order , scheme ):
         for k in range(stdOrder):
           xi.    append( [float(ip[i].real),float(ip[j].real),float(ip[k].real)] )
           weight.append( w[i]*w[j]*w[k] )
+          
+  elif elemType[:-1] == "Prism":
+    orderArray = [1,3,7]
+    if elemType == "Prism6":
+      stdOrder = 2
+    elif elemtype == "Prism18":
+      stdOrder = 3      
+      
+    stdOrder += order
+    
+    ip0,w0 = tria_scheme( orderArray[stdOrder] )
+    ip1,w1 = gauss_scheme( stdOrder )
+    
+    for i in range(orderArray[stdOrder]):
+      for j in range(stdOrder):
+        xi.    append( [float(ip0[i][0].real),float(ip0[i][1].real),float(ip1[j].real)] )
+        weight.append( w0[i]*w1[j] )
 
   return xi , weight
 
@@ -568,15 +696,30 @@ def getIntegrationPoints( elemType , order , scheme ):
 #
 #------------------------------------------------------------------------------
 
-def calcWeight( jac ):
+def calcWeightandDerivatives( elemCoords , sData , weight ):
 
-  n = jac.shape
+  jac = dot ( elemCoords.transpose() , sData.dhdxi )
+  
+  if jac.shape[0] == jac.shape[1]:
+    sData.dhdx = dot ( sData.dhdxi , inv( jac ) )
+    sData.weight = abs(det(jac)) * weight
 
-  if n[0] == n[1]:
-    return abs(det(jac))
-  elif n[0] == 2 and n[1] == 1:
-    return sqrt(sum(sum(jac*jac)))
-
+  elif jac.shape[0] == 2 and jac.shape[1] == 1:
+    sData.weight = sqrt(sum(sum(jac*jac))) * weight
+    
+  elif jac.shape[0] == 3 and jac.shape[1] == 2:
+    jac3 = zeros(shape=(3,3))
+    
+    jac3[:,:2] = jac
+        
+    dA = zeros(3)
+    
+    dA[0] = norm(cross(jac3[:,1],jac3[:,2]))
+    dA[1] = norm(cross(jac3[:,2],jac3[:,0]))
+    dA[2] = norm(cross(jac3[:,0],jac3[:,1]))
+        
+    sData.weight = norm(dA) * weight
+        
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -595,15 +738,34 @@ def getElemShapeData( elemCoords , order = 0 , method = 'Gauss' , elemType = 'De
       sData = eval( 'getShape'+elemType+'(xi)' )
     except:
       raise NotImplementedError('Unknown type :'+elemType)
-
-    jac = dot ( elemCoords.transpose() , sData.dhdxi )
-
-    if jac.shape[0] == jac.shape[1]:
-      sData.dhdx = dot ( sData.dhdxi , inv( jac ) )
-
-    sData.weight = calcWeight( jac ) * weight
+    
+    calcWeightandDerivatives( elemCoords , sData , weight )
+    
     sData.x      = dot(sData.h,elemCoords)
 
     elemData.sData.append(sData)
 
   return elemData
+  
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+def getShapeData( order = 0 , method = 'Gauss' , elemType = 'Default' ):
+
+  shpData = elemShapeData()
+      
+  (intCrds,intWghts) = getIntegrationPoints( elemType , order , method )
+    
+  for xi,weight in zip( intCrds , intWghts ):    
+    try:
+      sData = eval( 'getShape'+elemType+'(xi)' )
+    except:
+      raise NotImplementedError('Unknown type :'+elemType)
+    
+    sData.dhdx   = sData.dhdxi
+    sData.weight = weight
+        
+    shpData.sData.append(sData)
+
+  return shpData  

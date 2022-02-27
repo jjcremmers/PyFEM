@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,10 +26,15 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array, dot
-from pyfem.fem.Assembly import assembleTangentStiffness
+from pyfem.fem.Assembly import assembleTangentStiffness,assembleDissipation,assembleExternalForce
+
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -43,20 +51,24 @@ class DissipatedEnergySolver( BaseModule ):
 
     self.factor    = 1.0
     self.maxLam    = 1.0e20
+    self.lam       = 1.0
+    self.beta      = 2.0
+    self.dtime     = 1.0
+    self.disstype  = "Local"
 
     dofCount    = len(globdat.dofs)
 
     BaseModule.__init__( self , props )
 
     self.method    = "force-controlled"
-    self.Dlam      = 1.0
+    self.Dlam      = self.lam
 
-    globdat.lam    = 1.0
+    globdat.lam    = self.lam
     globdat.dTau   = 0.0
 
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
   def run( self , props , globdat ):
 
@@ -66,81 +78,127 @@ class DissipatedEnergySolver( BaseModule ):
    
     a    = globdat.state
     Da   = globdat.Dstate
-    fhat = globdat.fhat
+    #fhat = globdat.fhat
+    
+    fhat = assembleExternalForce( props, globdat )  
  
     self.printHeader( stat.cycle )
       
     error         = 1.
     lam0          = globdat.lam
+    
+    if stat.cycle == 1: 
+      stat.dtime =  max( globdat.lam * self.dtime , 0.0001 )   
+      
+      K,fint = assembleTangentStiffness( props, globdat )      
+      Da1    = globdat.dofs.solve( K , globdat.lam*fhat )
+      Dlam   = globdat.lam
+    else:
+      Da1    = self.factor * self.Daprev
+      Dlam   = self.factor * self.Dlamprev
+      globdat.lam += Dlam
 
-    K,fint = assembleTangentStiffness( props, globdat )  
+
+    a [:] += Da1[:]
+    Da[:] =  Da1[:]
+    
+    stat.dtime = max( Dlam * self.dtime , 0.0001 ) 
+        
+    K,fint    = assembleTangentStiffness( props, globdat )  
+    dgda,diss = assembleDissipation( props , globdat )   
+
+    res = globdat.lam*fhat-fint  
 
     while error > self.tol:
+      stat.iiter += 1
 
-      if self.method == 'force-controlled':
-        da = globdat.dofs.solve( K, globdat.lam*fhat-fint )
+      d1 = globdat.dofs.solve( K , fhat )
+      d2 = globdat.dofs.solve( K , res )
+            
+      ddlamR = -dot(Da1,d2)/dot(Da1,d1)
+      ddaR   = ddlamR*d1 + d2
 
-      elif self.method == 'nrg-controlled':
-        h  =  0.5 * lam0 * fhat
-        w  = -0.5 * dot ( (a-Da) , fhat )
-        g  =  0.5 * dot ( ( lam0 * Da - self.Dlam * ( a[:] - Da[:] ) ) , fhat ) - globdat.dtau
+      if self.method == 'nrg-controlled':
+        if self.disstype == "Classic":
+          h  =  0.5 * lam0 * fhat  # wordt dgda
+          w  = -0.5 * dot ( (a-Da) , fhat )   # wordt 0.0
+          g  =  0.5 * dot ( ( lam0 * Da - Dlam * ( a[:] - Da[:] ) ) , fhat ) - globdat.dtau  
+        elif self.disstype == "Local":
+          h = dgda
+          w = 0.0
+          g = diss - globdat.dtau
+        else:
+          raise RuntimeError('Not implemented!')
   
-        d1 = globdat.dofs.solve( K , globdat.lam*fhat - fint )
-        d2 = globdat.dofs.solve( K , -1.0*fhat )
+        denom  = - dot ( h , d1 ) - w
 
-        denom  = dot ( h , d2 ) - w
-
-        da     = d1 - ( d2 * ( dot( h , d1 ) + g ) ) / denom
-        dlam   = -g - ( dot( -1.0*h , d1 ) - g * ( 1.0 + denom ) ) / denom;
+        ddaN    = d2 - ( -d1 * ( dot( h , d2 ) + g ) ) / denom
+        ddlamN  = -g - ( dot( -1.0*h , d2 ) - g * ( 1.0 + denom ) ) / denom;
  
-        self.Dlam   += dlam
-        globdat.lam += dlam
-     
-      else:
-        raise RuntimeError('Method not known')
-   
-      # Update displacements
-
-      Da[:] += da[:]
-      a [:] += da[:]
-
+      if self.method == 'force-controlled':
+        Dlam        += ddlamR
+        globdat.lam += ddlamR
+            
+        Da[:] += ddaR[:]
+        a [:] += ddaR[:]        
+      elif self.method == 'nrg-controlled':
+        if stat.iiter == 1 and globdat.dofs.norm(Da+ddaN)/globdat.dofs.norm(Da1) > self.beta:
+          self.method = 'force-controlled'
+          Dlam        += ddlamR
+          globdat.lam += ddlamR
+            
+          Da[:] += ddaR[:]
+          a [:] += ddaR[:]             
+        else:
+          Dlam        += ddlamN
+          globdat.lam += ddlamN
+            
+          Da[:] += ddaN[:]
+          a [:] += ddaN[:]
+                              
       # Solve for new displacement vector, load factor      
-  
+
+      stat.dtime = max( Dlam * self.dtime , 0.0001 )    
+      
       K,fint = assembleTangentStiffness( props, globdat )
+      dgda,diss = assembleDissipation( props , globdat )   
     
+      res = globdat.lam*fhat-fint
       # Check convergence
 
-      error  = globdat.dofs.norm( globdat.lam*fhat-fint ) / globdat.dofs.norm( globdat.lam*fhat )
-
-      # Increment the Newton-Raphson iteration counter
-      # and print error
-
-      stat.iiter += 1
+      error  = globdat.dofs.norm( res ) / globdat.dofs.norm( globdat.lam*fhat )
 
       self.printIteration( stat.iiter , error )
 
     # If converged, calculate the amount of energy that has been dissipated in the \
     # previous step.
 
-    dissnrg = 0.5 * dot( ( lam0 * Da - (globdat.lam-lam0) * ( a - Da ) ),fhat )
+    if self.disstype == "Classic":
+      diss = 0.5 * dot( ( lam0 * Da - Dlam * ( a[:] - Da[:] ) ),fhat )
+   
 
-    self.printConverged( stat.iiter , dissnrg )
+    self.printConverged( stat.iiter , diss )
 
-    Da[:]  = zeros( len(globdat.dofs) )
+    self.Daprev    = Da
+    self.Dlamprev  = Dlam
   
+    self.factor = pow(0.5,0.25*(stat.iiter-self.optiter))
+  
+    globdat.dtau = diss
+        
     if self.method == 'force-controlled':
-      if dissnrg > self.switchEnergy:
+      if diss > self.switchEnergy:
         print('   Switch to nrg diss. arc-length')
         self.method       = 'nrg-controlled'
-        globdat.dtau = 0.25*self.switchEnergy
-      else:
-        globdat.lam += self.Dlam
+        globdat.dtau = diss
+        self.factor  = 1.0     
     else:
-      self.Dlam = 0.
-      globdat.dtau *= pow(0.5,0.25*(stat.iiter-self.optiter))
+      globdat.dtau *= self.factor
+      
       if globdat.dtau > self.maxdTau:
+        self.factor *= self.maxdTau / globdat.dtau
         globdat.dtau = self.maxdTau
-    
+            
     globdat.elements.commitHistory()
 
     globdat.fint = fint
@@ -155,10 +213,11 @@ class DissipatedEnergySolver( BaseModule ):
 
   def printHeader( self , cycle):
 
-    print('\n======================================')
-    print(' Load step %i' % cycle)
-    print('======================================')
-    print('  iter # : L2-norm residual')
+    logger.info("Dissipated Energy Solver ....")
+    logger.info("    =============================================")
+    logger.info("    Load step %i"%cycle)
+    logger.info("    =============================================") 
+    logger.info('    Newton-Raphson   : L2-norm residual')
 
 #------------------------------------------------------------------------------
 #
@@ -166,7 +225,7 @@ class DissipatedEnergySolver( BaseModule ):
 
   def printIteration( self , iiter , error ):
 
-    print('   %5i : %4.2e ' %(iiter,error))
+    logger.info('    Iteration %4i   : %6.4e'%(iiter,error) )
 
 #------------------------------------------------------------------------------
 #
@@ -174,7 +233,5 @@ class DissipatedEnergySolver( BaseModule ):
 
   def printConverged( self , iiter , dissnrg ):
 
-    print('--------------------------------------')
-    print(' Converged in %i iterations' %iiter)
-    if self.method == 'force-controlled':
-      print(' Dissipated energy : %1.3e ' %dissnrg)
+    logger.info('    ---------------------------------------------')
+    logger.info('    Converged in %i iterations with %s.\n' % (iiter,self.method ) )  

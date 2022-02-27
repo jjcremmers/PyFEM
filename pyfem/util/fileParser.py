@@ -1,28 +1,33 @@
-############################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:  #
-#                                                                          #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
-#                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
-#                                                                          #
-#  The latest stable version can be downloaded from the web-site:          #
-#     http://www.wiley.com/go/deborst                                      #
-#                                                                          #
-#  A github repository, with the most up to date version of the code,      #
-#  can be found here:                                                      #
-#     https://github.com/jjcremmers/PyFEM                                  #
-#                                                                          #
-#  The code is open source and intended for educational and scientific     #
-#  purposes only. If you use PyFEM in your research, the developers would  #
-#  be grateful if you could cite the book.                                 #  
-#                                                                          #
-#  Disclaimer:                                                             #
-#  The authors reserve all rights but do not guarantee that the code is    #
-#  free from errors. Furthermore, the authors shall not be liable in any   #
-#  event caused by the use of the program.                                 #
-############################################################################
+################################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:      #
+#                                                                              #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
+#                                                                              #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by                #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
+#  then augmented and maintained by Joris J.C. Remmers.                        #
+#  All rights reserved.                                                        #
+#                                                                              #
+#  A github repository, with the most up to date version of the code,          #
+#  can be found here:                                                          #
+#     https://github.com/jjcremmers/PyFEM/                                     #
+#     https://pyfem.readthedocs.io/                                            #	
+#                                                                              #
+#  The original code can be downloaded from the web-site:                      #
+#     http://www.wiley.com/go/deborst                                          #
+#                                                                              #
+#  The code is open source and intended for educational and scientific         #
+#  purposes only. If you use PyFEM in your research, the developers would      #
+#  be grateful if you could cite the book.                                     #    
+#                                                                              #
+#  Disclaimer:                                                                 #
+#  The authors reserve all rights but do not guarantee that the code is        #
+#  free from errors. Furthermore, the authors shall not be liable in any       #
+#  event caused by the use of the program.                                     #
+################################################################################
+
 from pyfem.util.dataStructures import Properties
 import re
 
@@ -250,6 +255,7 @@ def readNodeTable( fileName , label , nodes = None ):
   output = []
 
   for line in fin:
+
     if line.strip().startswith(startLabel) == True:
 
       nt = nodeTable( label )
@@ -264,48 +270,50 @@ def readNodeTable( fileName , label , nodes = None ):
           output.append(nt)
           break
         
-        a = line.strip().split(';')
-        
-        if len(a) == 2:
-          b = a[0].split('=')
-      
-          if len(b) == 2:
-            if not isNodeDof(b[0]):
-              raise RuntimeError(str(b[0]) + ' is not a NodeDof')
-              
-            dofType,nodeIDs = decodeNodeDof(b[0],nodes)
-                        
-            rhs = b[1]
+        fullRel = line.strip().split(';')           
+
+        if len(fullRel) == 2:
+          splitRel = fullRel[0].split('=')
+
+          if len(splitRel) == 2:
+            lhs = splitRel[0]
+            rhs = splitRel[1]
+
+            if not isNodeDof(lhs):
+              raise RuntimeError(str(lhs) + ' is not a NodeDof')
+            
+            dofType,nodeIDs = decodeNodeDof(lhs,nodes)
             
             if getType(rhs) is float or getType(rhs) is int:  
               for nodeID in nodeIDs:             
-                nt.data.append([ dofType,int(nodeID),float(eval(b[1])) ])
-            else:
+                nt.data.append([ dofType,int(nodeID),float(eval(rhs)) ])
+            else:              
               rhs = rhs.replace(" ","").replace("+"," +").replace("-"," -")
-              c=rhs.split(" ")
-             
+              splitrhs = rhs.split(" ")
               rhs = 0.0
-              
-              for s in c:
-                if getType(s) is float:
-                  rhs += cleanVariable(s)
+              for irhs in splitrhs:
+                if irhs == "":
+                  continue
+                if '[' not in irhs:
+                  for nodeID in nodeIDs:
+                    nt.data.append([ dofType,int(nodeID),float(eval(irhs)) ])
                 else:
-                  c1 = s.split("*")
+                  eq_rhs = irhs.split("*")
                   factor = 1.0
-                  for c2 in c1:
-                    if getType(c2) is float:
-                      factor = cleanVariable(c2)
+                  
+                  for ieq_rhs in eq_rhs:
+                    if (getType(ieq_rhs) is float) or (getType(ieq_rhs) is int):
+                      factor = cleanVariable(ieq_rhs)
                     else:
-                      if isNodeDof(c2):
-                        if '-' in c2:
+                      if isNodeDof(ieq_rhs):
+                        if '-' in ieq_rhs:
                           factor = -1.0;
-                        c2 = c2.replace("-","")
+                        ieq_rhs = ieq_rhs.replace("-","").replace("+","")
+                        slaveDofType,slaveNodeID = decodeNodeDof( ieq_rhs , nodes)
                         
-                        slaveDofType,slaveNodeID = decodeNodeDof( c2 )
-              
-              for nodeID in nodeIDs:        
-                dt = [ dofType,int(nodeID),rhs,slaveDofType,slaveNodeID,factor ]
-                nt.data.append(dt)
+                  for nodeID in nodeIDs:
+                    dt = [ dofType,int(nodeID),rhs,slaveDofType,slaveNodeID,factor ]
+                    nt.data.append(dt)
                                                     
   return output
 

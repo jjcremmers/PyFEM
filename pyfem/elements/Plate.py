@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -29,29 +32,26 @@ from pyfem.util.transformations import getRotationMatrix
 from pyfem.util.shapeFunctions  import getElemShapeData	
 from pyfem.elements.Composite   import Laminate,stressTransformation
 
-from numpy import zeros, ones, dot, array, eye, outer, mat, empty,sqrt
-from scipy.linalg import norm
-from math import atan2, sin, cos, tan
+from numpy import zeros, dot
 
-#==============================================================================
+#===============================================================================
 #
-#==============================================================================
+#===============================================================================
 
 class postProcessPoint:
   pass
 
-#------------------------------------------------------------------------------
+#===============================================================================
 #
-#------------------------------------------------------------------------------
+#===============================================================================
 
 class Plate ( Element ):
 
-  #dofs per element
   dofTypes = [ 'u' , 'v' , 'w' , 'rx' , 'ry' ]
 
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
   def __init__ ( self, elnodes , props ):
     Element.__init__( self, elnodes , props )
@@ -62,36 +62,46 @@ class Plate ( Element ):
     self.B = self.material.getB()
     self.D = self.material.getD()
 
-    Ashear = self.material.getAshear()
+    self.Ashear = self.material.getAshear()
 
-    self.A44 = Ashear[0,0]
-    self.A45 = Ashear[0,1]
-    self.A55 = Ashear[1,1]
+    self.A44 = self.Ashear[0,0]
+    self.A45 = self.Ashear[0,1]
+    self.A55 = self.Ashear[1,1]
 
     self.inertia = self.material.getMassInertia()
 
     self.initPostProcessing()
 
     self.outputLabels = self.postProcess[0].labels+self.postProcess[1].labels
+    
+    self.family = "SHELL"
 
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
   def __type__ ( self ):
     return name
 
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
   def getTangentStiffness ( self, elemdat ):
 
     sData = getElemShapeData( elemdat.coords )
     
+    nNel  = elemdat.coords.shape[0]
+    nDof  = 5*nNel
+    
+    eps0  = zeros(3)
+    kappa = zeros(3)
+    gamma = zeros(2)
+    
     for d in sData:
 
-      stiff = zeros(shape=(20,20))
+      stiff = zeros(shape=(nDof,nDof))
+      fint  = zeros(nDof)
 
       N11 = self.A[0,0]*d.dhdx[:,0] + self.A[0,2]*d.dhdx[:,1]
       N21 = self.A[0,1]*d.dhdx[:,1] + self.A[0,2]*d.dhdx[:,0]
@@ -122,9 +132,35 @@ class Plate ( Element ):
       M26 = self.B[1,2]*d.dhdx[:,1] + self.B[2,2]*d.dhdx[:,0]
       M46 = self.D[0,2]*d.dhdx[:,0] + self.D[2,2]*d.dhdx[:,1]
       M56 = self.D[1,2]*d.dhdx[:,1] + self.D[2,2]*d.dhdx[:,0]
+      
+      eps0[0] = dot(d.dhdx[:,0],elemdat.state[0:nDof:5])
+      eps0[1] = dot(d.dhdx[:,1],elemdat.state[1:nDof:5])
+      eps0[2] = dot(d.dhdx[:,1],elemdat.state[0:nDof:5])+\
+                dot(d.dhdx[:,0],elemdat.state[1:nDof:5])
+                
+      kappa[0]= dot(d.dhdx[:,0],elemdat.state[3:nDof:5])
+      kappa[1]= dot(d.dhdx[:,1],elemdat.state[4:nDof:5])
+      kappa[2]= dot(d.dhdx[:,1],elemdat.state[3:nDof:5])+\
+                dot(d.dhdx[:,0],elemdat.state[4:nDof:5])
+                
+      N = dot(self.A,eps0) + dot(self.B,kappa)
+      M = dot(self.B,eps0) + dot(self.D,kappa)
+      
+      for ppdat in self.postProcess:
+        eps   = eps0 + ppdat.z*kappa
+        sigma = stressTransformation( dot(ppdat.Qbar,eps) , ppdat.theta )
 
-      for i in range(4):
-        for j in range(4):
+        self.appendNodalOutput( ppdat.labels , sigma )
+      
+      for i in range(nNel):
+      
+        fint[5*i+0] += d.dhdx[i,0]*N[0]+d.dhdx[i,1]*N[2]
+        fint[5*i+1] += d.dhdx[i,1]*N[1]+d.dhdx[i,0]*N[2]        
+
+        fint[5*i+3] += d.dhdx[i,0]*M[0]+d.dhdx[i,1]*M[2]
+        fint[5*i+4] += d.dhdx[i,0]*M[2]+d.dhdx[i,1]*M[1]
+        
+        for j in range(nNel):
  
           #K1
           stiff[5*i+0,5*j+0] += d.dhdx[i,0]*N11[j]+d.dhdx[i,1]*N16[j]
@@ -152,13 +188,15 @@ class Plate ( Element ):
           stiff[5*i+3,5*j+4] += d.dhdx[i,0]*M51[j]+d.dhdx[i,1]*M56[j]
           stiff[5*i+4,5*j+4] += d.dhdx[i,0]*M56[j]+d.dhdx[i,1]*M52[j]
 
+      elemdat.fint  += fint  * d.weight
       elemdat.stiff += stiff * d.weight
 
     sData = getElemShapeData( elemdat.coords , -1 )
     
     for d in sData:
 
-      stiff = zeros(shape=(20,20))
+      stiff = zeros(shape=(nDof,nDof))
+      fint  = zeros(nDof)
 
       Q41 = self.A55*d.h
       Q42 = self.A45*d.h
@@ -166,9 +204,21 @@ class Plate ( Element ):
       Q52 = self.A44*d.h
       Q31 = self.A55*d.dhdx[:,0]+self.A45*d.dhdx[:,1]
       Q32 = self.A45*d.dhdx[:,0]+self.A44*d.dhdx[:,1]
+      
+      gamma[0] = dot(d.dhdx[:,0],elemdat.state[2:nDof:5])+\
+                      dot(d.h,elemdat.state[3:nDof:5])
+      gamma[1] = dot(d.dhdx[:,1],elemdat.state[2:nDof:5])+\
+                      dot(d.h,elemdat.state[4:nDof:5])
 
-      for i in range(4):
-        for j in range(4):
+      Q = dot(self.Ashear,gamma)
+
+      for i in range(nNel):
+      
+        fint[5*i+2] += d.dhdx[i,0]*Q[0]+d.dhdx[i,1]*Q[1]
+        fint[5*i+3] += d.h[i]*Q[0]
+        fint[5*i+4] += d.h[i]*Q[1]
+              
+        for j in range(nNel):
  
           #K3
           stiff[5*i+2,5*j+2] += d.dhdx[i,0]*Q31[j]+d.dhdx[i,1]*Q32[j]
@@ -185,42 +235,82 @@ class Plate ( Element ):
           stiff[5*i+3,5*j+4] += d.h[i]*Q51[j]
           stiff[5*i+4,5*j+4] += d.h[i]*Q52[j]
 
+      elemdat.fint  += fint  * d.weight
       elemdat.stiff += stiff * d.weight
+
      
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
   def getInternalForce ( self, elemdat ):
 
-    sData = getElemShapeData( elemdat.coords , -1 )
-
-    elemdat.outlabel.append(self.outputLabels)
-    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),6) )
-
+    sData = getElemShapeData( elemdat.coords )
+    
+    nNel  = elemdat.coords.shape[0]
+    nDof  = 5*nNel
+    
     eps0  = zeros(3)
     kappa = zeros(3)
+    gamma = zeros(2)
+    
+    for d in sData:
 
-    for iData in sData:
-      eps0[0] = dot(iData.dhdx[:,0],elemdat.state[0:20:5])
-      eps0[1] = dot(iData.dhdx[:,1],elemdat.state[1:20:5])
-      eps0[2] = dot(iData.dhdx[:,1],elemdat.state[0:20:5])+\
-                dot(iData.dhdx[:,0],elemdat.state[1:20:5])
+      fint  = zeros(nDof)
+      
+      eps0[0] = dot(d.dhdx[:,0],elemdat.state[0:nDof:5])
+      eps0[1] = dot(d.dhdx[:,1],elemdat.state[1:nDof:5])
+      eps0[2] = dot(d.dhdx[:,1],elemdat.state[0:nDof:5])+\
+                dot(d.dhdx[:,0],elemdat.state[1:nDof:5])
+                
+      kappa[0]= dot(d.dhdx[:,0],elemdat.state[3:nDof:5])
+      kappa[1]= dot(d.dhdx[:,1],elemdat.state[4:nDof:5])
+      kappa[2]= dot(d.dhdx[:,1],elemdat.state[3:nDof:5])+\
+                dot(d.dhdx[:,0],elemdat.state[4:nDof:5])
+                
+      N = dot(self.A,eps0) + dot(self.B,kappa)
+      M = dot(self.B,eps0) + dot(self.D,kappa)
+      
+      for ppdat in self.postProcess:
+        eps   = eps0 + ppdat.z*kappa
+        sigma = stressTransformation( dot(ppdat.Qbar,eps) , ppdat.theta )
 
-      kappa[0]= dot(iData.dhdx[:,0],elemdat.state[3:20:5])
-      kappa[1]= dot(iData.dhdx[:,1],elemdat.state[4:20:5])
-      kappa[2]= dot(iData.dhdx[:,1],elemdat.state[3:20:5])+\
-                dot(iData.dhdx[:,0],elemdat.state[4:20:5])
+        self.appendNodalOutput( ppdat.labels , sigma )
+      
+      for i in range(nNel):
+      
+        fint[5*i+0] += d.dhdx[i,0]*N[0]+d.dhdx[i,1]*N[2]
+        fint[5*i+1] += d.dhdx[i,1]*N[1]+d.dhdx[i,0]*N[2]        
 
-      for i,pp in enumerate(self.postProcess):
-        eps   = eps0 + pp.z*kappa
-        sigma = stressTransformation( dot(pp.Qbar,eps) , pp.theta )
+        fint[5*i+3] += d.dhdx[i,0]*M[0]+d.dhdx[i,1]*M[2]
+        fint[5*i+4] += d.dhdx[i,0]*M[2]+d.dhdx[i,1]*M[1]
+        
+      elemdat.fint  += fint * d.weight
 
-        self.appendNodalOutput( pp.labels , sigma )
+    sData = getElemShapeData( elemdat.coords , -1 )
+    
+    for d in sData:
 
-#------------------------------------------------------------------------------
+      fint  = zeros(nDof)
+      
+      gamma[0] = dot(d.dhdx[:,0],elemdat.state[2:nDof:5])+\
+                      dot(d.h,elemdat.state[3:nDof:5])
+      gamma[1] = dot(d.dhdx[:,1],elemdat.state[2:nDof:5])+\
+                      dot(d.h,elemdat.state[4:nDof:5])
+
+      Q = dot(self.Ashear,gamma)
+
+      for i in range(nNel):
+      
+        fint[5*i+2] += d.dhdx[i,0]*Q[0]+d.dhdx[i,1]*Q[1]
+        fint[5*i+3] += d.h[i]*Q[0]
+        fint[5*i+4] += d.h[i]*Q[1]
+
+      elemdat.fint  += fint  * d.weight
+
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
   def getMassMatrix ( self, elemdat ):
       

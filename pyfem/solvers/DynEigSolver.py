@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,10 +26,15 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array, pi
-from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness, assembleMassMatrix
+from pyfem.fem.Assembly import assembleTangentStiffness, assembleMassMatrix
+
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -67,12 +75,13 @@ class DynEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    print('\n  ================================================')
-    print('   Eigenfrequencies')
-    print('  ================================================')
-    print('   Mode |   Eigenvalue       |  Frequency')
-    
+    logger.info("Dynamic Eigen Solver ........")
+    logger.info("    =============================================")
+    logger.info('   Eigenfrequencies')
+    logger.info("    =============================================")
+    logger.info('   Mode |   Eigenvalue       |  Frequency')
+        
     for i,f in enumerate(eigenvals):
-      print('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,f,f/(2.0*pi)))
+      logger.info('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,f,f/(2.0*pi)))
       
-    print('  ================================================\n')
+    logger.info('  ================================================\n')

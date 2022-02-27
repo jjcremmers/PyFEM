@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -91,24 +94,29 @@ class DofSpace:
     nodeTable = readNodeTable( fname , "NodeConstraints" , self.nodes )
    
     self.cons = self.createConstrainer( nodeTable )
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
               
   def createConstrainer ( self, nodeTables ):
         
     cons = Constrainer(len(self))
-    
+        
     for nodeTable in nodeTables:
       
       label = nodeTable.subLabel
-
+      
       cons.constrainedDofs[label] = []
       cons.constrainedVals[label] = []
       cons.constrainedFac [label] = 1.0
       
       for item in nodeTable.data:
+
         nodeID  = item[1]
         dofType = item[0]
         val     = item[2]
-
+        
         if not nodeID in self.nodes:
           raise RuntimeError('Node ID ' + str(nodeID) + ' does not exist')
 
@@ -126,7 +134,7 @@ class DofSpace:
           slaveDofType = item[3]
           factor       = item[5]
 
-          if not slaveNodeID in self.nodes:
+          if not slaveNodeID[0] in self.nodes:
             raise RuntimeError('Node ID ' + str(slaveNodeID) + ' does not exist')
 
           slaveInd = self.IDmap.get( slaveNodeID )
@@ -135,14 +143,23 @@ class DofSpace:
             raise RuntimeError('DOF type "' + slaveDofType + '" does not exist')
       
           slaveDof = self.dofs[slaveInd,self.dofTypes.index(slaveDofType)]
-      
+
           dofID = self.dofs[ind,self.dofTypes.index(dofType)]
-                  
-          cons.addConstraint(dofID , [ val , slaveDof , factor ] , label )
-                    
+
+          cons.addConstraint(dofID , [ val , slaveDof , factor ] , label )     
+      
+    # Check for all tyings whether master of slave is not slave itself
+    cons.checkConstraints( self, nodeTables )
+
     cons.flush()
-        
+
     return cons
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  
 
 #-------------------------------------------------------------------------------
 #
@@ -219,12 +236,13 @@ class DofSpace:
       constrainer.addConstrainedValues( a )
 
       A_constrained = constrainer.C.transpose() * (A * constrainer.C )
+
       b_constrained = constrainer.C.transpose() * ( b - A * a )
-            
+
       x_constrained = spsolve( A_constrained, b_constrained )
 
       x = constrainer.C * x_constrained
-      
+
       constrainer.addConstrainedValues( x )
           
     elif len(A.shape) == 1:
@@ -260,6 +278,8 @@ class DofSpace:
 #
 #-------------------------------------------------------------------------------
 
-  def norm ( self, r ):
+  def norm ( self, r, constrainer = None  ):
+    if constrainer is None:
+      constrainer = self.cons
     
-    return scipy.linalg.norm( self.cons.C.transpose() * r )
+    return scipy.linalg.norm( constrainer.C.transpose() * r )

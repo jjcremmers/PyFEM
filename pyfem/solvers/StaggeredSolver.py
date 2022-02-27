@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,10 +26,12 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness, commit
+from pyfem.fem.Assembly import assembleExternalForce
 from pyfem.util.logger import getLogger
 import sys
 
@@ -45,7 +50,7 @@ class StaggeredSolver ( BaseModule ):
 
     self.maxCycle = sys.maxsize
     self.maxLam   = 1.0e20
-    self.dtime    = 0.1
+    self.dtime    = 1.0
     self.loadFunc = "t"
     self.loadCases= []
     
@@ -63,7 +68,10 @@ class StaggeredSolver ( BaseModule ):
     
     self.solvers.append(self.solver1)
     self.solvers.append(self.solver2)
-          
+    
+    self.loadfunc = eval ( "lambda t : " + str(self.loadFunc) )
+    globdat.solverStatus.dtime = self.dtime
+           
     logger.info("Starting staggered solver .......")
  
 #------------------------------------------------------------------------------
@@ -73,26 +81,42 @@ class StaggeredSolver ( BaseModule ):
   def run( self , props , globdat ):
 
     stat = globdat.solverStatus
+    
+    self.stat = stat
+    
     stat.increaseStep()
 
-    fext  = zeros( len(globdat.dofs) ) 
+    #fext  = zeros( len(globdat.dofs) ) 
+    
+    logger.info("Staggered solver ............")
+    logger.info("    =============================================")
+    logger.info("    Load step %i"%globdat.solverStatus.cycle)
+    logger.info("    =============================================")
     
     for solver in self.solvers:
            
-      globdat.iiter = 0
-      error         = 1.0
+      stat.iiter = 0
+      error      = 1.0
       
       K,fint = assembleTangentStiffness( props, globdat )
-       
-      solver.cons.setConstrainFactor(1.0)
+      fext   = assembleExternalForce   ( props, globdat )       
+      
+      self.setLoadAndConstraints( solver.cons )
       
       da = globdat.dofs.solve( K, fext - fint, solver.cons )
       
       globdat.state += da  
-     
+      
+      logger.info('    Solver           : %s' %solver.name )
+          
       if solver.type == "Nonlinear":
       
-        norm = globdat.dofs.norm( fext - fint )
+        if solver.name == "dummy":
+          norm = 1.0
+        else:
+          norm = globdat.dofs.norm( fext - fint, solver.cons )
+        
+        logger.info('    Newton-Raphson   : L2-norm residual')
       
         while error > self.tol:
         
@@ -106,12 +130,16 @@ class StaggeredSolver ( BaseModule ):
 
           globdat.state += da  
           
-          if norm < 1.0e-16:
-            error = globdat.dofs.norm( fext-fint )
+          if solver.name == "dummy":
+            error = 1.0e-8           
+          elif norm < 1.0e16:
+            error = globdat.dofs.norm( fext-fint, solver.cons )
           else:
             error = globdat.dofs.norm( fext-fint ) / norm
+            
+          logger.info('    Iteration %4i   : %6.4e'%(stat.iiter,error) )            
       
-          if globdat.iiter == self.iterMax:
+          if stat.iiter == self.iterMax:
             raise RuntimeError('Newton-Raphson iterations did not converge!')
          
     # Combine results and calculate stresses
@@ -124,4 +152,39 @@ class StaggeredSolver ( BaseModule ):
     
     if stat.cycle == self.maxCycle: # or globdat.lam > self.maxLam:
       globdat.active = False 
+
+#---------------------------------------------------------------------------
+#
+#  -------------------------------------------------------------------------
+
+
+  def setLoadAndConstraints( self , cons ):
+
+    #logger.info("    Load step %i"%self.stat.cycle)
+ 
+    time  = self.stat.time
+    time0 = time - self.stat.dtime
     
+    lam     = self.loadfunc( time  )
+    lam0    = self.loadfunc( time0 )
+
+    dlam = lam - lam0
+    
+    cons.setConstrainFactor( dlam )
+
+    #logger.info('  ---- main load --------------------\n-----')
+    #logger.info('    loadFactor       : %4.2f'%lam)
+    #logger.info('    incr. loadFactor : %4.2f'%dlam)
+
+    for loadCase in self.loadCases:
+      loadProps = getattr( self.myProps, loadCase )
+      
+      loadfunc = eval ( "lambda t : " + str(loadProps.loadFunc) )
+      lam  = loadfunc( time  )
+      lam0 = loadfunc( time0 )
+      dlam = lam - lam0
+      cons.setConstrainFactor( dlam , loadProps.nodeTable )
+
+      #print('  ---- ',loadCase,' ---------------------')
+      #print('    loadFactor       : %4.2f'%lam)
+      #logger.info('    incr. loadFactor : %4.2f'%dlam)   

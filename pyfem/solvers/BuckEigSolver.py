@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,10 +26,15 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array, pi
-from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness, assembleMassMatrix
+from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness
+
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -42,8 +50,6 @@ class BuckEigSolver ( BaseModule ):
     BaseModule.__init__( self , props )
 
     self.fext  = zeros( len(globdat.dofs) )  
-
-    print("\n  Starting buckling solver .....\n")
  
 #------------------------------------------------------------------------------
 #
@@ -73,12 +79,13 @@ class BuckEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    print('\n======================================')
-    print(' eigenfrequencies')
-    print('======================================')
-    print(' Mode  Eigen   Freq')
+    logger.info("Staggered solver ............")
+    logger.info("    =============================================")
+    logger.info("    Eigen modes")
+    logger.info("    =============================================")
+    logger.info("    Mode   Load")
     
     for i,f in enumerate(eigenvals):
-      print(' %3i : %6.4e  %6.4e' %(i+1,f,f*2*pi))
+      logger.info(' %3i : %6.4e  ' %(i+1,f))
       
-    print('======================================\n')
+    logger.info('======================================\n')

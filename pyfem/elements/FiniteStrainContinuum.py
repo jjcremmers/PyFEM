@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -29,11 +32,6 @@ from pyfem.util.shapeFunctions  import getElemShapeData
 from pyfem.util.kinematics      import Kinematics
 
 from numpy import zeros, dot, outer, ones, eye, sqrt, reshape
-from scipy.linalg import eigvals
-
-from pyfem.util.logger   import getLogger
-
-logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -52,11 +50,9 @@ class FiniteStrainContinuum( Element ):
     if self.rank == 2:
       self.dofTypes = [ 'u' , 'v' ]
       self.nstr = 3
-      self.outputLabels = ["s11","s22","s12"]
     elif self.rank == 3:
       self.dofTypes = [ 'u' , 'v' , 'w' ]
       self.nstr = 6
-      self.outputLabels = ["s11","s22","s33","s23","s13","s12"]
 
     self.kin = Kinematics(self.rank,self.nstr)
     
@@ -74,19 +70,15 @@ class FiniteStrainContinuum( Element ):
     elif self.method == "UL":
       return self.getULTangentStiffness( elemdat )
     else:
-      print("Error")
+      raise RuntimeError("Please define total or updated Lagrange (method = 'TL' or 'UL'.")
   
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
-    
   def getTLTangentStiffness ( self, elemdat ):
 
     sData = getElemShapeData( elemdat.coords )
-    
-    elemdat.outlabel.append(self.outputLabels)
-    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
    
     for iData in sData:
 
@@ -111,28 +103,27 @@ class FiniteStrainContinuum( Element ):
 
   def getULTangentStiffness ( self, elemdat ):
   
-    elemdat.state0 = elemdat.state - elemdat.Dstate
+    state0  = elemdat.state - elemdat.Dstate
+    curCrds = elemdat.coords + reshape(state0,elemdat.coords.shape)
     
     sData0 = getElemShapeData( elemdat.coords )
-    sDataC = getElemShapeData( elemdat.coords + reshape(elemdat.state0,(8,3)) )
-    
-    elemdat.outlabel.append(self.outputLabels)
-    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
-       
-    for iData0,iDataC in zip(sData0,sDataC):
+    sDataC = getElemShapeData( curCrds )
 
-      self.kin = self.getKinematics( iData0.dhdx , elemdat ) 
-      B        = self.getULBmatrix ( iDataC.dhdx )
+       
+    for iOrig,iCurr in zip(sData0,sDataC):
+
+      self.kin = self.getKinematics( iOrig.dhdx , elemdat ) 
+      B        = self.getULBmatrix ( iCurr.dhdx )
             
       sigma,tang = self.mat.getStress( self.kin )
         
-      elemdat.stiff += dot ( B.transpose() , dot ( tang , B ) ) * iDataC.weight
+      elemdat.stiff += dot ( B.transpose() , dot ( tang , B ) ) * iCurr.weight
 
       T   = self.stress2matrix( sigma )
-      Bnl = self.getBNLmatrix ( iDataC.dhdx )
+      Bnl = self.getBNLmatrix ( iCurr.dhdx )
    
-      elemdat.stiff += dot ( Bnl.transpose() , dot( T , Bnl ) ) * iDataC.weight
-      elemdat.fint  += dot ( B.transpose() , sigma ) * iDataC.weight
+      elemdat.stiff += dot ( Bnl.transpose() , dot( T , Bnl ) ) * iCurr.weight
+      elemdat.fint  += dot ( B.transpose() , sigma ) * iCurr.weight
       
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
@@ -142,24 +133,73 @@ class FiniteStrainContinuum( Element ):
 
   def getInternalForce ( self, elemdat ):
    
-    n = self.dofCount()
+    if self.method == "TL":
+      return self.getTLInternalForce( elemdat )
+    elif self.method == "UL":
+      return self.getULInternalForce( elemdat )
+    else:
+      raise RuntimeError("Please define total or updated Lagrange (method = 'TL' or 'UL'.")
+  
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
    
+  def getTLInternalForce ( self, elemdat ):
+
     sData = getElemShapeData( elemdat.coords )
-
-    elemdat.outlabel.append(self.outputLabels)
-    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
-
+       
     for iData in sData:
-            
+
       self.kin = self.getKinematics( iData.dhdx , elemdat ) 
       B        = self.getBmatrix   ( iData.dhdx , self.kin.F )
       
       sigma,tang = self.mat.getStress( self.kin )
-       
-      elemdat.fint    += dot ( B.transpose() , sigma ) * iData.weight
+        
+      elemdat.fint  += dot ( B.transpose() , sigma ) * iData.weight
+      
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
 
-      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() ) 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
+  def getULInternalForce ( self, elemdat ):
+  
+    state0  = elemdat.state - elemdat.Dstate
+    curCrds = elemdat.coords + reshape(state0,elemdat.coords.shape)
+ 
+    sData0 = getElemShapeData( elemdat.coords )
+    sDataC = getElemShapeData( curCrds )
+    
+    for iOrig,iCurr in zip(sData0,sDataC):
+
+      self.kin = self.getKinematics( iOrig.dhdx , elemdat ) 
+      B        = self.getULBmatrix ( iCurr.dhdx )
+            
+      sigma,tang = self.mat.getStress( self.kin )
+             
+      elemdat.fint  += dot ( B.transpose() , sigma ) * iCurr.weight
+      
+      self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
+      
+#-------------------------------------------------------------------------------
+    
+  def getDissipation ( self, elemdat ):
+      
+    sData = getElemShapeData( elemdat.coords )
+
+    for iData in sData:
+      self.kin = self.getKinematics( iData.dhdx , elemdat ) 
+      B        = self.getBmatrix   ( iData.dhdx , self.kin.F )
+
+      self.mat.getStress( self.kin )
+
+      self.kin.dgdstrain = zeros( 3 )
+      self.kin.g = 0.0
+      
+      elemdat.fint += dot ( B.transpose() , self.kin.dgdstrain ) * iData.weight
+      elemdat.diss += self.kin.g * iData.weight 
+    
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -257,6 +297,9 @@ class FiniteStrainContinuum( Element ):
  
     return B
     
+ #------------------------------------------------------------------------------
+ #
+ #------------------------------------------------------------------------------
     
   def getULBmatrix( self , dphi  ):
 

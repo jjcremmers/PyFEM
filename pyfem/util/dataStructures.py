@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,6 +26,7 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from numpy import zeros
 from pyfem.util.logger     import getLogger
 
@@ -54,8 +58,10 @@ class solverStatus:
     self.cycle  = 0
     self.iiter  = 0
     self.time   = 0.0
+    self.time0  = 0.0
     self.dtime  = 0.0
-  
+    self.lam    = 1.0
+      
   def increaseStep( self ):
   
     self.cycle += 1
@@ -276,6 +282,7 @@ class elementData():
     self.fint   = zeros( shape=(nDof) )
     self.mass   = zeros( shape=( nDof,nDof ) )
     self.lumped = zeros( shape=(nDof) )
+    self.diss   = 0.0
 
     self.outlabel = []
    

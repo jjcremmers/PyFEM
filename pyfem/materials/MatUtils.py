@@ -1,4 +1,4 @@
-from numpy import dot,zeros,insert,array
+from numpy import dot,zeros,insert,array,ones
 from math import sqrt
 
 def vonMisesStress( s ):
@@ -99,6 +99,34 @@ def transform3To2( s , t ):
          array([(t[0,0] , t[0,1] , t[0,5]), \
                 (t[1,0] , t[1,1] , t[1,5]), \
                 (t[5,0] , t[5,1] , t[5,5])])
+                
+                
+#------------------------------------------------------------------------------
+#  hydroStaticStress
+#------------------------------------------------------------------------------
+
+
+def hydroStatic( s ):
+
+  return sum( s[:3] )/3.0
+
+
+    
+#------------------------------------------------------------------------------
+#  splitStrains
+#------------------------------------------------------------------------------
+
+
+def splitStrains( eps ):
+
+  theta = hydroStatic( eps )
+  
+  deps = zeros(6)
+
+  deps[:3] = eps[:3] - theta*ones(3)
+  deps[3:] = 0.5*eps[3:]
+
+  return theta,deps  
                    
 
     

@@ -31,6 +31,8 @@ class Isotropic( BaseMaterial ):
 
   def __init__ ( self, props ):
 
+    self.incremental = False
+    
     #Call the BaseMaterial constructor
     BaseMaterial.__init__( self, props )
 
@@ -54,10 +56,23 @@ class Isotropic( BaseMaterial ):
 
     #Set the labels for the output data in this material model
     self.outLabels = [ "S11" , "S22" , "S33" , "S23" , "S13" , "S12" ]
-  
+    
+    if self.incremental:
+      self.setHistoryParameter( 'sigma'  , zeros(6) )
+      self.commitHistory()
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def getStress( self, deformation ):
 
-    sigma = dot( self.H, deformation.strain )
+    if self.incremental:
+      sigma = self.getHistoryParameter('sigma')  
+      sigma += dot( self.H, deformation.dstrain )
+      self.setHistoryParameter( 'sigma' , sigma )
+    else:
+      sigma = dot( self.H, deformation.strain )
 
     self.outData = sigma
 

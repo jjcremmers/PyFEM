@@ -36,6 +36,35 @@ logger = getLogger()
 #
 #------------------------------------------------------------------------------
 
+class vtkWriter():
+
+  def __init__( self ):
+  
+  def storeNodes( self , nodes ):
+  
+  def storeElems( self , elems ):
+  
+  def addNodalData( self , data , label ):
+  
+  def addElementData( self , data , label ):
+  
+  def write( self , fileName ):
+  
+    vtkfile = open( fileName ,'w' )
+
+    vtkfile.write('<?xml version="1.0"?>\n')
+    vtkfile.write('<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">\n')
+
+    vtkfile.write('<UnstructuredGrid>\n')
+
+    vtkfile.write('<Piece NumberOfPoints="'+str(len(globdat.nodes))+'" NumberOfCells="')
+
+    vtkfile.write(str(globdat.elements.elementGroupCount( self.elementGroup))+'">\n')
+
+    vtkfile.write('<PointData>\n')
+
+    vtkfile.write('<DataArray type="Float64" Name="displacement" NumberOfComponents="3" format="ascii" >\n')
+  
 class MeshWriter ( BaseModule ):
  
   def __init__( self , props , globdat ):
@@ -45,8 +74,6 @@ class MeshWriter ( BaseModule ):
     self.k            = 0
     self.interval     = 1
     self.extraFields  = []
-    self.beam         = False
-    self.interface 			= False
 
     BaseModule.__init__( self , props )
     
@@ -75,7 +102,7 @@ class MeshWriter ( BaseModule ):
 #
 
   def writeCycle( self , state , props , globdat ):
-  
+
     vtkfile = open( self.prefix + '-' + str(self.k) + '.vtu' ,'w' )
 
     vtkfile.write('<?xml version="1.0"?>\n')
@@ -138,23 +165,17 @@ class MeshWriter ( BaseModule ):
 
     for element in globdat.elements.iterElementGroup( self.elementGroup ):
       el_nodes = globdat.nodes.getIndices(element.getNodes())
-						
+
       if rank == 2:
-        if len(el_nodes) == 2 and element.family == "BEAM":
-          vtkfile.write(str(el_nodes[0])+' '+str(el_nodes[1]))
-        elif len(el_nodes) == 3 and element.family == "BEAM":
-          vtkfile.write(str(el_nodes[0])+' '+str(el_nodes[2]))
-        elif len(el_nodes) == 3 or (len(el_nodes) == 4 and not self.interface):
+        if len(el_nodes) == 3 or len(el_nodes) == 4:
           for node in el_nodes:
             vtkfile.write(str(node)+' ')
-        elif len(el_nodes) == 4 and self.interface:
-		        vtkfile.write(str(el_nodes[0])+' '+str(el_nodes[1])+' '+str(el_nodes[3])+' '+str(el_nodes[2])+' ')
         elif len(el_nodes) == 6 or len(el_nodes) == 8:
           for node in el_nodes[::2]:
             vtkfile.write(str(node)+' ')
 
       elif rank == 3:
-        if len(el_nodes) <= 8:
+        if len(el_nodes) == 8:
           for node in el_nodes:
             vtkfile.write(str(node)+' ')
  
@@ -162,42 +183,28 @@ class MeshWriter ( BaseModule ):
   
     vtkfile.write('</DataArray>\n')
     vtkfile.write('<DataArray type="Int64" Name="offsets" format="ascii">\n')
-    
-    nTot = 0
-    
+
     for i,element in enumerate(globdat.elements.iterElementGroup( self.elementGroup )):
       nNel = len(globdat.nodes.getIndices(element.getNodes()))
 
       if rank == 2 and nNel == 8:
         nNel = 4
-      elif nNel == 3 and self.beam:
-        nNel = 2
-
-      nTot += nNel
-      vtkfile.write(str(nTot)+'\n')
+      vtkfile.write(str(nNel*(i+1))+'\n')
 
     vtkfile.write('</DataArray>\n')
-    vtkfile.write('<DataArray type="UInt8" Name="types" format="ascii">\n')
+    vtkfile.write('<DataArray type="UInt8" Name="types" format="ascii" RangeMin="9" RangeMax="9">\n')
 
     for element in globdat.elements.iterElementGroup( self.elementGroup ):
       nNel = len(globdat.nodes.getIndices(element.getNodes()))
 
       if rank == 2:
-        if nNel < 4 and self.beam:
-          vtkfile.write('3\n')
-        elif nNel == 3 or nNel ==6:
+        if nNel == 3 or nNel ==6:
           vtkfile.write('5\n')
         else:
           vtkfile.write('9\n')
       else:
         if nNel == 8:
           vtkfile.write('12\n')
-        elif nNel == 6:
-          vtkfile.write('13\n')
-        elif nNel == 4:
-          vtkfile.write('10\n')          
-        elif nNel == 5:
-          vtkfile.write('14\n')              
 
     vtkfile.write('</DataArray>\n')
     vtkfile.write('</Cells>\n')

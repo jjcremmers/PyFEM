@@ -5,7 +5,7 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  Copyright (C) 2011-2020. The code is written in 2011-2012 by            #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
 #  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
 #  then augmented and  maintained by Joris J.C. Remmers.                   #
 #  All rights reserved.                                                    #
@@ -43,8 +43,8 @@ def assembleArray ( props, globdat, rank, action ):
 
   #Initialize the global array A with rank 2
 
-  #A = zeros( len(globdat.dofs) * ones(2,dtype=int) )
   B = zeros( len(globdat.dofs) * ones(1,dtype=int) )
+  cc = 0.0
 
   val   = array([],dtype=float)
   row   = array([],dtype=int)
@@ -104,8 +104,8 @@ def assembleArray ( props, globdat, rank, action ):
       #Assemble in the global array
       if rank == 1:
         B[el_dofs] += elemdat.fint
+        cc         += elemdat.diss
       elif rank == 2 and action == "getTangentStiffness":  
-        #A[ix_(el_dofs,el_dofs)] += elemdat.stiff
 
         row = append(row,repeat(el_dofs,len(el_dofs)))
 
@@ -129,8 +129,12 @@ def assembleArray ( props, globdat, rank, action ):
   #      raise NotImplementedError('assemleArray is only implemented for vectors and matrices.')
 
   if rank == 1:
-    return B
+    return B,cc
   elif rank == 2:
+
+    if globdat.contact.flag:
+      row , val , col = globdat.contact.checkContact( row , val , col , B , globdat )      
+
     return coo_matrix((val,(row,col)), shape=(nDof,nDof)),B
 
 
@@ -139,16 +143,21 @@ def assembleArray ( props, globdat, rank, action ):
 ##########################################
 
 def assembleInternalForce ( props, globdat ):
-  return assembleArray( props, globdat, rank = 1, action = 'getInternalForce' )
+  fint = assembleArray( props, globdat, rank = 1, action = 'getInternalForce' )
+  return fint[0]
 
 ##########################################
 # External force vector assembly routine # 
 ##########################################
 
 def assembleExternalForce ( props, globdat ):
-  return globdat.fhat + assembleArray( props, globdat, rank = 1, action = 'getExternalForce' )
+  fext = assembleArray( props, globdat, rank = 1, action = 'getExternalForce' )   
 
-
+  return fext[0] + globdat.fhat * globdat.solverStatus.lam
+  
+def assembleDissipation ( props, globdat ):
+  return assembleArray( props, globdat, rank = 1, action = 'getDissipation' )   
+ 
 #############################################
 # Tangent stiffness matrix assembly routine # 
 #############################################

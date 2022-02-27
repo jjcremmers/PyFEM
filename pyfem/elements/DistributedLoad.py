@@ -29,99 +29,142 @@
 
 from .Element import Element
 from pyfem.util.shapeFunctions  import getElemShapeData
-from numpy import dot, outer, ix_
-from math import pi
+from numpy import dot, zeros, array, cross
+from math import sqrt
 
-class ThermoSurface( Element ):
+class DistributedLoad( Element ):
   
   def __init__ ( self, elnodes , props ):
-  
-    self.emissivity   = 0.0
-    self.convection   = 0.0
-    self.extTemp      = 0.0
-    self.axiSymmetric = False
     
     Element.__init__( self, elnodes , props )
 
-    self.dofTypes = [ 'temp' ]
-    self.Boltzman = 5.670373e-8
-    self.extTemp4 = self.extTemp**4
+    if self.rank == 2:
+      self.dofTypes = [ 'u' , 'v' ]
+    elif self.rank == 3:
+      self.dofTypes = [ 'u' , 'v' , 'w' ]
+      
+    if hasattr(self,"trac"):
+      self.trac = array(self.trac)
             
   def __type__ ( self ):
     return name
-
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
-  def getTangentStiffness ( self, elemdat ):
-           
-    sData = self.getShapeData( elemdat )
-                                      
-    for iData in sData:
-    
-      if self.axiSymmetric:
-        r      = dot( elemdat.coords[:,0] , iData.h )
-        weight = 2.0*pi*r*iData.weight
-      else:
-        weight = iData.weight
       
-      temp     = sum( iData.h * elemdat.state )
-                    
-      elemdat.stiff += outer ( iData.h , iData.h ) * \
-        ( self.convection + 4.0 * self.Boltzman * self.emissivity * temp**3 ) * weight
-           
-      elemdat.fint += iData.h * ( self.convection * ( temp - self.extTemp ) + \
-        self.Boltzman * self.emissivity * ( temp**4 - self.extTemp4 ) ) * weight
-           
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
-
-  def getInternalForce ( self, elemdat ):
-     
+  
+  def getExternalForce( self, elemdat ):
+       
     sData = self.getShapeData( elemdat )
                        
-    for iData in sData: 
+    for iData in sData:
+      N = self.getNmatrix( iData.h )
+      
+      trac = self.getTraction(iData.normal)
+            
+      elemdat.fint += dot(trac,N)*iData.weight      
+      
+    elemdat.fint *= self.loadFactor()
+         
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getNmatrix( self , h ):
+
+    N = zeros( shape=( self.rank , self.rank*len(h) ) )
+
+    for i,a in enumerate( h ):
+      for j in list(range(self.rank)):
+        N[j,self.rank*i+j] = a
     
-      if self.axiSymmetric:
-        r      = dot( elemdat.coords[:,0] , iData.h )
-        weight = 2.0*pi*r*iData.weight
-      else:
-        weight = iData.weight        
-        
-      temp     = sum( iData.h * elemdat.state )
-                               
-      elemdat.fint += iData.h * ( self.convection * ( temp - self.extTemp ) + \
-        self.Boltzman * self.emissivity * ( temp**4 - self.extTemp4 ) ) * weight
-        
+    return N
+    
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
   
   def getShapeData( self , elemdat ):
-
-   nNod = elemdat.coords.shape[0]
+ 
+   crd  = elemdat.coords  
+   nNod = crd.shape[0]
      
-   if self.rank == 2:     
+   if self.rank == 2:
+     b = zeros(3)
+     b[2] = 1.0
+     
      if nNod == 2:
-       return getElemShapeData( elemdat.coords , elemType = "Line2" )
+       sData = getElemShapeData( elemdat.coords , elemType = "Line2" )
+       a     = self.getDirection(crd,1,0)
      elif nNod == 3:
-       return getElemShapeData( elemdat.coords , elemType = "Line3" )
+       sData = getElemShapeData( elemdat.coords , elemType = "Line3" )
+       a     = self.getDirection(crd,2,0)
      else:
        raise RuntimeError("The rank is 2, the number of nodes must be 2 or 3.")
    elif self.rank == 3:
      if nNod == 3:
-       return getElemShapeData( elemdat.coords , elemType = "Tria3" )  
+       a     = self.getDirection(crd,1,0)
+       b     = self.getDirection(crd,2,0)
      elif nNod == 4:
-       return getElemShapeData( elemdat.coords , elemType = "Quad4" )  
+       sData = getElemShapeData( elemdat.coords , elemType = "Quad4" )  
+       a     = self.getDirection(crd,1,0)
+       b     = self.getDirection(crd,2,0)
      elif nNod == 6:
-       return getElemShapeData( elemdat.coords , elemType = "Tria6" ) 
+       sData = getElemShapeData( elemdat.coords , elemType = "Tria6" ) 
+       a     = self.getDirection(crd,1,0)
+       b     = self.getDirection(crd,2,0) 
      elif nNod == 8:
-       return getElemShapeData( elemdat.coords , elemType = "Quad8" )  
+       sData = getElemShapeData( elemdat.coords , elemType = "Quad8" )  
+       a     = self.getDirection(crd,1,0)
+       b     = self.getDirection(crd,2,0)       
      else:
        raise RuntimeError("The rank is 3, the number of nodes must be 3, 4, 6 or 8.")
    else:
      raise RuntimeError("The element must be rank 3.")
      
-   return None   
+   for iData in sData:
+     iData.normal = cross(a,b)
+     iData.normal *= 1.0/sqrt(dot(iData.normal,iData.normal))
+     
+   return sData     
+   
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getTraction( self , normal ):
+  
+    if hasattr(self,"pressure"):
+      return self.solverStat.lam*normal * self.pressure    
+    elif hasattr(self,"trac"):
+      return self.solverStat.lam*self.trac
+    else:
+      raise RuntimeError("Define either pressure or trac")  
+      
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getDirection( self , crd , i , j ):
+    
+    direc = zeros(3)
+    
+    rank = crd.shape[1]
+    
+    direc[:rank] = crd[i,:] - crd[j,:]
+    
+    return direc
+    
+       
+              
+
+
+
+
+
+
+
+
+
+
+           

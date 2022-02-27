@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -38,11 +41,14 @@ class TimoshenkoBeam ( Element ):
 
   def __init__ ( self, elnodes , props ):
     Element.__init__( self, elnodes , props )
+    self.family = "BEAM"
 
   def __type__ ( self ):
     return name
 
-#---------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def getTangentStiffness ( self, elemdat ):
 
@@ -51,17 +57,6 @@ class TimoshenkoBeam ( Element ):
     GA = 5./6.*elemdat.props.G * elemdat.props.A
     
     l0 = norm( elemdat.coords[2]-elemdat.coords[0] )
-
-    #intpoints = zeros(3)
-    #weights   = zeros(3)
-    
-    #weights[0] = 5./9.
-    #weights[1] = 8./9.
-    #weights[2] = 5./9.
-        
-    #intpoints[0] = -sqrt(3./5.)
-    #intpoints[1] =  0.
-    #intpoints[2] =  sqrt(3./5.)
     
     intpoints = zeros(2)
     weights   = zeros(2)
@@ -116,7 +111,11 @@ class TimoshenkoBeam ( Element ):
     elemdat.fint  = self.toGlobalCoordinates( fint  , elemdat.coords )
     elemdat.stiff = self.toGlobalCoordinates( stiff , elemdat.coords )    
     
-  #-------------------------------------------
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
 
   def getInternalForce ( self, elemdat ):
 
@@ -124,16 +123,16 @@ class TimoshenkoBeam ( Element ):
     EI = elemdat.props.E * elemdat.props.I
     l0 = norm( elemdat.coords[2]-elemdat.coords[0] )
 
-    intpoints = zeros(3)
-    weights   = zeros(3)
+    l0 = norm( elemdat.coords[2]-elemdat.coords[0] )
     
-    weights[0] = 5./9.
-    weights[1] = 8./9.
-    weights[2] = 5./9.
-        
-    intpoints[0] = -sqrt(3./5.)
-    intpoints[1] =  0.
-    intpoints[2] =  sqrt(3./5.)
+    intpoints = zeros(2)
+    weights   = zeros(2)
+    
+    weights[0] = 1.
+    weights[1] = 1.
+       
+    intpoints[0] = -0.577
+    intpoints[1] =  0.577
     
     a_bar = elemdat.state
             
@@ -154,7 +153,9 @@ class TimoshenkoBeam ( Element ):
       elemdat.fint  += N * bu * wght
       elemdat.fint  += ( N * dot( bw , a_bar ) * bw + M * c ) * wght
   
-#-------------------------------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
   
   def getHu( self , xi ):
     
@@ -166,7 +167,9 @@ class TimoshenkoBeam ( Element ):
     
     return Hu
 
-#-------------------------------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
   
   def getHw( self , xi ):
     
@@ -178,7 +181,9 @@ class TimoshenkoBeam ( Element ):
     
     return Hw
     
-#-------------------------------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
   
   def getHt( self , xi ):
     
@@ -190,7 +195,9 @@ class TimoshenkoBeam ( Element ):
     
     return Ht
     
-#-------------------------------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
     
   def getBu( self , l0 , xi ):
 
@@ -202,7 +209,9 @@ class TimoshenkoBeam ( Element ):
   
     return Bu
 
-#-------------------------------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
     
   def getBw( self , l0 , xi ):
 
@@ -217,7 +226,9 @@ class TimoshenkoBeam ( Element ):
       
     return Bw
     
-#-------------------------------------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
     
   def getBt( self , l0 , xi ):
 
@@ -229,7 +240,9 @@ class TimoshenkoBeam ( Element ):
   
     return Bt
     
-#-------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def toElementCoordinates( self , a , coords ):
 
@@ -252,7 +265,9 @@ class TimoshenkoBeam ( Element ):
 
     return a_bar
 
-#------------
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
   def toGlobalCoordinates( self , a_bar , coords ):
 
@@ -260,8 +275,6 @@ class TimoshenkoBeam ( Element ):
     R     = eye( 9)
     crd   = zeros( shape=(2,2) )
     
-    #crd[:,0] = coords[:,0]
-    #crd[:,1] = coords[:,2]
     crd[0,:] = coords[0,:]
     crd[1,:] = coords[2,:]
     
@@ -272,7 +285,6 @@ class TimoshenkoBeam ( Element ):
     if len(a_bar.shape) == 1:
       a        = dot( R.transpose() , a_bar )
     elif len(a_bar.shape) == 2:
-      #a        = dot( dot( R.transpose(), a_bar ) , R )
       a        = dot( R.transpose(), dot ( a_bar , R ) )
     return a
 

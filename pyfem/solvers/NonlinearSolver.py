@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,11 +26,13 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness
-from math import sin
+from pyfem.fem.Assembly import assembleExternalForce
+from math import sin,cos,exp
 
 import sys
 
@@ -48,7 +53,7 @@ class NonlinearSolver( BaseModule ):
 
     self.maxCycle = sys.maxsize
     self.maxLam   = 1.0e20
-    self.dtime    = 0.01
+    self.dtime    = 1.0
     self.loadFunc = "t"
     self.loadCases= []
 
@@ -61,8 +66,12 @@ class NonlinearSolver( BaseModule ):
     globdat.solverStatus.dtime = self.dtime
 
     self.loadfunc = eval ( "lambda t : " + str(self.loadFunc) )
-
-    print(self.loadCases)
+       
+    if hasattr(self,"loadTable"):
+      self.maxCycle      = len(self.loadTable)
+      loadTable          = zeros(self.maxCycle+1)
+      loadTable[1:]      = self.loadTable
+      self.loadTable     = loadTable
  
     logger.info("Starting nonlinear solver .........")
 
@@ -83,15 +92,23 @@ class NonlinearSolver( BaseModule ):
 
     Da[:] = zeros( dofCount )
     fint  = zeros( dofCount ) 
-
+    
+    logger.info("Nonlinear solver ............")
+    logger.info("    =============================================")
+    logger.info("    Load step %i"%globdat.solverStatus.cycle)
+    logger.info("    =============================================")
+    logger.info('    Newton-Raphson   : L2-norm residual')
+    
+    self.setLoadAndConstraints( globdat )
+    
     K,fint = assembleTangentStiffness( props, globdat )
-        
+
     error = 1.
 
-    fext = self.setLoadAndConstraints( globdat )
-
-    logger.info('  NR iter  : L2-norm residual')
+    self.setLoadAndConstraints( globdat )
     
+    fext   = assembleExternalForce   ( props, globdat )
+        
     while error > self.tol:
 
       stat.iiter += 1
@@ -134,35 +151,44 @@ class NonlinearSolver( BaseModule ):
     if stat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def setLoadAndConstraints( self , globdat ):
-
-    logger.info("    Load step %i"%globdat.solverStatus.cycle)
  
-    globdat.lam  = self.loadfunc( globdat.solverStatus.time )
-    lam0         = self.loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
-
-    globdat.dlam = globdat.lam - lam0
-    globdat.dofs.setConstrainFactor( globdat.dlam )
-
-    logger.info('  ---- main load --------------------\n-----')
-    logger.info('    loadFactor       : %4.2f'%globdat.lam)
-    logger.info('    incr. loadFactor : %4.2f'%globdat.dlam)
-
-    for loadCase in self.loadCases:
-      loadProps = getattr( self.myProps, loadCase )
+    if hasattr(self,"loadTable"):
+      cycle = globdat.solverStatus.cycle
       
-      loadfunc = eval ( "lambda t : " + str(loadProps.loadFunc) )
-      lam  = loadfunc( globdat.solverStatus.time )
-      lam0 = loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
-      dlam = lam - lam0
-      globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
+      globdat.lam  = self.loadTable[cycle]
+      globdat.dlam = self.loadTable[cycle]-self.loadTable[cycle-1]
 
-      logger.info('  ---- ',loadCase,' ---------------------')
-      logger.info('    loadFactor       : %4.2f'%lam)
-      logger.info('    incr. loadFactor : %4.2f'%dlam)
-
-    fhat  = globdat.fhat
+      globdat.dofs.setConstrainFactor( globdat.dlam )
+            
+      globdat.solverStatus.lam = globdat.lam
+    else:   
+      globdat.lam  = self.loadfunc( globdat.solverStatus.time )
+      lam0         = self.loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
     
-    return globdat.lam*fhat
+      globdat.dlam = globdat.lam - lam0
+      globdat.dofs.setConstrainFactor( globdat.dlam )
+    
+      globdat.solverStatus.lam = globdat.lam
+
+      logger.debug('  ---- main load -------------------------')
+      logger.debug('    loadFactor       : %4.2f'%globdat.lam)
+      logger.debug('    incr. loadFactor : %4.2f'%globdat.dlam)
+
+      for loadCase in self.loadCases:
+        loadProps = getattr( self.myProps, loadCase )
+        loadfunc = eval ( "lambda t : " + str(loadProps.loadFunc) )
+        lam  = loadfunc( globdat.solverStatus.time )
+        lam0 = loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
+        dlam = lam - lam0
+        globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
+        
+        logger.debug('  ---- %s ---------------------' %loadCase)
+        logger.debug('    loadFactor       : %4.2f'%lam)
+        logger.debug('    incr. loadFactor : %4.2f'%dlam)
 
       

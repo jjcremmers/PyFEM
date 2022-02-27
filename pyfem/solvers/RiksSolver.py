@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,10 +26,15 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array, dot
 from pyfem.fem.Assembly import assembleTangentStiffness
+
+from pyfem.util.logger   import getLogger
+
+logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -36,7 +44,7 @@ class RiksSolver( BaseModule ):
 
   def __init__( self , props , globdat ):
 
-    self.tol       = 1.0e-4
+    self.tol       = 1.0e-5
     self.optiter   = 5
     self.iterMax   = 10
     self.fixedStep = False
@@ -146,7 +154,7 @@ class RiksSolver( BaseModule ):
     globdat.Daprev[:] = Da[:]
     globdat.Dlamprev  = Dlam
 
-    if globdat.lam > self.maxLam or stat.cycle > 1000 or a[globdat.dofs.getForType(4,'v')] > 5:
+    if globdat.lam > self.maxLam or stat.cycle > 1000:
       globdat.active=False
 
 #------------------------------------------------------------------------------
@@ -154,11 +162,12 @@ class RiksSolver( BaseModule ):
 #------------------------------------------------------------------------------
 
   def printHeader( self , cycle):
-
-    print('\n======================================')
-    print(' Load step %i' % cycle)
-    print('======================================')
-    print('  iter # : L2-norm residual')
+    
+    logger.info("Riks solver .................")
+    logger.info("    =============================================")
+    logger.info("    Load step %i"%cycle)
+    logger.info("    =============================================")
+    logger.info('    Newton-Raphson   : L2-norm residual')    
 
 #------------------------------------------------------------------------------
 #
@@ -166,7 +175,7 @@ class RiksSolver( BaseModule ):
 
   def printIteration( self , iiter , error ):
 
-    print('   %5i : %4.2e ' %(iiter,error))
+    logger.info('    Iteration %4i   : %6.4e'%(iiter,error) )
 
 #------------------------------------------------------------------------------
 #
@@ -174,6 +183,6 @@ class RiksSolver( BaseModule ):
 
   def printConverged( self , iiter ):
 
-    print('--------------------------------------')
-    print(' Converged in %i iterations' %iiter)
+    logger.info('    ---------------------------------------------')
+    logger.info('    Converged in %i iterations' %iiter)
 

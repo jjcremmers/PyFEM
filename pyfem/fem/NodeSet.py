@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -23,6 +26,7 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
+
 from numpy import array
 from pyfem.util.itemList import itemList
 from pyfem.util.fileParser import getType
@@ -87,9 +91,7 @@ class NodeSet( itemList ):
           
     for key in self.groups:
       self.groups[key] = list(set(self.groups[key]))
-      
-    print(self)
-        
+              
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
@@ -98,17 +100,27 @@ class NodeSet( itemList ):
   
     mesh = meshio.read(fname,file_format="gmsh")
 
-    self.rank = 2#len(mesh.points[0])
+    obj3d = ["pris","pyra","hexa","wedg","tetr"]
     
+    self.rank = 2
+
+    for key in mesh.cell_sets_dict:
+      for typ in mesh.cell_sets_dict[key]:
+        if( typ[:4] in obj3d ):
+          self.rank = 3
+        
     for nodeID,p in enumerate(mesh.points):
       self.add(nodeID,p[:self.rank])
 
     for key in mesh.cell_sets_dict:
-      for typ in mesh.cell_sets_dict[key]:
-        for idx in mesh.cell_sets_dict[key][typ]:         
-          iNodes = mesh.cells_dict[typ][idx]
-          for nodeID in iNodes:
-            self.addToGroup( key , nodeID )
+      if key == "gmsh:bounding_entities":
+        pass
+      else:
+        for typ in mesh.cell_sets_dict[key]:
+          for idx in mesh.cell_sets_dict[key][typ]:         
+            iNodes = mesh.cells_dict[typ][idx]
+            for nodeID in iNodes:
+              self.addToGroup( key , nodeID )
   
 #-------------------------------------------------------------------------------
 #
@@ -117,23 +129,25 @@ class NodeSet( itemList ):
   def addToGroup( self, modelType, ID ):
 
     if modelType not in self.groups:
-      self.groups[modelType] = [ID]
+      self.groups[modelType] = [int(ID)]
     else:
-      self.groups[modelType].append( ID )
+      self.groups[modelType].append( int(ID) )
       
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
   def __repr__( self ):
-    msg =  "Nodeset contains %i nodes.\n" % len(self)
+    msg =  "Number of nodes ............ %6d\n" % len(self)
     
     if len(self.groups) > 0:
-      msg += "-----------------------------------------\n"
-      msg += "Number of nodegroups ... %i\n" % len(self.groups)
+      msg += "  Number of  groups .......... %6d\n" % len(self.groups)
+      msg += "  -----------------------------------\n"
+      msg += "    name                       #nodes\n"
+      msg += "    ---------------------------------\n"
       
       for name in self.groups:
-        msg += "  %s contains %i nodes \n" % (name,len(self.groups[name]))
+        msg += "    %-16s           %6d \n" % (name,len(self.groups[name]))
     
     return msg
     

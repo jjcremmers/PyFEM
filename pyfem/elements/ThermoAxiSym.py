@@ -27,107 +27,105 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-from pyfem.util.dataStructures import Properties
-from pyfem.util.dataStructures import GlobalData
+from .Element import Element
+from pyfem.util.shapeFunctions  import getElemShapeData
+from numpy import zeros, dot, outer, eye
+from math import pi
 
-from pyfem.fem.NodeSet     import NodeSet
-from pyfem.fem.ElementSet  import ElementSet
-from pyfem.fem.DofSpace    import DofSpace
-from pyfem.fem.Contact     import Contact
-
-from pyfem.util.fileParser import fileParser
-from pyfem.util.logger     import setLogger
-
-import getopt,os.path,pickle
-
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
-def InputReader( argv ):
-
-  pName,dName,params = getArguments( argv )
+class ThermoAxiSym( Element ):
   
-  return InputRead( pName , dName , params )
-
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
-def InputRead( fname , dname = None , parameters = None ):
-
-  if dname is not None:
-    with open(dname, 'rb') as f:
-      data = pickle.load(f)
-      props = data["props"]
-  
-  if fname is not None:
-    if fname[-4:] == '.pro':
-      props        = fileParser( fname )
-    else:
-      props        = fileParser( fname+'.pro')
+  def __init__ ( self, elnodes , props ):
+    Element.__init__( self, elnodes , props )
     
-  if parameters is not None:  
-    for p in parameters:
-      x = p.split("=")
-      props.store(x[0],x[1])
+    self.rank = props.rank
+        
+    if self.rank != 2:   
+      raise RuntimeError("This is an axisymmetric element. Please use an input mesh with rank 2.")    
+               
+    self.dofTypes = [ 'temp' ]
+    
+    self.D     = self.material.heatConductivity*eye(2)
+    self.capac = self.material.heatCapacity
+           
+    self.labels = [ "qr" , "qz" ]
+    
+    self.transient = True
+    self.theta = 1.0
       
-  if dname is not None:
-    return props,data["globdat"]
-
-  dataFileName = props.input
-
-  logger = setLogger( props )
-
-  nodes = NodeSet()
-  nodes.readFromFile( dataFileName )
-  logger.info(nodes)
-  
-  elems = ElementSet( nodes , props )
-  elems.readFromFile( dataFileName )
-  logger.info(elems)  
-  
-  dofs = DofSpace( elems )
-  dofs.readFromFile( dataFileName )
-
-  globdat = GlobalData( nodes, elems, dofs ) 
-
-  globdat.readFromFile( dataFileName )
-
-  globdat.active = True
-  globdat.prefix = os.path.splitext(fname)[0]
-  
-  globdat.contact = Contact( props )
-  	
-  return props,globdat
-  
+  def __type__ ( self ):
+    return name
+    
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-def getArguments( argv ):
-
-  slist = 'd:i:hvp:'
-  llist = ['dump=','input=','help','version']
-  
-  options, remainder = getopt.getopt( argv[1:] , slist , llist )
-
-  proFileName  = None
-  dumpFileName = None
-  parameters   = []
-  
-  if len(options) == 0:
-    proFileName  = argv[1]
-    options, remainder = getopt.getopt( argv[2:] , slist, llist )
+  def getTangentStiffness ( self, elemdat ):
+       
+    sData = getElemShapeData( elemdat.coords )
     
-  for opt, arg in options:      
-    if opt in ('-i', '--input'):
-      proFileName  = arg
-    elif opt in ('-d', '--dump'):
-      dumpFileName  = arg
-    elif opt in ('-h', '--help'):
-      print("Help")
-    elif opt in ('-p' , '--param'):
-      parameters.append(arg)
+    nDof = len(elemdat.coords)
+    
+    temp0 = elemdat.state - elemdat.Dstate
+    
+    if self.transient:
+      ctt      = zeros(shape=(nDof,nDof))
+      invdtime = 1.0/self.solverStat.dtime
+                       
+    for iInt,iData in enumerate(sData):   
+    
+      r      = dot( elemdat.coords[:,0] , iData.h )
+      weight = 2.0*pi*r*iData.weight
+         
+      gradTemp = dot( iData.dhdx.transpose() , elemdat.state )
+            
+      elemdat.stiff += \
+        dot ( iData.dhdx , dot( self.D , iData.dhdx.transpose() ) ) * weight
+     
+      if self.transient:
+        ctt += self.capac * outer( iData.h , iData.h ) * weight
+              
+      self.appendNodalOutput( self.labels , dot(self.D,gradTemp) ) 
+    
+    if self.transient:  
+      ktt0 = invdtime * ctt - elemdat.stiff * ( 1.0-self.theta )
       
-  return proFileName,dumpFileName,parameters      
+      elemdat.stiff *= self.theta
+      
+      elemdat.stiff += invdtime * ctt 
+        
+    elemdat.fint += dot ( elemdat.stiff , elemdat.state )
+      
+    if self.transient:
+      elemdat.fint += -dot ( ktt0 , temp0 )
+     
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getInternalForce ( self, elemdat ):
+     
+    nDof = self.dofCount()
+    elemdat.stiff = zeros( shape=(nDof,nDof) )
+    
+    self.getTangentStiffness( elemdat )
+      
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getBmatrix( self, dphi , phi , r ):
+  
+    b = zeros( shape=( 3 , self.dofCount() ) )
+
+    invr = 1.0/r
+    
+    for i,(dp,p) in enumerate(zip(dphi,phi)):
+      b[0,i] = dp[0]
+      b[1,i] = dp[1]
+      b[2,i] = 0 #p*invr
+ 
+    return b
+  
+        
+       
+

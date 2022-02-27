@@ -47,11 +47,7 @@ accompanies the book:
 \noindent
 The code is open source and intended for educational and scientific     
 purposes only. If you use \progname~in your research, the developers would 
-be grateful if you could cite the book in your work. Comments and suggestions
-are welcome at:
-\begin{verbatim}
-  PyFEM-support@tue.nl                                                                                                
-\end{verbatim}
+be grateful if you could cite the book in your work. 
                                                                           
 \subsection*{Disclaimer}
 
@@ -70,7 +66,9 @@ The code can be downloaded from the website that accompanies the book.
 \noindent
 On this website, both the current version X.Y as well as all previous major releases of the code
 can be found. The code is packed as a \texttt{.zip} or a \texttt{.tar.gz} file and 
-can be unzipped in a directory of choice. 
+can be unzipped in a directory of choice. The latest development version is available on Github:
+
+\texttt{https://github.com/jjcremmers/PyFEM}
 
 This version of the \progname~is written to work properly in combination with 
 \texttt{python} version 3.x. In addition, the code uses the modules \texttt{numpy}, \texttt{scipy} and
@@ -79,10 +77,11 @@ This version of the \progname~is written to work properly in combination with
 \subsection{Windows OS (Windows XP and Windows 7)}
 
 \begin{enumerate}
-\item Since precompiled versions of \texttt{numpy}, \texttt{scipy} and 
-\texttt{matplotlib} are available in 32-bit versions only, it
-is advised to install the 32-bit version of \texttt{python}. This code is available
-at:
+Various Python distributions for Windows are available. The one that is recommended is
+\texttt{Anaconda}. Download the 32- or 64- bit version.
+
+Alternatively, you cvan download Python3 and the individual mandatory modules:
+\item Python is available at:
 \begin{verbatim}
   http://www.python.org/getit
 \end{verbatim} 
@@ -92,21 +91,20 @@ This module is available at:
 \begin{verbatim}
   http://sourceforge.net/projects/numpy/files/NumPy
 \end{verbatim}
-It is recommended to install the latest 32-bit version, which is 1.6.2.
+It is recommended to install the latest version.
 \item Download and install \texttt{scipy}.
 This module is available at:
 \begin{verbatim}
   http://sourceforge.net/projects/scipy/files/scipy/
 \end{verbatim}
-It is recommended to install the latest 32-bit version, which is 0.11.01b.
+It is recommended to install the latest 32-bit version.
 \item Download and install \texttt{matplotlib}.
 This module is available at:
 \begin{verbatim}
   http://sourceforge.net/projects/matplotlib/files/matplotlib/
 \end{verbatim}
-It is recommended to install the latest 32-bit version, which is version 1.1.0.
 \item Run the python file \texttt{install.py} in the root directory 
-\texttt{pyfem-X.Y} by double-clicking it. It creates the required executables 
+by double-clicking it. It creates the required executables 
 and returns the total path in which \progname~is installed. This path must be 
 added to the environment variables \texttt{PYTHONPATH} and \texttt{PATH}. 
 

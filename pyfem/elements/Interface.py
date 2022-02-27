@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -54,6 +57,8 @@ class Interface( Element ):
     self.m = ones(5)
     self.m[1] = 0.0
     self.m[3] = 0.0
+    
+    self.family = "INTERFACE"
 
   def __type__ ( self ):
     return name
@@ -108,7 +113,27 @@ class Interface( Element ):
       elemdat.fint  += dot ( B.transpose() , sigma ) * iData.weight
       
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
+      
+#
+#
+#
+    
+  def getDissipation ( self, elemdat ):
+      
+    rot = self.getRotation( elemdat.coords , elemdat.state )
 
+    sData = getElemShapeData( elemdat.coords[:2,:] , method = self.intMethod , elemType = "Line2" )
+
+    kin = Kinematics(2,2)
+    
+    for iData in sData:
+      B              = self.getBmatrix( iData.h , rot )
+      kin.strain     = dot( B , elemdat.state )
+
+      sigma,tang = self.mat.getStress( kin )
+
+      elemdat.fint += dot ( B.transpose() , kin.dgdstrain ) * iData.weight
+      elemdat.diss += kin.g * iData.weight   
 
 #------------------------------------------------------------------------------
 #

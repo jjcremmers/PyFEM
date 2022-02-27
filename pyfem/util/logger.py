@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -27,16 +30,33 @@
 import logging
 
 def setLogger( props ):
-
-  #logging.basicConfig(level=logging.DEBUG)
-
+  
+  level = "normal"
+  
+  if hasattr(props,"logger"):
+    level = props.logger.level
+    
+    if level not in ["normal","info","debug","critical","warning","silent"]:
+      raise NotImplementedError('Logger level should be "normal", "info", "debug", "critical", "silent" or "warning"')
+    
   logger    = logging.getLogger()
   handler   = logging.StreamHandler()
-  formatter = logging.Formatter(
-        '%(asctime)s %(levelname)-8s %(message)s')
+    
+  if level == "debug":
+    formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+    logger .setLevel(logging.DEBUG)
+  elif level == "critical" or level == "silent":
+    formatter = logging.Formatter('  %(message)s')
+    logger .setLevel(logging.CRITICAL)    
+  elif level == "warning":
+    formatter = logging.Formatter('  %(message)s')
+    logger .setLevel(logging.WARNING)      
+  else:
+    formatter = logging.Formatter('  %(message)s')
+    logger .setLevel(logging.INFO)
+    
   handler.setFormatter(formatter)
   logger .addHandler(handler)
-  logger .setLevel(logging.INFO)
 
   return logger
 

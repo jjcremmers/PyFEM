@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -41,14 +44,14 @@ class TransverseIsotropic:
       self.E2 = props.E2
     elif hasattr( props , "E" ):
       if type(props.E) is list:
-        if len(props.E) is 2:
+        if len(props.E) == 2:
           self.E1 = props.E[0]
           self.E2 = props.E[1]
-        elif len(E) is 1:
+        elif len(E) == 1:
           self.E1 = props.E[0]
           self.E2 = props.E[0]
         else:
-          print('error')
+          raise RuntimeError("Please add E as a float or a list; E = (E1,E2).")
       else:
         self.E1    = props.E
         self.E2    = props.E

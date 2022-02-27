@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -61,14 +64,15 @@ class ElementSet( itemList ):
 #-------------------------------------------------------------------------------
     
   def __repr__( self ):
-    msg =  "Elementset contains %i elements.\n" % len(self)
+    msg =  "Number of elements ......... %6d\n" % len(self)
     
     if len(self.groups) > 0:
-      msg += "-----------------------------------------\n"
-      msg += "Number of elementgroups ... %i\n" % len(self.groups)
-      
+      msg += "  Number of  groups .......... %6d\n" % len(self.groups)
+      msg += "  -----------------------------------\n"
+      msg += "    name                       #elems\n"
+      msg += "    ---------------------------------\n"
       for name in self.groups:
-        msg += "  %s contains %i elements \n" % (name,len(self.groups[name]))
+        msg += "    %-16s           %6d\n" % (name,len(self.groups[name]))
     
     return msg
 
@@ -94,7 +98,7 @@ class ElementSet( itemList ):
   def readFromFile( self, fname ):
     
     logger.info("Reading elements .............")
-
+    
     fin = open( fname )
   
     while True:
@@ -135,14 +139,14 @@ class ElementSet( itemList ):
     mesh = meshio.read(fname,file_format="gmsh")
     
     elemID = 0
-    
-    for i,key in enumerate(mesh.cell_sets_dict): 
-      for iNodes in mesh.cells[i][1]:
-        self.add( elemID , key , iNodes.tolist() )
-        elemID = elemID + 1
-        
-    print(self)    
-                          
+
+    for key in mesh.cell_sets_dict: 
+      for typ in mesh.cell_sets_dict[key]:
+        for idx in mesh.cell_sets_dict[key][typ]:
+          iNodes = mesh.cells_dict[typ][idx]
+          self.add( elemID , key , iNodes.tolist() )
+          elemID = elemID + 1
+                                 
 #-------------------------------------------------------------------------------
 #  add element
 #-------------------------------------------------------------------------------
@@ -150,9 +154,9 @@ class ElementSet( itemList ):
   def add ( self, ID, modelName, elementNodes ):  
 
     #Check if the model exists
-          
+    
     if hasattr( self.props, modelName ):
-
+    
       modelProps = getattr( self.props, modelName )
 
       #Check if the model has a type
@@ -216,6 +220,11 @@ class ElementSet( itemList ):
   def iterElementGroup ( self, groupName ):
     if groupName == "All":
       return iter( self )
+    elif isinstance(groupName, list):
+      elems = []
+      for name in groupName:
+        elems += self.get(self.groups[name])
+      return iter( elems )
     else:
       return iter( self.get( self.groups[groupName] ) )
 
@@ -226,8 +235,28 @@ class ElementSet( itemList ):
   def elementGroupCount( self, groupName ):
     if groupName == "All":
       return len(self)
+    elif isinstance(groupName, list):
+      length = 0;
+      for name in groupName:
+        length += len(self.groups[name])
+      return length
     else:
       return len(self.groups[groupName])
+      
+#
+#
+#
+
+  def getFamilyIDs(self):
+  
+    familyIDs = []
+    fam = ["CONTINUUM","INTERFACE","SURFACE","BEAM","SHELL"]
+    
+    for elem in self:
+      
+      familyIDs.append(fam.index(elem.family))
+      
+    return familyIDs
 
 #-------------------------------------------------------------------------------
 #

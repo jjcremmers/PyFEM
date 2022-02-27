@@ -25,7 +25,7 @@
 ############################################################################
 
 from pyfem.materials.BaseMaterial import BaseMaterial
-from numpy import zeros
+from numpy import zeros,dot
 from math  import exp 
 
 class XuNeedleman( BaseMaterial ):
@@ -43,6 +43,9 @@ class XuNeedleman( BaseMaterial ):
 
     #Set the labels for the output data in this material model
     self.outLabels = [ "Tn" , "Ts" ]
+    
+    self.setHistoryParameter( 'dissipation', 0. )
+    self.commitHistory()    
 
 #------------------------------------------------------------------------------
 #
@@ -92,7 +95,30 @@ class XuNeedleman( BaseMaterial ):
     tang[0,1] = 2.0*t46
     tang[1,0] = 2.0*t46
     tang[1,1] = 2.0*t41*t16*t19*t21-4.0*t41*t16*t17/t52*t21
-
+    
+    totalDiss = self.getPhi( deformation.strain ) - 0.5 * sum( deformation.strain*stress)
+    
+    deformation.g = totalDiss - self.getHistoryParameter('dissipation')        
+    
+    deformation.dgdstrain = zeros(2)
+          
+    if deformation.g < 0.0:
+      deformation.g = 0.
+    else:
+      self.setHistoryParameter( 'dissipation', totalDiss )
+      deformation.dgdstrain = 0.5 * ( stress - dot( deformation.strain , tang ) )
+      
     self.outData = stress
 
     return stress,tang
+    
+  def getPhi( self , jump ):
+
+    if jump[0] < 0.:
+      return 0.
+    else:
+     dn =  jump[0]/self.vnmax
+     dt  = jump[1]/self.vtmax
+     dt2 = dt*dt
+
+    return self.Gc+self.Gc*exp(-dn)*((1.-self.r+dn)*(1.-self.q)/(self.r-1.)-(self.q+(self.r-self.q)/(self.r-1.)*dn)*exp(-dt2))
