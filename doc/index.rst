@@ -11,4 +11,4 @@ Contents:
    quickstart
    usermanual
    develop 
-   modindex
+   api      
