@@ -5,8 +5,8 @@ Getting started with PyFEM is easy.
 
 pyfem.util.shapeFunctions
 
-.. automodule: pyfem.util
+.. automodule:: pyfem.util
   :members:
 
-.. autoclass: pyfem.util
+.. autoclass:: pyfem.util
   :members:
