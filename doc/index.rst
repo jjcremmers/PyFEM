@@ -10,5 +10,4 @@ Contents:
    installation
    quickstart
    usermanual
-     elements
-     solvers
+   develop 
