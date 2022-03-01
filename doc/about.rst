@@ -1,5 +1,5 @@
-PyFEM: A Python finite element code
-===================================
+About the code                      
+==============
 
 This is the user manual for PyFEM. This python-based finite element code
 accompanies the book:

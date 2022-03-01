@@ -6,6 +6,6 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   overview
    about
+   installation
    quickstart
