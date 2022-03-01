@@ -33,7 +33,11 @@ from scipy.linalg import norm , det , inv
 from scipy.special.orthogonal import p_roots as gauss_scheme
 
 class shapeData:
-  
+ 
+  '''
+  Class containing shap function data of a single element
+  '''
+ 
   pass
    
 #----------------------------------------------------------------------
@@ -56,6 +60,20 @@ class elemShapeData:
 
 def getShapeLine2 ( xi ):
 
+  """
+  Calculates the shape function data for a linear line element (supported by 2 nodes) with 2 points.
+
+  Parameters
+  ----------
+  xi : numpy array
+    position of the sample points in the parent domain [-1,1]
+
+  Returns
+  -------
+  sData: 
+    data constainer
+  """
+  
   #Check the dimensions of the physical space
   if type(xi) != float:
     raise NotImplementedError('1D only')
