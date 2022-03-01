@@ -17,6 +17,7 @@ Contents:
    usermanual
    develop 
    api   
+   modules
 
 
 Indices and tables
