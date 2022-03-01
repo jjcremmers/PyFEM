@@ -9,3 +9,6 @@ Contents:
    about
    installation
    quickstart
+   usermanual
+     elements
+     solvers
