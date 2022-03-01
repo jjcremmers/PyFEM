@@ -2,6 +2,58 @@ Installation
 ============
 
 Below, instructions are given how to access PyFEM and install it on windows using Git Bash. Several steps have to be gone through:
+The code can be downloaded from the website that accompanies the book.
+
+  http://www.wiley.com/go/deborst
+  
+On this website, both the current version X.Y as well as all previous major releases of the code
+can be found. The code is packed as a ''.zip'' or a ''.tar.gz'' file and 
+can be unzipped in a directory of choice. The latest development version is available on Github:
+
+  https://github.com/jjcremmers/PyFEM
+
+This version of the PyFEM is written to work properly in combination with 
+python version 3.x. In addition, the code uses the modules numpy, scipy and
+matplotlib. Installation guidelines are given for various operating systems.
+
+Linux
+-----
+
+The ''python'' program and the modules ''numpy'', ''scipy'' and ''matplotlib''
+are included in most common distributions of Linux and can be installed without any problems. In many
+cases, different versions of ''python'' are offered. Please make sure that ''python'' version 3.6 or higher is
+installed.
+
+exectute thge file ''install.py'' in the root directory ''pyfem''. In a terminal, one can type:
+
+  python3 install.py
+
+This script returns the total path in which PyFEM is installed. This path must be 
+added to the environment variables ''PYTHONPATH'' and ''PATH''. When using a bash shell, 
+the following lines have to be added to the file ''.bashrc'' in your root directory:
+
+  export PYTHONPATH=<pyfemdir>
+  alias  pyfem="python <pyfemdir>/PyFEM.py"
+
+When using csh or tcsh add the following lines to ''.cshrc'' or ''.tcshrc'':
+
+  setenv PYTHONPATH <pyfemdir>
+  alias  pyfem "python <pyfemdir>/PyFEM.py"
+
+It goes without saying that in the case of multiple ''PYTHONPATH'' settings, the path to PyFEM
+should be added to existing paths. For example, in the case of a bash shell, this will look like:
+
+  export PYTHONPATH=<pyfemdir>:$PYTHONPATH
+
+The main program ''pyfem'' can be run from the command prompt. For example, in order to run the
+file ''StressWave20x20.pro'' in the directory ''examples/ch05'', simply type:
+
+  pyfem StressWave20x20.pro
+  
+
+
+
+
 
 Windows
 -------
