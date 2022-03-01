@@ -7,3 +7,6 @@ pyfem.util.shapeFunctions
 
 .. automodule: pyfem.util
   :members:
+
+.. autoclass: pyfem.util
+  :members:
