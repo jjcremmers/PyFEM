@@ -23,60 +23,40 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
-############################################################################
-#  Description: The general PyFEM input file of the example presented in   #
-#               section 9.2 of the book, pages 317--321. The amplitude of  #
-#               of the sinusoidal imperfection of the beam is h=0.01.      #
-#                                                                          #
-#  Usage:       pyfem KirchhoffEuler_01.pro                                #
-############################################################################
+<Nodes>
+  1 0. 0. ;
+  3 0. 24. ;
+  5 0. 48. ;
+  7 0. 72. ;
+  9 0. 96. ;
+  11 0. 120. ;
+  13 24. 120. ;
+  15 48. 120. ;
+  17 72. 120. ;
+  19 96. 120. ;
+  21 120. 120. ;
+</Nodes>
 
-input = "KirchhoffEuler_01.dat";
+<Elements>
+  1 'BeamElem' 1 3 ;
+  2 'BeamElem' 3 5 ;
+  3 'BeamElem' 5 7 ;
+  4 'BeamElem' 7 9 ;
+  5 'BeamElem' 9 11 ;
+  6 'BeamElem' 11 13 ;
+  7 'BeamElem' 13 15 ;
+  8 'BeamElem' 15 17 ;
+  9 'BeamElem' 17 19 ;
+  10 'BeamElem' 19 21 ;  
+</Elements>
 
-BeamElem =
-{
-  type = "KirchhoffBeam";
-  E    = 7.2e6;
-  A    = 6.0;
-  I    = 2.0;
-  G    = 5e6;
-};
+<NodeConstraints>
+  u[1] = 0.0;
+  v[1] = 0.0;
+  u[21] = 0.0;
+  v[21] = 0.0;
+</NodeConstraints>
 
-solver =
-{
-  type   = "RiksSolver";
-
-  maxLam = 35;
-};
-
-outputModules = [ 'graph','mesh' ]; 
-
-graph = 
-{
-  type = "GraphWriter";
-  
-  onScreen = true;
-  
-  columns = [ "disp" , "load" ];
-
-  disp =
-  { 
-    type = "state";
-    node = 11;
-    dof  = 'v';
-  };
-
-  load = 
-  {
-    type = "fint";
-    node = 21;
-    dof  = 'u';
-    factor = -1.0;
-  };
-};
-
-mesh =
-{
-  type = "MeshWriter";
-  beam = true;
-};
+<ExternalForces>
+  v[13] = -1000.0;
+</ExternalForces>

@@ -47,11 +47,10 @@ solver =
   type = "RiksSolver";
 
   maxLam    = 35;
-//  fixedStep = true;
   maxFactor = 5;
 };
 
-outputModules = [ 'graph' ]; 
+outputModules = [ 'graph' , 'mesh']; 
 
 graph = 
 {
@@ -75,5 +74,11 @@ graph =
     dof  = 'u';
     factor = -1.0;
   };
+};
+
+mesh =
+{
+  type = "MeshWriter";
+  beam = true;
 };
 

@@ -48,7 +48,7 @@ solver =
   maxLam = 25;
 };
 
-outputModules = ['graph'];
+outputModules = ['graph','mesh'];
 
 graph =
 {
@@ -72,4 +72,10 @@ graph =
     dof  = 'v';
     factor = -1.0;
   };
+};
+
+mesh =
+{
+  type = "MeshWriter";
+  beam = true;
 };

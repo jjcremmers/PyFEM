@@ -24,18 +24,17 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 ############################################################################
-#  Description: The general PyFEM input file of the example presented in   #
-#               section 9.2 of the book, pages 317--321. The amplitude of  #
-#               of the sinusoidal imperfection of the beam is h=0.01.      #
+#  Description: The general PyFEM input file of a hinged frame. The        #
+#               Timoshenko beam element is used in this simulation.        #
 #                                                                          #
-#  Usage:       pyfem KirchhoffEuler_01.pro                                #
+#  Usage:       pyfem FrameTimoshenko.pro                                  #
 ############################################################################
 
-input = "KirchhoffEuler_01.dat";
+input = "Frame2.dat";
 
 BeamElem =
 {
-  type = "KirchhoffBeam";
+  type = "BeamNL";
   E    = 7.2e6;
   A    = 6.0;
   I    = 2.0;
@@ -44,33 +43,33 @@ BeamElem =
 
 solver =
 {
-  type   = "RiksSolver";
-
-  maxLam = 35;
+  type = "RiksSolver";
+ 
+  maxLam = 25;
 };
 
-outputModules = [ 'graph','mesh' ]; 
+outputModules = ['graph','mesh'];
 
-graph = 
+graph =
 {
   type = "GraphWriter";
-  
   onScreen = true;
-  
-  columns = [ "disp" , "load" ];
+
+  columns = ["disp" , "load" ];
 
   disp =
-  { 
+  {
     type = "state";
-    node = 11;
+    node = 13;
     dof  = 'v';
+    factor = -1.0;
   };
 
-  load = 
+  load =
   {
     type = "fint";
-    node = 21;
-    dof  = 'u';
+    node = 13;
+    dof  = 'v';
     factor = -1.0;
   };
 };
