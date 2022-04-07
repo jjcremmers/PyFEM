@@ -50,9 +50,11 @@ InterfaceElem =
 
   material = 
   {
-    type = "PowerLawModeI";
+    //type = "PowerLawModeI";
+    type = "XuNeedleman";
+    
 
-    Tult = 1.0;
+    Tult = 0.5;
     Gc   = 0.1;
   };
 };
@@ -63,8 +65,10 @@ solver =
 
   maxCycle   = 60;
   tol        = 10e-4;
-  maxLam     = 20;
+  maxLam     = 50;
+  lam        = 1.0;
 
+  disstype   = "Local";
   switchEnergy = 1.0e-3; 
   maxdTau    = 0.05;
 };

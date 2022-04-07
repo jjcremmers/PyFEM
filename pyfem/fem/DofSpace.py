@@ -1,33 +1,34 @@
-############################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:  #
-#                                                                          #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
-#                                                                          #
-#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
-#  then augmented and  maintained by Joris J.C. Remmers.                   #
-#  All rights reserved.                                                    #
-#                                                                          #
-#  The latest stable version can be downloaded from the web-site:          #
-#     http://www.wiley.com/go/deborst                                      #
-#                                                                          #
-#  A github repository, with the most up to date version of the code,      #
-#  can be found here:                                                      #
-#     https://github.com/jjcremmers/PyFEM                                  #
-#                                                                          #
-#  The code is open source and intended for educational and scientific     #
-#  purposes only. If you use PyFEM in your research, the developers would  #
-#  be grateful if you could cite the book.                                 #  
-#                                                                          #
-#  Disclaimer:                                                             #
-#  The authors reserve all rights but do not guarantee that the code is    #
-#  free from errors. Furthermore, the authors shall not be liable in any   #
-#  event caused by the use of the program.                                 #
-############################################################################
+################################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:      #
+#                                                                              #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
+#                                                                              #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by                #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
+#  then augmented and maintained by Joris J.C. Remmers.                        #
+#  All rights reserved.                                                        #
+#                                                                              #
+#  A github repository, with the most up to date version of the code,          #
+#  can be found here:                                                          #
+#     https://github.com/jjcremmers/PyFEM/                                     #
+#     https://pyfem.readthedocs.io/                                            #	
+#                                                                              #
+#  The original code can be downloaded from the web-site:                      #
+#     http://www.wiley.com/go/deborst                                          #
+#                                                                              #
+#  The code is open source and intended for educational and scientific         #
+#  purposes only. If you use PyFEM in your research, the developers would      #
+#  be grateful if you could cite the book.                                     #    
+#                                                                              #
+#  Disclaimer:                                                                 #
+#  The authors reserve all rights but do not guarantee that the code is        #
+#  free from errors. Furthermore, the authors shall not be liable in any       #
+#  event caused by the use of the program.                                     #
+################################################################################
 
-from numpy import array, dot, zeros
+from numpy import array, dot, zeros, where
 import scipy.linalg
 
 from scipy.sparse.linalg   import spsolve
@@ -44,8 +45,16 @@ logger = getLogger()
 
 class DofSpace:
 
+  '''
+  Class dofspace
+  '''
+  
   def __init__ ( self, elements ):
 
+    '''
+    Constructor
+    '''
+    
     self.dofTypes = elements.getDofTypes()
     self.dofs     = array( list(range( len(elements.nodes) * len(self.dofTypes))) ).reshape( ( len(elements.nodes), len(self.dofTypes) ) )
     self.nodes    = elements.nodes
@@ -57,23 +66,34 @@ class DofSpace:
 
     self.allConstrainedDofs = []
 
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
   def __str__ ( self ):
+  
+    '''
+    Prints the total overview of degrees of freedom
+    '''
+    
     return str(self.dofs)
 
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
   def __len__ ( self ):
+  
+    '''
+    Function that returns the length of the dofpsace, i.e. the number of
+    degrees of freedeom
+    '''
+       
     return len(self.dofs.flatten())
 
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
   def setConstrainFactor( self , fac , loadCase = "All_" ):
 
@@ -83,9 +103,9 @@ class DofSpace:
     else:
       self.cons.constrainedFac[loadCase] = fac
 
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
     
   def readFromFile( self, fname ):
       
@@ -159,15 +179,11 @@ class DofSpace:
 #
 #-------------------------------------------------------------------------------
 
-  
-
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
   def getForType ( self, nodeIDs, dofType ):
   
-    '''Returns all dofIDs for given dofType for a list of nodes'''
+    '''
+    Returns all dofIDs for given dofType for a list of nodes
+    '''
    
     return self.dofs[self.IDmap.get( nodeIDs ), self.dofTypes.index(dofType)]
       
@@ -177,7 +193,9 @@ class DofSpace:
 
   def getForTypes( self, nodeIDs, dofTypes ):
   
-    '''Returns all dofIDs for given list of dofType for a list of nodes'''
+    '''
+    Returns all dofIDs for given list of dofType for a list of nodes
+    '''
 
     dofs = []
         
@@ -186,6 +204,54 @@ class DofSpace:
         dofs.append(self.dofs[self.IDmap.get( node ),self.dofTypes.index(dofType)])
       
     return dofs
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getDofName( self , dofID ):
+  
+    '''
+    Returns the dofID as a string. For example 'u[14]'
+    '''
+    
+    return self.getTypeName(dofID)+'['+str(self.getNodeID(dofID))+']'
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+   
+  def getNodeID( self, dofID ):
+  
+    '''
+    Returns the node ID of dofID
+    '''
+    
+    return self.nodes.findID(int(where(self.dofs == dofID)[0]))
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getType( self, dofID ):
+  
+    '''
+    Returns the type of dofID
+    '''
+  
+    return int(where(self.dofs == dofID)[1])
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getTypeName( self, dofID ):
+  
+    '''
+    Returns the name of the dofType
+    '''
+  
+    return self.dofTypes[self.getType(dofID)]
 
 #-------------------------------------------------------------------------------
 #
@@ -203,6 +269,10 @@ class DofSpace:
 
   def copyConstrainer( self , dofTypes: list = None ):
   
+    '''
+    
+    '''
+    
     newCons = deepcopy(self.cons)
        
     if type(dofTypes) is str:
@@ -259,7 +329,7 @@ class DofSpace:
 
   def eigensolve( self, A , B , count=5 ):
 
-    '''Calculates the first count eigenvlaues and eigenvectors of a
+    '''Calculates the first count eigenvalues and eigenvectors of a
        system with ( A lambda B ) x '''
        
     A_constrained = dot( dot( self.cons.C.transpose(), A ), self.cons.C )
@@ -279,6 +349,11 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
   def norm ( self, r, constrainer = None  ):
+  
+    '''
+    Calculates the norm of vector r excluding the constrained dofs
+    '''
+    
     if constrainer is None:
       constrainer = self.cons
     
