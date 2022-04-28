@@ -66,7 +66,7 @@ solver =
   maxCycle   = 60;
   tol        = 10e-4;
   maxLam     = 50;
-  lam        = 1.0;
+  lam        = 100.0;
 
   disstype   = "Local";
   switchEnergy = 1.0e-3; 
