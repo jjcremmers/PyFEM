@@ -25,7 +25,7 @@
 ############################################################################
 import os,sys,numpy,scipy,matplotlib
 
-from PyQt5.Qt import PYQT_VERSION_STR
+#from PyQt5.Qt import PYQT_VERSION_STR
 
 print("\n ===============================================================\n")
 
@@ -83,7 +83,8 @@ if int(version[0]) >= 1 and int(version[1]) >= 0:
   print(" OK")
 else:
   print(" Not OK\n\n   Please install Matplotlib 1.0.x or higher\n")
-  
+
+'''  
 versionLong = PYQT_VERSION_STR
 version     = versionLong.split('.')
 
@@ -93,6 +94,7 @@ if int(version[0]) >= 5:
   print(" OK")
 else:
   print(" Not OK\n\n   Please install PyQt 5.x or higher\n")
+'''
 
 # get current path
 

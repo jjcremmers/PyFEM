@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -27,9 +30,13 @@
 import sys,os
 sys.path.insert(0, os.getcwd() )
 
+import time
+
 from pyfem.io.InputReader   import InputReader
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
+
+t1 = time.time()
 
 props,globdat = InputReader( sys.argv )
 
@@ -39,6 +46,11 @@ output = OutputManager ( props , globdat )
 while globdat.active:
   solver.run( props , globdat )
   output.run( props , globdat )
+
+t2 = time.time()
+
+total = t2-t1
+print("Time elapsed = ",total," [s].\n")
 
 print("PyFem analysis terminated successfully.")
 
