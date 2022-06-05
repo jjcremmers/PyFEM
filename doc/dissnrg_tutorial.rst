@@ -18,6 +18,8 @@ These input files can be executed by typing::
 
   pyfem delam_buckling200.pro
 
+The result load displacement curve will look as follows:
 
+.. figure:: img/delam_buckling200.png
 
  

@@ -14,8 +14,7 @@ Contents:
    about
    installation
    quickstart
-   tutorial1
-   dissnrg_tutorial
+   tutorials
    develop 
    api   
    modules

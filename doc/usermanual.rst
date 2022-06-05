@@ -1,9 +1,9 @@
 User manual
 ===========
 
-Different levels
-- Solvers
-- IO modules
-- Elements
-- Materials
-- Miscellaneous
+.. toctree::
+
+   elements
+   materials
+   solvers
+   io_modules
