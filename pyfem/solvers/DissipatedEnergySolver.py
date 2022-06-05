@@ -28,6 +28,15 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
+################################################################################
+#  This solver is presented in detail in the following paper:                  #
+#                                                                              #
+#  E.Borjesson, J.J.C. Remmers, M. Fagerstrom (2022) A generalised             #  
+#    path-following solver for robust analysis of material failure,            #
+#    Computational Mechanics, doi: 10.1007/s00466-022-02175-w                  #
+#                                                                              #
+################################################################################
+
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array, dot
@@ -53,15 +62,13 @@ class DissipatedEnergySolver( BaseModule ):
     self.factor    = 1.0
     self.maxLam    = 1.0e20
     self.lam       = 1.0
-    self.beta      = 2.0
-    self.dtime     = 1.0
     self.disstype  = "Local"
 
     dofCount    = len(globdat.dofs)
 
     BaseModule.__init__( self , props )
 
-    self.method    = "force-controlled"
+    self.method    = "arclength-controlled"
     self.Dlam      = self.lam
 
     globdat.lam    = self.lam
@@ -88,9 +95,7 @@ class DissipatedEnergySolver( BaseModule ):
     error         = 1.
     lam0          = globdat.lam
     
-    if stat.cycle == 1: 
-      stat.dtime =  max( globdat.lam * self.dtime , 0.0001 )   
-      
+    if stat.cycle == 1:       
       K,fint = assembleTangentStiffness( props, globdat )      
       Da1    = globdat.dofs.solve( K , globdat.lam*fhat )
       Dlam   = globdat.lam
@@ -102,9 +107,7 @@ class DissipatedEnergySolver( BaseModule ):
 
     a [:] += Da1[:]
     Da[:] =  Da1[:]
-    
-    stat.dtime = max( Dlam * self.dtime , 0.0001 ) 
-        
+            
     K,fint    = assembleTangentStiffness( props, globdat )  
     dgda,diss = assembleDissipation( props , globdat )   
 
@@ -136,30 +139,20 @@ class DissipatedEnergySolver( BaseModule ):
         ddaN    = d2 - ( -d1 * ( dot( h , d2 ) + g ) ) / denom
         ddlamN  = -g - ( dot( -1.0*h , d2 ) - g * ( 1.0 + denom ) ) / denom;
  
-      if self.method == 'force-controlled':
+      if self.method == 'arclength-controlled':
         Dlam        += ddlamR
         globdat.lam += ddlamR
             
         Da[:] += ddaR[:]
         a [:] += ddaR[:]        
       elif self.method == 'nrg-controlled':
-        if stat.iiter == 1 and globdat.dofs.norm(Da+ddaN)/globdat.dofs.norm(Da1) > self.beta:
-          self.method = 'force-controlled'
-          Dlam        += ddlamR
-          globdat.lam += ddlamR
+        Dlam        += ddlamN
+        globdat.lam += ddlamN
             
-          Da[:] += ddaR[:]
-          a [:] += ddaR[:]             
-        else:
-          Dlam        += ddlamN
-          globdat.lam += ddlamN
-            
-          Da[:] += ddaN[:]
-          a [:] += ddaN[:]
+        Da[:] += ddaN[:]
+        a [:] += ddaN[:]
                               
       # Solve for new displacement vector, load factor      
-
-      stat.dtime = max( Dlam * self.dtime , 0.0001 )    
       
       K,fint = assembleTangentStiffness( props, globdat )
       dgda,diss = assembleDissipation( props , globdat )   
@@ -187,7 +180,7 @@ class DissipatedEnergySolver( BaseModule ):
   
     globdat.dtau = diss
         
-    if self.method == 'force-controlled':
+    if self.method == 'arclength-controlled':
       if diss > self.switchEnergy:
         print('   Switch to nrg diss. arc-length')
         self.method       = 'nrg-controlled'
