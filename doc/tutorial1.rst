@@ -1,5 +1,35 @@
-Quickstart
-==========
+Tutorial 1: A simple patch test
+===============================
+
+This part is taken from Section 2.6 of 
+
+The implementation of a finite element simulation under displacement control is demonstrated
+by means of a patch test. Patch tests are simple finite element simulations which are intended to
+demonstrate that an element possesses some basic requirements, such as the ability to represent
+a uniform stress state. The following patch test is taken from MacNeal and Harder (1985).
+
+We consider a rectangular domain, shown in Figure 2.9. The domain is discretised by five
+quadrilateral elements. The positions of the nodes are chosen such that all elements are skewed
+and are mildly distorted. The positions of the internal nodes 4, 5, 6, and 7 are given in the figure.
+The displacements a = (ax, ay) of the external nodes 0, 1, 2, and 3 are prescribed according
+to the relations:
+
+   +--------+---------+---------+
+   | Node   | x       | y       |
+   +========+=========+=========+
+   | 4      | 0.04    | 0.02    |
+   +--------+---------+---------+
+   | 5      | 0.18    | 0.03    |
+   +--------+---------+---------+
+   | 6      | 0.16    | 0.08    |
+   +--------+---------+---------+
+   | 7      | 0.08    | 0.08    |
+   +--------+---------+---------+
+
+   
+
+
+
 
 In order to test whether everything is installed properly, the following two simulations can be run.
 
@@ -166,4 +196,4 @@ In this example, two colums are stored: ''disp'', the displacement (''state'') o
 direction and ''load'', the corresponding internal force. The parameter ''onScreen = true'' is used
 to show the load-displacement curve on the screen during the simulation. By default, the results will be stored in a file called
 ''ShallowTrussRiks.out''. A description of all available output 
-modules can be found in Section X.
+modules can be found in Section xx.

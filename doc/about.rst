@@ -10,7 +10,7 @@ Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Sol
 John Wiley and Sons, 2012, ISBN 978-0470666449
 
 .. figure:: https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg
-   :alt: alt text
+   :alt: The cover of Non-linear Finite element Anaylsis of Solids and Structures
 
    alt text
 
