@@ -28,23 +28,26 @@
 #               of the shallow truss problem as presented in section 3.2,  #  
 #               page 76--84.                                               #
 #                                                                          #
-#  Use:         python ShallowTrussFE.py                                   #
+#  Use:         python3 ShallowTrussFE.py                                  #
 ############################################################################
+
+import sys,os
+sys.path.insert(0, r"../.." )
 
 #############################
 # Define problem parameters #
 # see Figure 1.1            #
 #############################
 
-E = 5e6
+E    = 5e6
 Area = 1.0
-k = 1000.
+k    = 1000.
 
-b = 10.0
-h = 0.5
+b    = 10.0
+h    = 0.5
 
 #External load increment
-DF = 50 #N
+DF   = 50
 
 #Solver parameters
 N       = 30
@@ -90,9 +93,15 @@ from pyfem.fem.DofSpace import DofSpace
 
 dofs = DofSpace( elements )
 
-dofs.constrain( 1, ['u','v'] )
-dofs.constrain( 2, ['u','v'] )
-dofs.constrain( 3, ['u','v'] )
+cons = dofs.createConstrainer()
+
+cd = dofs.getForTypes( [1,2,3],['u','v'] )
+
+for ido in cd:
+  cons.addConstraint( ido , 0.0 ,"main")
+  
+cons.flush()
+
 
 ###################################
 # Store in global data dictionary #

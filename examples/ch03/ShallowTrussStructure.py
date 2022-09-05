@@ -1,3 +1,6 @@
+import sys,os
+sys.path.insert(0, r"../.." )
+
 #############################
 # Define problem parameters #
 # see Figure 1.1            #
@@ -57,21 +60,22 @@ from pyfem.fem.DofSpace import DofSpace
 
 dofs = DofSpace( elements )
 
-dofs.constrain( 1, ['u','v'] )
-dofs.constrain( 2, ['u','v'] )
-dofs.constrain( 3, ['u','v'] )
+cons = dofs.createConstrainer()
 
-###################################
-# Store in global data dictionary #
-###################################
+cd = dofs.getForTypes( [1,2,3],['u','v'] )
+
+for ido in cd:
+  cons.addConstraint( ido , 0.0 ,"main")
+  
+cons.flush()
+
+# Store in global data dictionary
 
 from pyfem.util.dataStructures import GlobalData
 
 globdat = GlobalData( nodes, elements, dofs )
 
-################################
-# Solution procedure (Box 2.3) #
-################################
+# Solution procedure (Box 2.3)
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleTangentStiffness

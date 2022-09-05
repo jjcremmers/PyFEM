@@ -119,9 +119,19 @@ class DofSpace:
 #
 #-------------------------------------------------------------------------------
               
-  def createConstrainer ( self, nodeTables ):
+  def createConstrainer ( self, nodeTables = None ):
         
     cons = Constrainer(len(self))
+    
+    if nodeTables == None:
+    
+      label = "main"
+      cons.constrainedDofs[label] = []
+      cons.constrainedVals[label] = []
+      cons.constrainedFac [label] = 1.0
+      
+      self.cons = cons
+      return cons
         
     for nodeTable in nodeTables:
       
@@ -262,7 +272,7 @@ class DofSpace:
     '''Returns all dofIDs for a list of nodes'''
     
     return self.dofs[self.IDmap.get(nodeIDs)].flatten()
-    
+ 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
