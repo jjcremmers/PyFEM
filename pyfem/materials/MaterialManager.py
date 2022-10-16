@@ -36,14 +36,15 @@ class MaterialManager ( list ):
 
   def __init__ ( self, matProps ):
 
-    matType = matProps.type
+    if hasattr( matProps,"type"):
+      matType = matProps.type
 
-    self.material = getattr(__import__('pyfem.materials.'+matType , globals(), locals(), matType , 0 ), matType )
+      self.material = getattr(__import__('pyfem.materials.'+matType , globals(), locals(), matType , 0 ), matType )
     
-    self.matlist     = []
-    self.matProps    = matProps
-    self.iSam        = -1
-    self.failureFlag = False
+      self.matlist     = []
+      self.matProps    = matProps
+      self.iSam        = -1
+      self.failureFlag = False
     
     if hasattr(matProps,'failureType'):
     
@@ -142,5 +143,7 @@ class MaterialManager ( list ):
     return self.mat.getHistoryParameter( label )
 
   def commitHistory( self ):
-    for mat in self.matlist:
-      mat.commitHistory()
+  
+    if hasattr(self,"matlist"):
+      for mat in self.matlist:
+        mat.commitHistory()

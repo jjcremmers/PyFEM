@@ -5,7 +5,10 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
 #                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by            #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since    #
+#  then augmented and  maintained by Joris J.C. Remmers.                   #
+#  All rights reserved.                                                    #
 #                                                                          #
 #  The latest stable version can be downloaded from the web-site:          #
 #     http://www.wiley.com/go/deborst                                      #
@@ -24,12 +27,13 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-from .Element import Element
-from pyfem.util.shapeFunctions  import getElemShapeData,elemShapeData,getIntegrationPoints,getShapeQuad4
+from .Element                   import Element
+from pyfem.util.shapeFunctions  import getShapeData
 from pyfem.util.kinematics      import Kinematics
 
-from numpy import zeros, dot, outer, ones, eye, sqrt, absolute, linalg,cos,sin,cross,nditer
+from numpy import zeros, dot, sqrt,cos,sin,cross
 from numpy import pi
+from numpy.linalg import norm,det
 from scipy.linalg import eigvals,inv
 from scipy.special.orthogonal import p_roots as gauss_scheme
 
@@ -38,7 +42,7 @@ from scipy.special.orthogonal import p_roots as gauss_scheme
 #------------------------------------------------------------------------------
 
 def unit( a ):
-  return a/linalg.norm(a)
+  return a/norm(a)
 
 #------------------------------------------------------------------------------
 #  Empty classes
@@ -64,68 +68,51 @@ class SLSgeomdata():
 
     self.layerData = layerData
 
-    self.initExtShapeFuncs()
-    self.initIntShapeFuncs()
-    self.initZetaShapeFuncs()
-    self.initElement( elemdat )
+    self.initShapeFuncs( elemdat.coords.shape[0] )   
+    self.initElement   ( elemdat )
 
   def __iter__( self ):
     return iter(self.shape)
 
-  def initExtShapeFuncs( self ):
-
-    isoCoords = zeros( shape=( 4 , 2 ) )
-   
-    isoCoords[0,0] = -1.0
-    isoCoords[0,1] = -1.0
-    isoCoords[1,0] =  1.0
-    isoCoords[1,1] = -1.0
-    isoCoords[2,0] =  1.0
-    isoCoords[2,1] =  1.0
-    isoCoords[3,0] = -1.0
-    isoCoords[3,1] =  1.0
-
-    self.shape = getElemShapeData( isoCoords )
+  def initShapeFuncs( self , nNel ):
+    
+    '''
+    
+    '''
+    
+    if nNel == 8:
+      self.shape = getShapeData( 0 , 'Gauss' , 'Quad4' )
+    elif nNel == 16:
+      self.shape = getShapeData( -1 , 'Gauss' , 'Quad8' )
+    else:
+      raise NotImplementedError('No SLS element with '+str(nNel)+' nodes available')
 
     for sdat in self.shape:
       sdat.h    *= 0.5
       sdat.dhdx *= 0.5
 
-  def initIntShapeFuncs( self ):
-
-    isoCoords = zeros( shape=( 4 , 2 ) )
-   
-    isoCoords[0,0] = -1.0
-    isoCoords[0,1] = -1.0
-    isoCoords[1,0] =  1.0
-    isoCoords[1,1] = -1.0
-    isoCoords[2,0] =  1.0
-    isoCoords[2,1] =  1.0
-    isoCoords[3,0] = -1.0
-    isoCoords[3,1] =  1.0
-
-    intshape = getElemShapeData( isoCoords )
+    intshape = getShapeData( 0 , 'Gauss' , 'Quad4' )
 
     for sdat,idat in zip(self.shape,intshape):
       sdat.psi = idat.h
-
-  def initZetaShapeFuncs( self ):
-
+    
     self.zetaSample,self.zetaWeights = gauss_scheme( 2 )
+
    
   def initElement( self , elemdat ):
+  
+    '''
+    
+    '''
   
     e     = zeros( shape=( 3 , 3 ) )
     dd    = zeros( shape=( 3 , 2 ) )
     g0    = zeros( shape=( 3 , 3 ) )
-    g1    = zeros( shape=( 3 , 3 ) )
-    g0inv = zeros( shape=( 3 , 3 ) )
+    g1    = zeros( shape=( 3 , 3 ) )    
     econ  = zeros( shape=( 3 , 3 ) )
     lax   = zeros( shape=( 3 , 3 ) ) 
     lamb  = zeros( shape=( 3 , 3 ) ) 
     
-    joris = 0
-
     for sdat in self.shape:
     
       height  = -1.0;
@@ -133,13 +120,10 @@ class SLSgeomdata():
       sdat.layerData = []
 
       for ldat in self.layerData:
-        ldatnew = layData()
-
-#        ldatnew.copy(self.layerData)
-
-        ldatnew.angle = ldat.angle
-        ldatnew.matID = ldat.matID
-        ldatnew.zetaData =[]
+        ldatnew          = layData()
+        ldatnew.theta    = ldat.theta
+        ldatnew.matID    = ldat.matID
+        ldatnew.zetaData = []
   
         thick = 2.0 * ldat.thick / self.layerData.totThick
  
@@ -155,8 +139,10 @@ class SLSgeomdata():
 
       sdat.height  = height
     
-    cmid   = elemdat.coords[4:,:] + elemdat.coords[:4,:]
-    dnodes = elemdat.coords[4:,:] - elemdat.coords[:4,:]
+    midNodes = int(elemdat.coords.shape[0]/2)
+    
+    cmid   = elemdat.coords[midNodes:,:] + elemdat.coords[:midNodes,:]
+    dnodes = elemdat.coords[midNodes:,:] - elemdat.coords[:midNodes,:]
   
     for sdat in self.shape:
       for k in range(2):
@@ -168,7 +154,7 @@ class SLSgeomdata():
       for i in range(3):
         for j in range(3):
           g0[i,j] = dot( e[:,i] , e[:,j] )
-                   
+                
       g0inv = inv( g0 )
  
       for i in range(3):
@@ -199,11 +185,11 @@ class SLSgeomdata():
       for ldat in sdat.layerData:
         ldat.lamb = zeros( shape = ( 3 , 3 ) )
 
-        lax[0,0] = cos( ldat.angle )
-        lax[1,0] = sin( ldat.angle )
+        lax[0,0] = cos( ldat.theta )
+        lax[1,0] = sin( ldat.theta )
 
-        lax[0,1] = cos( ldat.angle + 0.5*pi )
-        lax[1,1] = sin( ldat.angle + 0.5*pi )
+        lax[0,1] = cos( ldat.theta + 0.5*pi )
+        lax[1,1] = sin( ldat.theta + 0.5*pi )
 
         lax[2,2] = 1.0
 
@@ -216,4 +202,4 @@ class SLSgeomdata():
       for ldat in sdat.layerData:
         for zdat in ldat.zetaData:
           gtot = g0 + zdat.zeta*g1
-          zdat.weight = zdat.isowght*sqrt(linalg.det(gtot))
+          zdat.weight = zdat.isowght*sqrt(det(gtot))

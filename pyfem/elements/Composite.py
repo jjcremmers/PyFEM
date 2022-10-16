@@ -196,7 +196,7 @@ class TransverseIsotropic:
     Qshear[0,0] = self.Q44*cos(rad)*cos(rad)+self.Q55*sin(rad)*sin(rad)
     Qshear[1,1] = self.Q55*cos(rad)*cos(rad)+self.Q44*sin(rad)*sin(rad)
     Qshear[0,1] = (self.Q55-self.Q44)*cos(rad)*sin(rad)
-    Qshear[0,1] = Qshear[1,0]
+    Qshear[1,0] = Qshear[0,1]
 
     return Qshear
 
@@ -239,9 +239,16 @@ class Layer:
 
   def __init__( self , props ):
    
-    self.mat   = props.material
-    self.theta = props.theta
-    self.thick = props.thick
+    if type(props.material) == str:
+      self.mat   = props.material
+    else:
+      self.mat   = "mat"
+
+    if hasattr( props , "theta" ):
+      self.theta = props.theta    
+    else:
+      self.theta = 0.0
+    self.thick = props.thickness
 
 #------------------------------------------------------------------------------
 #
@@ -252,21 +259,23 @@ class Laminate:
   def __init__( self , props ): 
 
     self.materials = {}
-    self.layTypes  = {}
     self.layers    = []
 
-    matNames = props.materials
-    layNames = props.layers
+    if hasattr( props , "layers" ):
 
-    for name in matNames:
-      self.materials[name] = TransverseIsotropic( getattr( props, name ) )
+      matNames = props.materials
+      layNames = props.layers
 
-    for layer in layNames:
-      self.layTypes[layer] = Layer( getattr( props, layer ) )
+      for name in matNames:
+        self.materials[name] = TransverseIsotropic( getattr( props, name ) )
 
-    for layType in props.stack:
-      self.layers.append( self.layTypes[layType] )
-
+      for layer in layNames:
+        self.layers.append( Layer( getattr( props, layer ) ) )
+        
+    else:
+      self.materials["mat"] = TransverseIsotropic( props.material )
+      self.layers.append( Layer( props ) )
+    
     self.h     = zeros( len(self.layers)+1 )
     self.thick = 0.
     
@@ -300,7 +309,7 @@ class Laminate:
     for i,layer in enumerate(self.layers):
       name  = layer.mat
       theta = layer.theta
-
+      
       self.A 	+= self.materials[name].getQbar( theta ) * (self.h[i+1]-self.h[i])
 
     return self.A
