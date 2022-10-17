@@ -31,7 +31,7 @@
 from numpy import array
 from pyfem.util.itemList import itemList
 from pyfem.util.fileParser import getType
-import re,sys,meshio
+import re,sys
 
 from pyfem.util.logger   import getLogger
 
@@ -99,6 +99,8 @@ class NodeSet( itemList ):
 
   def readGmshFile( self, fname ):
   
+    import meshio
+    
     mesh = meshio.read(fname,file_format="gmsh")
 
     obj3d = ["pris","pyra","hexa","wedg","tetr"]
