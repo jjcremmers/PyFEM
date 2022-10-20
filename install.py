@@ -124,6 +124,7 @@ try:
     print("   OK")  
 except ImportError:
   print(" Meshio not detected                    : Not OK")
+  print("\n   You cannot use gmsh input files!\n")
   print("\n   Please install Meshio 4.0.x or higher")  
   print("   or run PyFEM with limited functionality. \n")  
   

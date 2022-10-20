@@ -153,9 +153,9 @@ class DissipatedEnergySolver( BaseModule ):
         a [:] += ddaN[:]
                               
       # Solve for new displacement vector, load factor      
-      
+
+      dgda,diss = assembleDissipation( props , globdat )         
       K,fint = assembleTangentStiffness( props, globdat )
-      dgda,diss = assembleDissipation( props , globdat )   
     
       res = globdat.lam*fhat-fint
       # Check convergence
