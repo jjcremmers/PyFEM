@@ -16,7 +16,7 @@
 #                                                                          #
 #  The code is open source and intended for educational and scientific     #
 #  purposes only. If you use PyFEM in your research, the developers would  #
-#  be grateful if you could cite the book.                                 #  
+#  be grateful if you could cite the book.                                 #
 #                                                                          #
 #  Disclaimer:                                                             #
 #  The authors reserve all rights but do not guarantee that the code is    #
@@ -34,7 +34,7 @@ input = "axisymmetric_smallstrain4.dat";
 
 ContElem =
 {
-  type = "AxiSymmetricSmallStrain";
+  type = "SmallStrainAxiSym";
 
   material =
   {

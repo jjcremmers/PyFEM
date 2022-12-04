@@ -57,7 +57,7 @@ InterfaceElem =
   {
     type = "XuNeedleman";
     
-    Tult = 40.0;
+    Tult = 75.0;
     Gc   = 0.2;
   };
 };
@@ -66,7 +66,7 @@ solver =
 {
   type = "DissipatedEnergySolver";
 
-  maxCycle   = 60;
+  maxCycle   = 30;
   tol        = 10e-4;
   maxLam     = 5000;
   lam        = 1.0;

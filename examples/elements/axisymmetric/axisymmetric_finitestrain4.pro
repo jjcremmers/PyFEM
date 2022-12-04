@@ -34,7 +34,7 @@ input = "axisymmetric_finitestrain4.dat";
 
 ContElem =
 {
-  type = "AxiSymmetricFiniteStrain";
+  type = "FiniteStrainAxiSym";
 
   material =
   {

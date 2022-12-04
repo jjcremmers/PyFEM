@@ -50,10 +50,8 @@ InterfaceElem =
 
   material = 
   {
-    //type = "PowerLawModeI";
     type = "XuNeedleman";
     
-
     Tult = 0.5;
     Gc   = 0.1;
   };

@@ -23,7 +23,9 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
-#!/usr/bin/env python
+
+import sys,os
+sys.path.insert(0, r"../.." )
 
 from pyfem.io.InputReader  import InputReader
 from pyfem.io.OutputWriter import OutputWriter
