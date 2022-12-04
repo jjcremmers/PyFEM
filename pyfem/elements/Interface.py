@@ -115,9 +115,9 @@ class Interface( Element ):
       
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
       
-#
-#
-#
+#-------------------------------------------------------------------------------
+#  getDissipation
+#-------------------------------------------------------------------------------
     
   def getDissipation ( self, elemdat ):
       
@@ -137,7 +137,7 @@ class Interface( Element ):
       elemdat.diss += kin.g * iData.weight   
 
 #------------------------------------------------------------------------------
-#
+#  getBmatrix
 #------------------------------------------------------------------------------
 
   def getBmatrix( self , phi , rot ):
@@ -152,7 +152,7 @@ class Interface( Element ):
     return B
 
 #------------------------------------------------------------------------------
-#
+#  getRotation
 #------------------------------------------------------------------------------
 
   def getRotation( self , coords , state ):
@@ -192,5 +192,3 @@ class Interface( Element ):
     rot[1,1]= -normal[0]
 
     return rot
-
-

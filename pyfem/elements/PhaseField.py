@@ -1,33 +1,37 @@
-############################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:  #
-#                                                                          #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'         #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel        #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                        #
-#                                                                          #
-#  The code is written by J.J.C. Remmers, C.V. Verhoosel and R. de Borst.  #
-#                                                                          #
-#  The latest stable version can be downloaded from the web-site:          #
-#     http://www.wiley.com/go/deborst                                      #
-#                                                                          #
-#  A github repository, with the most up to date version of the code,      #
-#  can be found here:                                                      #
-#     https://github.com/jjcremmers/PyFEM                                  #
-#                                                                          #
-#  The code is open source and intended for educational and scientific     #
-#  purposes only. If you use PyFEM in your research, the developers would  #
-#  be grateful if you could cite the book.                                 #  
-#                                                                          #
-#  Disclaimer:                                                             #
-#  The authors reserve all rights but do not guarantee that the code is    #
-#  free from errors. Furthermore, the authors shall not be liable in any   #
-#  event caused by the use of the program.                                 #
-############################################################################
+################################################################################
+#  This Python file is part of PyFEM, the code that accompanies the book:      #
+#                                                                              #
+#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
+#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
+#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
+#                                                                              #
+#  Copyright (C) 2011-2022. The code is written in 2011-2012 by                #
+#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
+#  then augmented and maintained by Joris J.C. Remmers.                        #
+#  All rights reserved.                                                        #
+#                                                                              #
+#  A github repository, with the most up to date version of the code,          #
+#  can be found here:                                                          #
+#     https://github.com/jjcremmers/PyFEM/                                     #
+#     https://pyfem.readthedocs.io/                                            #	
+#                                                                              #
+#  The original code can be downloaded from the web-site:                      #
+#     http://www.wiley.com/go/deborst                                          #
+#                                                                              #
+#  The code is open source and intended for educational and scientific         #
+#  purposes only. If you use PyFEM in your research, the developers would      #
+#  be grateful if you could cite the book.                                     #    
+#                                                                              #
+#  Disclaimer:                                                                 #
+#  The authors reserve all rights but do not guarantee that the code is        #
+#  free from errors. Furthermore, the authors shall not be liable in any       #
+#  event caused by the use of the program.                                     #
+################################################################################
 
 from .Element import Element
 from pyfem.util.shapeFunctions  import getElemShapeData
 from pyfem.util.kinematics      import Kinematics
-from numpy import zeros, dot, outer, ones , eye, ix_ 
+from numpy import zeros, dot, outer, ones , eye, ix_, linalg, tensordot 
 
 import sys
 
@@ -43,15 +47,68 @@ class PhaseField( Element ):
       self.dofTypes = [ 'u' , 'v' , 'phase' ]
       self.nstr = 3
     elif self.rank == 3:
-      print("Error")
+      self.dofTypes = [ 'u' , 'v' , 'w' , 'phase' ]
+      self.nstr = 6
 
     self.kin = Kinematics(self.rank,self.nstr)
     
-    self.hisOld = zeros(4)
-    self.hisNew = zeros(4)
+    self.hisOld = zeros(8)
+    self.hisNew = zeros(8)
 
   def __type__ ( self ):
     return name
+    
+#-------------------------------------------------------------------------------
+#  
+#-------------------------------------------------------------------------------
+    
+  def strain2matrix ( self, strain ):
+  
+    '''Gives the strain in matrix format.'''    
+    
+    strainM = zeros( shape=( self.rank , self.rank ) )
+
+    if self.rank == 2:
+      strainM[0,0] = strain[0]
+      strainM[1,1] = strain[1]
+      strainM[0,1] = strain[2]
+      strainM[1,0] = strain[2]
+
+    elif self.rank == 3:
+      strainM[0,0] = strain[0]
+      strainM[1,1] = strain[1]
+      strainM[2,2] = strain[2]
+      strainM[1,2] = strain[3]
+      strainM[0,2] = strain[4]
+      strainM[0,1] = strain[5]
+      strainM[2,1] = strain[3]
+      strainM[2,0] = strain[4]
+      strainM[1,0] = strain[5]
+       
+    return strainM
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+    
+  def getDecompEnergy ( self, strain ):
+  
+    '''Decomposes the Energy in a positive part due to tension and a negative part due to compression.'''    
+  
+    prinVal, prinVec = linalg.eig(strain)
+    strainPos = zeros(shape=(self.rank,self.rank))
+    strainNeg = zeros(shape=(self.rank,self.rank))
+    
+    for i in range(self.rank):
+        strainPos += 0.5*(prinVal[i]+abs(prinVal[i]))*tensordot(prinVec[:,i],prinVec[:,i],0)
+        strainNeg += 0.5*(prinVal[i]-abs(prinVal[i]))*tensordot(prinVec[:,i],prinVec[:,i],0)
+      
+    mu = self.matProps.E/(2*(1+self.matProps.nu))
+    lame = (self.matProps.E*self.matProps.nu)/((1+self.matProps.nu)*(1-2*self.matProps.nu))
+    
+    energyPos = 0.5*lame*(0.5*(strain.trace()+abs(strain.trace())))**2 + mu*(strainPos*strainPos).trace()
+    energyNeg = 0.5*lame*(0.5*(strain.trace()-abs(strain.trace())))**2 + mu*(strainNeg*strainNeg).trace()
+
+    return energyPos, energyNeg
 
 #-------------------------------------------------------------------------------
 #
@@ -59,7 +116,9 @@ class PhaseField( Element ):
 
   def getTangentStiffness ( self, elemdat ):
 
-    print(self.rank)
+    '''Calculates the tangent stiffness matrix and the internal force vector
+       of the PhaseField model.'''
+       
     sData = getElemShapeData( elemdat.coords )
     
     uDofs,pDofs = self.splitDofIDs( len(elemdat.coords) )
@@ -76,14 +135,15 @@ class PhaseField( Element ):
       
       sigma,tang = self.mat.getStress( self.kin )
 
+      energyPos, energyNeg = self.getDecompEnergy(self.strain2matrix(self.kin.strain))
       energy = 0.5*sum(self.kin.strain*sigma)
 
-      if energy > self.hisOld[iInt]:
-        self.hisNew[iInt] = energy
+      if energyPos > self.hisOld[iInt]:
+        self.hisNew[iInt] = energyPos
       else:
         self.hisNew[iInt] = self.hisOld[iInt]
             
-      factor = 1.0-phase*phase+self.k
+      factor = (1.0-phase)**2+self.k
                    
       # -- Displacement contributions
       
@@ -113,8 +173,6 @@ class PhaseField( Element ):
       elemdat.stiff[ix_(uDofs,pDofs)] += outer( vecu , iData.h )       
       elemdat.stiff[ix_(pDofs,uDofs)] += outer( iData.h , vecu ) 
       
-      # Coupling terms need TOBEIMPLEMENTED
-      
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
      
 #-------------------------------------------------------------------------------
@@ -122,7 +180,9 @@ class PhaseField( Element ):
 #-------------------------------------------------------------------------------
 
   def getInternalForce ( self, elemdat ):
-      
+    
+    '''Returns the internal force vector of the PhaseField model.'''
+    
     sData = getElemShapeData( elemdat.coords )
 
     uDofs,pDofs = self.splitDofIDs( len(elemdat.coords) )
@@ -139,14 +199,15 @@ class PhaseField( Element ):
       
       sigma,tang = self.mat.getStress( self.kin )
 
+      energyPos, energyNeg = self.getDecompEnergy(self.strain2matrix(self.kin.strain))
       energy = 0.5*sum(self.kin.strain*sigma)
 
-      if energy > self.hisOld[iInt]:
-        self.hisNew[iInt] = energy
+      if energyPos > self.hisOld[iInt]:
+        self.hisNew[iInt] = energyPos
       else:
         self.hisNew[iInt] = self.hisOld[iInt]
             
-      factor = 1.0-phase*phase+self.k
+      factor = (1.0-phase)**2+self.k
                    
       # -- Displacement contributions
         
@@ -160,44 +221,32 @@ class PhaseField( Element ):
       pfint += 2.0*( phase-1.0 ) * iData.h * self.hisNew[iInt]
             
       elemdat.fint[pDofs] += pfint * iData.weight
-      
-      # -- Coupling terms
-  
-      # Coupling terms need TOBEIMPLEMENTED
-      
+            
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
-
-#-------------------------------------------------------------------------------
-#  
-#-------------------------------------------------------------------------------
-    
-  def getMassMatrix ( self, elemdat ):
-      
-    sData = getElemShapeData( elemdat.coords )
-
-    rho = elemdat.matprops.rho
-
-    for iData in sData:
-      N  = self.getNmatrix( iData.h )
-      elemdat.mass += dot ( N.transpose() , N ) * rho * iData.weight
-     
-    elemdat.lumped = sum(elemdat.mass)
     
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
   def commit ( self, elemdat ):
+  
+    '''Copies the new history parameters (maximum internal energy for each 
+       integration point) to the old history parameters.'''
 
     self.hisOld = self.hisNew
    
 #-------------------------------------------------------------------------------
-# Calculates the B matrix
+#  getBmatrix
 #-------------------------------------------------------------------------------
 
   def getBmatrix( self , dphi ):
 
-    b = zeros( shape=( self.nstr , self.rank*len(dphi) )
+    '''Calculates the B-matrix (eps = B * u) vfor the mechanical part of the
+       PhaseField model. The dimensions  of the B-matrix are determined by the
+       rank of the problem and the length of the matrix containing derivatives
+       of the shape functions (dphi)'''
+       
+    b = zeros( shape=( self.nstr , self.rank*len(dphi) ) )
 
     if self.rank == 2:
       for i,dp in enumerate(dphi):
@@ -226,30 +275,23 @@ class PhaseField( Element ):
 #
 #-------------------------------------------------------------------------------
 
-  def getNmatrix( self , h ):
-
-    N = zeros( shape=( self.rank , self.rank*len(h) ) )
-
-    for i,a in enumerate( h ):
-      for j in list(range(self.rank)):
-        N[j,self.rank*i+j] = a
-    
-    return N
-    
-#-------------------------------------------------------------------------------
-#  Routine to split the dof IDs in two groups, one for the displacement degrees 
-#    of freedom, the second for the phase field degres of freedom
-#-------------------------------------------------------------------------------
-
   def splitDofIDs( self , n ):
   
+    '''Routine to split the dof IDs in two groups, one for the displacement 
+       degrees of freedom, the second for the phase field degres of freedom. 
+       n is the number of degrees of freedom in this model'''
+    
     if self.rank == 2:
       if n == 3:
         return [0,1,3,4,6,7],[2,5,8]
       elif n == 4:
         return [0,1,3,4,6,7,9,10],[2,5,8,11]
     elif self.rank == 3:
-      if n == 8:
+      if n == 4:
+        return [0,1,2,4,5,6,8,9,10,12,13,14],[3,7,11,15]
+      elif n == 6:
+        return [0,1,2,4,5,6,8,9,10,12,13,14,16,17,18,20,21,22],[3,7,11,15,19,23]
+      elif n == 8:
         return [0,1,2,4,5,6,8,9,10,12,13,14,16,17,18,20,21,22,24,25,26,28,29,30],[3,7,11,15,19,23,27,31]
     else:
       print("Error")

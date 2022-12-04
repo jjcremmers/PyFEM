@@ -173,8 +173,7 @@ class SLSkinematic:
 #------------------------------------------------------------------------------
 
   def ansDmap( self , d , n1 , n2 , n3 , n4 ):
-        
-        
+              
     for i in range(3):
       ns = (n1-1) * 3
       d[ns+i,ns+i]   = -0.125
@@ -322,13 +321,8 @@ class SLSkinematic:
 
   def getStrains( self , kin , sdat , zeta , lamb ):
 
-    eps  = self.getEps()   
-    deps = self.getDEps()
-    rho  = self.getRho ( sdat.gbar )
-    drho = self.getDRho( sdat.gbar )
-
-    kin.strain  = iso2loc( eps +zeta * rho, lamb )
-    kin.dstrain = iso2loc( deps + zeta * drho , lamb )
+    kin.strain  = iso2loc( self.getEps()  + zeta * self.getRho ( sdat.gbar ) , lamb )
+    kin.dstrain = iso2loc( self.getDEps() + zeta * self.getDRho( sdat.gbar ) , lamb )
         
 #-------------------------------------------------------------------------------
 #
