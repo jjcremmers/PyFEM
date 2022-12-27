@@ -1,4 +1,4 @@
-About the code                      
+About the code
 ==============
 
 This is the user manual for PyFEM. This python-based finite element code
