@@ -54,6 +54,8 @@ class Element ( list ):
     for name,val in props:
       if name == "material":
         self.matProps = val
+        
+        self.matProps.rank       = props.rank
         self.matProps.solverStat = self.solverStat
         self.mat = MaterialManager( self.matProps )
       

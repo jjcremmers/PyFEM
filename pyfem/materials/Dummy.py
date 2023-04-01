@@ -37,9 +37,12 @@ class Dummy( BaseMaterial ):
 
     BaseMaterial.__init__( self, props )
 
-    self.H = self.D*eye(2)
-
-    self.outLabels = [ "Tn" , "Ts" ]
+    if props.rank == 2:
+      self.H         = self.D*eye(2)
+      self.outLabels = [ "Tn" , "Ts" ]
+    elif props.rank == 3:
+      self.H         = self.D*eye(3)
+      self.outLabels = [ "Tn" , "Ts1" , "Ts2" ]      
 
   def getStress( self, deformation ):
 
