@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'PyFEM'
-copyright = '2022, Joris Remmers'
+copyright = '2023, Joris Remmers'
 author = 'Joris Remmers'
 
 # The short X.Y version
