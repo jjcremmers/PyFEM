@@ -38,7 +38,7 @@ class OutputWriter( BaseModule ):
 
   def __init__ ( self, props , globdat ):
 
-    self.prefix    = globdat.prefix
+    self.prefix    = globdat.prefix + "_glob"
     self.extension = ".out"
     self.onScreen  = False
 

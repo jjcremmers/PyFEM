@@ -41,14 +41,13 @@ class ContourWriter( BaseModule ):
     self.interval     = 1
     self.k            = 0
 
-#    self.stresslabels = [ "sxx" , "syy" , "sxy" ]
-
     BaseModule.__init__( self , props )
 
     self.columndata = []
 
-#    for i,col in enumerate ( self.columns ):
-#      self.columndata.append( colProps )
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 	
   def run( self , props , globdat ):
 
@@ -60,8 +59,6 @@ class ContourWriter( BaseModule ):
     crd = globdat.nodes.getNodeCoords(self.nodes[0])
     outfile = open( self.prefix + '-contour-' + str(self.k) + '.out' ,'w' )
         
-    #tractions = globdat.getData( "tractions" , range(len(globdat.nodes)) )
-
     outfile.write( '#Node  %-10s %-10s' % ('x-coor','y-coor') )
   
     if len(crd) == 3:
