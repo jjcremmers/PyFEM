@@ -126,11 +126,22 @@ class GraphWriter( BaseModule ):
 
     self.outfile.write('\n')
 
+    self.output.append( a )
+
+    plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
+    #plot( [x[0] for x in self.output], [x[2] for x in self.output], 'bo-' )    
+      
+    if self.onScreen:       
+      self.fig.canvas.draw()
+      
+    self.fig.savefig(self.prefix+'.png')
+    '''
     if self.onScreen: 
       self.output.append( a )
 
       plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
       self.fig.canvas.draw()
+    '''
     
     if not globdat.active:
       self.outfile.close

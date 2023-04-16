@@ -272,7 +272,7 @@ class DofSpace:
     '''Returns all dofIDs for a list of nodes'''
     
     return self.dofs[self.IDmap.get(nodeIDs)].flatten()
- 
+
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
@@ -368,3 +368,20 @@ class DofSpace:
       constrainer = self.cons
     
     return scipy.linalg.norm( constrainer.C.transpose() * r )
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def maskPrescribed( self, a, val = 0.0 , constrainer = None  ):
+  
+    '''
+    Replaced the prescribed dofs by val
+    '''
+    
+    if constrainer is None:
+      constrainer = self.cons
+    
+    a[constrainer.constrainedDofs["None"]] = val
+    
+    return a

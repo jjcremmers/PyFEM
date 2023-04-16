@@ -32,6 +32,7 @@ from numpy import zeros, dot, outer, ones, eye, sqrt, absolute, linalg,cos,sin,c
 from scipy.linalg import eigvals,inv
 from math import pi
 
+
 #-------------------------------------------------------------------------------
 #   class SLSparameters
 #-------------------------------------------------------------------------------
