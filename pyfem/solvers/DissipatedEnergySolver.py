@@ -86,7 +86,6 @@ class DissipatedEnergySolver( BaseModule ):
    
     a    = globdat.state
     Da   = globdat.Dstate
-    #fhat = globdat.fhat
     
     fhat = assembleExternalForce( props, globdat )  
  
@@ -103,7 +102,6 @@ class DissipatedEnergySolver( BaseModule ):
       Da1    = self.factor * self.Daprev
       Dlam   = self.factor * self.Dlamprev
       globdat.lam += Dlam
-
 
     a [:] += Da1[:]
     Da[:] =  Da1[:]
