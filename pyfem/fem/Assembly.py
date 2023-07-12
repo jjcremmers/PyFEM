@@ -133,8 +133,8 @@ def assembleArray ( props, globdat, rank, action ):
     return B,cc
   elif rank == 2:
 
-    '''if globdat.contact.flag:
-      row , val , col = globdat.contact.checkContact( row , val , col , B , globdat )      '''
+    if globdat.contact.flag:
+      row , val , col = globdat.contact.checkContact( row , val , col , B , globdat )
 
     return coo_matrix((val,(row,col)), shape=(nDof,nDof)),B
 
