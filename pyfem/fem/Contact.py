@@ -49,8 +49,12 @@ class Contact:
     
     if hasattr( props , 'contact' ):
       if hasattr( props.contact , 'type' ):
-        self.type = props.contact.type
-        self.flag = True
+        self.type      = props.contact.type
+        
+        if self.type == "sphere":
+          self.dispDofs = ["u","v","w"] 
+          
+        self.flag      = True
         self.centre    = np.array(props.contact.centre)
         self.radius    = props.contact.radius
         self.penalty   = props.contact.penalty
