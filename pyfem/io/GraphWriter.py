@@ -30,8 +30,10 @@
 
 from pyfem.util.BaseModule import BaseModule
 from pyfem.util.dataStructures import Properties
-from pylab import plot, show, xlabel, ylabel, draw, ion, figure, gcf
+
 from numpy import ndarray,zeros
+
+import matplotlib.pyplot as plt
 
 class GraphWriter( BaseModule ):
 
@@ -67,24 +69,18 @@ class GraphWriter( BaseModule ):
 
       self.columndata.append( colProps )
 
-    if self.onScreen and hasattr( globdat , "onScreen" ):
-      self.onScreen = False
-    else:
+    if self.onScreen:
       globdat.onScreen = True
 
-      self.fig = gcf()
-      self.fig.show()
-      self.fig.canvas.draw()
-
+      self.fig = plt.figure(figsize=(3,4), dpi=160)
+      self.ax1 = plt.subplot()
+      
     self.outfile = open( self.filename ,'w' )
 
     if self.onScreen:
       self.output = []
-
-      xlabel(self.columns[0])
-      ylabel(self.columns[1])
-  
-      ion()
+      
+    self.outfile = open( self.filename ,'w' )      
 
     self.run( props , globdat ) 
 
@@ -127,21 +123,19 @@ class GraphWriter( BaseModule ):
     self.outfile.write('\n')
 
     self.output.append( a )
-
-    plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
-    #plot( [x[0] for x in self.output], [x[2] for x in self.output], 'bo-' )    
       
-    if self.onScreen:       
-      self.fig.canvas.draw()
+    if self.onScreen:    
+      plt.sca(self.ax1)
+      plt.cla()
+      
+      plt.xlabel(self.columns[0])
+      plt.ylabel(self.columns[1])   
+      
+      plt.plot([x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
+    
+      plt.pause(0.001)
       
     self.fig.savefig(self.prefix+'.png')
-    '''
-    if self.onScreen: 
-      self.output.append( a )
-
-      plot( [x[0] for x in self.output], [x[1] for x in self.output], 'ro-' )
-      self.fig.canvas.draw()
-    '''
     
     if not globdat.active:
       self.outfile.close
