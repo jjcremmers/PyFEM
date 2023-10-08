@@ -24,57 +24,82 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
-input = "plate_cantilever02.dat";
+input = "PeelTest.dat";
 
-PlateElem =
+ContElem =
 {
-  type = "Plate";
+  type = "SmallStrainContinuum";
 
-  materials = ["UD"];
-  
-  layers    = ["l0","l90","l0"];
-  
-  UD =
+  material =
   {
-    E1   = 1.e6;
-    E2   = 5.e5;
-    nu12 = 0.25;
-    G12  = 4.e5;
-    rho  = 1.0e3;
+    type = "PlaneStrain";
+    E    = 100.0;
+    nu   = 0.3;
   };
-  
-  l0 =
+};
+
+InterfaceElem =
+{
+  type = "Interface";
+
+  material = 
   {
-    material  = "UD";
-    theta     = 0.0;
-    thickness = 0.05;
+    type = "XuNeedleman";
+    
+    Tult = 0.5;
+    Gc   = 0.1;
   };
-  
-  l90 =
-  {
-    material  = "UD";
-    theta     = 90.0;
-    thickness = 0.05;
-  };  
 };
 
 solver =
 {
-  type = "LinearSolver";
+  type = "DissipatedEnergySolver";
+
+  maxCycle   = 60;
+  tol        = 10e-4;
+  maxLam     = 50;
+  lam        = 1.0;
+
+  disstype   = "Local";
+  switchEnergy = 1.0e-3; 
+  maxdTau    = 0.05;
 };
 
-outputModules = ["vtk","output"];
+outputModules = ["vtk","graph","contour"];
 
 vtk =
 {
   type = "MeshWriter";
-
-  interval = 1;
+  
+  elementGroup = "ContElem";
 };
 
-output =
+graph =
 {
-  type = "OutputWriter";
+  type = "GraphWriter";
 
   onScreen = true;
+
+  columns = ["disp","load"];
+
+  disp =
+  {
+    type = "state";
+    node = 366;
+    dof  = "v";
+  };
+  
+  load =
+  {
+    type = "fint";
+    node = 366;
+    dof  = "v";
+  };
+};
+
+contour =
+{
+  type = "ContourWriter";
+  
+  nodes = [123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177];
 };
