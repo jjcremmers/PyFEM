@@ -34,8 +34,7 @@ print("\n ===============================================================\n")
 
 # get operating system
 
-osName = sys.platform
-
+osName     = sys.platform
 osFullName = osName
 
 if osName == "linux":
@@ -43,12 +42,14 @@ if osName == "linux":
 elif osName == "win32":
   osFullName = "Windows"
 
+print("  Operating system                       :%7s " %(osFullName))
+
+#-------------------------------------------------------------------------------
 # check python version
+#-------------------------------------------------------------------------------
 
 versionLong = sys.version.split(' ')
 version     = versionLong[0].split('.')
-
-print("  Operating system                       :%7s " %(osFullName))
 
 print("  Python version detected     %10s : " %(versionLong[0]) , end=' '  )
 
@@ -56,9 +57,12 @@ if int(version[0]) == 3 and int(version[1]) >= 6:
   print("   OK")
 elif int(version[0]) == 2:
   print("  Please note that PyFEM has been migrated to Python 3.x\n")
-  print("    Install Pyhon 3.x\n")
+  print("    Install the latest version of Python 3.x and reconfigure PyFEM.\n")
+  sys.exit()
 else:
-  print("  Not OK\n\n   Please install Python 3.11.x\n")
+  print("  Not OK\n\n")
+  print("    Install the latest version of Python 3.x and reconfigure PyFEM.\n")
+  sys.exit()
   
 # check numpy version
 
@@ -73,10 +77,13 @@ try:
   if int(version[0]) == 1 and int(version[1]) >= 6:
     print("   OK")
   else:
-    print("  Not OK\n\n   Please install Numpy 1.6.x or higher\n")
+    print("  Not OK\n\n")
+    print("    Please install Numpy 1.6.x or higher and reconfigure PyFEM.\n")
+    sys.exit()    
 except ImportError:
   print("  NumPy not detected                      : Not OK")
-  print("\n    Please install install Numpy 1.6.x or higher\n")
+  print("    Please install Numpy 1.6.x or higher and reconfigure PyFEM.\n")
+  sys.exit()    
 
 # check scipy version
 
@@ -93,10 +100,12 @@ try:
   elif int(version[0]) >= 1 and int(version[1]) >= 0:
     print("   OK")
   else:
-    print("  Not OK\n\n   Please install Scipy 0.9.x or higher\n")
+    print("    Please install Scipy 0.9.x or higher and reconfigure PyFEM.\n")
+    sys.exit()    
 except ImportError:
   print("  SciPy not detected                     : Not OK")
-  print("\n    Please install install Scipy 0.9.x or higher\n")
+  print("    Please install Scipy 0.9.x or higher and reconfigure PyFEM.\n")
+  sys.exit() 
       
   
 # check matplotlib
@@ -116,7 +125,8 @@ try:
 except ImportError:
   print("  matplotlib not detected                : Not OK")
   print("\n    Please install Matplotlib 1.0.x or higher\n")
-    
+  sys.exit() 
+      
 # check meshio version
 
 try:
@@ -128,16 +138,21 @@ try:
   print("  Meshio version detected     %10s : " %(versionLong) , end=' '  )
 
   if int(version[0]) <= 3:
-    print("  Not OK\n\n  Please install Meshio 4.0.0 or higher.\n")
-    print("    pip install meshio\n")
+    print("  Not OK\n")
+    answer = input("    Do you want to install the latest version meshio? (Y/N)\n")
+    if answer.lower() == "y" or answer.lower() == 'yes':
+      subprocess.run(['pip','install','meshio'])        
+    else:
+      print("\n    You cannot use gmsh input files!\n")
   else:
     print("   OK")  
 except ImportError:
   print("  Meshio not detected                    : Not OK")
-  print("\n    You cannot use gmsh input files!\n")
-  print("\n    Please install Meshio 4.0.0 or higher\n")  
-  print("      'pip install meshio'\n")
-  print("    or run PyFEM with limited functionality. \n")  
+  answer = input("    Do you want to install the latest version meshio? (Y/N)\n")
+  if answer.lower() == "y" or answer.lower() == 'yes':
+    subprocess.run(['pip','install','meshio'])        
+  else:
+    print("\n    You cannot use gmsh input files!\n")
   
 # check pickle version
 
@@ -179,6 +194,10 @@ except ImportError:
 
 path = os.getcwd()
 
+print("\n  ==============================================================")
+print("  INSTALLATION SUCCESSFUL!")
+print("  ==============================================================\n")
+
 if osName[:5] == "linux":
 
   batfile = open( 'pyfem.sh' , 'w' )
@@ -191,8 +210,6 @@ if osName[:5] == "linux":
   
   subprocess.run(['chmod', '+x', 'pyfem.sh'])  
   	
-  print("\n  INSTALLATION SUCCESSFUL!")
-  print("  ==============================================================\n")
   print("  You can run PyFEM from any directory by typing:\n")
   print("    [relative_path_to_this_directory]/pyfem.sh inputFile.pro\n")
   print("  Alternatively, you can make an alias. When using a bash shell,")
@@ -204,8 +221,6 @@ if osName[:5] == "linux":
 
 elif osName[:6] == "darwin":
 
-  print("\n MAC-OS INSTALLATION")
-  print(" ===============================================================\n")
   print(" Add the following line to ~/.bashrc :\n")
   #print('   export PYTHONPATH="'+path+'"')
   print("    alias  pyfem='python3 "+path+"/PyFEM.py'\n")
@@ -227,8 +242,6 @@ elif osName[:3] == "win":
 
   batfile.close()
 
-  print("\n  INSTALLATION SUCCESSFUL!")
-  print("  ===============================================================\n")
   print("  You can run PyFEM from any directory by typing:\n")
   print("    [path_to_this_directory]\pyfem inputFile.pro\n")
   print("  or, when you add this directory to your system path,")

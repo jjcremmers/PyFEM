@@ -254,7 +254,7 @@ class LayerData:
        
         layer          =  Layer()
         layer.thick    =  layprops.thickness
-        layer.angle    =  layprops.angle*pi/180
+        layer.theta    =  layprops.theta*pi/180
         
         if hasattr( props , "materials" ):      
           layer.matID  =  props.materials.index(layprops.material)
@@ -268,10 +268,10 @@ class LayerData:
       layer         = Layer()
       layer.thick   = 1.0
       
-      if hasattr( props , "angle" ):
-        layer.angle = props.angle
+      if hasattr( props , "theta" ):
+        layer.theta = props.theta
       else:
-        layer.angle = 0.0
+        layer.theta = 0.0
         
       layer.matID   = 0
 

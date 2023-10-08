@@ -89,7 +89,7 @@ class XuNeedleman( BaseMaterial ):
     t19 = exp(-t15*t17)
     t24 = self.Gc*t4
 
-    stress[0] = -t4*((1.0-self.r+t3)*t6*t9-t14*t19)*self.Gc*t1+
+    stress[0] = -t4*((1.0-self.r+t3)*t6*t9-t14*t19)*self.Gc*t1+ \
                  t24*(t1*t6*t9-t12*t1*t19)
     stress[1] = 2.0*t24*t14*deformation.strain[1]*t17*t19
 

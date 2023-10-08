@@ -121,7 +121,7 @@ class SLSgeomdata():
 
       for ldat in self.layerData:
         ldatnew          = layData()
-        ldatnew.angle    = ldat.angle
+        ldatnew.theta    = ldat.theta
         ldatnew.matID    = ldat.matID
         ldatnew.zetaData = []
   
@@ -182,14 +182,14 @@ class SLSgeomdata():
       T[:,1] = unit(cross(  T[:,2] , T[:,0] ) )   
       T[:,0] = unit(cross(  T[:,1] , T[:,2] ) )
 
-      for ldat in sdat.layerData:
+      for ldat in sdat.layerData:        
         ldat.lamb = zeros( shape = ( 3 , 3 ) )
 
-        lax[0,0] = cos( ldat.angle )
-        lax[1,0] = sin( ldat.angle )
+        lax[0,0] = cos( ldat.theta )
+        lax[1,0] = sin( ldat.theta )
 
-        lax[0,1] = cos( ldat.angle + 0.5*pi )
-        lax[1,1] = sin( ldat.angle + 0.5*pi )
+        lax[0,1] = cos( ldat.theta + 0.5*pi )
+        lax[1,1] = sin( ldat.theta + 0.5*pi )
 
         lax[2,2] = 1.0
 
