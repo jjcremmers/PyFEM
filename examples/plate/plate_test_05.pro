@@ -46,14 +46,14 @@ ContElem =
   {
     material = "carbon";
     theta    = 0.;
-    thick    = 0.01;
+    thickness = 0.01;
   };
 
   c1 = 
   {
     material = "carbon";
     theta    = 90.;
-    thick    = 0.01;
+    thickness = 0.01;
   };
 
   stack = ["c0","c1","c0","c1","c0"];

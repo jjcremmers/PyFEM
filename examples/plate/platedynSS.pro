@@ -52,7 +52,7 @@ ContElem =
   {
     material = "carb";
     theta    = 0.;
-    thick    = 0.005;
+    thickness    = 0.005;
   };
 
   stack = ["c0"];
