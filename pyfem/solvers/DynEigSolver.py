@@ -34,7 +34,7 @@ from numpy import zeros, array, pi
 from pyfem.fem.Assembly import assembleTangentStiffness, assembleMassMatrix
 
 from pyfem.util.logger   import getLogger
-
+from math import sqrt
 import h5py
 
 logger = getLogger()
@@ -62,19 +62,23 @@ class DynEigSolver ( BaseModule ):
          
     M,mlump = assembleMassMatrix      ( props , globdat )
 
-    eigenvals , eigenvecs = globdat.dofs.eigensolve( K , M , self.eigenCount )
-
-    globdat.state = eigenvecs
-  
+    eigenvals , globdat.eigenvecs = globdat.dofs.eigensolve( K , M , self.eigenCount )
+    
+    globdat.eigenvals = []
+    
+    for val in eigenvals:
+      globdat.eigenvals.append( sqrt(val) )
+         
     globdat.elements.commitHistory()
 
     globdat.active = False 
     
     h5file = h5py.File( "modes.h5", 'w')
     
-    h5file.create_dataset("modes", eigenvecs.shape, dtype='f', data=eigenvecs)   
+    h5file.create_dataset("modes", globdat.eigenvecs.shape, 
+                          dtype='f', data=globdat.eigenvecs)   
   
-    self.printResults( eigenvals )
+    self.printResults( globdat.eigenvals )
 
 #------------------------------------------------------------------------------
 #
@@ -88,7 +92,7 @@ class DynEigSolver ( BaseModule ):
     logger.info("    =============================================")
     logger.info('   Mode |   Eigenvalue       |  Frequency')
         
-    for i,f in enumerate(eigenvals):
-      logger.info('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,f,f/(2.0*pi)))
+    for i,val in enumerate(eigenvals):
+      logger.info('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,val,val/(2.0*pi)))
       
     logger.info('  ================================================\n')

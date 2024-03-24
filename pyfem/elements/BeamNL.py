@@ -107,6 +107,48 @@ class BeamNL ( Element ):
     fint = dot( ae.transpose() , fvar )
                               
     elemdat.fint  = self.loc2glob( fint  , T )
+    
+#----------------------------------------------------------------------
+    
+  def getMassMatrix ( self, elemdat ):
+      
+    mass = zeros( shape=(6,6))
+
+    length , T = self.getT( elemdat )
+    
+    mass[0,0] = 140.0
+    mass[0,3] =  70.0    
+    
+    mass[1,1] = 156.0
+    mass[1,2] =  22.0*length
+    mass[1,4] =  54.0
+    mass[1,5] = -13.0*length
+    
+    mass[2,2] =   4.0*length*length
+    mass[2,4] =  13.0*length
+    mass[2,5] =  -3.0*length*length
+    
+    mass[3,3] = 140.0
+    
+    mass[4,4] = 156.0
+    mass[4,5] = -22.0*length
+    
+    mass[5,5] =   4.0*length*length
+    
+    mass[2,1] = mass[1,2]
+    mass[3,0] = mass[0,3]
+    
+    mass[4,1] = mass[1,4]
+    mass[4,2] = mass[2,4]
+    
+    mass[5,1] = mass[1,5]
+    mass[5,2] = mass[2,5]
+    mass[5,4] = mass[4,5]        
+    
+    mass *= self.rho*self.A*length/420.0
+    
+    elemdat.mass = self.loc2glob( mass , T )                  
+    elemdat.lumped = sum(elemdat.mass)    
          
 #------------------------------------------------------------------------------
 #

@@ -1,0 +1,35 @@
+<Nodes>
+  0 0.0  0.0 ; 
+  1 1.0  0.0 ;
+  2 2.0  0.0 ;
+  3 3.0  0.0 ; 
+  4 4.0  0.0 ;
+  5 5.0  0.0 ;
+  6 6.0  0.0 ; 
+  7 7.0  0.0 ;
+  8 8.0  0.0 ;
+  9 9.0  0.0 ;
+ 10 10.0 0.0 ; 
+</Nodes>
+
+<Elements>
+  1 "BeamElem"  0  1 ;
+  2 "BeamElem"  1  2 ;
+  3 "BeamElem"  2  3 ;
+  4 "BeamElem"  3  4 ;
+  5 "BeamElem"  4  5 ;
+  6 "BeamElem"  5  6 ;
+  7 "BeamElem"  6  7 ;
+  8 "BeamElem"  7  8 ;
+  9 "BeamElem"  8  9 ;
+ 10 "BeamElem"  9 10 ;  
+</Elements>
+
+<NodeConstraints>
+ u[0] = 0.0;
+ v[0] = 0.0;
+ rz[0] = 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+</ExternalForces>

@@ -1,4 +1,5 @@
 *.vtu 
 *.out
 *.pvd
+*.h5
 
