@@ -109,7 +109,8 @@ class DofSpace:
     
   def readFromFile( self, fname ):
       
-    logger.info("Reading constraints ..........")
+    logger.info("  Reading constraints")
+    logger.info("  -----------------------------------------------------------")  
 
     nodeTable = readNodeTable( fname , "NodeConstraints" , self.nodes )
    

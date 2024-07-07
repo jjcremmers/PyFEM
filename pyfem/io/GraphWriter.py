@@ -89,7 +89,9 @@ class GraphWriter( BaseModule ):
 #------------------------------------------------------------------------------
 
   def run( self , props , globdat ):
-
+     
+    self.writeHeader()
+    
     a = []
 
     for i,col in enumerate(self.columndata):

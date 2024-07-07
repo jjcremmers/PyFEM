@@ -54,10 +54,14 @@ class ExplicitSolver ( BaseModule ):
     
     globdat.solverStatus.dtime = self.dtime
 
-    print("\n  Starting explicit solver .....\n")
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
 
   def run( self , props , globdat ):
-
+    
     stat = globdat.solverStatus
     
     stat.increaseStep()

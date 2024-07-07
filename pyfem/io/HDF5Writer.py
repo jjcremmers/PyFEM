@@ -32,10 +32,6 @@ from pyfem.util.BaseModule import BaseModule
 import h5py
 import numpy as np
 
-from pyfem.util.logger import getLogger
-
-logger = getLogger()
-
 class HDF5Writer( BaseModule ):
 
   def __init__ ( self, props , globdat ):
@@ -65,8 +61,8 @@ class HDF5Writer( BaseModule ):
     cycle = globdat.solverStatus.cycle
     
     if cycle % self.interval == 0:
-     
-      logger.info("Writing hdf5 file ............")
+        
+      self.writeHeader()
       
       if self.singleFile:
         f = h5py.File(self.prefix+self.extension,"a")

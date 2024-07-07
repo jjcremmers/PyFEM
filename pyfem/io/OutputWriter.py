@@ -30,9 +30,7 @@
 
 from pyfem.util.BaseModule import BaseModule
 from numpy import ndarray,zeros
-from pyfem.util.logger   import getLogger
 
-logger = getLogger()
 
 class OutputWriter( BaseModule ):
 
@@ -53,7 +51,7 @@ class OutputWriter( BaseModule ):
 
   def run( self , props , globdat ):
 
-    logger.info("Writing output file ..........")
+    self.writeHeader( globdat.solverStatus.cycle )   
 
     if self.onScreen:
       globdat.printNodes()

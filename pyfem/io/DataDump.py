@@ -56,6 +56,10 @@ class DataDump( BaseModule ):
     cycle = globdat.solverStatus.cycle
     
     if cycle % self.interval == 0:
+    
+     
+      self.writeHeader()    
+      
       data = {}
       data["props"]   = props
       data["globdat"] = globdat

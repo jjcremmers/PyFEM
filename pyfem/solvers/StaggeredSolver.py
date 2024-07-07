@@ -36,8 +36,6 @@ from pyfem.fem.Assembly import assembleExternalForce
 from pyfem.util.logger import getLogger
 import sys
 
-logger = getLogger()
-
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -72,8 +70,6 @@ class StaggeredSolver ( BaseModule ):
     
     self.loadfunc = eval ( "lambda t : " + str(self.loadFunc) )
     globdat.solverStatus.dtime = self.dtime
-           
-    logger.info("Starting staggered solver .......")
  
 #------------------------------------------------------------------------------
 #
@@ -86,14 +82,9 @@ class StaggeredSolver ( BaseModule ):
     self.stat = stat
     
     stat.increaseStep()
+    
+    self.writeHeader( stat.cycle )    
 
-    #fext  = zeros( len(globdat.dofs) ) 
-    
-    logger.info("Staggered solver ............")
-    logger.info("    =============================================")
-    logger.info("    Load step %i"%globdat.solverStatus.cycle)
-    logger.info("    =============================================")
-    
     for solver in self.solvers:
            
       stat.iiter = 0

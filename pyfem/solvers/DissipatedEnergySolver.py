@@ -80,9 +80,10 @@ class DissipatedEnergySolver( BaseModule ):
 
   def run( self , props , globdat ):
 
-    stat = globdat.solverStatus
-    
+    stat = globdat.solverStatus    
     stat.increaseStep()
+    
+    self.writeHeader( stat.cycle )
    
     a    = globdat.state
     Da   = globdat.Dstate
@@ -197,18 +198,15 @@ class DissipatedEnergySolver( BaseModule ):
 
     if globdat.lam > self.maxLam or stat.cycle > self.maxCycle:
       globdat.active=False
-
-
+      
+    self.writeFooter( globdat )       
+ 
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 
   def printHeader( self , cycle):
 
-    logger.info("Dissipated Energy Solver ....")
-    logger.info("    =============================================")
-    logger.info("    Load step %i"%cycle)
-    logger.info("    =============================================") 
     logger.info('    Newton-Raphson   : L2-norm residual')
 
 #------------------------------------------------------------------------------

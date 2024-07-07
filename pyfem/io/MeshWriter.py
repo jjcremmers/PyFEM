@@ -29,9 +29,6 @@
 ################################################################################
 
 from pyfem.util.BaseModule import BaseModule
-from pyfem.util.logger   import getLogger
-
-logger = getLogger()
 
 #------------------------------------------------------------------------------
 #
@@ -58,8 +55,8 @@ class MeshWriter ( BaseModule ):
     
     if not globdat.solverStatus.cycle%self.interval == 0:
       return
-
-    logger.info("Writing mesh .................")
+      
+    self.writeHeader( globdat.solverStatus.cycle )
 
     dim = globdat.state.ndim    
 

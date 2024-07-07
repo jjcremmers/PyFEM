@@ -79,6 +79,10 @@ def InputRead( fname , dname = None , parameters = None ):
   dataFileName = props.input
 
   logger = setLogger( props )
+  
+  logger.info("=============================================================")
+  logger.info("  PyFEM analysis: " + fname )
+  logger.info("=============================================================")   
 
   nodes = NodeSet()
   nodes.readFromFile( dataFileName )

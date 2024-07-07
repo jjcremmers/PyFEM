@@ -45,8 +45,6 @@ class ModalSolver ( BaseModule ):
     self.fext  = zeros( len(globdat.dofs) )  
     self.fext[23] = 1000.
 
-    print("asd")
-
   def run( self , props , globdat ):
 
     globdat.cycle = 1

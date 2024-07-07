@@ -32,13 +32,10 @@ from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleExternalForce, assembleTangentStiffness, commit
-from pyfem.util.logger import getLogger
 
-logger = getLogger()
-
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 class LinearSolver ( BaseModule ):
 
@@ -47,14 +44,14 @@ class LinearSolver ( BaseModule ):
     BaseModule.__init__( self , props )
 
     self.fext  = zeros( len(globdat.dofs) )  
- 
-    logger.info("Starting linear solver .......")
- 
-#------------------------------------------------------------------------------
+  
+#-------------------------------------------------------------------------------
 #
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
    
   def run( self , props , globdat ):
+  
+    self.writeHeader() 
 
     globdat.solverStatus.increaseStep()
       
@@ -74,3 +71,5 @@ class LinearSolver ( BaseModule ):
     globdat.elements.commitHistory()
 
     globdat.active = False 
+    
+    self.writeFooter( globdat )

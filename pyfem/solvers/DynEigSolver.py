@@ -57,6 +57,8 @@ class DynEigSolver ( BaseModule ):
 #------------------------------------------------------------------------------
    
   def run( self , props , globdat ):
+  
+    self.writeHeader()   
       
     K,fint  = assembleTangentStiffness( props, globdat )
          
@@ -86,7 +88,7 @@ class DynEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    logger.info("Dynamic Eigen Solver ........")
+
     logger.info("    =============================================")
     logger.info('   Eigenfrequencies')
     logger.info("    =============================================")

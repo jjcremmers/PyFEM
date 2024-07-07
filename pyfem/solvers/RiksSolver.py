@@ -65,14 +65,14 @@ class RiksSolver( BaseModule ):
 
     globdat.lam    = 1.0
 
-    print("\n  Starting Riks arclength solver\n")
-
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 
   def run( self , props , globdat ):
 
+    self.writeHeader() 
+    
     stat = globdat.solverStatus
     
     stat.increaseStep()
@@ -157,6 +157,8 @@ class RiksSolver( BaseModule ):
 
     if globdat.lam > self.maxLam or stat.cycle > 1000:
       globdat.active=False
+      
+    self.writeFooter()      
 
 #------------------------------------------------------------------------------
 #

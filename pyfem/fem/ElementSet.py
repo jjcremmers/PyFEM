@@ -65,15 +65,15 @@ class ElementSet( itemList ):
 #-------------------------------------------------------------------------------
     
   def __repr__( self ):
-    msg =  "Number of elements ......... %6d\n" % len(self)
+    msg =  "  Number of elements ......... %6d\n" % len(self)
     
     if len(self.groups) > 0:
-      msg += "  Number of  groups .......... %6d\n" % len(self.groups)
-      msg += "  -----------------------------------\n"
-      msg += "    name                       #elems\n"
-      msg += "    ---------------------------------\n"
+      msg += "    Number of  groups .......... %6d\n" % len(self.groups)
+      msg += "    -----------------------------------\n"
+      msg += "      name                       #elems\n"
+      msg += "      ---------------------------------\n"
       for name in self.groups:
-        msg += "    %-16s           %6d\n" % (name,len(self.groups[name]))
+        msg += "      %-16s           %6d\n" % (name,len(self.groups[name]))
     
     return msg
 
@@ -98,7 +98,8 @@ class ElementSet( itemList ):
     
   def readFromFile( self, fname ):
     
-    logger.info("Reading elements .............")
+    logger.info("  Reading elements")
+    logger.info("  -----------------------------------------------------------")        
     
     fin = open( fname )
   

@@ -57,6 +57,8 @@ class BuckEigSolver ( BaseModule ):
 #------------------------------------------------------------------------------
    
   def run( self , props , globdat ):
+  
+    self.writeHeader()  
       
     K0,fint  = assembleTangentStiffness( props, globdat )
 
@@ -80,7 +82,6 @@ class BuckEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    logger.info("Staggered solver ............")
     logger.info("    =============================================")
     logger.info("    Eigen modes")
     logger.info("    =============================================")

@@ -28,20 +28,83 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
+import time
+from pyfem.util.logger    import getLogger
+from pyfem.util.plotUtils import plotTime
+
+logger = getLogger()
+
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+
 class BaseModule:
 
   def __init__ ( self, props ):
 
+    self.isSolver = False
+    
     if hasattr(props,'currentModule') and hasattr(props,props.currentModule):
       currentModule = props.currentModule
+      
+      if currentModule == 'solver':
+        self.isSolver = True
     else:
       currentModule = self.__class__.__name__
       
+      print(currentModule)
       if currentModule.endswith("olver") == "olver":
         currentModule = "solver"
+        
+        self.isSolver = True
       
     if hasattr(props,currentModule):
       self.myProps = getattr(props,currentModule)
 
       for name,val in self.myProps:
         setattr( self, name, val )
+        
+    self.type = self.__class__.__name__
+
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    
+  def writeHeader( self , cycle = None ):
+  
+    self.t0     = time.time()
+    cycleString = ""
+    
+    if cycle != None:
+      cycleString = "  step: " + str(cycle);
+    
+    if self.isSolver:
+      logger.info("")
+      logger.info("=============================================================")
+      logger.info("  " + self.type + cycleString )
+      logger.info("=============================================================")      
+    else:
+      logger.debug("-------------------------------------------------------------")    
+      logger.debug("  Module " + self.type)
+
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+      
+  def writeFooter( self , globdat ):
+  
+    t1 = time.time()
+    
+    if self.isSolver:
+      logger.info("    Elapsed time (this step).. : " + plotTime(t1-self.t0))
+      logger.info("    Total elapsed time........ : " + plotTime(t1-globdat.startTime))    
+    else:
+      logger.debug("    Elapsed time (this step).. : " + plotTime(t1-self.t0))
+      logger.debug("    Total elapsed time........ : " + plotTime(t1-globdat.startTime))         
+

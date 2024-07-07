@@ -29,9 +29,6 @@
 ################################################################################
 
 from pyfem.util.BaseModule import BaseModule
-from pyfem.util.logger   import getLogger
-
-logger = getLogger()
 
 class ContourWriter( BaseModule ):
  
@@ -39,11 +36,11 @@ class ContourWriter( BaseModule ):
 
     self.prefix       = globdat.prefix
     self.interval     = 1
-    self.k            = 0
 
     BaseModule.__init__( self , props )
-
-    self.columndata = []
+    
+    self.k            = 0
+    self.columndata   = []
 
 #-------------------------------------------------------------------------------
 #
@@ -54,7 +51,7 @@ class ContourWriter( BaseModule ):
     if not globdat.solverStatus.cycle%self.interval == 0:
       return
      
-    logger.info("Writing contour file ......\n")
+    self.writeHeader()
  
     crd = globdat.nodes.getNodeCoords(self.nodes[0])
     outfile = open( self.prefix + '-contour-' + str(self.k) + '.out' ,'w' )
