@@ -85,7 +85,7 @@ class DofSpace:
   def __len__ ( self ):
   
     '''
-    Function that returns the length of the dofpsace, i.e. the number of
+    Function that returns the length of the dofspace, i.e. the number of
     degrees of freedeom
     '''
        

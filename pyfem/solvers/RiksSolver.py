@@ -70,18 +70,17 @@ class RiksSolver( BaseModule ):
 #------------------------------------------------------------------------------
 
   def run( self , props , globdat ):
-
-    self.writeHeader() 
     
-    stat = globdat.solverStatus
-    
+    stat = globdat.solverStatus    
     stat.increaseStep()
+    
+    self.writeHeader( stat.cycle )     
    
     a    = globdat.state
     Da   = globdat.Dstate
     fhat = globdat.fhat
  
-    self.printHeader( stat.cycle )
+    logger.info('    Newton-Raphson............ : L2-norm residual') 
       
     # Initialize Newton-Raphson iteration parameters  
 
@@ -94,9 +93,6 @@ class RiksSolver( BaseModule ):
       Da1    = globdat.dofs.solve( K , globdat.lam*fhat )
       Dlam1  = globdat.lam
     else:
-#      Da1    = self.factor * self.Daprev
-#      Dlam1  = self.factor * self.Dlamprev
-
       Da1    = globdat.factor * globdat.Daprev
       Dlam1  = globdat.factor * globdat.Dlamprev
       globdat.lam += Dlam1
@@ -132,14 +128,14 @@ class RiksSolver( BaseModule ):
  
       error  = globdat.dofs.norm( res ) / globdat.dofs.norm( globdat.lam*fhat )
 
-      self.printIteration( stat.iiter,error)
+      logger.info('    Iteration %4i ........... : %6.4e'%(stat.iiter,error) )
 
       if stat.iiter == self.iterMax:
         raise RuntimeError('Newton-Raphson iterations did not converge!')
 
     # Converged
 
-    self.printConverged( stat.iiter )
+    logger.info('                                 Converged')
     
     globdat.elements.commitHistory()
 
@@ -158,34 +154,4 @@ class RiksSolver( BaseModule ):
     if globdat.lam > self.maxLam or stat.cycle > 1000:
       globdat.active=False
       
-    self.writeFooter()      
-
-#------------------------------------------------------------------------------
-#
-#------------------------------------------------------------------------------
-
-  def printHeader( self , cycle):
-    
-    logger.info("Riks solver .................")
-    logger.info("    =============================================")
-    logger.info("    Load step %i"%cycle)
-    logger.info("    =============================================")
-    logger.info('    Newton-Raphson   : L2-norm residual')    
-
-#------------------------------------------------------------------------------
-#
-#------------------------------------------------------------------------------
-
-  def printIteration( self , iiter , error ):
-
-    logger.info('    Iteration %4i   : %6.4e'%(iiter,error) )
-
-#------------------------------------------------------------------------------
-#
-#------------------------------------------------------------------------------
-
-  def printConverged( self , iiter ):
-
-    logger.info('    ---------------------------------------------')
-    logger.info('    Converged in %i iterations' %iiter)
-
+    self.writeFooter( globdat )      
