@@ -29,197 +29,122 @@
 ################################################################################
 
 from pyfem.util.BaseModule import BaseModule
+import vtk
 
+from pyfem.util.vtkUtils import insertElement,storeNodes,storeElements,storeDofFields,storeNodeField
+from numpy import zeros
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
 
 class MeshWriter ( BaseModule ):
  
-  def __init__( self , props , globdat ):
+    def __init__( self , props , globdat ):
 	
-    self.prefix       = globdat.prefix
-    self.elementGroup = "All"
-    self.k            = 0
-    self.interval     = 1
-    self.extraFields  = []
-    self.beam         = False
-    self.interface 			= False
+        self.prefix       = globdat.prefix
+        self.elementGroup = "All"
+        self.interval     = 1
+        self.extraFields  = []
+        self.beam         = False
+        self.interface    = False
+        self.format       = "binary"
 
-    BaseModule.__init__( self , props )
+        BaseModule.__init__( self , props )
     
-    if type(self.extraFields) is str:
-      self.extraFields = [self.extraFields]
+        if type(self.extraFields) is str:
+            self.extraFields = [self.extraFields]
+            
+        self.vtufiles = []
+        self.cycles   = []
 
-  def run( self , props , globdat ):
+    def run( self , props , globdat ):
     
-    if not globdat.solverStatus.cycle%self.interval == 0:
-      return
+        if not globdat.solverStatus.cycle%self.interval == 0:
+            return
       
-    self.writeHeader( globdat.solverStatus.cycle )
+        self.writeHeader( globdat.solverStatus.cycle )
 
-    dim = globdat.state.ndim    
+        dim = globdat.state.ndim    
 
-    if dim == 1:
-      self.writeCycle( globdat.state , props , globdat )
-    elif dim == 2:
-      for state in globdat.state.transpose():
-        self.writeCycle( state , props , globdat )
+        if dim == 1:
+            self.writeCycle( globdat.state , props , globdat )
+        elif dim == 2:
+            for state in globdat.state.transpose():
+                self.writeCycle( state , props , globdat )
 
-    self.writePvd()
+        self.writePvd()
 
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
-  def writeCycle( self , state , props , globdat ):
+    def writeCycle( self , state , props , globdat ):
   
-    vtkfile = open( self.prefix + '-' + str(self.k) + '.vtu' ,'w' )
-
-    vtkfile.write('<?xml version="1.0"?>\n')
-    vtkfile.write('<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">\n')
-    vtkfile.write('<UnstructuredGrid>\n')
-    vtkfile.write('<Piece NumberOfPoints="'+str(len(globdat.nodes))+'" NumberOfCells="')
-    vtkfile.write(str(globdat.elements.elementGroupCount( self.elementGroup))+'">\n')
-    vtkfile.write('<PointData>\n')
-    vtkfile.write('<DataArray type="Float64" Name="displacement" NumberOfComponents="3" format="ascii" >\n')
-	
-    dispDofs = ["u","v","w"]
-
-    for nodeID in list(globdat.nodes.keys()):
-      for dispDof in dispDofs:
-        if dispDof in globdat.dofs.dofTypes:
-          vtkfile.write(str(state[globdat.dofs.getForType(nodeID,dispDof)])+' ')
-        else: 
-          vtkfile.write(' 0.\n')
- 
-    vtkfile.write('</DataArray>\n')
-    
-    for field in self.extraFields:
-      vtkfile.write('<DataArray type="Float64" Name="'+field+'" NumberOfComponents="1" format="ascii" >\n')
-	
-      for nodeID in list(globdat.nodes.keys()):      
-        vtkfile.write(str(state[globdat.dofs.getForType(nodeID,field)])+' ')
+        dispDofs = ["u","v","w"]
+        cycle    = globdat.solverStatus.cycle
+            
+        writer = vtk.vtkXMLUnstructuredGridWriter()
   
-      vtkfile.write('</DataArray>\n')
-  
-    for name in globdat.outputNames:
-      stress = globdat.getData( name , list(range(len(globdat.nodes))) )
+        vtufile = self.prefix+'_t'+str(cycle)+".vtu"
+            
+        writer.SetFileName(vtufile)
+      
+        self.vtufiles.append(vtufile)
+        self.cycles.  append(cycle)
 
-      vtkfile.write('<DataArray type="Float64" Name="'+name+'" NumberOfComponents="1" format="ascii" >\n')
-      for i in range(len(globdat.nodes)):
-        vtkfile.write( str(stress[i]) + " \n" )
+        grid = vtk.vtkUnstructuredGrid()
+        
+        storeNodes( grid , globdat )
+            
+        #--Store elements-----------------------------
+        
+        storeElements( grid , globdat , self.elementGroup )
+                      
+        # -- Write nodedata
+        
+        storeDofFields( grid , state , globdat )
+                  
+        # ------
+               
+        for name in globdat.outputNames:
+            data = globdat.getData( name , list(range(len(globdat.nodes))) )
+            
+            storeNodeField( grid , data , globdat , name )
+        
+        # -- Write elemdata
 
-      vtkfile.write('</DataArray>\n')
-	
-    vtkfile.write('</PointData>\n')
-    vtkfile.write('<CellData>\n')
-    vtkfile.write('</CellData>\n')
-    vtkfile.write('<Points>\n')
-    vtkfile.write('<DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii">\n')
-  
-    for nodeID in list(globdat.nodes.keys()):
-      crd = globdat.nodes.getNodeCoords(nodeID)
-      if len(crd) == 2:
-        vtkfile.write( str(crd[0]) + ' ' + str(crd[1]) + " 0.0\n" )
-      else:
-        vtkfile.write( str(crd[0]) + ' ' + str(crd[1]) + ' ' + str(crd[2]) + "\n" )
-    
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('</Points>\n')
-    vtkfile.write('<Cells>\n')
-    vtkfile.write('<DataArray type="Int64" Name="connectivity" format="ascii">\n')
-
-    #--Store elements-----------------------------
-
-    rank = globdat.nodes.rank
-
-    for element in globdat.elements.iterElementGroup( self.elementGroup ):
-      el_nodes = globdat.nodes.getIndices(element.getNodes())
-						
-      if rank == 2:
-        if len(el_nodes) == 2 and element.family == "BEAM":
-          vtkfile.write(str(el_nodes[0])+' '+str(el_nodes[1]))
-        elif len(el_nodes) == 3 and element.family == "BEAM":
-          vtkfile.write(str(el_nodes[0])+' '+str(el_nodes[2]))
-        elif len(el_nodes) == 3 or (len(el_nodes) == 4 and not self.interface):
-          for node in el_nodes:
-            vtkfile.write(str(node)+' ')
-        elif len(el_nodes) == 4 and self.interface:
-		        vtkfile.write(str(el_nodes[0])+' '+str(el_nodes[1])+' '+str(el_nodes[3])+' '+str(el_nodes[2])+' ')
-        elif len(el_nodes) == 6 or len(el_nodes) == 8:
-          for node in el_nodes[::2]:
-            vtkfile.write(str(node)+' ')
-
-      elif rank == 3:
-        if len(el_nodes) <= 8:
-          for node in el_nodes:
-            vtkfile.write(str(node)+' ')
- 
-      vtkfile.write('\n')
-  
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('<DataArray type="Int64" Name="offsets" format="ascii">\n')
-    
-    nTot = 0
-    
-    for i,element in enumerate(globdat.elements.iterElementGroup( self.elementGroup )):
-      nNel = len(globdat.nodes.getIndices(element.getNodes()))
-
-      if rank == 2 and nNel == 8:
-        nNel = 4
-      elif nNel == 3 and self.beam:
-        nNel = 2
-
-      nTot += nNel
-      vtkfile.write(str(nTot)+'\n')
-
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('<DataArray type="UInt8" Name="types" format="ascii">\n')
-
-    for element in globdat.elements.iterElementGroup( self.elementGroup ):
-      nNel = len(globdat.nodes.getIndices(element.getNodes()))
-
-      if rank == 2:
-        if nNel < 4 and self.beam:
-          vtkfile.write('3\n')
-        elif nNel == 3 or nNel ==6:
-          vtkfile.write('5\n')
+        labels = []#self.elemDataSets()
+      
+        for label in labels:
+            data = self.getElemData( label )
+             
+            storeElementField( grid , data , globdat , name )
+        
+        writer.SetInputData(grid)
+        
+        if self.format == 'binary':
+            writer.SetDataModeToBinary()
         else:
-          vtkfile.write('9\n')
-      else:
-        if nNel == 8:
-          vtkfile.write('12\n')
-        elif nNel == 6:
-          vtkfile.write('13\n')
-        elif nNel == 4:
-          vtkfile.write('10\n')          
-        elif nNel == 5:
-          vtkfile.write('14\n')              
+            writer.SetDataModeToAscii()
 
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('</Cells>\n')
-    vtkfile.write('</Piece>\n')
-    vtkfile.write('</UnstructuredGrid>\n')
-    vtkfile.write('</VTKFile>\n') 
-  
-    self.k = self.k+1
+        writer.Write()    
 
-#----------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 #  writePvd
-#----------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-  def writePvd( self ):
+    def writePvd( self ):
 
-    f = open( self.prefix + '.pvd' ,'w' )
+        f = open( self.prefix + '.pvd' ,'w' )
 
-    f.write("<VTKFile byte_order='LittleEndian' type='Collection' version='0.1'>\n")
-    f.write("<Collection>\n")
+        f.write("<VTKFile byte_order='LittleEndian' type='Collection' version='0.1'>\n")
+        f.write("<Collection>\n")
   
-    for i in range(self.k):
-      f.write("<DataSet file='"+self.prefix+'-'+str(i)+".vtu' groups='' part='0' timestep='"+str(i)+"'/>\n")
+        for cycle,fileName in zip(self.cycles,self.vtufiles):
+            f.write("<DataSet file='"+fileName+"' groups='' part='0' timestep='"+str(cycle)+"'/>\n")
    
-    f.write("</Collection>\n")
-    f.write("</VTKFile>\n")
+        f.write("</Collection>\n")
+        f.write("</VTKFile>\n")
 
-    f.close()
+        f.close()
+                

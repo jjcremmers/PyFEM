@@ -27,208 +27,341 @@
 #  event caused by the use of the program.                                 #
 ############################################################################
 
+from numpy import zeros 
 from pyfem.util.BaseModule import BaseModule
-from pyfem.util.logger   import getLogger
+import vtk
 
-logger = getLogger()
+def storeNodes( grid , globdat ):
 
-#------------------------------------------------------------------------------
-#
-#------------------------------------------------------------------------------
-
-class vtkWriter():
-
-  def __init__( self ):
-  
-  def storeNodes( self , nodes ):
-  
-  def storeElems( self , elems ):
-  
-  def addNodalData( self , data , label ):
-  
-  def addElementData( self , data , label ):
-  
-  def write( self , fileName ):
-  
-    vtkfile = open( fileName ,'w' )
-
-    vtkfile.write('<?xml version="1.0"?>\n')
-    vtkfile.write('<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">\n')
-
-    vtkfile.write('<UnstructuredGrid>\n')
-
-    vtkfile.write('<Piece NumberOfPoints="'+str(len(globdat.nodes))+'" NumberOfCells="')
-
-    vtkfile.write(str(globdat.elements.elementGroupCount( self.elementGroup))+'">\n')
-
-    vtkfile.write('<PointData>\n')
-
-    vtkfile.write('<DataArray type="Float64" Name="displacement" NumberOfComponents="3" format="ascii" >\n')
-  
-class MeshWriter ( BaseModule ):
- 
-  def __init__( self , props , globdat ):
-	
-    self.prefix       = globdat.prefix
-    self.elementGroup = "All"
-    self.k            = 0
-    self.interval     = 1
-    self.extraFields  = []
-
-    BaseModule.__init__( self , props )
-    
-    if type(self.extraFields) is str:
-      self.extraFields = [self.extraFields]
-
-  def run( self , props , globdat ):
-    
-    if not globdat.solverStatus.cycle%self.interval == 0:
-      return
-
-    logger.info("Writing mesh .................")
-
-    dim = globdat.state.ndim    
-
-    if dim == 1:
-      self.writeCycle( globdat.state , props , globdat )
-    elif dim == 2:
-      for state in globdat.state.transpose():
-        self.writeCycle( state , props , globdat )
-
-    self.writePvd()
-
-#
-#
-#
-
-  def writeCycle( self , state , props , globdat ):
-
-    vtkfile = open( self.prefix + '-' + str(self.k) + '.vtu' ,'w' )
-
-    vtkfile.write('<?xml version="1.0"?>\n')
-    vtkfile.write('<VTKFile type="UnstructuredGrid" version="0.1" byte_order="LittleEndian" compressor="vtkZLibDataCompressor">\n')
-    vtkfile.write('<UnstructuredGrid>\n')
-    vtkfile.write('<Piece NumberOfPoints="'+str(len(globdat.nodes))+'" NumberOfCells="')
-    vtkfile.write(str(globdat.elements.elementGroupCount( self.elementGroup))+'">\n')
-    vtkfile.write('<PointData>\n')
-    vtkfile.write('<DataArray type="Float64" Name="displacement" NumberOfComponents="3" format="ascii" >\n')
-	
-    dispDofs = ["u","v","w"]
-
+    points = vtk.vtkPoints()
+        
     for nodeID in list(globdat.nodes.keys()):
-      for dispDof in dispDofs:
-        if dispDof in globdat.dofs.dofTypes:
-          vtkfile.write(str(state[globdat.dofs.getForType(nodeID,dispDof)])+' ')
-        else: 
-          vtkfile.write(' 0.\n')
- 
-    vtkfile.write('</DataArray>\n')
+        crd = globdat.nodes.getNodeCoords(nodeID)
+
+        crd1 = zeros(3)            
+            
+        if len(crd) == 2:
+            crd1[:2] = crd
+            crd1[2]  = 0.0
+        else:
+            crd1 = crd
+          
+        points.InsertNextPoint(crd1)
+
+    grid.SetPoints(points) 
     
-    for field in self.extraFields:
-      vtkfile.write('<DataArray type="Float64" Name="'+field+'" NumberOfComponents="1" format="ascii" >\n')
-	
-      for nodeID in list(globdat.nodes.keys()):      
-        vtkfile.write(str(state[globdat.dofs.getForType(nodeID,field)])+' ')
-  
-      vtkfile.write('</DataArray>\n')
-  
-    for name in globdat.outputNames:
-      stress = globdat.getData( name , list(range(len(globdat.nodes))) )
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
-      vtkfile.write('<DataArray type="Float64" Name="'+name+'" NumberOfComponents="1" format="ascii" >\n')
-      for i in range(len(globdat.nodes)):
-        vtkfile.write( str(stress[i]) + " \n" )
-
-      vtkfile.write('</DataArray>\n')
-	
-    vtkfile.write('</PointData>\n')
-    vtkfile.write('<CellData>\n')
-    vtkfile.write('</CellData>\n')
-    vtkfile.write('<Points>\n')
-    vtkfile.write('<DataArray type="Float64" Name="Points" NumberOfComponents="3" format="ascii">\n')
-  
-    for nodeID in list(globdat.nodes.keys()):
-      crd = globdat.nodes.getNodeCoords(nodeID)
-      if len(crd) == 2:
-        vtkfile.write( str(crd[0]) + ' ' + str(crd[1]) + " 0.0\n" )
-      else:
-        vtkfile.write( str(crd[0]) + ' ' + str(crd[1]) + ' ' + str(crd[2]) + "\n" )
-    
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('</Points>\n')
-    vtkfile.write('<Cells>\n')
-    vtkfile.write('<DataArray type="Int64" Name="connectivity" format="ascii">\n')
-
-    #--Store elements-----------------------------
+def storeElements( grid , globdat , elementGroup = "All" ):
 
     rank = globdat.nodes.rank
 
-    for element in globdat.elements.iterElementGroup( self.elementGroup ):
-      el_nodes = globdat.nodes.getIndices(element.getNodes())
+    for element in globdat.elements.iterElementGroup( elementGroup ):
+        el_nodes = globdat.nodes.getIndices(element.getNodes())
+    
+        insertElement( grid , el_nodes , rank , element.family )
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
-      if rank == 2:
-        if len(el_nodes) == 3 or len(el_nodes) == 4:
-          for node in el_nodes:
-            vtkfile.write(str(node)+' ')
-        elif len(el_nodes) == 6 or len(el_nodes) == 8:
-          for node in el_nodes[::2]:
-            vtkfile.write(str(node)+' ')
+def storeDofField( grid , data , globdat , dofTypes , label ):
 
-      elif rank == 3:
-        if len(el_nodes) == 8:
-          for node in el_nodes:
-            vtkfile.write(str(node)+' ')
- 
-      vtkfile.write('\n')
-  
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('<DataArray type="Int64" Name="offsets" format="ascii">\n')
+    d = vtk.vtkDoubleArray()
+    d.SetName( label )
+    d.SetNumberOfComponents(len(dofTypes))
+            
+    i = 0
+          
+    for nodeID in list(globdat.nodes.keys()):
+        j = 0
+        for dispDof in dofTypes:
+            if dispDof in globdat.dofs.dofTypes:
+                d.InsertComponent( i , j , data[globdat.dofs.getForType(nodeID,dispDof)] )
+            else:
+                d.InsertComponent( i , j , 0.0 )
+            j+=1
+        i+=1      
+        
+    grid.GetPointData().AddArray( d ) 
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
-    for i,element in enumerate(globdat.elements.iterElementGroup( self.elementGroup )):
-      nNel = len(globdat.nodes.getIndices(element.getNodes()))
+def storeDofFields( grid , data , globdat ):
 
-      if rank == 2 and nNel == 8:
-        nNel = 4
-      vtkfile.write(str(nNel*(i+1))+'\n')
-
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('<DataArray type="UInt8" Name="types" format="ascii" RangeMin="9" RangeMax="9">\n')
-
-    for element in globdat.elements.iterElementGroup( self.elementGroup ):
-      nNel = len(globdat.nodes.getIndices(element.getNodes()))
-
-      if rank == 2:
-        if nNel == 3 or nNel ==6:
-          vtkfile.write('5\n')
+    dofTypes = [ [ "u", "v", "w" ] , "temp" , "phase" ]
+    labels   = [ "displacements" , "temperature" , "phase" ]
+    
+    for dofs,name in zip(dofTypes,labels):
+        
+        if type(dofs) == list:
+            checkDof = dofs[0]
         else:
-          vtkfile.write('9\n')
-      else:
-        if nNel == 8:
-          vtkfile.write('12\n')
+            checkDof = dofs
+            
+        if checkDof in globdat.dofs.dofTypes: 
+            storeDofField( grid , data , globdat , dofs , name )
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+       
+def storeNodeField( grid , data , globdat , name ):
 
-    vtkfile.write('</DataArray>\n')
-    vtkfile.write('</Cells>\n')
-    vtkfile.write('</Piece>\n')
-    vtkfile.write('</UnstructuredGrid>\n')
-    vtkfile.write('</VTKFile>\n') 
-  
-    self.k = self.k+1
-
-#----------------------------------------------------------------------
-#  writePvd
-#----------------------------------------------------------------------
-
-  def writePvd( self ):
-
-    f = open( self.prefix + '.pvd' ,'w' )
-
-    f.write("<VTKFile byte_order='LittleEndian' type='Collection' version='0.1'>\n")
-    f.write("<Collection>\n")
-  
-    for i in range(self.k):
-      f.write("<DataSet file='"+self.prefix+'-'+str(i)+".vtu' groups='' part='0' timestep='"+str(i)+"'/>\n")
+    d = vtk.vtkDoubleArray();
+    d.SetName( name );
+    d.SetNumberOfComponents(1);
+            
+    for i,l in enumerate(data):
+        d.InsertComponent( i , 0 , l )
+                                                                 
+    grid.GetPointData().AddArray( d )
    
-    f.write("</Collection>\n")
-    f.write("</VTKFile>\n")
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+   
+def storeElementField( grid , data , globdat , name ):
+             
+    d = vtk.vtkDoubleArray();
+    d.SetName( label );
+    d.SetNumberOfComponents(1);
+            
+    for i,l in enumerate(data):        
+        d.InsertComponent( i , 0 , l )
+                 
+    grid.GetCellData().AddArray( d )        
 
-    f.close()
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------  
+     
+def setCellNodes( cell , elemNodes ):
+
+    '''
+  
+    '''
+          
+    for i,inod in enumerate(elemNodes):
+        cell.GetPointIds().SetId(i,inod)
+          
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+          
+def insertElement( grid , elemNodes , rank , family ):
+
+    '''
+    Inserts an element 
+    '''
+  
+    nNod = len(elemNodes)
+  
+    if family == "CONTINUUM":
+        if rank == 2:
+            insert2Dcontinuum( grid , elemNodes )               
+        elif rank == 3:
+            insert3Dcontinuum( grid , elemNodes )    
+        else:
+            raise NotImplementedError('Only 2D and 3D continuum elements.')
+    elif family == "INTERFACE":
+        if rank == 2:
+            insert2Dinterface( grid , elemNodes )         
+        elif rank == 3:
+            insert3Dinterface( grid , elemNodes )        
+        else:
+            raise NotImplementedError('Only 2D and 3D interface elements.')
+    elif family == "SURFACE":
+        if rank == 2:
+            insert2Dsurface( grid , elemNodes )                 
+        elif rank == 3:
+            insert3Dsurface( grid , elemNodes )                
+    elif family == "BEAM":
+        insertBeam( grid , elemNodes )        	     
+    elif family == "SHELL":
+        insertShell( grid , elemNodes )        
+    else:
+        raise NotImplementedError('Family of elements is not known.')
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def insert2Dcontinuum( grid , elemNodes ):
+
+    nNod = len(elemNodes)
+     
+    if nNod == 2:
+        cell = vtk.vtkLine()    
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() ) 
+    elif nNod == 3:
+        cell = vtk.vtkTriangle()    
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )     
+    elif nNod == 4:
+        cell = vtk.vtkQuad()      
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )       
+    elif nNod == 6:
+        cell = vtk.vtkTriangle()      
+        setCellNodes( cell , elemNodes[0:6:2] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() ) 
+    elif nNod == 8 or nNod == 9:
+        cell = vtk.vtkQuad()      
+        setCellNodes( cell , elemNodes[0:8:2] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+    else:
+        print(nNod)
+        raise NotImplementedError('Only 2, 3, 4, 6, 8, 9 node continuum elements in 2D.') 
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+      
+def insert3Dcontinuum( grid , elemNodes ):
+
+    nNod = len(elemNodes)
+    
+    if nNod == 4:
+        cell = vtk.vtkTetra()      
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )             
+    elif nNod == 5:
+        cell = vtk.vtkPyramid()      
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )            
+    elif nNod == 6:
+        cell = vtk.vtkWedge()      
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )             
+    elif nNod == 8:
+        cell = vtk.vtkHexahedron()
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )               
+    elif nNod == 16:
+        cell = vtk.vtkHexahedron()
+        setCellNodes( cell , numpy.concatenate(elemNodes[0:8:2],elemNodes[8:16:2] ) ) 
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )                         
+    else:
+        raise NotImplementedError('Only 4, 5, 6, 8 and 16 node continuum elements in 3D.')        
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+    
+def insert2Dinterface( grid , elemNodes ):
+    
+    nNod = len(elemNodes)
+                    
+    if nNod == 4:
+        cell = vtk.vtkLine() 
+        setCellNodes( cell , elemNodes[0:2] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+        setCellNodes( cell , elemNodes[2:] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+    else:
+        raise NotImplementedError('Only 4 node interface elements in 2D.')  
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def insert3Dinterface( grid , elemNodes ):
+    
+    nNod = len(elemNodes)
+                    
+    if nNod == 6:
+        cell = vtk.vtkTria() 
+        setCellNodes( cell , elemNodes[0:3] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+        setCellNodes( cell , elemNodes[3:] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )              
+    elif nNod == 8:
+        cell = vtk.vtkQuad() 
+        setCellNodes( cell , elemNodes[0:4] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+        setCellNodes( cell , elemNodes[4:] )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )      
+    else:
+        raise NotImplementedError('Only 6 and 8 node interface elements in 3D.')          
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+       
+def insert2Dsurface( grid , elemNodes ):        
+        
+    nNod = len(elemNodes)
+                    
+    if nNod == 2:         
+        cell = vtk.vtkLine() 
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )        
+    else:
+        raise NotImplementedError('Only 2 node surface elements in 2D.')       
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+        
+def insert3Dsurface( grid , elemNodes ):        
+        
+    nNod = len(elemNodes)   
+    
+    if nNod == 3:
+        cell = vtk.vtkTriangle() 
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )              
+    elif nNod == 4:
+        cell = vtk.vtkQuad() 
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )            
+    else:
+        raise NotImplementedError('Only 3 and 4 node surface elements in 3D.')
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def insertBeam( grid , elemNodes ):        
+        
+    nNod = len(elemNodes) 
+    
+    if nNod == 2:
+        cell = vtk.vtkLine() 
+        setCellNodes( cell , elemNodes )
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+    elif nNod == 3:
+        cell = vtk.vtkLine()
+        cell.GetPointIds().SetId(0,elemNodes[0])
+        cell.GetPointIds().SetId(1,elemNodes[2])
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )
+    else:
+        raise NotImplementedError('Only 2 and 3 node beam elements.')
+        
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def insertShell( grid , elemNodes ):        
+        
+    nNod = len(elemNodes)         
+                               
+    if nNod == 3:
+        cell = vtk.vtkTriangle() 
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )        
+    elif nNod == 4:
+        cell = vtk.vtkQuad() 
+        setCellNodes( cell , elemNodes )  
+        grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )                     
+    else:
+        raise NotImplementedError('Only 3 and 4 node shell elements.')  
+        
+        
+             
