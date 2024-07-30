@@ -286,15 +286,17 @@ elif osName[:6] == "darwin":
 
 elif osName[:3] == "win":
 
-  batfile = open( 'pyfem.bat' , 'w' )
-
   fexec = sys.executable
   
   if fexec[-5:] == "w.exe":
     fexec = fexec[:-5] + ".exe"
-    
-  batfile.write(fexec+' '+path+'\PyFEM.py %1')
 
+  batfile = open( 'pyfem.bat' , 'w' )    
+  batfile.write(fexec+' '+path+'\PyFEM.py %1')
+  batfile.close()
+  
+  batfile = open( 'pyfem.exe' , 'w' )    
+  batfile.write(fexec+' '+path+'\pyfem_gui.py')
   batfile.close()
 
   print("  You can run PyFEM from any directory by typing:\n")
