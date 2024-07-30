@@ -68,6 +68,8 @@ def InputRead( fname , dname = None , parameters = None ):
     else:
       props        = fileParser( fname+'.pro')
     
+  pathName, _ = os.path.split(fname)
+  
   if parameters is not None:  
     for p in parameters:
       x = p.split("=")
@@ -77,7 +79,9 @@ def InputRead( fname , dname = None , parameters = None ):
     return props,data["globdat"]
 
   dataFileName = props.input
-
+  
+  dataFileName = os.path.join(pathName,dataFileName)
+ 
   logger = setLogger( props )
   
   logger.info("=============================================================")

@@ -250,14 +250,29 @@ if osName[:5] == "linux":
   batfile.close()
   
   subprocess.run(['chmod', '+x', 'pyfem.sh'])  
+  
+  batfile = open( 'pyfem_gui.x' , 'w' )
+
+  fexec = sys.executable
+  
+  batfile.write(fexec+' '+path+'/pyfem_gui.py &')
+
+  batfile.close()
+  
+  subprocess.run(['chmod', '+x', 'pyfem_gui.x'])   
   	
-  print("  You can run PyFEM from any directory by typing:\n")
+  print("  You can run PyFEM in command line from any directory by typing:\n")
   print("    [relative_path_to_this_directory]/pyfem.sh inputFile.pro\n")
-  print("  Alternatively, you can make an alias. When using a bash shell,")
-  print("  add the following line to the file ~/.bashrc :\n")
-  print("   alias  pyfem='python3 "+path+"/PyFEM.py'\n")
-  print("  and you can run PyFEM from any directory by typing:\n")
+  print("  The gui can be run by typing from any directory:\n")
+  print("    [relative_path_to_this_directory]/pyfem_gui.exe\n")
+  print("  Alternatively, you can make an aliases. When using a bash shell,")
+  print("  add the following lines to the file ~/.bashrc :\n")
+  print("   alias  pyfem='python3 "+path+"/PyFEM.py'")
+  print("   alias  pyfem_gui = '"+path+"/pyfem_gui.x'\n")
+  print("  and you can run PyFEM in commandline from any directory by typing:\n")
   print("    pyfem inputFile.pro\n")  
+  print("  and the gui by typing:\n")
+  print("    pyfem_gui\n")
   print("  See the user manual for further instructions.\n")
 
 elif osName[:6] == "darwin":
@@ -278,7 +293,6 @@ elif osName[:3] == "win":
   if fexec[-5:] == "w.exe":
     fexec = fexec[:-5] + ".exe"
     
-  print(fexec)
   batfile.write(fexec+' '+path+'\PyFEM.py %1')
 
   batfile.close()
