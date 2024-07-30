@@ -190,6 +190,47 @@ except ImportError:
   print("      'pip install h5py'\n")
   print("    or run PyFEM with limited functionality.\n") 
 
+#
+
+try:
+  import PySide6
+  
+  versionLong = PySide6.__version__
+  version     = versionLong.split('.')
+
+  print("  PySide version detected     %10s : " %(versionLong) , end=' '  )
+
+  if int(version[0]) >= 6 and int(version[1]) >= 0:
+    print("   OK")
+  else:
+    print("    Please install PySide 6.0.0 or higher and reconfigure PyFEM.\n")
+    sys.exit()    
+except ImportError:
+  print("  PySide not detected                    : Not OK")
+  print("\n    Please install PySide\n")
+  print("      'pip install PySide'\n")
+  print("    or run PyFEM with limited functionality.\n") 
+  
+#
+
+try:
+  import vtk
+  
+  versionLong = vtk.__version__
+  version     = versionLong.split('.')
+
+  print("  vtk version detected        %10s : " %(versionLong) , end=' '  )
+
+  if int(version[0]) >= 9 and int(version[1]) >= 0:
+    print("   OK")
+  else:
+    print("    Please install vtk 9.0.0 or higher and reconfigure PyFEM.\n")
+    sys.exit()    
+except ImportError:
+  print("  vtk not detected                       : Not OK")
+  print("\n    Please install vtk 9.0.0 or higher\n")
+  sys.exit()  
+  
 # get current path
 
 path = os.getcwd()
