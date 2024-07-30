@@ -39,7 +39,7 @@ from pyfem.fem.Contact     import Contact
 from pyfem.util.fileParser import fileParser
 from pyfem.util.logger     import setLogger
 
-import getopt,os.path,pickle
+import getopt,os.path,pickle,time
 
 #-------------------------------------------------------------------------------
 #
@@ -57,6 +57,8 @@ def InputReader( argv ):
 
 def InputRead( fname , dname = None , parameters = None ):
 
+  t1 = time.time()
+  
   if dname is not None:
     with open(dname, 'rb') as f:
       data = pickle.load(f)
@@ -107,6 +109,8 @@ def InputRead( fname , dname = None , parameters = None ):
   globdat.prefix = os.path.splitext(fname)[0]
   
   globdat.contact = Contact( props )
+  
+  globdat.startTime = t1  
   	
   return props,globdat
   

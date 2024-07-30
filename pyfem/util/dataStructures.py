@@ -28,6 +28,7 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
+import time
 from numpy import zeros
 from pyfem.util.logger     import getLogger
 
@@ -266,7 +267,22 @@ class GlobalData ( Properties ):
       delattr( self , outputName + 'Weights' )
 
     self.outputNames=[]
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
+  def close ( self ):
+ 
+    from pyfem.util.plotUtils   import plotTime 
+    
+    logger.info("")
+    logger.info("=============================================================")
+    logger.info("  Total elapsed time.......... : " + 
+                   plotTime(time.time()-self.startTime))
+    logger.info("  PyFem analysis terminated successfully.")
+    logger.info("=============================================================")  
+            
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------

@@ -30,19 +30,11 @@
 import sys,os
 sys.path.insert(0, os.getcwd() )
 
-import time
-
 from pyfem.io.InputReader   import InputReader
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
-from pyfem.util.logger      import getLogger
-from pyfem.util.plotUtils   import plotTime
-
-t1 = time.time()
 
 props,globdat = InputReader( sys.argv )
-
-globdat.startTime = t1
 
 solver = Solver        ( props , globdat )
 output = OutputManager ( props , globdat )
@@ -51,14 +43,4 @@ while globdat.active:
   solver.run( props , globdat )
   output.run( props , globdat )
 
-logger = getLogger()
-
-
-logger.info("")
-logger.info("=============================================================")
-logger.info("  Total elapsed time.......... : " + plotTime(time.time()-globdat.startTime))  
-logger.info("  PyFem analysis terminated successfully.")
-logger.info("=============================================================")
-
-
-
+globdat.close()

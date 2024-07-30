@@ -35,9 +35,21 @@ from pyfem.io.InputReader   import InputRead
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
 
-def run( fileName ):
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
-  props,globdat = InputRead( fileName )
+def runAll( args ):
+
+  props,globdat = InputRead( args )
+  
+  run( props, globdat )
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+def run( props,globdat ):
 
   solver = Solver        ( props , globdat )
   output = OutputManager ( props , globdat )
@@ -46,7 +58,11 @@ def run( fileName ):
     solver.run( props , globdat )
     output.run( props , globdat )
 
-  print("PyFem analysis terminated successfully.")
+  globdat.close()
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
 
 def readInput( fileName ):
 
@@ -58,6 +74,10 @@ def readInput( fileName ):
   globdat.props = props
 
   return globdat
+  
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------  
 
 def calcSingleStep( globdat ):
 

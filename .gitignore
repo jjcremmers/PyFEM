@@ -3,6 +3,10 @@
 *.pvd
 *.pyc
 pyfem.sh
+pyfem_gui.sh
+pyfem_gui.x
+pyfem_gui.bat
+pyfem.bat
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
