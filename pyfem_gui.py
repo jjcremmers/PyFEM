@@ -1,8 +1,8 @@
 import sys
 import subprocess
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QFileDialog, QVBoxLayout, QWidget, QToolBar, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QFileDialog, QVBoxLayout, QWidget, QToolBar, QMessageBox, QStyle
 from PySide6.QtCore import QProcess, Qt
-from PySide6.QtGui import QIcon, QAction
+from PySide6.QtGui import QIcon, QAction, QKeySequence
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -32,22 +32,39 @@ class MainWindow(QMainWindow):
     def create_menu(self):
         menu_bar = self.menuBar()
         
-        file_menu = menu_bar.addMenu("File")
-        edit_menu = menu_bar.addMenu("Edit")
-        run_menu = menu_bar.addMenu("Run")
+        file_menu  = menu_bar.addMenu("File")
+        edit_menu  = menu_bar.addMenu("Edit")
+        run_menu   = menu_bar.addMenu("Run")
         about_menu = menu_bar.addMenu("About")
-        
-        open_action = QAction(QIcon.fromTheme("document-open"), "Open", self)
+
+        new_action = QAction(self.style().standardIcon(QStyle.SP_FileIcon), 'New', self)
+        new_action.setShortcut(QKeySequence("Ctrl+N"))        
+        new_action.triggered.connect(self.load_file)
+        file_menu.addAction(new_action)
+
+        open_action = QAction(self.style().standardIcon(QStyle.SP_DialogOpenButton), 'Open', self)
+        open_action.setShortcut(QKeySequence("Ctrl+O"))        
         open_action.triggered.connect(self.load_file)
         file_menu.addAction(open_action)
+
+        save_action = QAction(self.style().standardIcon(QStyle.SP_DialogSaveButton), 'Save', self)
+        save_action.setShortcut(QKeySequence("Ctrl+S"))        
+        save_action.triggered.connect(self.load_file)
+        file_menu.addAction(save_action)
         
         exit_action = QAction(QIcon.fromTheme("application-exit"), "Exit", self)
         exit_action.triggered.connect(self.close)
         file_menu.addAction(exit_action)
         
-        execute_action = QAction(QIcon.fromTheme("system-run"), "Execute", self)
+        execute_action = QAction(self.style().standardIcon(QStyle.SP_MediaPlay), "Execute", self)
+        execute_action.setShortcut(QKeySequence("Ctrl+R"))  
         execute_action.triggered.connect(self.execute_script)
         run_menu.addAction(execute_action)
+
+        abort_action = QAction(self.style().standardIcon(QStyle.SP_BrowserStop), "Abort", self)
+        abort_action.setShortcut(QKeySequence("Ctrl+C"))          
+        abort_action.triggered.connect(self.execute_script)
+        run_menu.addAction(abort_action)
         
         about_action = QAction("About", self)
         about_action.triggered.connect(self.show_about)
@@ -57,13 +74,25 @@ class MainWindow(QMainWindow):
         toolbar = QToolBar("Main Toolbar")
         self.addToolBar(toolbar)
 
-        open_action = QAction(QIcon.fromTheme("document-open"), "Open", self)
+        new_action = QAction(self.style().standardIcon(QStyle.SP_FileIcon), 'New', self)        
+        new_action.triggered.connect(self.load_file)
+        toolbar.addAction(new_action)
+
+        open_action = QAction(self.style().standardIcon(QStyle.SP_DialogOpenButton), 'Open', self)        
         open_action.triggered.connect(self.load_file)
         toolbar.addAction(open_action)
 
-        execute_action = QAction(QIcon.fromTheme("system-run"), "Execute", self)
+        save_action = QAction(self.style().standardIcon(QStyle.SP_DialogSaveButton), "Save", self)
+        save_action.triggered.connect(self.execute_script)
+        toolbar.addAction(save_action)        
+
+        execute_action = QAction(self.style().standardIcon(QStyle.SP_MediaPlay), "Execute", self)        
         execute_action.triggered.connect(self.execute_script)
         toolbar.addAction(execute_action)
+
+        abort_action = QAction(self.style().standardIcon(QStyle.SP_BrowserStop), "Abort", self)
+        abort_action.triggered.connect(self.execute_script)
+        toolbar.addAction(abort_action)
 
     def load_file(self):
         file_dialog = QFileDialog()
