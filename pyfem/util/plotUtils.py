@@ -28,8 +28,6 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
-from pylab import plot, show, xlabel, ylabel
-
 
 #-------------------------------------------------------------------------------
 #
@@ -37,6 +35,8 @@ from pylab import plot, show, xlabel, ylabel
 
 
 def plotCurve( output ):
+
+  from pylab import plot, show, xlabel, ylabel
 
   plot( [x[0] for x in output], [x[1] for x in output], 'r-o' )
 
