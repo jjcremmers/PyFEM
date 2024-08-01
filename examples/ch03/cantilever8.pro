@@ -37,6 +37,11 @@
 
 input = "cantilever8.dat";
 
+logger =
+{
+  level = "info";
+};
+
 ContElem =
 {
   type = "FiniteStrainContinuum";
