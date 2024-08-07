@@ -49,6 +49,7 @@ class DynEigSolver ( BaseModule ):
 
     self.tol        = 1.0e-3
     self.eigenCount = 5
+    self.writeToH5  = False
 
     BaseModule.__init__( self , props ) 
  
@@ -75,10 +76,11 @@ class DynEigSolver ( BaseModule ):
 
     globdat.active = False 
     
-    h5file = h5py.File( "modes.h5", 'w')
+    if self.writeToH5:
+      h5file = h5py.File( "modes.h5", 'w')
     
-    h5file.create_dataset("modes", globdat.eigenvecs.shape, 
-                          dtype='f', data=globdat.eigenvecs)   
+      h5file.create_dataset("modes", globdat.eigenvecs.shape, 
+                            dtype='f', data=globdat.eigenvecs)   
   
     self.printResults( globdat.eigenvals )
 
@@ -88,13 +90,9 @@ class DynEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-
-    logger.info("    =============================================")
     logger.info('   Eigenfrequencies')
-    logger.info("    =============================================")
+    logger.info("   ----------------------------------------------------------")
     logger.info('   Mode |   Eigenvalue       |  Frequency')
         
     for i,val in enumerate(eigenvals):
-      logger.info('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,val,val/(2.0*pi)))
-      
-    logger.info('  ================================================\n')
+      logger.info('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,val,val/(2.0*pi)))     
