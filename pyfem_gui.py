@@ -1,6 +1,6 @@
 import sys
 #import subprocess
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QFileDialog, QVBoxLayout, QWidget, QToolBar, QMessageBox, QStyle, QSplitter, QHBoxLayout, QTabWidget, QLabel, QComboBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QFileDialog, QVBoxLayout, QWidget, QToolBar, QMessageBox, QStyle, QSplitter, QHBoxLayout, QTabWidget, QLabel, QComboBox, QLineEdit
 from PySide6.QtCore import QProcess, Qt, QThread, Signal, QObject
 from PySide6.QtGui import QIcon, QAction, QKeySequence
 
@@ -94,9 +94,15 @@ class MainWindow(QMainWindow):
                 tab_layout.addWidget(solver_label)
                 tab_layout.addWidget(combo_box)
                 
+                self.float_input_1 = None
+                self.float_input_2 = None                
+                
                 tab_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-                tab_layout.setSpacing(5)                
-              
+                tab_layout.setSpacing(5)    
+                combo_box.currentIndexChanged.connect(self.on_solver_selected)
+                
+                self.tab_layout = tab_layout 
+                self.youngs_modulus_layout = None                               
             else:
                 # Default content for other tabs
                 tab_label = QLabel(f"Content for Tab {tabs}")
@@ -141,7 +147,62 @@ class MainWindow(QMainWindow):
         self.emitting_stream = EmittingStream()
         self.emitting_stream.text_written.connect(self.handle_output)
         sys.stdout = self.emitting_stream
-        sys.stderr = self.emitting_stream        
+        sys.stderr = self.emitting_stream   
+    '''    
+    def on_solver_selected(self, index):
+        # Get the selected solver
+        combo_box = self.sender()
+        selected_solver = combo_box.currentText()
+
+        # Remove input fields if they exist
+        if self.float_input_1 and self.float_input_2:
+            self.tab_layout.removeWidget(self.float_input_1)
+            self.float_input_1.deleteLater()
+            self.float_input_1 = None
+
+            self.tab_layout.removeWidget(self.float_input_2)
+            self.float_input_2.deleteLater()
+            self.float_input_2 = None
+
+        if selected_solver == "SolverB":
+            # Create and add input fields for SolverB
+            self.float_input_1 = QLineEdit()
+            self.float_input_2 = QLineEdit()
+
+            # Set placeholder text for the input fields
+            self.float_input_1.setPlaceholderText("Enter first floating point value")
+            self.float_input_2.setPlaceholderText("Enter second floating point value")
+
+            # Add input fields to the layout
+            self.tab_layout.addWidget(self.float_input_1)
+            self.tab_layout.addWidget(self.float_input_2)             
+    '''
+     
+    def on_solver_selected(self, index):
+        # Get the selected solver
+        combo_box = self.sender()
+        selected_solver = combo_box.currentText()
+
+        # Remove Young's Modulus input field if it exists
+        if self.youngs_modulus_layout:
+            for i in reversed(range(self.youngs_modulus_layout.count())):
+                widget = self.youngs_modulus_layout.itemAt(i).widget()
+                if widget is not None:
+                    widget.setParent(None)
+            self.tab_layout.removeItem(self.youngs_modulus_layout)
+            self.youngs_modulus_layout = None
+
+        if selected_solver == "SolverB":
+            # Create and add Young's Modulus input field for SolverB
+            self.youngs_modulus_layout = QHBoxLayout()
+            label = QLabel("Young's Modulus:")
+            line_edit = QLineEdit()
+            line_edit.setText("50.6")  # Set default value
+
+            self.youngs_modulus_layout.addWidget(label)
+            self.youngs_modulus_layout.addWidget(line_edit)
+
+            self.tab_layout.addLayout(self.youngs_modulus_layout)            
 
 #-------------------------------------------------------------------------------
 #
