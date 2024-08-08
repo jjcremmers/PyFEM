@@ -72,9 +72,9 @@ def storeDofField( grid , data , globdat , dofTypes , label ):
     d = vtk.vtkDoubleArray()
     d.SetName( label )
     d.SetNumberOfComponents(len(dofTypes))
-            
-    i = 0
           
+    i = 0
+              
     for nodeID in list(globdat.nodes.keys()):
         j = 0
         for dispDof in dofTypes:
