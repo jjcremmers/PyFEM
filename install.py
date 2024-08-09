@@ -48,14 +48,14 @@ if osName == "linux":
 elif osName == "win32":
   osFullName = "Windows"
 
-print("  Operating system                       :%7s " % (osFullName))
+print(f"  Operating system                       : {osFullName}")
 
 # check python version
 
 versionLong = sys.version.split(' ')
 version = versionLong[0].split('.')
 
-print("  Python version detected     %10s : " % (versionLong[0]), end=' ')
+print(f"  Python version detected     {versionLong[0]:>10s} : ", end=' ')
 
 if int(version[0]) == 3 and int(version[1]) >= 6:
   print("   OK")
@@ -76,7 +76,7 @@ try:
   versionLong = numpy.__version__
   version = versionLong.split('.')
 
-  print("  Numpy version detected      %10s : " % (versionLong), end=' ')
+  print(f"  Numpy version detected      {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) == 1 and int(version[1]) >= 6:
     print("   OK")
@@ -97,7 +97,7 @@ try:
   versionLong = scipy.__version__
   version = versionLong.split('.')
 
-  print("  Scipy version detected      %10s : " % (versionLong), end=' ')
+  print(f"  Scipy version detected      {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) == 0 and int(version[1]) >= 9:
     print("   OK")
@@ -119,7 +119,7 @@ try:
   versionLong = matplotlib.__version__
   version = versionLong.split('.')
 
-  print("  Matplotlib version detected %10s : " % (versionLong), end=' ')
+  print(f"  Matplotlib version detected {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) >= 1 and int(version[1]) >= 0:
     print("   OK")
@@ -138,7 +138,7 @@ try:
   versionLong = meshio.__version__
   version = versionLong.split('.')
 
-  print("  Meshio version detected     %10s : " % (versionLong), end=' ')
+  print(f"  Meshio version detected     {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) <= 3:
     print("  Not OK\n")
@@ -165,7 +165,7 @@ try:
   versionLong = pickle.format_version
   version = versionLong.split('.')
 
-  print("  Pickle version detected     %10s : " % (versionLong), end=' ')
+  print(f"  Pickle version detected     {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) >= 4:
     print("   OK")
@@ -183,7 +183,7 @@ try:
   versionLong = h5py.__version__
   version = versionLong.split('.')
 
-  print("  H5py version detected       %10s : " % (versionLong), end=' ')
+  print(f"  H5py version detected       {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) >= 2:
     print("   OK")
@@ -201,7 +201,7 @@ try:
   versionLong = PySide6.__version__
   version = versionLong.split('.')
 
-  print("  PySide version detected     %10s : " % (versionLong), end=' ')
+  print(f"  PySide version detected     {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) >= 6 and int(version[1]) >= 0:
     print("   OK")
@@ -222,7 +222,7 @@ try:
   versionLong = vtk.__version__
   version = versionLong.split('.')
 
-  print("  vtk version detected        %10s : " % (versionLong), end=' ')
+  print(f"  vtk version detected        {versionLong:>10s} : ", end=' ')
 
   if int(version[0]) >= 9 and int(version[1]) >= 0:
     print("   OK")
@@ -295,15 +295,15 @@ elif osName[:3] == "win":
     fexec = fexec[:-5] + ".exe"
 
   batfile = open('pyfem.bat', 'w')
-  batfile.write(fexec + ' ' + path + '\PyFEM.py %1')
+  batfile.write(fexec + ' ' + path + '\\PyFEM.py %1')
   batfile.close()
 
   batfile = open('pyfem.exe', 'w')
-  batfile.write(fexec + ' ' + path + '\pyfem_gui.py')
+  batfile.write(fexec + ' ' + path + '\\pyfem_gui.py')
   batfile.close()
 
   print("  You can run PyFEM from any directory by typing:\n")
-  print("    [path_to_this_directory]\pyfem inputFile.pro\n")
+  print("    [path_to_this_directory]\\pyfem inputFile.pro\n")
   print("  or, when you add this directory to your system path,")
   print("  you can run it by typing:\n")
   print("    pyfem inputFile.pro\n")
