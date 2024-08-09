@@ -244,23 +244,15 @@ print(" ===============================================================\n")
 
 if osName[:5] == "linux":
 
-  batfile = open('pyfem.sh', 'w')
-
-  fexec = sys.executable
-
-  batfile.write(fexec + ' ' + path + '/PyFEM.py "$1"')
-
-  batfile.close()
+  with open('pyfem.sh', 'w') as bat_file:
+    fexec = sys.executable
+    bat_file.write(fexec + ' ' + path + '/PyFEM.py "$1"')
 
   subprocess.run(['chmod', '+x', 'pyfem.sh'])
 
-  batfile = open('pyfem_gui.x', 'w')
-
-  fexec = sys.executable
-
-  batfile.write(fexec + ' ' + path + '/pyfem_gui.py &')
-
-  batfile.close()
+  with open('pyfem_gui.x', 'w') as bat_file:
+    fexec = sys.executable
+    bat_file.write(fexec + ' ' + path + '/pyfem_gui.py &')
 
   subprocess.run(['chmod', '+x', 'pyfem_gui.x'])
 
@@ -294,13 +286,11 @@ elif osName[:3] == "win":
   if fexec[-5:] == "w.exe":
     fexec = fexec[:-5] + ".exe"
 
-  batfile = open('pyfem.bat', 'w')
-  batfile.write(fexec + ' ' + path + '\\PyFEM.py %1')
-  batfile.close()
+  with open('pyfem.bat', 'w') as bat_file:
+    bat_file.write(fexec + ' ' + path + '\\PyFEM.py %1')
 
-  batfile = open('pyfem.exe', 'w')
-  batfile.write(fexec + ' ' + path + '\\pyfem_gui.py')
-  batfile.close()
+  with open('pyfem.exe', 'w') as bat_file:
+    bat_file.write(fexec + ' ' + path + '\\pyfem_gui.py')
 
   print("  You can run PyFEM from any directory by typing:\n")
   print("    [path_to_this_directory]\\pyfem inputFile.pro\n")
