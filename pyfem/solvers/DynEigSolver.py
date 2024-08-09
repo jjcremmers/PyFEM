@@ -49,7 +49,6 @@ class DynEigSolver ( BaseModule ):
 
     self.tol        = 1.0e-3
     self.eigenCount = 5
-    self.writeToH5  = False
 
     BaseModule.__init__( self , props ) 
  
