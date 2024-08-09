@@ -33,27 +33,33 @@ import platform
 import subprocess
 import sys
 
-import matplotlib
-import numpy
-import scipy
+def _parse_version_string(version_string):
+  # [:3] is used to ignore any additional version information
+  v = version_string.split('.')[:3]
+  return '.'.join(v), tuple(map(int, v))
 
 print("\n ===============================================================\n")
 
 # get operating system
 
 os_name = platform.system()
-print(f"  Operating system                       : {os_name}")
+print(f"  Operating system            {os_name:>10s} : ", end=' ')
+if os_name in ("Linux", "Darwin", "Windows"):
+  print("   OK")
+else:
+  print("  Not OK\n\n")
+  print("    PyFEM is not supported on this operating system.\n")
+  sys.exit()
 
 # check python version
 
-py_version_str = platform.python_version()
-version = py_version_str.split('.')
+version_long, version = _parse_version_string(platform.python_version())
 
-print(f"  Python version detected     {py_version_str:>10s} : ", end=' ')
+print(f"  Python version detected     {version_long:>10s} : ", end=' ')
 
-if int(version[0]) == 3 and int(version[1]) >= 6:
+if version >= (3, 6):
   print("   OK")
-elif int(version[0]) == 2:
+elif version[0] == 2:
   print("  Please note that PyFEM has been migrated to Python 3.x\n")
   print("    Install the latest version of Python 3.x and reconfigure PyFEM.\n")
   sys.exit()
@@ -67,12 +73,11 @@ else:
 try:
   import numpy
 
-  versionLong = numpy.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(numpy.__version__)
 
-  print(f"  Numpy version detected      {versionLong:>10s} : ", end=' ')
+  print(f"  Numpy version detected      {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) == 1 and int(version[1]) >= 6:
+  if version >= (1, 6):
     print("   OK")
   else:
     print("  Not OK\n\n")
@@ -88,14 +93,11 @@ except ImportError:
 try:
   import scipy
 
-  versionLong = scipy.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(scipy.__version__)
 
-  print(f"  Scipy version detected      {versionLong:>10s} : ", end=' ')
+  print(f"  Scipy version detected      {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) == 0 and int(version[1]) >= 9:
-    print("   OK")
-  elif int(version[0]) >= 1 and int(version[1]) >= 0:
+  if version >= (0, 9):
     print("   OK")
   else:
     print("    Please install Scipy 0.9.x or higher and reconfigure PyFEM.\n")
@@ -110,12 +112,11 @@ except ImportError:
 try:
   import matplotlib
 
-  versionLong = matplotlib.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(matplotlib.__version__)
 
-  print(f"  Matplotlib version detected {versionLong:>10s} : ", end=' ')
+  print(f"  Matplotlib version detected {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) >= 1 and int(version[1]) >= 0:
+  if version >= (1, 0):
     print("   OK")
   else:
     print("  Not OK\n\n   Please install Matplotlib 1.0.x or higher\n")
@@ -129,60 +130,40 @@ except ImportError:
 try:
   import meshio
 
-  versionLong = meshio.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(meshio.__version__)
 
-  print(f"  Meshio version detected     {versionLong:>10s} : ", end=' ')
+  print(f"  Meshio version detected     {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) <= 3:
+  if version >= (4, 0):
+    print("   OK")
+  else:
     print("  Not OK\n")
     answer = input("    Do you want to install the latest version meshio? (Y/N)\n")
     if answer.lower() == "y" or answer.lower() == 'yes':
-      subprocess.run(['pip', 'install', 'meshio'])
+      subprocess.run(['pip', 'install', 'meshio'], check=True)
     else:
       print("\n    You cannot use gmsh input files!\n")
-  else:
-    print("   OK")
 except ImportError:
   print("  Meshio not detected                    : Not OK")
   answer = input("    Do you want to install the latest version meshio? (Y/N)\n")
   if answer.lower() == "y" or answer.lower() == 'yes':
-    subprocess.run(['pip', 'install', 'meshio'])
+    subprocess.run(['pip', 'install', 'meshio'], check=True)
   else:
     print("\n    You cannot use gmsh input files!\n")
-
-# check pickle version
-
-try:
-  import pickle
-
-  versionLong = pickle.format_version
-  version = versionLong.split('.')
-
-  print(f"  Pickle version detected     {versionLong:>10s} : ", end=' ')
-
-  if int(version[0]) >= 4:
-    print("   OK")
-except ImportError:
-  print("  pickle not detected                    : Not OK")
-  print("\n    Please install pickle\n")
-  print("      'pip install pickle'\n")
-  print("    or run PyFEM with limited functionality.\n")
 
 # check h5py version
 
 try:
   import h5py
 
-  versionLong = h5py.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(h5py.__version__)
 
-  print(f"  H5py version detected       {versionLong:>10s} : ", end=' ')
+  print(f"  H5py version detected       {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) >= 2:
+  if version >= (2, 0):
     print("   OK")
 except ImportError:
-  print("  h5py not detected                    : Not OK")
+  print("  h5py not detected                      : Not OK")
   print("\n    Please install h5py\n")
   print("      'pip install h5py'\n")
   print("    or run PyFEM with limited functionality.\n")
@@ -192,12 +173,11 @@ except ImportError:
 try:
   import PySide6
 
-  versionLong = PySide6.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(PySide6.__version__)
 
-  print(f"  PySide version detected     {versionLong:>10s} : ", end=' ')
+  print(f"  PySide version detected     {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) >= 6 and int(version[1]) >= 0:
+  if version >= (6, 0):
     print("   OK")
   else:
     print("    Please install PySide 6.0.0 or higher and reconfigure PyFEM.\n")
@@ -213,12 +193,11 @@ except ImportError:
 try:
   import vtk
 
-  versionLong = vtk.__version__
-  version = versionLong.split('.')
+  version_long, version = _parse_version_string(vtk.__version__)
 
-  print(f"  vtk version detected        {versionLong:>10s} : ", end=' ')
+  print(f"  vtk version detected        {version_long:>10s} : ", end=' ')
 
-  if int(version[0]) >= 9 and int(version[1]) >= 0:
+  if version >= (9, 0):
     print("   OK")
   else:
     print("    Please install vtk 9.0.0 or higher and reconfigure PyFEM.\n")
@@ -292,8 +271,5 @@ elif os_name == "Windows":
   print("  you can run it by typing:\n")
   print("    pyfem inputFile.pro\n")
   print("  See the user manual for further instructions.\n")
-
-else:
-  print("Operating system ", os_name, " not known.")
 
 sys.exit()
