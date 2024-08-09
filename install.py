@@ -29,6 +29,7 @@
 
 import os
 import pickle
+import platform
 import subprocess
 import sys
 
@@ -40,22 +41,15 @@ print("\n ===============================================================\n")
 
 # get operating system
 
-osName = sys.platform
-osFullName = osName
-
-if osName == "linux":
-  osFullName = "Linux"
-elif osName == "win32":
-  osFullName = "Windows"
-
-print(f"  Operating system                       : {osFullName}")
+os_name = platform.system()
+print(f"  Operating system                       : {os_name}")
 
 # check python version
 
-versionLong = sys.version.split(' ')
-version = versionLong[0].split('.')
+py_version_str = platform.python_version()
+version = py_version_str.split('.')
 
-print(f"  Python version detected     {versionLong[0]:>10s} : ", end=' ')
+print(f"  Python version detected     {py_version_str:>10s} : ", end=' ')
 
 if int(version[0]) == 3 and int(version[1]) >= 6:
   print("   OK")
@@ -242,7 +236,7 @@ print("\n ===============================================================")
 print("  INSTALLATION SUCCESSFUL!")
 print(" ===============================================================\n")
 
-if osName[:5] == "linux":
+if os_name == "Linux":
 
   with open('pyfem.sh', 'w') as bat_file:
     fexec = sys.executable
@@ -270,7 +264,7 @@ if osName[:5] == "linux":
   print("    pyfem_gui\n")
   print("  See the user manual for further instructions.\n")
 
-elif osName[:6] == "darwin":
+elif os_name == "Darwin":
 
   print(" Add the following line to ~/.bashrc :\n")
   # print('   export PYTHONPATH="' + path + '"')
@@ -279,7 +273,7 @@ elif osName[:6] == "darwin":
   print("  Installation successful!")
   print("  See the user manual for further instructions.\n\n")
 
-elif osName[:3] == "win":
+elif os_name == "Windows":
 
   fexec = sys.executable
 
@@ -300,6 +294,6 @@ elif osName[:3] == "win":
   print("  See the user manual for further instructions.\n")
 
 else:
-  print("Operating system ", osName, " not known.")
+  print("Operating system ", os_name, " not known.")
 
 sys.exit()
