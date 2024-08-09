@@ -66,15 +66,13 @@ class BuckEigSolver ( BaseModule ):
          
     K,fint  = assembleTangentStiffness( props, globdat )
 
-    eigenvals , eigenvecs = globdat.dofs.eigensolve( K0 , (K0-K) )
-
-    globdat.state = eigenvecs
+    globdat.eigenvals , globdat.eigenvecs = globdat.dofs.eigensolve( K0 , (K0-K) )
   
     globdat.elements.commitHistory()
 
     globdat.active = False 
 
-    self.printResults( eigenvals )
+    self.printResults( globdat.eigenvals )
 
 #------------------------------------------------------------------------------
 #
@@ -82,12 +80,9 @@ class BuckEigSolver ( BaseModule ):
 
   def printResults( self , eigenvals):
 
-    logger.info("    =============================================")
-    logger.info("    Eigen modes")
-    logger.info("    =============================================")
-    logger.info("    Mode   Load")
+    logger.info("   Eigen modes")
+    logger.info("   ---------------------------------------------------------")
+    logger.info("    Mode |  Load")
     
     for i,f in enumerate(eigenvals):
-      logger.info(' %3i : %6.4e  ' %(i+1,f))
-      
-    logger.info('======================================\n')
+      logger.info('    %4i | %6.4e  ' %(i+1,f))

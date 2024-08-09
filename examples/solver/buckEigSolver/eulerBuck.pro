@@ -1,4 +1,4 @@
-input = "beamDyn.dat";
+input = "eulerBuck.dat";
 
 BeamElem =
 {
@@ -13,7 +13,7 @@ BeamElem =
 
 solver =
 {
-  type = "DynEigSolver";
+  type = "BuckEigSolver";
   
   eigenCount = 5;
 };

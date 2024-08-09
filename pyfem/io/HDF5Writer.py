@@ -60,7 +60,16 @@ class HDF5Writer( BaseModule ):
   
     cycle = globdat.solverStatus.cycle
     
-    if cycle % self.interval == 0:
+    if hasattr(globdat,"eigenvecs"):
+      
+      self.writeHeader()
+      name = str(self.prefix + self.extension)
+      
+      f = h5py.File(name, "w")
+      
+      self.writeCycle( f , globdat , method = "modes" )
+   
+    elif cycle % self.interval == 0:
         
       self.writeHeader()
       
@@ -94,7 +103,7 @@ class HDF5Writer( BaseModule ):
 #  writeCycle
 #----------------------------------------------------------------------------------
   
-  def writeCycle( self , cdat , globdat ):  
+  def writeCycle( self , cdat , globdat , method = "all" ):  
       
     cdat.create_group("elements")
            
@@ -112,10 +121,14 @@ class HDF5Writer( BaseModule ):
     elemIDs      = np.array(globdat.elements.getIndices(),dtype = int )
     familyIDs    = np.array(globdat.elements.getFamilyIDs(),dtype = int )
               
-    cdat["elements"].create_dataset("offsets",      elemCount.shape,    dtype='i', data=elemCount )
-    cdat["elements"].create_dataset("connectivity", connectivity.shape, dtype='i', data=connectivity )
-    cdat["elements"].create_dataset("elementIDs",   elemIDs.shape,      dtype='i', data=elemIDs )
-    cdat["elements"].create_dataset("familyIDs",    familyIDs.shape,      dtype='i', data=familyIDs )    
+    cdat["elements"].create_dataset("offsets", elemCount.shape,    
+                                    dtype='i', data=elemCount )
+    cdat["elements"].create_dataset("connectivity", connectivity.shape, 
+                                    dtype='i', data=connectivity )
+    cdat["elements"].create_dataset("elementIDs", elemIDs.shape,
+                                    dtype='i', data=elemIDs )
+    cdat["elements"].create_dataset("familyIDs", familyIDs.shape,      
+                                    dtype='i', data=familyIDs )    
     
     cdat.create_group("elementGroups")
       
@@ -133,8 +146,10 @@ class HDF5Writer( BaseModule ):
     coordinates = np.array(coordinates,dtype = float)
     nodeIDs     = np.array(globdat.nodes.getIndices(),dtype = int )
               
-    cdat["nodes"].create_dataset("coordinates", coordinates.shape, dtype='f', data=coordinates)   
-    cdat["nodes"].create_dataset("nodeIDs",     nodeIDs.shape,     dtype='i', data=nodeIDs)       
+    cdat["nodes"].create_dataset("coordinates", coordinates.shape, 
+                                 dtype='f', data=coordinates)   
+    cdat["nodes"].create_dataset("nodeIDs", nodeIDs.shape, 
+                                 dtype='i', data=nodeIDs)       
               
     dofs = self.dispDofs[:coordinates.shape[1]]
           
@@ -145,36 +160,63 @@ class HDF5Writer( BaseModule ):
       cdat["nodeGroups"].create_dataset( key , nodeIDs.shape, dtype='i' , data=nodeIDs )
                 
     cdat.create_group("nodeData")
-           
-    displacements = []
+    
+    if method == "all":       
+      displacements = []
 
-    for nodeID in list(globdat.nodes.keys()):
-      d = []
-      for dispDof in dofs:
-        if dispDof in globdat.dofs.dofTypes:
-          d.append(globdat.state[globdat.dofs.getForType(nodeID,dispDof)])
-        else: 
-          d.append(0.)
-      displacements.append(d)
+      for nodeID in list(globdat.nodes.keys()):
+        d = []
+        for dispDof in dofs:
+          if dispDof in globdat.dofs.dofTypes:
+            d.append(globdat.state[globdat.dofs.getForType(nodeID,dispDof)])
+          else: 
+            d.append(0.)
+        displacements.append(d)
         
-    displacements = np.array(displacements,dtype = float )
+      displacements = np.array(displacements,dtype = float )
  
-    cdat["nodeData"].create_dataset("displacements",displacements.shape, dtype='f', data=displacements)   
+      cdat["nodeData"].create_dataset("displacements",displacements.shape, dtype='f', data=displacements)   
            
-    for field in self.extraFields:     	              
-      if field in globdat.dofs.dofTypes:  
-        output = []
+      for field in self.extraFields:     	              
+        if field in globdat.dofs.dofTypes:  
+          output = []
                      
-        for nodeID in list(globdat.nodes.keys()):      
-          output.append(globdat.state[globdat.dofs.getForType(nodeID,field)])
+          for nodeID in list(globdat.nodes.keys()):      
+            output.append(globdat.state[globdat.dofs.getForType(nodeID,field)])
   
+          output = np.array( output,dtype = float )
+      
+          cdat["nodeData"].create_dataset(field,output.shape, dtype='f', data=output)   
+      
+      for name in globdat.outputNames:      
+        output = globdat.getData( name , list(range(len(globdat.nodes))) )
+        
         output = np.array( output,dtype = float )
       
-        cdat["nodeData"].create_dataset(field,output.shape, dtype='f', data=output)   
-      
-    for name in globdat.outputNames:      
-      output = globdat.getData( name , list(range(len(globdat.nodes))) )
+        cdat["nodeData"].create_dataset(name,output.shape, dtype='f', data=output)            
         
-      output = np.array( output,dtype = float )
+    elif method == "modes":
+    
+      allModes = []
       
-      cdat["nodeData"].create_dataset(name,output.shape, dtype='f', data=output)            
+      for iMod,eigenvecs in enumerate(globdat.eigenvecs.T):
+        mode = []
+      
+        for nodeID in list(globdat.nodes.keys()):
+          d = []
+          for dispDof in dofs:
+            if dispDof in globdat.dofs.dofTypes:
+              d.append(globdat.eigenvecs[globdat.dofs.getForType(nodeID,dispDof)])
+            else: 
+              d.append(0.)
+          mode.append(d)
+        
+        allModes.append(mode)
+        
+      allModes = np.array(allModes,dtype = float )
+ 
+      cdat["nodeData"].create_dataset("modes",allModes.shape, dtype='f', data=allModes)   
+      
+      eigenvals = globdat.eigenvals
+      
+      cdat.create_dataset("eigenvals",eigenvals.shape, dtype='f', data=eigenvals)   

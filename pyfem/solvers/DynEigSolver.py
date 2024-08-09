@@ -34,7 +34,7 @@ from numpy import zeros, array, pi
 from pyfem.fem.Assembly import assembleTangentStiffness, assembleMassMatrix
 
 from pyfem.util.logger   import getLogger
-from math import sqrt
+from numpy import sqrt
 import h5py
 
 logger = getLogger()
@@ -63,25 +63,16 @@ class DynEigSolver ( BaseModule ):
       
     K,fint  = assembleTangentStiffness( props, globdat )
          
-    M,mlump = assembleMassMatrix      ( props , globdat )
+    M,_ = assembleMassMatrix      ( props , globdat )
 
     eigenvals , globdat.eigenvecs = globdat.dofs.eigensolve( K , M , self.eigenCount )
     
-    globdat.eigenvals = []
-    
-    for val in eigenvals:
-      globdat.eigenvals.append( sqrt(val) )
+    globdat.eigenvals = sqrt( eigenvals )
          
     globdat.elements.commitHistory()
 
     globdat.active = False 
     
-    if self.writeToH5:
-      h5file = h5py.File( "modes.h5", 'w')
-    
-      h5file.create_dataset("modes", globdat.eigenvecs.shape, 
-                            dtype='f', data=globdat.eigenvecs)   
-  
     self.printResults( globdat.eigenvals )
 
 #------------------------------------------------------------------------------
