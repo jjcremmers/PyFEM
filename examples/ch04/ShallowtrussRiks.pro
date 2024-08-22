@@ -62,7 +62,7 @@ graph =
 
   onScreen = true;
 
-  columns = [ "disp" , "load" ];
+  columns = [ "disp" , "load" , "cycle" , "lam" ];
 
   disp =
   {

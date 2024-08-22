@@ -95,7 +95,7 @@ class GraphWriter( BaseModule ):
     a = []
 
     for i,col in enumerate(self.columndata):
-            
+        
       if col.type in globdat.outputNames:
         data = globdat.getData( col.type , col.node )
         
@@ -110,10 +110,15 @@ class GraphWriter( BaseModule ):
             data = b[globdat.dofs.getForType(col.node,col.dof)]
         else:
           data = b
+          
       elif col.type in globdat.outputNames:
         data = globdat.getData( col.type , col.node )
+        
       elif hasattr(globdat.solverStatus,col.type):
         data = getattr(globdat.solverStatus,col.type)
+        
+      else:
+        data = 0.0
    
       data = data * col.factor
 
@@ -124,9 +129,9 @@ class GraphWriter( BaseModule ):
 
     self.outfile.write('\n')
 
-    self.output.append( a )
-      
-    if self.onScreen:    
+    if self.onScreen:
+      self.output.append( a )
+         
       plt.sca(self.ax1)
       plt.cla()
       
@@ -137,7 +142,7 @@ class GraphWriter( BaseModule ):
     
       plt.pause(0.001)
       
-    self.fig.savefig(self.prefix+'.png')
+      self.fig.savefig(self.prefix+'.png')
     
     if not globdat.active:
       self.outfile.close

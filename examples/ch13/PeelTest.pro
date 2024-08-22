@@ -84,7 +84,7 @@ graph =
 
   onScreen = True;
 
-  columns = ["disp","load"];
+  columns = ["disp","load","stress","lam","cycle","iiter"];
 
   disp =
   {
@@ -99,4 +99,10 @@ graph =
     node = 246;
     dof  = "v";
   };
+
+  stress =
+  {
+    type = "S22";
+    node = 159;
+  }
 };

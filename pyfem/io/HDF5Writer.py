@@ -40,7 +40,7 @@ class HDF5Writer( BaseModule ):
     self.extension = ".h5"
     
     self.dispDofs    = ["u","v","w"]
-    self.extraFields = ["rx","ry","rz","temp","pres"]
+    self.extraFields = ["rx","ry","rz","temp","pres","phase"]
     self.singleFile  = True
     
     BaseModule.__init__( self , props )
@@ -91,11 +91,8 @@ class HDF5Writer( BaseModule ):
         name = str(self.prefix + "_" + str(self.cycle) + self.extension)
       
         f = h5py.File(name, "w")
-      
-        f.attrs['fileFormat'] = "RNDF"
-        f.attrs['version']    = 1.0
-        
-        self.writeCycle(f)
+              
+        self.writeCycle(f , globdat )
         
         self.cycle += 1
  

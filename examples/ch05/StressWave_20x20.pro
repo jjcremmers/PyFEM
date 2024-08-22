@@ -57,10 +57,33 @@ solver =
   maxCycle = 400;
 };
 
-outputModules = [ 'mesh' ];
+outputModules = [ 'mesh' , 'graph' ];
 
 mesh =
 {
   type = "MeshWriter";
   interval = 10;
 };
+
+graph =
+{
+  type = "GraphWriter";
+
+  onscreen = true;
+  columns = [ "disp" , "stress" , "time" ];
+
+  disp =
+  { 
+    type = "state";
+    node = 363;
+    dof  = 'v';
+    factor = 1.0;
+  };
+  
+  stress =
+  { 
+    type = "S22";
+    node = 363;
+  };
+};
+  
