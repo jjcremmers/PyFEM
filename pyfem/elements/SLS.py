@@ -34,6 +34,7 @@ from pyfem.elements.SLSgeomdata         import SLSgeomdata
 from pyfem.elements.SLSkinematic        import SLSkinematic
 from pyfem.elements.SLSutils            import LayerData,SLSparameters,StressContainer
 from pyfem.elements.CondensationManager import CondensationManager
+from pyfem.util.shapeFunctions  import getElemShapeData
 
 from numpy import zeros, dot, outer, ones
  
@@ -120,3 +121,34 @@ class SLS( Element ):
   def commit ( self, elemdat ):
 
     self.condman.commit()
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+    
+  def getMassMatrix ( self, elemdat ):
+      
+    sData = getElemShapeData( elemdat.coords )
+
+    rho = elemdat.matprops.rho
+
+    for iData in sData:
+      N  = self.getNmatrix( iData.h )
+      elemdat.mass += dot ( N.transpose() , N ) * rho * iData.weight
+     
+    elemdat.lumped = sum(elemdat.mass)
+   
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getNmatrix( self , h ):
+
+    N = zeros( shape=( self.rank , self.rank*len(h) ) )
+
+    for i,a in enumerate( h ):
+      for j in list(range(self.rank)):
+        N[j,self.rank*i+j] = a
+    
+    return N  
+    

@@ -45,13 +45,10 @@ class MultiMaterial( BaseMaterial ):
       matmodel = MaterialManager( getattr( props , material ) )
       self.matmodels.append( matmodel )
 
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
   def getStress( self, deformation ):
 
-    iMat = deformation.iMat
-
-    return self.matmodels[0].getStress( deformation )
-
-  def getTangent( self ):
-  
-    return self.matmodels[0].getTangent()
-
+    return self.matmodels[deformation.iMat].getStress( deformation )
