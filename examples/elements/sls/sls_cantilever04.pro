@@ -36,13 +36,50 @@ SLSElem =
 {
   type = "SLS";
 
+  layers = [ "c0" , "c90" , "c0" ];
+  
+  c0 = 
+  {
+    thickness = 1.0;
+    theta = 0.0;
+    material = "AA";
+  };
+  
+  c90 = 
+  {
+    thickness = 1.0;
+    theta = 90.0;
+    material = "BB";
+  };
+  
   material = 
   {
-    type = "Isotropic";
-    E    = 1.e6;
-    nu   = 0.0;
-    rho  = 1.11e3;
-  };
+    type = "MultiMaterial";
+    
+    materials = ["AA","BB"];
+  
+    AA =
+    {
+      type = "TransverseIsotropic";
+      incremental = true;
+      E1   = 1.e6;
+      E2   = 1.e5;
+      nu12 = 0.25;
+      G12  = 1.e5;
+      rho  = 1.23e4;
+    };
+  
+    BB =
+    {
+      type = "TransverseIsotropic";
+      incremental = true;
+      E1   = 1.e6;
+      E2   = 1.e5;
+      nu12 = 0.25;
+      G12  = 1.e5;
+      rho  = 2.23e4;
+    };
+  };   
 };
 
 solver =

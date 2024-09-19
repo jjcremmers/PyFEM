@@ -127,14 +127,16 @@ class SLS( Element ):
 #-------------------------------------------------------------------------------
     
   def getMassMatrix ( self, elemdat ):
-      
-    sData = getElemShapeData( elemdat.coords )
 
-    rho = elemdat.matprops.rho
-
-    for iData in sData:
-      N  = self.getNmatrix( iData.h )
-      elemdat.mass += dot ( N.transpose() , N ) * rho * iData.weight
+    elemGeomData = SLSgeomdata( elemdat , self.layers )
+             
+    for sdat in elemGeomData:
+      for ldat in sdat.layerData:              
+        rho = ldat.rho
+        for zdat in ldat.zetaData:
+        
+          H = self.kinematic.getHmat( sdat , zdat.zeta )            
+          elemdat.mass += dot ( H.T, H ) * rho * zdat.weight
      
     elemdat.lumped = sum(elemdat.mass)
    

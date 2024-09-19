@@ -38,7 +38,7 @@ SLSElem0 =
     E2   = 5.e5;
     nu12 = 0.25;
     G12  = 4.e5;
-    rho  = 1.0e3;
+    rho  = 1.1e3;
   };
   
   theta  = 0.0;     
@@ -56,7 +56,7 @@ SLSElem1 =
     E2   = 5.e5;
     nu12 = 0.25;
     G12  = 4.e5;
-    rho  = 1.0e3;
+    rho  = 1.2e3;
   };
   
   theta  = 90.0;     
@@ -74,7 +74,7 @@ SLSElem2 =
     E2   = 5.e5;
     nu12 = 0.25;
     G12  = 4.e5;
-    rho  = 1.0e3;
+    rho  = 1.3e3;
   };
   
   theta  = 0.0;     

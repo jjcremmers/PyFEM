@@ -40,9 +40,14 @@ class MultiMaterial( BaseMaterial ):
     BaseMaterial.__init__( self, props )
  
     self.matmodels = []
+    
+    for material in self.materials:    
+      matProps            = getattr( props , material )
+      matProps.rank       = props.rank
+      matProps.solverStat = self.solverStat
   
-    for material in self.materials:
       matmodel = MaterialManager( getattr( props , material ) )
+      
       self.matmodels.append( matmodel )
 
 #-------------------------------------------------------------------------------
@@ -51,4 +56,8 @@ class MultiMaterial( BaseMaterial ):
 
   def getStress( self, deformation ):
 
-    return self.matmodels[deformation.iMat].getStress( deformation )
+    stress, tang = self.matmodels[deformation.iMat].getStress( deformation )
+    
+    self.outData = self.matmodels[deformation.iMat].outData()
+    
+    return stress , tang

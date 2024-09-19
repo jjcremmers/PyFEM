@@ -256,11 +256,14 @@ class LayerData:
         layer.thick    =  layprops.thickness
         layer.theta    =  layprops.theta*pi/180
         
-        if hasattr( props , "materials" ):      
-          layer.matID  =  props.materials.index(layprops.material)
+        if props.material.type == "MultiMaterial":      
+          layer.matID  =  props.material.materials.index(layprops.material)          
+          matprops = getattr(props.material,layprops.material)
+          layer.rho    =  matprops.rho
         else:
           layer.matID  = 0
-          
+          layer.rho    =  props.material.rho
+                              
         self.totThick += layprops.thickness
 
         self.layers.append( layer )
@@ -274,7 +277,10 @@ class LayerData:
         layer.theta = 0.0
         
       layer.matID   = 0
-
+      
+      if hasattr( props.material , "rho" ):
+        layer.rho = props.material.rho
+        
       self.totThick = 1.0
       self.layers.append( layer )
       

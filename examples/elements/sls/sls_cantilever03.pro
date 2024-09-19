@@ -36,12 +36,31 @@ SLSElem =
 {
   type = "SLS";
 
-  material = 
+  layers = [ "c0" , "c90" , "c0" ];
+  
+  c0 = 
   {
-    type = "Isotropic";
-    E    = 1.e6;
-    nu   = 0.0;
-    rho  = 1.11e3;
+    thickness = 1.0;
+    theta = 0.0;
+    material = 0;
+  };
+  
+  c90 = 
+  {
+    thickness = 1.0;
+    theta = 90.0;
+    material = 0;
+  };
+  
+  material =
+  {
+    type = "TransverseIsotropic";
+    incremental = true;
+    E1   = 1.e6;
+    E2   = 1.e5;
+    nu12 = 0.25;
+    G12  = 1.e5;
+    rho  = 1.23e4;
   };
 };
 

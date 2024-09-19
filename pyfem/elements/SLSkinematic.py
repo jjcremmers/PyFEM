@@ -319,6 +319,28 @@ class SLSkinematic:
 #
 #------------------------------------------------------------------------------
 
+  def getHmat( self , sdat , zeta ):
+       
+    hmat = zeros( ( 3 , self.param.condDOF ) )
+    
+    psi  = sdat.h 
+        
+    for iNod in range(self.param.midNodes):
+      for iDim in range(3):
+        k1=   iNod * 3 + iDim
+        k2= ( iNod + self.param.midNodes ) * 3 + iDim
+               
+        hmat[iDim,k1] +=  psi[iNod]
+        hmat[iDim,k2] +=  psi[iNod]
+        hmat[iDim,k1] += -zeta * psi[iNod]
+        hmat[iDim,k2] +=  zeta * psi[iNod]
+
+    return hmat
+    
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
   def getStrains( self , kin , sdat , zeta , lamb ):
 
     kin.strain  = iso2loc( self.getEps()  + zeta * self.getRho ( sdat.gbar ) , lamb )
