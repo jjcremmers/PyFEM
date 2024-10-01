@@ -32,7 +32,8 @@ from pyfem.util.BaseModule import BaseModule
 import vtk
 
 from pyfem.util.vtkUtils import ( insertElement,storeNodes,storeElements,
-                                  storeDofFields,storeDofField,storeNodeField )
+                                  storeDofFields,storeDofField,storeNodeField,
+                                  storeElementField )
 from numpy import zeros
 #------------------------------------------------------------------------------
 #
@@ -110,7 +111,6 @@ class MeshWriter ( BaseModule ):
         if hasattr( globdat , "eigenvecs" ):
             for iMod,eigenvecs in enumerate(globdat.eigenvecs.T):
                 storeDofField( grid , eigenvecs , globdat , [ "u", "v", "w" ] , "mode"+str(iMod))        
-
                   
         # ------
                
@@ -121,12 +121,14 @@ class MeshWriter ( BaseModule ):
         
         # -- Write elemdata
 
-        labels = []#self.elemDataSets()
-      
-        for label in labels:
-            data = self.getElemData( label )
-             
-            storeElementField( grid , data , globdat , name )
+        if hasattr( globdat , "elementData" ): 
+            elemData = globdat.elementData
+                        
+            for label in elemData.outputNames:
+                data    = getattr( elemData , label )
+                         
+                storeElementField( grid , data , globdat , label )
+            
         
         writer.SetInputData(grid)
         

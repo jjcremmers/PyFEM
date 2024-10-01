@@ -31,6 +31,10 @@
 from numpy import outer, ones, zeros
 from pyfem.materials.MaterialManager import MaterialManager
 
+class elementData:
+  
+  outputNames = []
+  
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -108,6 +112,31 @@ class Element ( list ):
           outMat[ idx ]     += data[j,i]
           outWeights[ idx ] += weight
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+  def appendElementOutput( self , labels , data , weight = 1.0 ):
+      
+    if not hasattr( self.globdat , "elementData" ):
+      setattr( self.globdat, "elementData" , elementData() )
+      
+    elemData = getattr( self.globdat , "elementData" )
+    
+    for i,name in enumerate(labels):
+      if not hasattr( elemData , name ):
+        elemData.outputNames.append( name )
+
+        setattr( elemData, name             , zeros( len(self.globdat.elements) ) )
+        setattr( elemData, name + 'Weights' , zeros( len(self.globdat.elements) ) )
+
+      outMat     = getattr( elemData , name )
+      outWeights = getattr( elemData , name + 'Weights' )
+
+      if data.ndim == 1:
+        outMat[ self.iElm ]     += data[i]
+        outWeights[ self.iElm ] += weight
+                   
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------

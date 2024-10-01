@@ -128,7 +128,7 @@ def storeNodeField( grid , data , globdat , name ):
 def storeElementField( grid , data , globdat , name ):
              
     d = vtk.vtkDoubleArray();
-    d.SetName( label );
+    d.SetName( name );
     d.SetNumberOfComponents(1);
             
     for i,l in enumerate(data):        

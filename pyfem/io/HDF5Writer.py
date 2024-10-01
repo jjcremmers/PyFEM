@@ -190,7 +190,19 @@ class HDF5Writer( BaseModule ):
         
         output = np.array( output,dtype = float )
       
-        cdat["nodeData"].create_dataset(name,output.shape, dtype='f', data=output)            
+        cdat["nodeData"].create_dataset(name,output.shape, dtype='f', data=output)
+ 
+      if hasattr( globdat , "elementData" ): 
+        cdat.create_group("elemData")      
+        elemData = globdat.elementData
+                          
+        for name in elemData.outputNames:      
+          data = getattr( elemData , name )
+        
+          data = np.array( data,dtype = float )
+      
+          cdat["elemData"].create_dataset(name,output.shape, dtype='f', data=output)            
+                            
         
     elif method == "modes":
     

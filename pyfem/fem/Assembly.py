@@ -88,6 +88,7 @@ def assembleArray ( props, globdat, rank, action ):
       elemdat.iElm     = iElm 
 
       element.globdat  = globdat
+      element.iElm     = iElm
       
       if hasattr( element , "matProps" ):
         elemdat.matprops = element.matProps
