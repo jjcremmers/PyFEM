@@ -167,7 +167,7 @@ class NodeSet( itemList ):
       if line.replace(" ", "").startswith('</Nodes>'):
         return
   
-      line = re.sub('\s{2,}',' ',line)
+      line = re.sub(r'\s{2,}',' ',line)
       a = line.split(';')
      
       for a in a[:-1]:

@@ -186,9 +186,9 @@ try:
     sys.exit()
 except ImportError:
   print("  PySide not detected                    : Not OK")
-  answer = input("    Do you want to install the latest version of PySide? (Y/N)\n")
+  answer = input("    Do you want to install the latest version of PySide6? (Y/N)\n")
   if answer.lower() == "y" or answer.lower() == 'yes':
-    subprocess.run(['pip', 'install', 'PySide'], check=True)
+    subprocess.run(['pip', 'install', 'PySide6'], check=True)
   else:
     print("    or run PyFEM with limited functionality.\n")
 
@@ -265,12 +265,12 @@ elif os_name == "Windows":
 
   if fexec[-5:] == "w.exe":
     fexec = fexec[:-5] + ".exe"
-
+    
   with open('pyfem.bat', 'w') as bat_file:
     bat_file.write(fexec + ' ' + path + '\\PyFEM.py %1')
 
-  with open('pyfem.exe', 'w') as bat_file:
-    bat_file.write(fexec + ' ' + path + '\\pyfem_gui.py')
+  with open('pyfem_gui.exe', 'w') as bat_file:
+    bat_file.write(fexec + ' ' + path + '\\pyfem_gui.py')    
 
   print("  You can run PyFEM from any directory by typing:\n")
   print("    [path_to_this_directory]\\pyfem inputFile.pro\n")

@@ -113,7 +113,7 @@ class ElementSet( itemList ):
           if line.startswith('</Elements>') == True:
             return
         
-          line = re.sub('\s{2,}',' ',line)
+          line = re.sub(r'\s{2,}',' ',line)
           a = line.split(';')
      
           for a0 in a[:-1]:
