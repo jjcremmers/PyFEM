@@ -164,9 +164,11 @@ try:
     print("   OK")
 except ImportError:
   print("  h5py not detected                      : Not OK")
-  print("\n    Please install h5py\n")
-  print("      'pip install h5py'\n")
-  print("    or run PyFEM with limited functionality.\n")
+  answer = input("    Do you want to install the latest version of h5py? (Y/N)\n")
+  if answer.lower() == "y" or answer.lower() == 'yes':
+    subprocess.run(['pip', 'install', 'h5py'], check=True)
+  else:
+    print("\n    You cannot write h5 files!\n")
 
 # check PySide version
 
@@ -184,9 +186,11 @@ try:
     sys.exit()
 except ImportError:
   print("  PySide not detected                    : Not OK")
-  print("\n    Please install PySide\n")
-  print("      'pip install PySide'\n")
-  print("    or run PyFEM with limited functionality.\n")
+  answer = input("    Do you want to install the latest version of PySide? (Y/N)\n")
+  if answer.lower() == "y" or answer.lower() == 'yes':
+    subprocess.run(['pip', 'install', 'PySide'], check=True)
+  else:
+    print("    or run PyFEM with limited functionality.\n")
 
 # check vtk version
 
@@ -204,8 +208,11 @@ try:
     sys.exit()
 except ImportError:
   print("  vtk not detected                       : Not OK")
-  print("\n    Please install vtk 9.0.0 or higher\n")
-  sys.exit()
+  answer = input("    Do you want to install the latest version of vtk? (Y/N)\n")
+  if answer.lower() == "y" or answer.lower() == 'yes':
+    subprocess.run(['pip', 'install', 'vtk'], check=True)
+  else:
+    print("    or run PyFEM with limited functionality.\n")
 
 # get current path
 
