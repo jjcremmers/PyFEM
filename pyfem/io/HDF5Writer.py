@@ -199,7 +199,7 @@ class HDF5Writer( BaseModule ):
         for name in elemData.outputNames:      
           data = getattr( elemData , name )
         
-          data = np.array( data,dtype = float )
+          output = np.array( data,dtype = float )
       
           cdat["elemData"].create_dataset(name,output.shape, dtype='f', data=output)            
                             
