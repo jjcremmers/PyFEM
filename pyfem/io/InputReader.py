@@ -31,15 +31,14 @@
 from pyfem.util.dataStructures import Properties
 from pyfem.util.dataStructures import GlobalData
 
-from pyfem.fem.NodeSet     import NodeSet
-from pyfem.fem.ElementSet  import ElementSet
-from pyfem.fem.DofSpace    import DofSpace
-from pyfem.fem.Contact     import Contact
+from pyfem.fem.NodeSet         import NodeSet
+from pyfem.fem.ElementSet      import ElementSet
+from pyfem.fem.DofSpace        import DofSpace
 
 from pyfem.models.ModelManager import ModelManager
 
-from pyfem.util.fileParser import fileParser
-from pyfem.util.logger     import setLogger
+from pyfem.util.fileParser     import fileParser
+from pyfem.util.logger         import setLogger
 
 import getopt,os.path,pickle,time
 
@@ -109,9 +108,7 @@ def InputRead( fname , dname = None , parameters = None ):
 
   globdat.active = True
   globdat.prefix = os.path.splitext(fname)[0]
-  
-  globdat.contact = Contact( props )
-  
+   
   globdat.models  = ModelManager( props )
   
   globdat.startTime = t1  
