@@ -85,4 +85,4 @@ class DynEigSolver ( BaseModule ):
     logger.info('   Mode |   Eigenvalue       |  Frequency')
         
     for i,val in enumerate(eigenvals):
-      logger.info('   %4i |   %6.4e rad/s |  %6.4e Hz' %(i+1,val,val/(2.0*pi)))     
+      logger.info(f"   {i+1:4d} |   {val:6.4e} rad/s |  {val/(2.0*pi):6.4e} Hz")

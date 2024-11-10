@@ -36,6 +36,8 @@ from pyfem.fem.ElementSet  import ElementSet
 from pyfem.fem.DofSpace    import DofSpace
 from pyfem.fem.Contact     import Contact
 
+from pyfem.models.ModelManager import ModelManager
+
 from pyfem.util.fileParser import fileParser
 from pyfem.util.logger     import setLogger
 
@@ -109,6 +111,8 @@ def InputRead( fname , dname = None , parameters = None ):
   globdat.prefix = os.path.splitext(fname)[0]
   
   globdat.contact = Contact( props )
+  
+  globdat.models  = ModelManager( props )
   
   globdat.startTime = t1  
   	

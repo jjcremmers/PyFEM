@@ -215,7 +215,7 @@ class DissipatedEnergySolver( BaseModule ):
 
   def printIteration( self , iiter , error ):
 
-    logger.info('    Iteration %4i   : %6.4e'%(iiter,error) )
+    logger.info(f'    Iteration {iiter:4d}   : {error:6.4e}')
 
 #------------------------------------------------------------------------------
 #
@@ -224,4 +224,4 @@ class DissipatedEnergySolver( BaseModule ):
   def printConverged( self , iiter , dissnrg ):
 
     logger.info('    ---------------------------------------------')
-    logger.info('    Converged in %i iterations with %s.\n' % (iiter,self.method ) )  
+    logger.info(f'    Converged in {iiter} iterations with {self.method}.\n')

@@ -107,6 +107,7 @@ class ExplicitSolver ( BaseModule ):
       print("  Cycle     Time         Kin.Energy")
       print("  ---------------------------------------")
   
-    print(' %5i ' % stat.cycle, end=' ')
-    print(' %10.3e ' % stat.time, end=' ')  
-    print(' %10.3e ' % float(0.5*dot(globdat.velo,(self.Mlumped*globdat.velo))))
+    print(f' {stat.cycle:5d} ', end=' ')
+    print(f' {stat.time:10.3e} ', end=' ')
+    print(f' {0.5 * dot(globdat.velo, (self.Mlumped * globdat.velo)):10.3e} ')
+

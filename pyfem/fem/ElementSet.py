@@ -65,15 +65,15 @@ class ElementSet( itemList ):
 #-------------------------------------------------------------------------------
     
   def __repr__( self ):
-    msg =  "  Number of elements ......... %6d\n" % len(self)
+    msg = f"  Number of elements ......... {len(self):6d}\n"
     
     if len(self.groups) > 0:
-      msg += "    Number of  groups .......... %6d\n" % len(self.groups)
+      msg += f"    Number of  groups .......... {len(self.groups):6d}\n"
       msg += "    -----------------------------------\n"
       msg += "      name                       #elems\n"
       msg += "      ---------------------------------\n"
       for name in self.groups:
-        msg += "      %-16s           %6d\n" % (name,len(self.groups[name]))
+        msg += f"      {name:<16s}           {len(self.groups[name]):6d}\n"
     
     return msg
 
@@ -245,9 +245,9 @@ class ElementSet( itemList ):
     else:
       return len(self.groups[groupName])
       
+#-------------------------------------------------------------------------------
 #
-#
-#
+#-------------------------------------------------------------------------------
 
   def getFamilyIDs(self):
   

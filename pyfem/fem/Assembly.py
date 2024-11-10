@@ -34,11 +34,9 @@ from pyfem.util.dataStructures import Properties
 from pyfem.util.dataStructures import elementData
 
 
-#######################################
-# General array assembly routine for: # 
-# * assembleInternalForce             #
-# * assembleTangentStiffness          #
-#######################################
+#-------------------------------------------------------------------------------
+#  Assemble Internal force
+#-------------------------------------------------------------------------------
 
 def assembleArray ( props, globdat, rank, action ):
 
@@ -56,15 +54,13 @@ def assembleArray ( props, globdat, rank, action ):
   if action != 'commit':
     globdat.resetNodalOutput()
 
-  #Loop over the element groups
   for elementGroup in globdat.elements.iterGroupNames():
 
-    #Get the properties corresponding to the elementGroup
     el_props = getattr( props, elementGroup )
 
-    #Loop over the elements in the elementGroup
     for iElm,element in enumerate(globdat.elements.iterElementGroup( elementGroup )):
 
+      '''
       #Get the element nodes
       el_nodes = element.getNodes()
 
@@ -89,9 +85,16 @@ def assembleArray ( props, globdat, rank, action ):
 
       element.globdat  = globdat
       element.iElm     = iElm
-      
+                   
       if hasattr( element , "matProps" ):
         elemdat.matprops = element.matProps
+        
+      '''
+      
+      elemdat = getElementData( element , el_props , globdat )
+      
+      elemdat.iElm     = iElm 
+      element.iElm     = iElm      
 
       if hasattr( element , "mat" ):
         element.mat.reset()
@@ -105,31 +108,33 @@ def assembleArray ( props, globdat, rank, action ):
 
       #Assemble in the global array
       if rank == 1:
-        B[el_dofs] += elemdat.fint
+        B[elemdat.el_dofs] += elemdat.fint
         cc         += elemdat.diss
       elif rank == 2 and action == "getTangentStiffness":  
 
-        row = append(row,repeat(el_dofs,len(el_dofs)))
+        row = append(row,repeat(elemdat.el_dofs,len(elemdat.el_dofs)))
 
-        for i in range(len(el_dofs)):
-          col=append(col,el_dofs)        
+        for i in range(len(elemdat.el_dofs)):
+          col=append(col,elemdat.el_dofs)        
 
-        val = append(val,elemdat.stiff.reshape(len(el_dofs)*len(el_dofs)))
+        val = append(val,elemdat.stiff.reshape(len(elemdat.el_dofs)*len(elemdat.el_dofs)))
 
-        B[el_dofs] += elemdat.fint
+        B[elemdat.el_dofs] += elemdat.fint
       elif rank == 2 and action == "getMassMatrix": 
 
-        row = append(row,repeat(el_dofs,len(el_dofs)))
+        row = append(row,repeat(elemdat.el_dofs,len(elemdat.el_dofs)))
 
-        for i in range(len(el_dofs)):
-          col=append(col,el_dofs)        
+        for i in range(len(elemdat.el_dofs)):
+          col=append(col,elemdat.el_dofs)        
 
-        val = append(val,elemdat.mass.reshape(len(el_dofs)*len(el_dofs))) 
+        val = append(val,elemdat.mass.reshape(len(elemdat.el_dofs)*len(elemdat.el_dofs))) 
 
-        B[el_dofs] += elemdat.lumped
+        B[elemdat.el_dofs] += elemdat.lumped
   #    else:
   #      raise NotImplementedError('assemleArray is only implemented for vectors and matrices.')
-
+ 
+  globdat.models.run( props , globdat)
+  
   if rank == 1:
     return B,cc
   elif rank == 2:
@@ -140,46 +145,67 @@ def assembleArray ( props, globdat, rank, action ):
     return coo_matrix((val,(row,col)), shape=(nDof,nDof)),B
 
 
-##########################################
-# Internal force vector assembly routine # 
-##########################################
+#-------------------------------------------------------------------------------
+#  Assemble Internal force
+#-------------------------------------------------------------------------------
+
 
 def assembleInternalForce ( props, globdat ):
   fint = assembleArray( props, globdat, rank = 1, action = 'getInternalForce' )
   return fint[0]
 
-##########################################
-# External force vector assembly routine # 
-##########################################
+
+#-------------------------------------------------------------------------------
+#  Assemble Internal force
+#-------------------------------------------------------------------------------
+
 
 def assembleExternalForce ( props, globdat ):
   fext = assembleArray( props, globdat, rank = 1, action = 'getExternalForce' )   
 
   return fext[0] + globdat.fhat * globdat.solverStatus.lam
+
+
+#-------------------------------------------------------------------------------
+#  Assemble Dissipation
+#-------------------------------------------------------------------------------
+  
   
 def assembleDissipation ( props, globdat ):
   return assembleArray( props, globdat, rank = 1, action = 'getDissipation' )   
  
-#############################################
-# Tangent stiffness matrix assembly routine # 
-#############################################
+ 
+#-------------------------------------------------------------------------------
+#  Assemble Tangent stiffness
+#-------------------------------------------------------------------------------
+
 
 def assembleTangentStiffness ( props, globdat ):
   return assembleArray( props, globdat, rank = 2, action = 'getTangentStiffness' )
 
-#############################################
-# Mass matrix assembly routine              # 
-#############################################
+
+#-------------------------------------------------------------------------------
+#  Assemble Mass Matrix
+#-------------------------------------------------------------------------------
+
 
 def assembleMassMatrix ( props, globdat ):
   return assembleArray( props, globdat, rank = 2, action = 'getMassMatrix' )
 
+
+#-------------------------------------------------------------------------------
+#  Commit
+#-------------------------------------------------------------------------------
+
+
 def commit ( props, globdat ):
   return assembleArray( props, globdat, rank = 0, action = 'commit' )
 
-#
-#
-#
+
+#-------------------------------------------------------------------------------
+#  getAllConstraints
+#-------------------------------------------------------------------------------
+
 
 def getAllConstraints ( props , globdat ):
 
@@ -201,3 +227,34 @@ def getAllConstraints ( props , globdat ):
       #Get the element contribution by calling the specified action
       getattr( element, 'getConstraints', None )( elemdat )
 
+#-------------------------------------------------------------------------------
+#  getElementData
+#-------------------------------------------------------------------------------
+
+
+def getElementData( element , el_props, globdat ):
+
+  el_nodes = element.getNodes()
+  
+  el_coords = globdat.nodes.getNodeCoords( el_nodes )
+
+  el_dofs = globdat.dofs.getForTypes( el_nodes , element.dofTypes )
+     
+  el_a  = globdat.state [el_dofs]
+  el_Da = globdat.Dstate[el_dofs]
+
+  elemdat = elementData( el_a , el_Da )
+
+  elemdat.coords   = el_coords
+  elemdat.nodes    = el_nodes
+  elemdat.props    = el_props
+  #elemdat.iElm     = iElm 
+
+  element.globdat  = globdat
+  #element.iElm     = iElm
+  elemdat.el_dofs  = el_dofs
+  
+  if hasattr( element , "matProps" ):
+    elemdat.matprops = element.matProps  
+  
+  return elemdat

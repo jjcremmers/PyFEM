@@ -128,7 +128,7 @@ class RiksSolver( BaseModule ):
  
       error  = globdat.dofs.norm( res ) / globdat.dofs.norm( globdat.lam*fhat )
 
-      logger.info('    Iteration %4i ........... : %6.4e'%(stat.iiter,error) )
+      logger.info(f'    Iteration {stat.iiter:4d} ........... : {error:6.4e}')
 
       if stat.iiter == self.iterMax:
         raise RuntimeError('Newton-Raphson iterations did not converge!')

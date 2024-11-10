@@ -85,4 +85,4 @@ class BuckEigSolver ( BaseModule ):
     logger.info("    Mode |  Load")
     
     for i,f in enumerate(eigenvals):
-      logger.info('    %4i | %6.4e  ' %(i+1,f))
+      logger.info(f"    {i+1:4d} | {f:6.4e}  ")

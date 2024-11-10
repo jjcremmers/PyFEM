@@ -30,26 +30,28 @@
 
 import numpy as np
 from numpy import append,repeat
+from pyfem.models.BaseModel import BaseModel
 
 #===============================================================================
 #
 #===============================================================================
 
 
-class Contact:
+class Contact( BaseModel):
 
-  def __init__ ( self , props ):
+    def __init__ ( self , props ):
   
-    self.flag = False
-    self.dispDofs = ["u","v"]
-    self.centre = [1.,1.]
-    self.direction = [0.0,0.0]
-    self.radius = 10.
-    self.penalty = 1.e6
+        BaseModel.__init__( self , props )
+          
+        self.flag = False
+        self.dispDofs = ["u","v"]
+        self.centre = [1.,1.]
+        self.direction = [0.0,0.0]
+        self.radius = 10.
+        self.penalty = 1.e6
     
-    if hasattr( props , 'contact' ):
-      if hasattr( props.contact , 'type' ):
-        self.type      = props.contact.type
+        if hasattr( props.contact , 'type' ):
+            self.type      = props.type
         
         if self.type == "sphere":
           self.dispDofs = ["u","v","w"] 
@@ -63,38 +65,36 @@ class Contact:
 #-------------------------------------------------------------------------------
 #  checkContact   (with flag)
 #-------------------------------------------------------------------------------
-       
-  def checkContact ( self , row , val , col , B , globdat ):
-  
-    if not self.flag:
-      return
-      
-    centre = self.centre + globdat.lam * self.direction
+
+
+    def getTangentStiffness( self , props , globdat ):
+          
+        centre = self.centre + globdat.lam * self.direction
      
-    for nodeID in list(globdat.nodes.keys()):
-      crd = globdat.nodes.getNodeCoords(nodeID)
+        for nodeID in list(globdat.nodes.keys()):
+            crd = globdat.nodes.getNodeCoords(nodeID)
       
-      idofs = globdat.dofs.getForTypes([nodeID],self.dispDofs)
+            idofs = globdat.dofs.getForTypes([nodeID],self.dispDofs)
    
-      crd += globdat.state[idofs]
+            crd += globdat.state[idofs]
       
-      ds = crd - centre
+            ds = crd - centre
       
-      dsnorm  = np.linalg.norm(ds)
-      overlap = self.radius - dsnorm
+            dsnorm  = np.linalg.norm(ds)
+            overlap = self.radius - dsnorm
                  
-      if overlap > 0:
-        normal = ds / dsnorm
+            if overlap > 0:
+                normal = ds / dsnorm
         
-        B[idofs] += -self.penalty * overlap * normal
+                B[idofs] += -self.penalty * overlap * normal
         
-        mat = self.penalty * np.outer( normal , normal )
+                mat = self.penalty * np.outer( normal , normal )
 
-        row = append(row,repeat(idofs,len(idofs)))
+                row = append(row,repeat(idofs,len(idofs)))
         
-        for i in range(len(idofs)):
-          col=append(col,idofs)        
+                for i in range(len(idofs)):
+                    col=append(col,idofs)        
 
-        val = append(val,mat.reshape(len(idofs)*len(idofs)))
+                val = append(val,mat.reshape(len(idofs)*len(idofs)))
               
-    return row , val , col
+        return row , val , col

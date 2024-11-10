@@ -142,17 +142,18 @@ class NodeSet( itemList ):
 #-------------------------------------------------------------------------------
 
   def __repr__( self ):
-    msg =  "  Number of nodes ............ %6d\n" % len(self)
-    
+  
+    msg = f"  Number of nodes ............ {len(self):6d}\n"
+
     if len(self.groups) > 0:
-      msg += "    Number of  groups .......... %6d\n" % len(self.groups)
+      msg += f"    Number of  groups .......... {len(self.groups):6d}\n"
       msg += "    -----------------------------------\n"
       msg += "      name                       #nodes\n"
       msg += "      ---------------------------------\n"
-      
-      for name in self.groups:
-        msg += "      %-16s           %6d \n" % (name,len(self.groups[name]))
     
+      for name in self.groups:
+        msg += f"      {name:<16s}           {len(self.groups[name]):6d} \n"
+  
     return msg
     
 #-------------------------------------------------------------------------------

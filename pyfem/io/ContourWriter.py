@@ -56,32 +56,32 @@ class ContourWriter( BaseModule ):
     crd = globdat.nodes.getNodeCoords(self.nodes[0])
     outfile = open( self.prefix + '-contour-' + str(self.k) + '.out' ,'w' )
         
-    outfile.write( '#Node  %-10s %-10s' % ('x-coor','y-coor') )
+    outfile.write(f'#Node  {"x-coor":<10} {"y-coor":<10}')
   
     if len(crd) == 3:
-      outfile.write( '%-10s ' % 'z-coor' )
+      outfile.write(f'{"z-coor":<10} ')
 
     for dofType in globdat.dofs.dofTypes:
-      outfile.write( '%-10s ' % dofType )
+      outfile.write(f'{dofType:<10} ')
 
     for name in globdat.outputNames:
-      outfile.write('%-10s ' % name )
+      outfile.write(f'{name:<10} ')
 
     outfile.write('\n')
 
     for iNod in self.nodes:
       crd = globdat.nodes.getNodeCoords(iNod)
-      outfile.write('%4i %10.3e %10.3e' % (iNod,crd[0],crd[1]))
-      
+      outfile.write(f'{iNod:4d} {crd[0]:10.3e} {crd[1]:10.3e}')
+
       if len(crd) == 3:
-        outfile.write(' %10.3e' % crd[2] )
-       
+        outfile.write(f' {crd[2]:10.3e}')
+
       for dofType in globdat.dofs.dofTypes:
-        outfile.write(' %10.3e' % (globdat.state[globdat.dofs.getForType(iNod,dofType)]))
-      
+        outfile.write(f' {globdat.state[globdat.dofs.getForType(iNod, dofType)]:10.3e}')
+
       for name in globdat.outputNames:
-        stress = globdat.getData( name , list(range(len(globdat.nodes))) )    
-        outfile.write(' %10.3e' % stress[iNod] )
+        stress = globdat.getData(name, list(range(len(globdat.nodes))))
+        outfile.write(f' {stress[iNod]:10.3e}')
 
       outfile.write('\n')
                 

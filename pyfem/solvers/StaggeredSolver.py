@@ -99,7 +99,7 @@ class StaggeredSolver ( BaseModule ):
       
       globdat.state += da  
       
-      logger.info('    Solver           : %s' %solver.name )
+      logger.info(f'    Solver           : {solver.name}')
           
       if solver.type == "Nonlinear":
       
@@ -129,7 +129,7 @@ class StaggeredSolver ( BaseModule ):
           else:
             error = globdat.dofs.norm( fext-fint ) / norm
             
-          logger.info('    Iteration %4i   : %6.4e'%(stat.iiter,error) )            
+          logger.info(f'    Iteration {stat.iiter:4d}   : {error:6.4e}')
       
           if stat.iiter == self.iterMax:
             raise RuntimeError('Newton-Raphson iterations did not converge!')
@@ -151,8 +151,6 @@ class StaggeredSolver ( BaseModule ):
 
 
   def setLoadAndConstraints( self , cons ):
-
-    #logger.info("    Load step %i"%self.stat.cycle)
  
     time  = self.stat.time
     time0 = time - self.stat.dtime
@@ -164,10 +162,6 @@ class StaggeredSolver ( BaseModule ):
     
     cons.setConstrainFactor( dlam )
 
-    #logger.info('  ---- main load --------------------\n-----')
-    #logger.info('    loadFactor       : %4.2f'%lam)
-    #logger.info('    incr. loadFactor : %4.2f'%dlam)
-
     for loadCase in self.loadCases:
       loadProps = getattr( self.myProps, loadCase )
       
@@ -176,7 +170,3 @@ class StaggeredSolver ( BaseModule ):
       lam0 = loadfunc( time0 )
       dlam = lam - lam0
       cons.setConstrainFactor( dlam , loadProps.nodeTable )
-
-      #print('  ---- ',loadCase,' ---------------------')
-      #print('    loadFactor       : %4.2f'%lam)
-      #logger.info('    incr. loadFactor : %4.2f'%dlam)   

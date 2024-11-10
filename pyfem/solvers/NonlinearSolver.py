@@ -129,7 +129,7 @@ class NonlinearSolver( BaseModule ):
       else:
         error = globdat.dofs.norm( fext-fint ) / norm
 
-      logger.info('    Iteration %4i ........... : %6.4e'%(stat.iiter,error) )
+      logger.info(f'    Iteration {stat.iiter:4d} ........... : {error:6.4e}')
 
       globdat.dofs.setConstrainFactor( 0.0 )
 
@@ -176,8 +176,8 @@ class NonlinearSolver( BaseModule ):
       globdat.solverStatus.lam = globdat.lam
 
       logger.debug('  ---- main load -------------------------')
-      logger.debug('    loadFactor       : %4.2f'%globdat.lam)
-      logger.debug('    incr. loadFactor : %4.2f'%globdat.dlam)
+      logger.debug(f'    loadFactor       : {globdat.lam:4.2f}')
+      logger.debug(f'    incr. loadFactor : {globdat.dlam:4.2f}')
 
       for loadCase in self.loadCases:
         loadProps = getattr( self.myProps, loadCase )
@@ -186,9 +186,10 @@ class NonlinearSolver( BaseModule ):
         lam0 = loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
         dlam = lam - lam0
         globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
-        
-        logger.debug('  ---- %s ---------------------' %loadCase)
-        logger.debug('    loadFactor       : %4.2f'%lam)
-        logger.debug('    incr. loadFactor : %4.2f'%dlam)
+           
+        logger.debug(f'  ---- {loadCase} ---------------------')
+        logger.debug(f'    loadFactor       : {lam:4.2f}')
+        logger.debug(f'    incr. loadFactor : {dlam:4.2f}')
+
 
       

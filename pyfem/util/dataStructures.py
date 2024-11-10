@@ -205,28 +205,27 @@ class GlobalData ( Properties ):
     print('   Node | ', file = f , end=' ')
     
     for dofType in self.dofs.dofTypes:
-      print("  %-10s" % dofType, file = f , end=' ')
+      print(f"  {dofType:<10}", file=f, end=' ')
 
     if hasattr( self , 'fint' ):
       for dofType in self.dofs.dofTypes:
-        print(" fint-%-6s" % dofType, file = f ,end=' ')
+        print(f" fint-{dofType:<6}", file=f, end=' ')
 
     for name in self.outputNames:
-      print(" %-11s" % name , file = f , end=' ')
+      print(f" {name:<11}", file=f, end=' ')
 
     print(" ", file = f ) 
     print(('-' * 100), file = f )
 
     for nodeID in inodes:
-      print('  %4i  | ' % nodeID, file = f , end=' ')
+      print(f'  {nodeID:4d}  | ', file=f, end=' ')
       for dofType in self.dofs.dofTypes:
-        print(' %10.3e ' % self.state[self.dofs.getForType(nodeID,dofType)], file = f , end=' ')
+        print(f' {self.state[self.dofs.getForType(nodeID, dofType)]:10.3e} ', file=f, end=' ')
       for dofType in self.dofs.dofTypes:
-        print(' %10.3e ' % self.fint[self.dofs.getForType(nodeID,dofType)], file = f , end=' ')
-
+        print(f' {self.fint[self.dofs.getForType(nodeID, dofType)]:10.3e} ', file=f, end=' ')
       for name in self.outputNames:
-        print(' %10.3e ' %  self.getData( name , nodeID ), file = f , end=' ')
-     
+        print(f' {self.getData(name, nodeID):10.3e} ', file=f, end=' ')
+
       print(" ", file = f )
     print(" ", file = f )
 
