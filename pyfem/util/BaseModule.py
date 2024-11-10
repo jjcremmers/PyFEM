@@ -45,12 +45,18 @@ class BaseModule:
   def __init__ ( self, props ):
 
     self.isSolver = False
-    
+     
     if hasattr(props,'currentModule') and hasattr(props,props.currentModule):
       currentModule = props.currentModule
       
-      if currentModule == 'solver':
+      if 'solver' in currentModule:
         self.isSolver = True
+    elif hasattr(props,'currentModule'):
+      currentModule = props.currentModule
+      
+      if 'solver' in currentModule:
+        self.isSolver = True
+              
     else:
       currentModule = self.__class__.__name__
       
@@ -59,15 +65,53 @@ class BaseModule:
         currentModule = "solver"
         
         self.isSolver = True
-      
-    if hasattr(props,currentModule):
-      self.myProps = getattr(props,currentModule)
+    
+    c = currentModule.split('.')  
+    
+    if len(c) == 1:
+      if hasattr(props,currentModule):
+        self.myProps = getattr(props,currentModule)
 
-      for name,val in self.myProps:
-        setattr( self, name, val )
-        
+        for name,val in self.myProps:
+          setattr( self, name, val )
+    elif len(c) == 2:
+      if hasattr(props,c[0]):
+        p2 = getattr(props,c[0])
+        if hasattr(p2,c[1]):
+          self.myProps = getattr(p2,c[1])
+          
+          for name,val in self.myProps:
+            setattr( self, name, val ) 
+    else:
+      print("NNOO")
+          
     self.type = self.__class__.__name__
+ 
+    '''
+def get_nested_attr(obj, attr_path, default=None):
+    """
+    Access a nested attribute in an object hierarchy.
 
+    Parameters:
+    - obj: The base object
+    - attr_path: A string of dot-separated attribute names (e.g., "bar.foo.y")
+    - default: The value to return if any attribute in the chain doesn't exist
+
+    Returns:
+    - The value of the nested attribute, or the default if any attribute is missing
+    """
+    try:
+        for attr in attr_path.split('.'):
+            obj = getattr(obj, attr)
+        return obj
+    except AttributeError:
+        return default
+
+# Example usage:
+# Assuming x.bar.foo.y exists
+value = get_nested_attr(x, "bar.foo.y", default="Attribute not found")
+print(value)
+    '''
 
 #-------------------------------------------------------------------------------
 #
