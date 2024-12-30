@@ -1,12 +1,14 @@
 .. PyFEM documentation master file, created by
-   sphinx-quickstart on Tue Mar  1 14:35:33 2022.
+   sphinx-quickstart on Mon Dec 30 18:39:21 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 PyFEM: A Python finite element code
 ===================================
 
-Contents:
+Add your content using ``reStructuredText`` syntax. See the
+`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
+documentation for details.
 
 .. toctree::
    :maxdepth: 2
