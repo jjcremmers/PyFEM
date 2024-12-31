@@ -5,7 +5,7 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
 #                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
+#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #
 #  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
 #  then augmented and maintained by Joris J.C. Remmers.                        #
 #  All rights reserved.                                                        #
@@ -76,6 +76,9 @@ class SmallStrainContinuum( Element ):
       elemdat.fint  += dot ( b.transpose() , sigma ) * iData.weight
 
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
+      
+      import numpy as np
+      self.appendElementOutput( ["A","B"] , (self.iElm+1)*np.array([6,7]) )
      
 #-------------------------------------------------------------------------
 

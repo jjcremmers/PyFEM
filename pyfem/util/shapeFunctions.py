@@ -5,7 +5,7 @@
 #    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
 #    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
 #                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
+#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #
 #  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
 #  then augmented and maintained by Joris J.C. Remmers.                        #
 #  All rights reserved.                                                        #
@@ -35,261 +35,261 @@ from scipy.special.orthogonal import p_roots as gauss_scheme
 
 class shapeData:
   
-  '''
-  Class that contains the shape function data for a single integration point.
-  '''
+    '''
+    Class that contains the shape function data for a single integration point.
+    '''
   
-  pass
+    pass
    
 #----------------------------------------------------------------------
 
 class elemShapeData:
 
-  '''
-  Class that contains the shape function data for an entire element.
-  This class is iterable.
-  '''
+    '''
+    Class that contains the shape function data for an entire element.
+    This class is iterable.
+    '''
   
-  def __init__( self ):
+    def __init__( self ):
     
-    self.sData = []
+        self.sData = []
 
-  def __iter__( self ):
+    def __iter__( self ):
   
-    '''
-    Iteration over integration points
-    '''
+        '''
+        Iteration over integration points
+        '''
 
-    return iter(self.sData)
+        return iter(self.sData)
 
-  def __len__( self ):
+    def __len__( self ):
   
-    '''
-    Function that returns the number of integration points in an element.
-    '''
+        '''
+        Function that returns the number of integration points in an element.
+        '''
 
-    return len(self.sData)
+        return len(self.sData)
             
 #----------------------------------------------------------------------
 
 def getShapeLine2 ( xi : float ) -> shapeData:
 
-  '''
-  Function that returns the shape function data in a single integration 
-  point for a parent 1D line element with 2 nodes (Line2).
+    '''
+    Function that returns the shape function data in a single integration 
+    point for a parent 1D line element with 2 nodes (Line2).
   
-  Args:
-      xi(float): Location of the integration point
-  Returns:
-      shapeData: The integration point shape data containin the parent
-      parameters, h, dhdxi and xi
-  Raises:
-      Error: when the input is not a 1D coordinate (float)
-  '''
+    Args:
+        xi(float): Location of the integration point
+    Returns:
+        shapeData: The integration point shape data containin the parent
+        parameters, h, dhdxi and xi
+    Raises:
+        Error: when the input is not a 1D coordinate (float)
+    '''
   
-  if type(xi) != float:
-    raise NotImplementedError('1D only')
+    if type(xi) != float:
+        raise NotImplementedError('1D only')
 
-  sData       = shapeData()
+    sData       = shapeData()
   
-  #Set length of lists
-  sData.h     = empty( 2 )
-  sData.dhdxi = empty( shape=(2,1) )
-  sData.xi    = xi
+    #Set length of lists
+    sData.h     = empty( 2 )
+    sData.dhdxi = empty( shape=(2,1) )
+    sData.xi    = xi
 
-  #Calculate shape functions
-  sData.h[0] = 0.5*(1.0-xi)
-  sData.h[1] = 0.5*(1.0+xi)
+    #Calculate shape functions
+    sData.h[0] = 0.5*(1.0-xi)
+    sData.h[1] = 0.5*(1.0+xi)
 
-  #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -0.5
-  sData.dhdxi[1,0] =  0.5
+    #Calculate derivatives of shape functions
+    sData.dhdxi[0,0] = -0.5
+    sData.dhdxi[1,0] =  0.5
 
-  return sData
+    return sData
 
 #----------------------------------------------------------------------
 
 def getShapeLine3 ( xi ):
 
-  '''
-  Function that returns the shape function data in a single integration 
-  point for a parent 1D line element with 3 nodes (Line3).
+    '''
+    Function that returns the shape function data in a single integration 
+    point for a parent 1D line element with 3 nodes (Line3).
   
-  Args:
-      xi(float): Location of the integration point
-  Returns:
-      shapeData: The integration point shape data containin the parent
-      parameters, h, dhdxi and xi
-  Raises:
-      Error: when the input is not a 1D coordinate (float)
-  '''
+    Args:
+        xi(float): Location of the integration point
+    Returns:
+        shapeData: The integration point shape data containin the parent
+        parameters, h, dhdxi and xi
+    Raises:
+        Error: when the input is not a 1D coordinate (float)
+    '''
   
-  if type(xi) != float:
-    raise NotImplementedError('1D only')
+    if type(xi) != float:
+        raise NotImplementedError('1D only')
 
-  sData       = shapeData()
+    sData       = shapeData()
   
-  #Set length of lists
-  sData.h     = empty( 3 )
-  sData.dhdxi = empty( shape=(1,3) )
-  sData.xi    = xi
+    #Set length of lists
+    sData.h     = empty( 3 )
+    sData.dhdxi = empty( shape=(1,3) )
+    sData.xi    = xi
 
-  #Calculate shape functions
-  sData.h[0] = 0.5*(1.0-xi)-0.5*(1.0-xi*xi)
-  sData.h[1] = 1-xi*xi
-  sData.h[2] = 0.5*(1.0+xi)-0.5*(1.0-xi*xi)
+    #Calculate shape functions
+    sData.h[0] = 0.5*(1.0-xi)-0.5*(1.0-xi*xi)
+    sData.h[1] = 1-xi*xi
+    sData.h[2] = 0.5*(1.0+xi)-0.5*(1.0-xi*xi)
 
-  #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -0.5+xi
-  sData.dhdxi[0,1] = -2.0*xi
-  sData.dhdxi[0,2] =  0.5+xi
+    #Calculate derivatives of shape functions
+    sData.dhdxi[0,0] = -0.5+xi
+    sData.dhdxi[0,1] = -2.0*xi
+    sData.dhdxi[0,2] =  0.5+xi
 
-  return sData
+    return sData
 
 #----------------------------------------------------------------------
 
 def getShapeTria3 ( xi : ndarray ) -> shapeData:
 
-  '''
-  Function that returns the shape function data in a single integration 
-  point for a parent 2D triangular element with 3 nodes (Tria3).
+    '''
+    Function that returns the shape function data in a single integration 
+    point for a parent 2D triangular element with 3 nodes (Tria3).
   
-  Args:
-      xi(ndarray): Location of the integration point
-  Returns:
-      shapeData: The integration point shape data containin the parent
-      parameters, h, dhdxi and xi
-  Raises:
-      Error: when the input is not a 2D coordinate (ndarray of length 2)
-  '''
+    Args:
+        xi(ndarray): Location of the integration point
+    Returns:
+        shapeData: The integration point shape data containin the parent
+        parameters, h, dhdxi and xi
+    Raises:
+        Error: when the input is not a 2D coordinate (ndarray of length 2)
+    '''
   
-  if len(xi) != 2:
-    raise NotImplementedError('2D only')
+    if len(xi) != 2:
+        raise NotImplementedError('2D only')
 
-  sData       = shapeData()
+    sData       = shapeData()
   
-  #Set length of lists
-  sData.h     = empty( 3 )
-  sData.dhdxi = empty( shape=(3,2) )
-  sData.xi    = xi
+    #Set length of lists
+    sData.h     = empty( 3 )
+    sData.dhdxi = empty( shape=(3,2) )
+    sData.xi    = xi
 
-  #Calculate shape functions
-  sData.h[0] = 1.0-xi[0]-xi[1]
-  sData.h[1] = xi[0]
-  sData.h[2] = xi[1]
+    #Calculate shape functions
+    sData.h[0] = 1.0-xi[0]-xi[1]
+    sData.h[1] = xi[0]
+    sData.h[2] = xi[1]
 
-  #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -1.0
-  sData.dhdxi[1,0] =  1.0
-  sData.dhdxi[2,0] =  0.0
+    #Calculate derivatives of shape functions
+    sData.dhdxi[0,0] = -1.0
+    sData.dhdxi[1,0] =  1.0
+    sData.dhdxi[2,0] =  0.0
 
-  sData.dhdxi[0,1] = -1.0
-  sData.dhdxi[1,1] =  0.0
-  sData.dhdxi[2,1] =  1.0
+    sData.dhdxi[0,1] = -1.0
+    sData.dhdxi[1,1] =  0.0
+    sData.dhdxi[2,1] =  1.0
 
-  return sData
+    return sData 
 
 #-------------------------------------
 
 def getShapeQuad4 ( xi : ndarray ) -> shapeData:
 
-  '''
-  Function that returns the shape function data in a single integration 
-  point for a parent 2D quadrilateral element with 4 nodes (Quad4).
+    '''
+    Function that returns the shape function data in a single integration 
+    point for a parent 2D quadrilateral element with 4 nodes (Quad4).
   
-  Args:
-      xi(ndarray): Location of the integration point
-  Returns:
-      shapeData: The integration point shape data containin the parent
-      parameters, h, dhdxi and xi
-  Raises:
-      Error: when the input is not a 2D coordinate (ndarray of length 2)
-  '''
+    Args:
+        xi(ndarray): Location of the integration point
+    Returns:
+        shapeData: The integration point shape data containin the parent
+        parameters, h, dhdxi and xi
+    Raises:
+        Error: when the input is not a 2D coordinate (ndarray of length 2)
+    '''
   
-  if len(xi) != 2:
-    raise NotImplementedError('2D only')
+    if len(xi) != 2:
+        raise NotImplementedError('2D only')
 
-  sData       = shapeData()
+    sData       = shapeData()
   
-  #Set length of lists
-  sData.h     = empty( 4 )
-  sData.dhdxi = empty( shape=(4,2) )
-  sData.xi    = xi
+    #Set length of lists
+    sData.h     = empty( 4 )
+    sData.dhdxi = empty( shape=(4,2) )
+    sData.xi    = xi
 
-  #Calculate shape functions
-  sData.h[0] = 0.25*(1.0-xi[0])*(1.0-xi[1])
-  sData.h[1] = 0.25*(1.0+xi[0])*(1.0-xi[1])
-  sData.h[2] = 0.25*(1.0+xi[0])*(1.0+xi[1])
-  sData.h[3] = 0.25*(1.0-xi[0])*(1.0+xi[1])
+    #Calculate shape functions
+    sData.h[0] = 0.25*(1.0-xi[0])*(1.0-xi[1])
+    sData.h[1] = 0.25*(1.0+xi[0])*(1.0-xi[1])
+    sData.h[2] = 0.25*(1.0+xi[0])*(1.0+xi[1])
+    sData.h[3] = 0.25*(1.0-xi[0])*(1.0+xi[1])
 
-  #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -0.25*(1.0-xi[1])
-  sData.dhdxi[1,0] =  0.25*(1.0-xi[1])
-  sData.dhdxi[2,0] =  0.25*(1.0+xi[1])
-  sData.dhdxi[3,0] = -0.25*(1.0+xi[1])
+    #Calculate derivatives of shape functions
+    sData.dhdxi[0,0] = -0.25*(1.0-xi[1])
+    sData.dhdxi[1,0] =  0.25*(1.0-xi[1])
+    sData.dhdxi[2,0] =  0.25*(1.0+xi[1])
+    sData.dhdxi[3,0] = -0.25*(1.0+xi[1])
 
-  sData.dhdxi[0,1] = -0.25*(1.0-xi[0])
-  sData.dhdxi[1,1] = -0.25*(1.0+xi[0])
-  sData.dhdxi[2,1] =  0.25*(1.0+xi[0])
-  sData.dhdxi[3,1] =  0.25*(1.0-xi[0])
+    sData.dhdxi[0,1] = -0.25*(1.0-xi[0])
+    sData.dhdxi[1,1] = -0.25*(1.0+xi[0])
+    sData.dhdxi[2,1] =  0.25*(1.0+xi[0])
+    sData.dhdxi[3,1] =  0.25*(1.0-xi[0])
 
-  return sData
+    return sData
 
 #-------------------------------------
 
 def getShapeTria6 ( xi : ndarray ) -> shapeData:
 
-  '''
-  Function that returns the shape function data in a single integration 
-  point for a parent 2D triangular element with 6 nodes (Tria4).
+    '''
+    Function that returns the shape function data in a single integration 
+    point for a parent 2D triangular element with 6 nodes (Tria4).
   
-  Args:
-      xi(ndarray): Location of the integration point
-  Returns:
-      shapeData: The integration point shape data containin the parent
-      parameters, h, dhdxi and xi
-  Raises:
-      Error: when the input is not a 2D coordinate (ndarray of length 2)
-  '''
+    Args:
+        xi(ndarray): Location of the integration point
+    Returns:
+        shapeData: The integration point shape data containin the parent
+        parameters, h, dhdxi and xi
+    Raises:
+        Error: when the input is not a 2D coordinate (ndarray of length 2)
+    '''
   
-  if len(xi) != 2:
-    raise NotImplementedError('2D only')
+    if len(xi) != 2:
+        raise NotImplementedError('2D only')
 
-  sData       = shapeData()
+    sData       = shapeData()
    
-  #Set length of lists
-  sData.h     = empty( 6 )
-  sData.dhdxi = empty( shape=(6,2) )
-  sData.xi    = xi
+    #Set length of lists
+    sData.h     = empty( 6 )
+    sData.dhdxi = empty( shape=(6,2) )
+    sData.xi    = xi
 
-  sData.h[0] = 1.0-xi[0]-xi[1]
-  sData.h[1] = xi[0]
-  sData.h[2] = xi[1]
+    sData.h[0] = 1.0-xi[0]-xi[1]
+    sData.h[1] = xi[0]
+    sData.h[2] = xi[1]
 
-  #Calculate shape functions
-  sData.h[0] = 1.0-xi[0]-xi[1]-2.0*xi[0]*(1.0-xi[0]-xi[1])-2.0*xi[1]*(1.0-xi[0]-xi[1])
-  sData.h[1] = xi[0]-2.0*xi[0]*(1.0-xi[0]-xi[1])-2.0*xi[0]*xi[1]
-  sData.h[2] = xi[1]-2.0*xi[0]*xi[1]-2.0*xi[1]*(1.0-xi[0]-xi[1])
-  sData.h[3] = 4.0*xi[0]*(1.0-xi[0]-xi[1])
-  sData.h[4] = 4.0*xi[0]*xi[1]
-  sData.h[5] = 4.0*xi[1]*(1.0-xi[0]-xi[1])
+    #Calculate shape functions
+    sData.h[0] = 1.0-xi[0]-xi[1]-2.0*xi[0]*(1.0-xi[0]-xi[1])-2.0*xi[1]*(1.0-xi[0]-xi[1])
+    sData.h[1] = xi[0]-2.0*xi[0]*(1.0-xi[0]-xi[1])-2.0*xi[0]*xi[1]
+    sData.h[2] = xi[1]-2.0*xi[0]*xi[1]-2.0*xi[1]*(1.0-xi[0]-xi[1])
+    sData.h[3] = 4.0*xi[0]*(1.0-xi[0]-xi[1])
+    sData.h[4] = 4.0*xi[0]*xi[1]
+    sData.h[5] = 4.0*xi[1]*(1.0-xi[0]-xi[1])
 
-  #Calculate derivatives of shape functions
-  sData.dhdxi[0,0] = -1.0-2.0*(1.0-xi[0]-xi[1])+2.0*xi[0]+2.0*xi[1]
-  sData.dhdxi[1,0] =  1.0-2.0*(1.0-xi[0]-xi[1])+2.0*xi[0]-2.0*xi[1]
-  sData.dhdxi[2,0] =  0.0
-  sData.dhdxi[3,0] =  4.0*(1.0-xi[0]-xi[1])-4.0*xi[0]
-  sData.dhdxi[4,0] =  4.0*xi[1]
-  sData.dhdxi[5,0] = -4.0*xi[1]
+    #Calculate derivatives of shape functions
+    sData.dhdxi[0,0] = -1.0-2.0*(1.0-xi[0]-xi[1])+2.0*xi[0]+2.0*xi[1]
+    sData.dhdxi[1,0] =  1.0-2.0*(1.0-xi[0]-xi[1])+2.0*xi[0]-2.0*xi[1]
+    sData.dhdxi[2,0] =  0.0
+    sData.dhdxi[3,0] =  4.0*(1.0-xi[0]-xi[1])-4.0*xi[0]
+    sData.dhdxi[4,0] =  4.0*xi[1]
+    sData.dhdxi[5,0] = -4.0*xi[1]
 
-  sData.dhdxi[0,1] = -1.0+2.0*xi[0]-2.0*(1.0-xi[0]-xi[1])+2.0*xi[1]
-  sData.dhdxi[1,1] =  0.0
-  sData.dhdxi[2,1] =  1.0-2.0*xi[0]-2.0*(1.0-xi[0]-xi[1])+2.0*xi[1]
-  sData.dhdxi[3,1] = -4.0*xi[0]
-  sData.dhdxi[4,1] =  4.0*xi[0]
-  sData.dhdxi[5,1] =  4.0*(1.0-xi[0]-xi[1])-4.0*xi[1]
+    sData.dhdxi[0,1] = -1.0+2.0*xi[0]-2.0*(1.0-xi[0]-xi[1])+2.0*xi[1]
+    sData.dhdxi[1,1] =  0.0
+    sData.dhdxi[2,1] =  1.0-2.0*xi[0]-2.0*(1.0-xi[0]-xi[1])+2.0*xi[1]
+    sData.dhdxi[3,1] = -4.0*xi[0]
+    sData.dhdxi[4,1] =  4.0*xi[0]
+    sData.dhdxi[5,1] =  4.0*(1.0-xi[0]-xi[1])-4.0*xi[1]
 
-  return sData
+    return sData
 
 #-------------------------------------
 
