@@ -18,25 +18,55 @@ matplotlib. Installation guidelines are given for various operating systems.
 Linux
 -----
 
-The ''python'' program and the modules ''numpy'', ''scipy'' and ''matplotlib''
-are included in most common distributions of Linux and can be installed without any problems. In many
-cases, different versions of ''python'' are offered. Please make sure that ''python'' version 3.6 or higher is
-installed. In addition, the modules ''meshio'', ''pickle'' and ''h5py'' can be installed for additional functionality.
+The Python compiler and the modules ``numpy``, ``scipy``, and ``matplotlib`` are included in 
+most common distributions of Linux and can be installed without any problems. In many cases, 
+different versions of ``python`` are offered. Please make sure that ``python`` version 3.6 or 
+higher is installed. In addition, the modules ``meshio``, ``pickle``, and ``h5py`` can be 
+installed for additional functionality.
 
-Execute the file ''install.py'' in the root directory ''pyfem''. In a terminal, one can type:
+Execute the file ``install.py`` in the root directory ``pyfem``. In a terminal, one can type:
 
-  python3 install.py
+.. code-block:: bash
 
-This script will check if the correct versions of Python and the various modules are available. In addition,
-the total path to the executable is given. For your own convenience, you can add this to your ''.bashrc'' file:
+   ./install
 
-  alias  pyfem="python <pyfemdir>/PyFEM.py"
+This script will check if the correct versions of Python and the various modules are available. 
+If not, it will ask your permission to install the correct modules for you.
 
-When using csh or tcsh add the following line to ''.cshrc'' or ''.tcshrc'':
+The main executables are created. In commandline you can run PyFEM by typing
 
-  alias  pyfem "python <pyfemdir>/PyFEM.py"
+.. code-block:: bash
+    <relative_path_to_this_directory>/pyfem.sh inputFile.pro
 
-The main program ''pyfem'' can be run from the command prompt. For example, in order to run the
-file ''StressWave20x20.pro'' in the directory ''examples/ch05'', simply type:
+The Graphical User Interface of the code (currently under development) can be exectuted
+by typing from any directory:
 
-  pyfem StressWave20x20.pro
+.. code-block:: bash
+    <relative_path_to_this_directory>/pyfem_gui.exe
+
+It is advised to create aliases. When using a bash shell, please 
+add the following lines to the file ``~/.bashrc``:
+
+.. code-block:: bash
+    alias pyfem='python3 /home/joris/Git/pyfem_github/PyFEM/PyFEM.py'
+    alias pyfem_gui = '/home/joris/Git/pyfem_github/PyFEM/pyfem_gui.x'
+
+You can then run PyFEM in commandline from any directory by typing:
+
+.. code-block:: bash
+    pyfem inputFile.pro
+
+You can start the gui by typing:
+
+.. code-block:: bash
+    pyfem_gui
+    
+Windows
+-------
+
+Under construction
+
+MacOS
+-----
+
+Under construction  

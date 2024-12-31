@@ -35,29 +35,58 @@ from scipy.special.orthogonal import p_roots as gauss_scheme
 
 class shapeData:
   
+  '''
+  Class that contains the shape function data for a single integration point.
+  '''
+  
   pass
    
 #----------------------------------------------------------------------
 
 class elemShapeData:
 
+  '''
+  Class that contains the shape function data for an entire element.
+  This class is iterable.
+  '''
+  
   def __init__( self ):
     
     self.sData = []
 
   def __iter__( self ):
+  
+    '''
+    Iteration over integration points
+    '''
 
     return iter(self.sData)
 
   def __len__( self ):
+  
+    '''
+    Function that returns the number of integration points in an element.
+    '''
 
     return len(self.sData)
             
 #----------------------------------------------------------------------
 
-def getShapeLine2 ( xi ):
+def getShapeLine2 ( xi : float ) -> shapeData:
 
-  #Check the dimensions of the physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 1D line element with 2 nodes (Line2).
+  
+  Args:
+      xi(float): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 1D coordinate (float)
+  '''
+  
   if type(xi) != float:
     raise NotImplementedError('1D only')
 
@@ -82,7 +111,19 @@ def getShapeLine2 ( xi ):
 
 def getShapeLine3 ( xi ):
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 1D line element with 3 nodes (Line3).
+  
+  Args:
+      xi(float): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 1D coordinate (float)
+  '''
+  
   if type(xi) != float:
     raise NotImplementedError('1D only')
 
@@ -107,9 +148,21 @@ def getShapeLine3 ( xi ):
 
 #----------------------------------------------------------------------
 
-def getShapeTria3 ( xi ):
+def getShapeTria3 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 2D triangular element with 3 nodes (Tria3).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 2D coordinate (ndarray of length 2)
+  '''
+  
   if len(xi) != 2:
     raise NotImplementedError('2D only')
 
@@ -138,9 +191,21 @@ def getShapeTria3 ( xi ):
 
 #-------------------------------------
 
-def getShapeQuad4 ( xi ):
+def getShapeQuad4 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 2D quadrilateral element with 4 nodes (Quad4).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 2D coordinate (ndarray of length 2)
+  '''
+  
   if len(xi) != 2:
     raise NotImplementedError('2D only')
 
@@ -172,9 +237,21 @@ def getShapeQuad4 ( xi ):
 
 #-------------------------------------
 
-def getShapeTria6 ( xi ):
+def getShapeTria6 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 2D triangular element with 6 nodes (Tria4).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 2D coordinate (ndarray of length 2)
+  '''
+  
   if len(xi) != 2:
     raise NotImplementedError('2D only')
 
@@ -216,9 +293,21 @@ def getShapeTria6 ( xi ):
 
 #-------------------------------------
 
-def getShapeQuad8 ( xi ):
+def getShapeQuad8 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 2D quadrilateral element with 8 nodes (Quad8).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 2D coordinate (ndarray of length 2)
+  '''
+  
   if len(xi) != 2:
     raise NotImplementedError('2D only')
 
@@ -264,7 +353,19 @@ def getShapeQuad8 ( xi ):
 
 def getShapeQuad9 ( xi ):
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 2D quadrilateral element with 9 nodes (Quad9).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 2D coordinate (ndarray of length 2)
+  '''
+  
   if len(xi) != 2:
     raise NotImplementedError('2D only')
 
@@ -292,9 +393,21 @@ def getShapeQuad9 ( xi ):
 
 #----------------------------------------------------------------------
 
-def getShapeTetra4 ( xi ):
+def getShapeTetra4 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 3D tetrahedral element with 4 nodes (Tetra4).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 3D coordinate (ndarray of length 3)
+  '''
+  
   if len(xi) != 3:
     raise NotImplementedError('3D only')
 
@@ -331,9 +444,21 @@ def getShapeTetra4 ( xi ):
   
 #----------------------------------------------------------------------
 
-def getShapePyramid5 ( xi ):
+def getShapePyramid5 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 3D pyramid element with 5 nodes (Pyramid5).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 3D coordinate (ndarray of length 3)
+  '''
+  
   if len(xi) != 3:
     raise NotImplementedError('3D only')
 
@@ -374,9 +499,21 @@ def getShapePyramid5 ( xi ):
 
 #----------------------------------------------------------------------
 
-def getShapePrism6 ( xi ):
+def getShapePrism6 ( xi : ndarray) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 3D prsimatic element with 6 nodes (Prism6).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 3D coordinate (ndarray of length 3)
+  '''
+  
   if len(xi) != 3:
     raise NotImplementedError('3D only')
 
@@ -405,9 +542,21 @@ def getShapePrism6 ( xi ):
   
 #----------------------------------------------------------------------
 
-def getShapePrism18 ( xi ):
+def getShapePrism18 ( xi : ndarray ) -> shapeData:
 
-  #Check the dimension of physical space
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 3D prismatic element with 18 nodes (Prism18).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 3D coordinate (ndarray of length 3)
+  '''
+  
   if len(xi) != 3:
     raise NotImplementedError('3D only')
 
@@ -438,7 +587,20 @@ def getShapePrism18 ( xi ):
 #
 #------------------------------------------------------------------------------
 
-def getShapeHexa8 ( xi ):
+def getShapeHexa8 ( xi : ndarray ) -> shapeData:
+
+  '''
+  Function that returns the shape function data in a single integration 
+  point for a parent 3D hexahedron element with 8 nodes (Hexa8).
+  
+  Args:
+      xi(ndarray): Location of the integration point
+  Returns:
+      shapeData: The integration point shape data containin the parent
+      parameters, h, dhdxi and xi
+  Raises:
+      Error: when the input is not a 3D coordinate (ndarray of length 3)
+  '''
 
   if len(xi) != 3:
     raise NotImplementedError('The isoparamatric coordinate should be 3D.')
@@ -491,7 +653,26 @@ def getShapeHexa8 ( xi ):
 
 #----------------------------------------------------------------------
 
-def getElemType( elemCoords ):
+def getElemType( elemCoords : ndarray ) -> str:
+
+  '''
+  Function that returns the element type based on the nodal 
+  coordinates of the element.
+  
+  Args:
+      elemCoords(ndarray): Matrix (2D array) containing the nodal 
+                           coordinates of the element. The number of rows is the
+                           number of nodes, the number of columns is the spatial
+                           dimensions (1,2 or 3).
+  Returns:
+      str: elementType
+              - 1D elements: `Line2` and `Line3`
+              - 2D elements: `Tria3`, `Tria6`, `Quad4`, `Quad8` and `Quad9`
+              - 3D elements: `Tetra4`, `Pyramid5`, `Prism6`, `Hexa8` and `Prism18`
+  Raises:
+      Error: When the element type cannot be found, or when the spatial 
+             dimensions (rank) is not 1,2 or 3.
+  '''
   
   nNel = elemCoords.shape[0]
   rank = elemCoords.shape[1]
@@ -536,8 +717,24 @@ def getElemType( elemCoords ):
 #
 #------------------------------------------------------------------------------
 
-def tria_scheme( order ):
+def tria_scheme( order : int ): # -> tuple(list[list],list[float]):
 
+  '''
+  Function that returns the integration scheme (coordinates in the parent
+  element and weights) for a 2D triangular element.
+  
+  Args:
+      order (int): the integration order. This number is either 1,3 or 7
+                   (representing the number of integration points).
+  Returns:
+      tuple(list[list],list[float]): A list of coordinates in the parent 
+                                     element and a list of weights. 
+                                     The length of the lists is idential to the
+                                     order.
+  Raises:
+      Error: when the order is not equal to 1, 3 or 7.
+  '''
+  
   if order == 1:
     xi     = [[1.0/3.0,1.0/3.0]]
     weight = [ 0.5 ]
@@ -564,6 +761,8 @@ def tria_scheme( order ):
     w7 = 0.225
 
     weight = [ w1,w1,w1,w4,w4,w4,w7 ]
+  else:
+    raise NotImplementedError('Order must be 1,3 or 7')    
   
   return xi,weight
   
@@ -571,8 +770,22 @@ def tria_scheme( order ):
 #
 #------------------------------------------------------------------------------
 
-def tetra_scheme( order ):
+def tetra_scheme( order : int ): # -> tuple(list[list],list[float]):
 
+  '''
+  Function that returns the integration scheme (coordinates in the parent
+  element and weights) for a 3D tetrahedral element.
+  
+  Args:
+      order (int): the integration order. This number is only 1, which
+                   means a three point integration scheme.
+  Returns:
+      tuple(list[list],list[float]): A list of coordinates in the parent 
+      element and a list of weights. The length of the lists is equal to 3.
+  Raises:
+      Error: when the order is not equal to 1.
+  '''
+  
   if order == 1:
     third = 1./3.
     
@@ -587,8 +800,22 @@ def tetra_scheme( order ):
 #
 #------------------------------------------------------------------------------
 
-def pyramid_scheme( order ):
+def pyramid_scheme( order : int ): # -> tuple(list[list],list[float]):
 
+  '''
+  Function that returns the integration scheme (coordinates in the parent
+  element and weights) for a 3D pyramid element.
+  
+  Args:
+      order (int): the integration order. This number is only 1, which
+                   means a one point integration scheme.
+  Returns:
+      tuple(list[list],list[float]): A list of coordinates in the parent 
+      element and a list of weights. The length of the lists is equal to 1.
+  Raises:
+      Error: when the order is not equal to 1.
+  '''
+  
   if order == 1:     
     xi = [[0.,0.,-0.5]]
     weight = [128.0/27.0]#[8.0/3.0] #[ 18.967 ]
@@ -599,8 +826,29 @@ def pyramid_scheme( order ):
           
 #-----------------------------------------------------------------------
 
-def getIntegrationPoints( elemType , order , scheme ):
+def getIntegrationPoints( elemType : str , order : int , scheme : str ):# -> tuple(list[list],list[float]):
 
+  '''
+  Function that returns the integration scheme (coordinates in the parent
+  element and weights) for any elemement type
+  
+  Args:
+      elemType (str): Indicating the type of element.
+          - 1D elements: `Line2` and `Line3`
+          - 2D elements: `Tria3`, `Tria6`, `Quad4`, `Quad8` and `Quad9`
+          - 3D elements: `Tetra4`, `Pyramid5`, `Prism6`, `Hexa8` and `Prism18`
+      order(int): the integration order. 0 represents the standard integration
+                  for an element (e.g. Guass 2x2 for a Quad4 element); +1 indicates a 
+                  higher order integration (3x3 for a Quad4 element); -1 indicates a 
+                  lower order (1x1).
+      scheme(str): Integration scheme (is redundant).
+  Returns:
+      tuple(list[list],list[float]): A list of coordinates in the parent 
+      element and a list of weights. The length of the lists is equal to 3.
+  Raises:
+      Error: when the element type is not known.
+  '''
+  
   xi     = []
   weight = []
   
@@ -672,6 +920,8 @@ def getIntegrationPoints( elemType , order , scheme ):
       for j in range(stdOrder):
         xi.    append( [float(ip0[i][0].real),float(ip0[i][1].real),float(ip1[j].real)] )
         weight.append( w0[i]*w1[j] )
+  else:
+    raise NotImplementedError('Element type not known.')        
 
   return xi , weight
 
@@ -679,7 +929,26 @@ def getIntegrationPoints( elemType , order , scheme ):
 #
 #------------------------------------------------------------------------------
 
-def calcWeightandDerivatives( elemCoords , sData , weight ):
+def calcWeightandDerivatives( elemCoords : ndarray , sData : shapeData , weight : float ):
+
+  '''
+  Function that calculates the derivatives of shapefunctions and their weight in 
+  the physical element.
+  
+  Args:
+      elemCoords(ndarray): Matrix (2D array) containing the nodal 
+                           coordinates of the element. The number of rows is the
+                           number of nodes, the number of columns is the spatial
+                           dimensions (1,2 or 3).
+      sData (shapeData):   the current shape data in this integration point. This
+                           contains the coordinate of the integration point xi and
+                           the shape function h and its derivative dhdx.
+      weight(float):       Integration weight.
+  Returns:
+      None: 
+      
+  The physical derivative and weight are store in sData.
+  '''
 
   jac = dot ( elemCoords.transpose() , sData.dhdxi )
   
@@ -707,8 +976,30 @@ def calcWeightandDerivatives( elemCoords , sData , weight ):
 #
 #------------------------------------------------------------------------------
 
-def getElemShapeData( elemCoords , order = 0 , method = 'Gauss' , elemType = 'Default' ):
+def getElemShapeData( elemCoords : ndarray , order : int = 0 , 
+                      method : str = 'Gauss' , elemType : str = 'Default' ) -> elemShapeData:
 
+  '''
+  Function to determine the element shape functions and integration point data for a given 
+  element with nodal coordinates.
+  
+  Args:
+      elemCoords(ndarray): Matrix (2D array) containing the nodal 
+                           coordinates of the element. The number of rows is the
+                           number of nodes, the number of columns is the spatial
+                           dimensions (1,2 or 3).
+      order(int)         : the order of integration. ) is default and indicates
+                           a regular integration for such an element.
+      method(str)        : the integration type. `Gauss` is default.
+      elemType(str)      : the element type. If the default value is chosen, the
+                           element type will be determined by means of the
+                           dimensions of the elemCoords array.
+  Returns:
+      elemShapeData:
+  Raises:
+      Error: when the elementType is not known.
+  '''
+  
   elemData = elemShapeData()
   
   if elemType == 'Default':  
@@ -734,8 +1025,23 @@ def getElemShapeData( elemCoords , order = 0 , method = 'Gauss' , elemType = 'De
 #
 #------------------------------------------------------------------------------
 
-def getShapeData( order = 0 , method = 'Gauss' , elemType = 'Default' ):
+def getShapeData( order : int = 0 , method : str = 'Gauss' , elemType : str = 'Default' ) -> elemShapeData:
 
+  '''
+  Function to determine the element shape functions and integration point data for a given 
+  elementtype.
+  
+  Args:     
+      order(int)         : the order of integration. ) is default and indicates
+                           a regular integration for such an element.
+      method(str)        : the integration type. `Gauss` is default.
+      elemType(str)      : the element type.
+  Returns:
+      elemShapeData:
+  Raises:
+      Error: when the elementType is not known.
+  '''
+  
   shpData = elemShapeData()
       
   (intCrds,intWghts) = getIntegrationPoints( elemType , order , method )

@@ -32,10 +32,19 @@ from numpy import zeros
 
 class Kinematics:
   
-  def __init__( self , nDim , nStr ):
+    """
+    Class that contains the kinematic state of a material
+    point, i.e. strain and deformation gradient.
+    
+    Args:
+        nDim (int): the number of spatial dimensions of the problem (2 or 3)
+        nStr (int): the number of strain components (2, 3 or 6)
+    """
+  
+    def __init__( self , nDim: int , nStr: int ):
 
-    self.F         = zeros( shape=( nDim , nDim ) )
-    self.E         = zeros( shape=( nDim , nDim ) )
-    self.strain    = zeros( nStr )
-    self.dgdstrain = zeros( nStr )
-    self.g         = 0.
+        self.F         = zeros( shape=( nDim , nDim ) )
+        self.E         = zeros( shape=( nDim , nDim ) )
+        self.strain    = zeros( nStr )
+        self.dgdstrain = zeros( nStr )
+        self.g         = 0.

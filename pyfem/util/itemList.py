@@ -30,33 +30,78 @@
 
 class itemList ( dict ):
 
-  def add ( self, ID, item ):
-    
-    if ID in self:
-      raise RuntimeError( 'ID ' + str(ID) + ' already exists in ' + type(self).__name__ )
-
-    self[ID] = item
-
-  def get ( self, IDs ):
-
-    if isinstance(IDs,int):
-      return self[IDs]
-    elif isinstance(IDs,list):
-      return [ self[ID] for ID in IDs ]
-      
-    raise RuntimeError('illegal argument for itemList.get')
-    
-  def getIndices ( self, IDs = -1 ):
-    
-    if IDs == -1:
-      return list(self.keys())
-    elif isinstance(IDs,int):
-      return list(self.keys()).index( IDs )
-    elif isinstance(IDs,list):
-      return [ list(self.keys()).index( ID ) for ID in IDs ]
-      
-    raise RuntimeError('illegal argument for itemList.getIndices')  
-    
-  def findID( self , index ):
+    """
+    Class to construct a list of items that have a coninuous local number, and
+    a global ID.
+    """
   
-    return list(self.keys())[index]
+    def add ( self, ID: int, item ):
+    
+        """
+        Adds an item with an ID to the list. This item will be stored in the list.
+    
+        Args:
+            ID (int): the ID of the item to be stored.
+            item: the value(s) of the item to be stored.
+        """
+        
+        if ID in self:
+            raise RuntimeError( 'ID ' + str(ID) + ' already exists in ' + type(self).__name__ )
+
+        self[ID] = item
+
+    def get ( self, IDs ):
+
+        """
+        Returns the index / indices of an ID or list of IDs of items in the list.
+    
+        Args:
+            IDs (list[int]|int,optional): the ID/IDs. If ommited, a list with all indces
+            will be returned.
+        Returns:
+            list[int]: a list with the indices. In the case of a single ID, this list has
+            length 1.
+        """
+        
+        if isinstance(IDs,int):
+            return self[IDs]
+        elif isinstance(IDs,list):
+            return [ self[ID] for ID in IDs ]
+      
+        raise RuntimeError('illegal argument for itemList.get')
+    
+    def getIndices ( self, IDs : list[int] | int = -1 ) -> list[int]:
+        
+        """
+        Returns the index / indices of an ID or list of IDs of items in the list.
+    
+        Args:
+            IDs (list[int]|int,optional): the ID/IDs. If ommited, a list with all indces
+            will be returned.
+        Returns:
+            list[int]: a list with the indices. In the case of a single ID, this list has
+            length 1.
+        """
+        
+        if IDs == -1:
+            return list(self.keys())
+        elif isinstance(IDs,int):
+            return list(self.keys()).index( IDs )
+        elif isinstance(IDs,list):
+            return [ list(self.keys()).index( ID ) for ID in IDs ]
+      
+        raise RuntimeError('illegal argument for itemList.getIndices')  
+    
+    def findID( self , index : int ) -> int:
+  
+        """
+        Returns the ID of an index in the list.
+    
+        Args:
+            index (int): the index of the item
+            
+        Returns:
+            int: the ID of the item
+        """
+        
+        return list(self.keys())[index]

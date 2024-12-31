@@ -28,19 +28,40 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
-def macauley( x ):
 
-  if x >= 0.:
-    return x
-  else:
-    return 0.
+def macauley( x : float ) -> float:
 
-#----------------------
+    """
+    Function that performs the macaulay operation to a variable. The macaulay
+    operation returns the exact same value when that value is positive and
+    returns zero when the values is negative.
+  
+    Args:
+        x (float): The input to the function
+
+    Returns:
+        float: The macauley value.
+    """
+    
+    if x >= 0.:
+        return x
+    else:
+        return 0.
 
 
-def sign( x ):
+def sign( x : float ) -> float:
 
-  if x < 0.:
-    return -1.0
-  else: 
-    return 0.0
+    """
+    Function that returns the sign of a value
+  
+    Args:
+        x (float): The input to the function
+
+    Returns:
+        float: the sign (-1.0 or 1.0).
+    """
+    
+    if x < 0.:
+        return -1.0
+    else: 
+        return 0.0
