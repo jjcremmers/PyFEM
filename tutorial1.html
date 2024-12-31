@@ -1,0 +1,320 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial 1: A simple patch test &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: The dissipated energy pathfollowing solver" href="dissnrg_tutorial.html" />
+    <link rel="prev" title="Tutorials" href="tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Tutorial 1: A simple patch test</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-example">Simple example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pyfem-example">PyFEM example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dissnrg_tutorial.html">Tutorial: The dissipated energy pathfollowing solver</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develop.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyfem-GITHUB</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorials.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Tutorial 1: A simple patch test</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial1.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-1-a-simple-patch-test">
+<h1>Tutorial 1: A simple patch test<a class="headerlink" href="#tutorial-1-a-simple-patch-test" title="Link to this heading"></a></h1>
+<p>This part is taken from Section 2.6 of</p>
+<p>The implementation of a finite element simulation under displacement control is demonstrated
+by means of a patch test. Patch tests are simple finite element simulations which are intended to
+demonstrate that an element possesses some basic requirements, such as the ability to represent
+a uniform stress state. The following patch test is taken from MacNeal and Harder (1985).</p>
+<p>We consider a rectangular domain, shown in Figure 2.9. The domain is discretised by five
+quadrilateral elements. The positions of the nodes are chosen such that all elements are skewed
+and are mildly distorted. The positions of the internal nodes 4, 5, 6, and 7 are given in the figure.
+The displacements a = (ax, ay) of the external nodes 0, 1, 2, and 3 are prescribed according
+to the relations:</p>
+<blockquote>
+<div><table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Node</p></th>
+<th class="head"><p>x</p></th>
+<th class="head"><p>y</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>0.04</p></td>
+<td><p>0.02</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p>0.18</p></td>
+<td><p>0.03</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p>0.16</p></td>
+<td><p>0.08</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p>0.08</p></td>
+<td><p>0.08</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<p>In order to test whether everything is installed properly, the following two simulations can be run.</p>
+<section id="simple-example">
+<h2>Simple example<a class="headerlink" href="#simple-example" title="Link to this heading"></a></h2>
+<p>In the directory ‘’examples/ch02’’ the script ‘’PatchTest.py’’ can be executed from a terminal (or DOS-shell) by typing:</p>
+<blockquote>
+<div><p>python PatchTest.py</p>
+</div></blockquote>
+<p>In Windows, this script can also be executed by double-clicking the icon.</p>
+</section>
+<section id="pyfem-example">
+<h2>PyFEM example<a class="headerlink" href="#pyfem-example" title="Link to this heading"></a></h2>
+<p>The full finite element code PyFEM can be run by typing ‘’pyfem’’ in the terminal. In directory ‘’examples/ch04’’ for example,
+the input file ‘’ShallowTrussRiks.pro’’ is processed by typing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pyfem</span> <span class="n">ShallowTrussRiks</span><span class="o">.</span><span class="n">pro</span>
+</pre></div>
+</div>
+<p>Here, ‘’ShallowTrussRiks.pro’’ is the input file, which by definition ends with ‘’.pro’’. When it is
+opened in a text editor, it looks as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;ShallowTrussRiks.dat&quot;</span><span class="p">;</span>
+
+<span class="n">TrussElem</span>  <span class="o">=</span>
+<span class="p">{</span>
+  <span class="o">....</span>
+<span class="p">};</span>
+
+<span class="n">SpringElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="o">....</span>
+<span class="p">};</span>
+
+<span class="n">solver</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="o">....</span>
+<span class="p">};</span>
+
+<span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">];</span>
+
+<span class="n">graph</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="o">....</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The dots indicate lines that have been omitted in this example.
+The first argument in the ‘’.pro’’-file specifies the input file, which contains the positions of
+the nodes, the element connectivity and the boundary conditions. The structure of this file, which normally has
+the extension ‘’.dat’’, is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Nodes</span><span class="o">&gt;</span>
+  <span class="mi">1</span>   <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="p">;</span>
+  <span class="mi">2</span> <span class="o">-</span><span class="mf">10.0</span> <span class="mf">0.0</span> <span class="p">;</span>
+  <span class="mi">3</span>  <span class="mf">10.0</span> <span class="mf">0.0</span> <span class="p">;</span>
+  <span class="mi">4</span>   <span class="mf">0.0</span> <span class="mf">0.5</span> <span class="p">;</span>
+<span class="o">&lt;/</span><span class="n">Nodes</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">Elements</span><span class="o">&gt;</span>
+  <span class="mi">1</span> <span class="s1">&#39;TrussElem&#39;</span> <span class="mi">2</span> <span class="mi">4</span> <span class="p">;</span>
+  <span class="mi">2</span> <span class="s1">&#39;TrussElem&#39;</span> <span class="mi">3</span> <span class="mi">4</span> <span class="p">;</span>
+  <span class="mi">3</span> <span class="s1">&#39;SpringElem&#39;</span> <span class="mi">1</span> <span class="mi">4</span> <span class="p">;</span>
+<span class="o">&lt;/</span><span class="n">Elements</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">NodeConstraints</span><span class="o">&gt;</span>
+  <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+  <span class="n">u</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+  <span class="n">u</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+
+  <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+  <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+  <span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+<span class="o">&lt;/</span><span class="n">NodeConstraints</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="n">ExternalForces</span><span class="o">&gt;</span>
+  <span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">100.0</span> <span class="p">;</span>
+<span class="o">&lt;/</span><span class="n">ExternalForces</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>The nodes are defined between the labels ‘’&lt;Nodes&gt;’’ and ‘’&lt;/Nodes&gt;’’. The first number
+indicates the node identification number. The remaining numbers denote the coordinates in x-, y-, and in the
+case of a three dimensional simulation, the z-direction. For example, node 2 has the x and y coordinates (-10,0).</p>
+<p>The element connectivity is given after the tag ‘’&lt;Elements&gt;’’.
+The first number indicates the element ID number. The string refers to the name of the
+element model this element belongs to. The remaining numbers are the nodes that are used to construct
+the element. In this example, the first element is of the type ‘’TrussElem’’ and is supported
+by nodes 2 and 4.</p>
+<p>The boundary conditions and applied loads are specified next. The node constraints are given after the label texttt{&lt;NodeConstraints&gt;}.
+In this example, the displacement components ‘’u’’ and
+‘’v’’ of nodes 1,2 and 3 have a prescribed value of 0.0. The external forces are specified in a
+similar manner in the field ‘’&lt;ExternalForces&gt;’’. Here, a unit external force with magnitude -100.0 is
+added to node number 4 in the direction that corresponds to the ‘’v’’ displacement. Hence, this force is
+acting in the negative y-direction.</p>
+<p>The parameters of the finite element model are specified in the ‘’.pro’’ file,
+in the fields ‘’TrussElem’’ and ‘’SpringElem’’, which refer to the labels used in the element connectivity
+description:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TrussElem</span>  <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Truss&quot;</span><span class="p">;</span>
+  <span class="n">E</span>    <span class="o">=</span> <span class="mf">5e6</span><span class="p">;</span>
+  <span class="n">Area</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">SpringElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Spring&quot;</span><span class="p">;</span>
+  <span class="n">k</span>    <span class="o">=</span> <span class="mf">100.0</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The elements denoted by the label ‘’TrussElem’’ are of the type ‘’Truss’’. This model requires two
+additional parameters, the Young’s modulus of the material ‘’E’’ and the area of the cross-section texttt{Area}.
+The label ‘’SpringElem’’ denote elements of the type ‘’Spring’’. Here, one additional parameter is required: the
+spring stiffness ‘’k’’. A detailed overview of the element types and the corresponding parameters can be found in Section
+of this manual.</p>
+<p>The parameters of the solver are defined next:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s1">&#39;RiksSolver&#39;</span><span class="p">;</span>
+
+  <span class="n">fixedStep</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+  <span class="n">maxLam</span>    <span class="o">=</span> <span class="mf">10.0</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>The solver is of the type ‘’RikSolver’’. The two additional parameters specify that the magnitude of the path-parameter is
+constant (‘’fixedStep = true’’) and that the simulation is stopped when the load parameter $lambda$ reaches a value of 10.0.
+A detailed overview of available solver types and their parameters is given in Section xx.</p>
+<p>Finally, the results of the simulation can be stored and visualised in several ways. To this end, a chain of output modules can be
+specified. In this example, the results are stored in a load-displacement curve in the module ‘’GraphWriter’’:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;graph&quot;</span><span class="p">];</span>
+
+<span class="n">graph</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span>     <span class="o">=</span> <span class="s2">&quot;GraphWriter&quot;</span><span class="p">;</span>
+  <span class="n">onScreen</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+
+  <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;disp&quot;</span> <span class="p">,</span> <span class="s2">&quot;load&quot;</span> <span class="p">];</span>
+
+  <span class="n">disp</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span>   <span class="o">=</span> <span class="s2">&quot;state&quot;</span><span class="p">;</span>
+    <span class="n">node</span>   <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="n">dof</span>    <span class="o">=</span> <span class="s1">&#39;v&#39;</span><span class="p">;</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">load</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;fint&quot;</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+    <span class="n">dof</span>  <span class="o">=</span> <span class="s1">&#39;v&#39;</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>In this example, two colums are stored: ‘’disp’’, the displacement (‘’state’’) of node 4 in the vertical
+direction and ‘’load’’, the corresponding internal force. The parameter ‘’onScreen = true’’ is used
+to show the load-displacement curve on the screen during the simulation. By default, the results will be stored in a file called
+‘’ShallowTrussRiks.out’’. A description of all available output
+modules can be found in Section xx.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dissnrg_tutorial.html" class="btn btn-neutral float-right" title="Tutorial: The dissipated energy pathfollowing solver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

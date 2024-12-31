@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.fileParser &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem-GITHUB</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.fileParser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.fileParser</h1><div class="highlight"><pre>
+<span></span><span class="c1">################################################################################</span>
+<span class="c1">#  This Python file is part of PyFEM, the code that accompanies the book:      #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#    &#39;Non-Linear Finite Element Analysis of Solids and Structures&#39;             #</span>
+<span class="c1">#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #</span>
+<span class="c1">#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #</span>
+<span class="c1">#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #</span>
+<span class="c1">#  then augmented and maintained by Joris J.C. Remmers.                        #</span>
+<span class="c1">#  All rights reserved.                                                        #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  A github repository, with the most up to date version of the code,          #</span>
+<span class="c1">#  can be found here:                                                          #</span>
+<span class="c1">#     https://github.com/jjcremmers/PyFEM/                                     #</span>
+<span class="c1">#     https://pyfem.readthedocs.io/                                            #	</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  The original code can be downloaded from the web-site:                      #</span>
+<span class="c1">#     http://www.wiley.com/go/deborst                                          #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  The code is open source and intended for educational and scientific         #</span>
+<span class="c1">#  purposes only. If you use PyFEM in your research, the developers would      #</span>
+<span class="c1">#  be grateful if you could cite the book.                                     #    </span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  Disclaimer:                                                                 #</span>
+<span class="c1">#  The authors reserve all rights but do not guarantee that the code is        #</span>
+<span class="c1">#  free from errors. Furthermore, the authors shall not be liable in any       #</span>
+<span class="c1">#  event caused by the use of the program.                                     #</span>
+<span class="c1">################################################################################</span>
+
+<span class="kn">from</span> <span class="nn">pyfem.util.dataStructures</span> <span class="kn">import</span> <span class="n">Properties</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<div class="viewcode-block" id="containsValue">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.containsValue">[docs]</a>
+<span class="k">def</span> <span class="nf">containsValue</span><span class="p">(</span> <span class="n">db</span> <span class="p">,</span> <span class="n">val</span> <span class="p">):</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Addition of two numbers</span>
+
+<span class="sd">  :param db: a</span>
+<span class="sd">  :type db:  integer</span>
+<span class="sd">  :param val: btted</span>
+<span class="sd">  :type val:  integer</span>
+<span class="sd">  :returns: new value</span>
+<span class="sd">  :rtype:   integer</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+  
+  <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">containsValue</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="n">key</span><span class="p">],</span><span class="n">val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">db</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+  <span class="k">return</span> <span class="kc">False</span></div>
+
+  
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="cleanVariable">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.cleanVariable">[docs]</a>
+<span class="k">def</span> <span class="nf">cleanVariable</span><span class="p">(</span> <span class="n">a</span> <span class="p">):</span>
+
+  <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">True</span>
+  <span class="k">elif</span> <span class="n">a</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+    <span class="k">return</span> <span class="kc">False</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">a</span></div>
+
+      
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="isNodeDof">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.isNodeDof">[docs]</a>
+<span class="k">def</span> <span class="nf">isNodeDof</span><span class="p">(</span> <span class="n">nodeDof</span> <span class="p">):</span>
+
+  <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">nodeDof</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span> <span class="ow">and</span> <span class="s1">&#39;[&#39;</span> <span class="ow">in</span> <span class="n">nodeDof</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="decodeNodeDof">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.decodeNodeDof">[docs]</a>
+<span class="k">def</span> <span class="nf">decodeNodeDof</span><span class="p">(</span> <span class="n">nodeDof</span> <span class="p">,</span> <span class="n">nodes</span> <span class="p">):</span>
+            
+  <span class="n">a</span>       <span class="o">=</span> <span class="n">nodeDof</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
+  <span class="n">dofType</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  
+  <span class="n">nodeID</span>  <span class="o">=</span> <span class="n">cleanVariable</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+  
+  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">dofType</span><span class="p">,</span><span class="n">nodes</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">nodeID</span><span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">dofType</span><span class="p">,[</span><span class="n">nodeID</span><span class="p">]</span></div>
+
+      
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getType">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.getType">[docs]</a>
+<span class="k">def</span> <span class="nf">getType</span><span class="p">(</span> <span class="n">a</span> <span class="p">):</span>
+
+  <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="n">cleanVariable</span><span class="p">(</span><span class="n">a</span><span class="p">))</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="storeValue">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.storeValue">[docs]</a>
+<span class="k">def</span> <span class="nf">storeValue</span><span class="p">(</span> <span class="n">db</span> <span class="p">,</span> <span class="n">key</span> <span class="p">,</span> <span class="n">a</span> <span class="p">):</span>
+
+  <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+    <span class="n">tmp</span><span class="o">=</span><span class="p">[]</span>
+    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+      <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cleanVariable</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">store</span><span class="p">(</span> <span class="n">key</span> <span class="p">,</span> <span class="n">tmp</span> <span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">store</span><span class="p">(</span> <span class="n">key</span> <span class="p">,</span> <span class="n">cleanVariable</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="p">)</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="readItem">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.readItem">[docs]</a>
+<span class="k">def</span> <span class="nf">readItem</span><span class="p">(</span> <span class="n">l1</span> <span class="p">,</span> <span class="n">db</span> <span class="p">):</span>
+
+  <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">db</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="n">child</span><span class="o">=</span><span class="n">db</span><span class="p">[</span><span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">child</span><span class="o">=</span><span class="n">Properties</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">child</span><span class="o">=</span><span class="n">Properties</span><span class="p">()</span>
+
+    <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">l2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">ln</span> <span class="o">=</span> <span class="n">readItem</span><span class="p">(</span> <span class="n">l1</span> <span class="p">,</span> <span class="n">child</span> <span class="p">)</span>
+
+    <span class="n">db</span><span class="p">[</span><span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">child</span>
+
+    <span class="k">return</span> <span class="n">ln</span>
+
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">l2</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[&#39;</span><span class="p">:</span>
+      <span class="n">l3</span> <span class="o">=</span> <span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+      <span class="n">storeValue</span><span class="p">(</span> <span class="n">db</span> <span class="p">,</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">l3</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">storeValue</span><span class="p">(</span> <span class="n">db</span> <span class="p">,</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">l2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+   
+    <span class="k">return</span> <span class="n">l2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="readBlock">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.readBlock">[docs]</a>
+<span class="k">def</span> <span class="nf">readBlock</span><span class="p">(</span> <span class="n">ln</span> <span class="p">,</span> <span class="n">db</span> <span class="p">):</span>
+
+  <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="n">ln</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;include&#39;</span><span class="p">:</span>
+      <span class="n">l1</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+      <span class="n">deepFileParser</span><span class="p">(</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">8</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">,</span> <span class="n">db</span> <span class="p">)</span>
+      <span class="n">ln</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="k">continue</span>
+
+    <span class="n">l1</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">ln</span>
+
+    <span class="k">if</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;};&#39;</span><span class="p">:</span>
+      <span class="k">return</span> <span class="n">ln</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span>
+
+    <span class="k">if</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;//&#39;</span><span class="p">:</span>
+      <span class="n">ln</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="k">continue</span>
+
+    <span class="c1">#if l1[0][0:1] == &#39;#&#39;:</span>
+    <span class="c1">#  ln = l1[1].split(&#39;;&#39;,1)[1]</span>
+    <span class="c1">#  continue</span>
+
+    <span class="k">if</span> <span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;{&#39;</span><span class="p">:</span>
+      <span class="n">child</span> <span class="o">=</span> <span class="n">Properties</span><span class="p">()</span>
+      <span class="n">ln</span> <span class="o">=</span> <span class="n">l1</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+     
+      <span class="n">ln</span> <span class="o">=</span> <span class="n">readBlock</span><span class="p">(</span> <span class="n">ln</span> <span class="p">,</span> <span class="n">child</span> <span class="p">)</span>
+
+      <span class="n">db</span><span class="o">.</span><span class="n">store</span><span class="p">(</span> <span class="n">l1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="n">child</span> <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>     
+      <span class="n">ln</span> <span class="o">=</span> <span class="n">readItem</span><span class="p">(</span> <span class="n">l1</span> <span class="p">,</span> <span class="n">db</span> <span class="p">)</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="fileParser">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.fileParser">[docs]</a>
+<span class="k">def</span> <span class="nf">fileParser</span><span class="p">(</span> <span class="n">fileName</span> <span class="p">):</span>
+
+  <span class="n">db</span> <span class="o">=</span> <span class="n">Properties</span><span class="p">()</span>
+
+  <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
+  
+  <span class="n">f2</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+ 
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+      <span class="n">f2</span> <span class="o">=</span> <span class="n">f2</span><span class="o">+</span><span class="n">line</span>
+    
+  <span class="n">ln</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+  <span class="n">ln</span> <span class="o">=</span> <span class="n">f2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+  <span class="n">readBlock</span><span class="p">(</span> <span class="n">ln</span> <span class="p">,</span> <span class="n">db</span> <span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">db</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="deepFileParser">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.deepFileParser">[docs]</a>
+<span class="k">def</span> <span class="nf">deepFileParser</span><span class="p">(</span> <span class="n">fileName</span> <span class="p">,</span> <span class="n">db</span> <span class="p">):</span>
+
+  <span class="n">ln</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+  <span class="n">readBlock</span><span class="p">(</span> <span class="n">ln</span> <span class="p">,</span> <span class="n">db</span> <span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">db</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="nodeTable">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.nodeTable">[docs]</a>
+<span class="k">class</span> <span class="nc">nodeTable</span> <span class="p">:</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> <span class="n">label</span> <span class="p">,</span> <span class="n">subLabel</span> <span class="o">=</span> <span class="s2">&quot;None&quot;</span> <span class="p">):</span>
+  
+    <span class="bp">self</span><span class="o">.</span><span class="n">label</span>    <span class="o">=</span> <span class="n">label</span>   
+    <span class="bp">self</span><span class="o">.</span><span class="n">subLabel</span> <span class="o">=</span> <span class="n">subLabel</span>     
+    <span class="bp">self</span><span class="o">.</span><span class="n">data</span>     <span class="o">=</span> <span class="p">[]</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="readNodeTable">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.fileParser.readNodeTable">[docs]</a>
+<span class="k">def</span> <span class="nf">readNodeTable</span><span class="p">(</span> <span class="n">fileName</span> <span class="p">,</span> <span class="n">label</span> <span class="p">,</span> <span class="n">nodes</span> <span class="o">=</span> <span class="kc">None</span> <span class="p">):</span>
+
+  <span class="n">fin</span>        <span class="o">=</span> <span class="nb">open</span><span class="p">(</span> <span class="n">fileName</span> <span class="p">,</span> <span class="s1">&#39;r&#39;</span> <span class="p">)</span>
+
+  <span class="n">startLabel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="o">+</span><span class="n">label</span><span class="p">)</span>
+  <span class="n">endLabel</span>   <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;&lt;/&#39;</span><span class="o">+</span><span class="n">label</span><span class="p">)</span>
+
+  <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+
+    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">startLabel</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+
+      <span class="n">nt</span> <span class="o">=</span> <span class="n">nodeTable</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span>
+
+      <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="n">subLabel</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">nt</span><span class="o">.</span><span class="n">subLabel</span> <span class="o">=</span> <span class="n">subLabel</span>
+
+      <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">endLabel</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+          <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span>
+          <span class="k">break</span>
+        
+        <span class="n">fullRel</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>           
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fullRel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+          <span class="n">splitRel</span> <span class="o">=</span> <span class="n">fullRel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+
+          <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">splitRel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">lhs</span> <span class="o">=</span> <span class="n">splitRel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rhs</span> <span class="o">=</span> <span class="n">splitRel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">isNodeDof</span><span class="p">(</span><span class="n">lhs</span><span class="p">):</span>
+              <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">lhs</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; is not a NodeDof&#39;</span><span class="p">)</span>
+            
+            <span class="n">dofType</span><span class="p">,</span><span class="n">nodeIDs</span> <span class="o">=</span> <span class="n">decodeNodeDof</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span><span class="n">nodes</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">getType</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="ow">or</span> <span class="n">getType</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>  
+              <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">nodeIDs</span><span class="p">:</span>             
+                <span class="n">nt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span> <span class="n">dofType</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nodeID</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">rhs</span><span class="p">))</span> <span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>              
+              <span class="n">rhs</span> <span class="o">=</span> <span class="n">rhs</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot; +&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot; -&quot;</span><span class="p">)</span>
+              <span class="n">splitrhs</span> <span class="o">=</span> <span class="n">rhs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+              <span class="n">rhs</span> <span class="o">=</span> <span class="mf">0.0</span>
+              <span class="k">for</span> <span class="n">irhs</span> <span class="ow">in</span> <span class="n">splitrhs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">irhs</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                  <span class="k">continue</span>
+                <span class="k">if</span> <span class="s1">&#39;[&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">irhs</span><span class="p">:</span>
+                  <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">nodeIDs</span><span class="p">:</span>
+                    <span class="n">nt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">([</span> <span class="n">dofType</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nodeID</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">irhs</span><span class="p">))</span> <span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                  <span class="n">eq_rhs</span> <span class="o">=</span> <span class="n">irhs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span>
+                  <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+                  
+                  <span class="k">for</span> <span class="n">ieq_rhs</span> <span class="ow">in</span> <span class="n">eq_rhs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">getType</span><span class="p">(</span><span class="n">ieq_rhs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">getType</span><span class="p">(</span><span class="n">ieq_rhs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">):</span>
+                      <span class="n">factor</span> <span class="o">=</span> <span class="n">cleanVariable</span><span class="p">(</span><span class="n">ieq_rhs</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                      <span class="k">if</span> <span class="n">isNodeDof</span><span class="p">(</span><span class="n">ieq_rhs</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">ieq_rhs</span><span class="p">:</span>
+                          <span class="n">factor</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">;</span>
+                        <span class="n">ieq_rhs</span> <span class="o">=</span> <span class="n">ieq_rhs</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                        <span class="n">slaveDofType</span><span class="p">,</span><span class="n">slaveNodeID</span> <span class="o">=</span> <span class="n">decodeNodeDof</span><span class="p">(</span> <span class="n">ieq_rhs</span> <span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+                        
+                  <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">nodeIDs</span><span class="p">:</span>
+                    <span class="n">dt</span> <span class="o">=</span> <span class="p">[</span> <span class="n">dofType</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="n">nodeID</span><span class="p">),</span><span class="n">rhs</span><span class="p">,</span><span class="n">slaveDofType</span><span class="p">,</span><span class="n">slaveNodeID</span><span class="p">,</span><span class="n">factor</span> <span class="p">]</span>
+                    <span class="n">nt</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+                                                    
+  <span class="k">return</span> <span class="n">output</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
