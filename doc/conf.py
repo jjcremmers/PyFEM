@@ -38,3 +38,6 @@ autodoc_member_order = 'bysource'
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_logo = "_static/pyfem_logo_official180.png"
+html_favicon = "_static/pyfem.ico"
+html_css_files = ["custom.css"]

@@ -520,8 +520,6 @@ def getShapePrism6 ( xi : ndarray) -> shapeData:
     #Initialise tuples
    
     sData      = shapeData()
-    sDataLine2 = shapeData()
-    SDataTria3 = shapeData()
    
     sData.h     = empty( 6 )
     sData.dhdxi = empty( shape=(6,3) )
@@ -563,14 +561,12 @@ def getShapePrism18 ( xi : ndarray ) -> shapeData:
     #Initialise tuples
   
     sData      = shapeData()
-    sDataLine2 = shapeData()
-    SDataTria3 = shapeData()
    
     sData.h     = empty( 18 )
     sData.dhdxi = empty( shape=(18,3) )
     sData.xi    = xi
 
-    sDataLine3  = getShapeLine3( xi[3] )
+    sDataLine3  = getShapeLine3( xi[2] )
     sDataTria6  = getShapeTria6( xi[:2] )
   
     for i in range(6):
