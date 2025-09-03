@@ -1,0 +1,1232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.shapeFunctions &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem-GITHUB</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.shapeFunctions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.shapeFunctions</h1><div class="highlight"><pre>
+<span></span><span class="c1">################################################################################</span>
+<span class="c1">#  This Python file is part of PyFEM, the code that accompanies the book:      #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#    &#39;Non-Linear Finite Element Analysis of Solids and Structures&#39;             #</span>
+<span class="c1">#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #</span>
+<span class="c1">#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #</span>
+<span class="c1">#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #</span>
+<span class="c1">#  then augmented and maintained by Joris J.C. Remmers.                        #</span>
+<span class="c1">#  All rights reserved.                                                        #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  A github repository, with the most up to date version of the code,          #</span>
+<span class="c1">#  can be found here:                                                          #</span>
+<span class="c1">#     https://github.com/jjcremmers/PyFEM/                                     #</span>
+<span class="c1">#     https://pyfem.readthedocs.io/                                            #	</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  The original code can be downloaded from the web-site:                      #</span>
+<span class="c1">#     http://www.wiley.com/go/deborst                                          #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  The code is open source and intended for educational and scientific         #</span>
+<span class="c1">#  purposes only. If you use PyFEM in your research, the developers would      #</span>
+<span class="c1">#  be grateful if you could cite the book.                                     #    </span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  Disclaimer:                                                                 #</span>
+<span class="c1">#  The authors reserve all rights but do not guarantee that the code is        #</span>
+<span class="c1">#  free from errors. Furthermore, the authors shall not be liable in any       #</span>
+<span class="c1">#  event caused by the use of the program.                                     #</span>
+<span class="c1">################################################################################</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">dot</span><span class="p">,</span> <span class="n">ndarray</span><span class="p">,</span> <span class="n">empty</span><span class="p">,</span> <span class="n">zeros</span> <span class="p">,</span> <span class="n">ones</span><span class="p">,</span> <span class="n">cross</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">norm</span> <span class="p">,</span> <span class="n">det</span> <span class="p">,</span> <span class="n">inv</span>
+<span class="kn">from</span> <span class="nn">scipy.special.orthogonal</span> <span class="kn">import</span> <span class="n">p_roots</span> <span class="k">as</span> <span class="n">gauss_scheme</span>
+
+<div class="viewcode-block" id="shapeData">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.shapeData">[docs]</a>
+<span class="k">class</span> <span class="nc">shapeData</span><span class="p">:</span>
+<span class="w">  </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class that contains the shape function data for a single integration point.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">pass</span></div>
+
+   
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="elemShapeData">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.elemShapeData">[docs]</a>
+<span class="k">class</span> <span class="nc">elemShapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Class that contains the shape function data for an entire element.</span>
+<span class="sd">    This class is iterable.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">sData</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+<span class="w">  </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Iteration over integration points</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sData</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">):</span>
+<span class="w">  </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Function that returns the number of integration points in an element.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sData</span><span class="p">)</span></div>
+
+            
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeLine2">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeLine2">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeLine2</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="nb">float</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 1D line element with 2 nodes (Line2).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(float): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 1D coordinate (float)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;1D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">)</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeLine3">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeLine3">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeLine3</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 1D line element with 3 nodes (Line3).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(float): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 1D coordinate (float)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;1D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">3</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">)</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="o">*</span><span class="n">xi</span><span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">xi</span><span class="o">*</span><span class="n">xi</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">)</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="o">*</span><span class="n">xi</span><span class="p">)</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">+</span><span class="n">xi</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span><span class="o">+</span><span class="n">xi</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeTria3">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeTria3">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeTria3</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 2D triangular element with 3 nodes (Tria3).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 2D coordinate (ndarray of length 2)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;2D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">3</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">sData</span> </div>
+
+
+<span class="c1">#-------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeQuad4">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeQuad4">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeQuad4</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 2D quadrilateral element with 4 nodes (Quad4).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 2D coordinate (ndarray of length 2)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;2D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">4</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#-------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeTria6">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeTria6">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeTria6</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 2D triangular element with 6 nodes (Tria4).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 2D coordinate (ndarray of length 2)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;2D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+   
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">6</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">4.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">4.0</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mf">4.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#-------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeQuad8">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeQuad8">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeQuad8</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 2D quadrilateral element with 8 nodes (Quad8).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 2D coordinate (ndarray of length 2)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;2D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">8</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span> <span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span> <span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span> <span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span> <span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.25</span><span class="o">*</span><span class="p">(</span> <span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span> <span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#-------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeQuad9">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeQuad9">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeQuad9</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">):</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 2D quadrilateral element with 9 nodes (Quad9).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 2D coordinate (ndarray of length 2)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;2D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">9</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+  
+    <span class="n">nodeMap</span> <span class="o">=</span> <span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+   
+    <span class="n">s0</span>  <span class="o">=</span> <span class="n">getShapeLine3</span><span class="p">(</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">s1</span>  <span class="o">=</span> <span class="n">getShapeLine3</span><span class="p">(</span> <span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">iNod</span> <span class="o">=</span> <span class="n">nodeMap</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+
+            <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">iNod</span><span class="p">]</span>       <span class="o">=</span> <span class="n">s0</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">s1</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>   
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">iNod</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">s0</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">s1</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">iNod</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">s0</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">s1</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeTetra4">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeTetra4">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeTetra4</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 3D tetrahedral element with 4 nodes (Tetra4).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 3D coordinate (ndarray of length 3)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;3D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+ 
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">4</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">1.0</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+  
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapePyramid5">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapePyramid5">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapePyramid5</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 3D pyramid element with 5 nodes (Pyramid5).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 3D coordinate (ndarray of length 3)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;3D only&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span>       <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+ 
+    <span class="c1">#Set length of lists</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">5</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>  
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.0</span>  
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.5</span>  
+
+    <span class="k">return</span> <span class="n">sData</span>  </div>
+
+
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapePrism6">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapePrism6">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapePrism6</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 3D prsimatic element with 6 nodes (Prism6).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 3D coordinate (ndarray of length 3)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;3D only&#39;</span><span class="p">)</span>
+
+    <span class="c1">#Initialise tuples</span>
+   
+    <span class="n">sData</span>      <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+   
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">6</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="n">sDataLine2</span>  <span class="o">=</span> <span class="n">getShapeLine2</span><span class="p">(</span> <span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">sDataTria3</span>  <span class="o">=</span> <span class="n">getShapeTria3</span><span class="p">(</span> <span class="n">xi</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+  
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine2</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria3</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine2</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria3</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine2</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria3</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine2</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria3</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+  
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapePrism18">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapePrism18">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapePrism18</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 3D prismatic element with 18 nodes (Prism18).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 3D coordinate (ndarray of length 3)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+  
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;3D only&#39;</span><span class="p">)</span>
+
+    <span class="c1">#Initialise tuples</span>
+  
+    <span class="n">sData</span>      <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+   
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">18</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="n">sDataLine3</span>  <span class="o">=</span> <span class="n">getShapeLine3</span><span class="p">(</span> <span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">sDataTria6</span>  <span class="o">=</span> <span class="n">getShapeTria6</span><span class="p">(</span> <span class="n">xi</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
+  
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine3</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria6</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine3</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria6</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine3</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria6</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="n">j</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sDataLine3</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="n">j</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">sDataTria6</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        
+    <span class="k">return</span> <span class="n">sData</span>  </div>
+
+
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeHexa8">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeHexa8">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeHexa8</span> <span class="p">(</span> <span class="n">xi</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapeData</span><span class="p">:</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Function that returns the shape function data in a single integration </span>
+<span class="sd">    point for a parent 3D hexahedron element with 8 nodes (Hexa8).</span>
+<span class="sd">  </span>
+<span class="sd">    Args:</span>
+<span class="sd">        xi(ndarray): Location of the integration point</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        shapeData: The integration point shape data containin the parent</span>
+<span class="sd">        parameters, h, dhdxi and xi</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        Error: when the input is not a 3D coordinate (ndarray of length 3)</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;The isoparamatric coordinate should be 3D.&#39;</span><span class="p">)</span>
+
+    <span class="n">sData</span> <span class="o">=</span> <span class="n">shapeData</span><span class="p">()</span>
+  
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span>     <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="mi">8</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="o">=</span> <span class="n">empty</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">xi</span>    <span class="o">=</span> <span class="n">xi</span>
+
+    <span class="c1">#Calculate shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+ 
+    <span class="c1">#Calculate derivatives of shape functions</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span>  <span class="mf">0.125</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">xi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">xi</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">sData</span></div>
+
+
+<span class="c1">#----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getElemType">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getElemType">[docs]</a>
+<span class="k">def</span> <span class="nf">getElemType</span><span class="p">(</span> <span class="n">elemCoords</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function that returns the element type based on the nodal </span>
+<span class="sd">  coordinates of the element.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      elemCoords(ndarray): Matrix (2D array) containing the nodal </span>
+<span class="sd">                           coordinates of the element. The number of rows is the</span>
+<span class="sd">                           number of nodes, the number of columns is the spatial</span>
+<span class="sd">                           dimensions (1,2 or 3).</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      str: elementType</span>
+<span class="sd">              - 1D elements: `Line2` and `Line3`</span>
+<span class="sd">              - 2D elements: `Tria3`, `Tria6`, `Quad4`, `Quad8` and `Quad9`</span>
+<span class="sd">              - 3D elements: `Tetra4`, `Pyramid5`, `Prism6`, `Hexa8` and `Prism18`</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: When the element type cannot be found, or when the spatial </span>
+<span class="sd">             dimensions (rank) is not 1,2 or 3.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="n">nNel</span> <span class="o">=</span> <span class="n">elemCoords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+  <span class="n">rank</span> <span class="o">=</span> <span class="n">elemCoords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+  
+  <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Line2&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Line3&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No 1D element with &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nNel</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; nodes available&#39;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Tria3&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Quad4&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Tria6&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Quad8&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Quad9&quot;</span>              
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No 2D element with &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nNel</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; nodes available&#39;</span><span class="p">)</span>
+  <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Tetra4&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Pyramid5&quot;</span>      
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Prism6&quot;</span>
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Hexa8&quot;</span> 
+    <span class="k">elif</span> <span class="n">nNel</span> <span class="o">==</span> <span class="mi">18</span><span class="p">:</span>
+      <span class="k">return</span> <span class="s2">&quot;Prism18&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No 3D element with &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">nNel</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39; nodes available&#39;</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Rank must be 1,2 or 3&#39;</span><span class="p">)</span></div>
+
+
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="tria_scheme">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.tria_scheme">[docs]</a>
+<span class="k">def</span> <span class="nf">tria_scheme</span><span class="p">(</span> <span class="n">order</span> <span class="p">:</span> <span class="nb">int</span> <span class="p">):</span> <span class="c1"># -&gt; tuple(list[list],list[float]):</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function that returns the integration scheme (coordinates in the parent</span>
+<span class="sd">  element and weights) for a 2D triangular element.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      order (int): the integration order. This number is either 1,3 or 7</span>
+<span class="sd">                   (representing the number of integration points).</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      tuple(list[list],list[float]): A list of coordinates in the parent </span>
+<span class="sd">                                     element and a list of weights. </span>
+<span class="sd">                                     The length of the lists is idential to the</span>
+<span class="sd">                                     order.</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: when the order is not equal to 1, 3 or 7.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">xi</span>     <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">,</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">]]</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.5</span> <span class="p">]</span>
+  <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">6.0</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">/</span><span class="mf">3.0</span>
+    
+    <span class="n">xi</span> <span class="o">=</span> <span class="p">[[</span><span class="n">r1</span><span class="p">,</span><span class="n">r1</span><span class="p">],[</span><span class="n">r2</span><span class="p">,</span><span class="n">r1</span><span class="p">],[</span><span class="n">r1</span><span class="p">,</span><span class="n">r2</span><span class="p">]]</span>
+    
+    <span class="n">w1</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">6.0</span>
+  
+    <span class="n">weight</span> <span class="o">=</span> <span class="p">[</span><span class="n">w1</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">w1</span><span class="p">]</span>
+  <span class="k">elif</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="mf">0.1012865073235</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="mf">0.7974269853531</span>
+    <span class="n">r4</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="mf">0.4701420641051</span>
+    <span class="n">r6</span> <span class="o">=</span> <span class="mf">0.0597158717898</span>
+    <span class="n">r7</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span>
+
+    <span class="n">xi</span> <span class="o">=</span> <span class="p">[[</span><span class="n">r1</span><span class="p">,</span><span class="n">r1</span><span class="p">],[</span><span class="n">r2</span><span class="p">,</span><span class="n">r1</span><span class="p">],[</span><span class="n">r1</span><span class="p">,</span><span class="n">r2</span><span class="p">],[</span><span class="n">r4</span><span class="p">,</span><span class="n">r6</span><span class="p">],[</span><span class="n">r4</span><span class="p">,</span><span class="n">r4</span><span class="p">],[</span><span class="n">r6</span><span class="p">,</span><span class="n">r4</span><span class="p">],[</span><span class="n">r7</span><span class="p">,</span><span class="n">r7</span><span class="p">]]</span>
+
+    <span class="n">w1</span> <span class="o">=</span> <span class="mf">0.1259391805448</span>
+    <span class="n">w4</span> <span class="o">=</span> <span class="mf">0.1323941527885</span>
+    <span class="n">w7</span> <span class="o">=</span> <span class="mf">0.225</span>
+
+    <span class="n">weight</span> <span class="o">=</span> <span class="p">[</span> <span class="n">w1</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">w1</span><span class="p">,</span><span class="n">w4</span><span class="p">,</span><span class="n">w4</span><span class="p">,</span><span class="n">w4</span><span class="p">,</span><span class="n">w7</span> <span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Order must be 1,3 or 7&#39;</span><span class="p">)</span>    
+  
+  <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">weight</span></div>
+
+  
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="tetra_scheme">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.tetra_scheme">[docs]</a>
+<span class="k">def</span> <span class="nf">tetra_scheme</span><span class="p">(</span> <span class="n">order</span> <span class="p">:</span> <span class="nb">int</span> <span class="p">):</span> <span class="c1"># -&gt; tuple(list[list],list[float]):</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function that returns the integration scheme (coordinates in the parent</span>
+<span class="sd">  element and weights) for a 3D tetrahedral element.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      order (int): the integration order. This number is only 1, which</span>
+<span class="sd">                   means a three point integration scheme.</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      tuple(list[list],list[float]): A list of coordinates in the parent </span>
+<span class="sd">      element and a list of weights. The length of the lists is equal to 3.</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: when the order is not equal to 1.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">third</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span>
+    
+    <span class="n">xi</span> <span class="o">=</span> <span class="p">[[</span><span class="n">third</span><span class="p">,</span><span class="n">third</span><span class="p">,</span><span class="n">third</span><span class="p">]]</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">third</span> <span class="p">]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only order 1 integration implemented&#39;</span><span class="p">)</span>
+    
+  <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">weight</span></div>
+
+  
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="pyramid_scheme">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.pyramid_scheme">[docs]</a>
+<span class="k">def</span> <span class="nf">pyramid_scheme</span><span class="p">(</span> <span class="n">order</span> <span class="p">:</span> <span class="nb">int</span> <span class="p">):</span> <span class="c1"># -&gt; tuple(list[list],list[float]):</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function that returns the integration scheme (coordinates in the parent</span>
+<span class="sd">  element and weights) for a 3D pyramid element.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      order (int): the integration order. This number is only 1, which</span>
+<span class="sd">                   means a one point integration scheme.</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      tuple(list[list],list[float]): A list of coordinates in the parent </span>
+<span class="sd">      element and a list of weights. The length of the lists is equal to 1.</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: when the order is not equal to 1.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>     
+    <span class="n">xi</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5</span><span class="p">]]</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="p">[</span><span class="mf">128.0</span><span class="o">/</span><span class="mf">27.0</span><span class="p">]</span><span class="c1">#[8.0/3.0] #[ 18.967 ]</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only order 1 integration implemented&#39;</span><span class="p">)</span>
+    
+  <span class="k">return</span> <span class="n">xi</span><span class="p">,</span><span class="n">weight</span>  </div>
+
+          
+<span class="c1">#-----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getIntegrationPoints">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getIntegrationPoints">[docs]</a>
+<span class="k">def</span> <span class="nf">getIntegrationPoints</span><span class="p">(</span> <span class="n">elemType</span> <span class="p">:</span> <span class="nb">str</span> <span class="p">,</span> <span class="n">order</span> <span class="p">:</span> <span class="nb">int</span> <span class="p">,</span> <span class="n">scheme</span> <span class="p">:</span> <span class="nb">str</span> <span class="p">):</span><span class="c1"># -&gt; tuple(list[list],list[float]):</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function that returns the integration scheme (coordinates in the parent</span>
+<span class="sd">  element and weights) for any elemement type</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      elemType (str): Indicating the type of element.</span>
+<span class="sd">          - 1D elements: `Line2` and `Line3`</span>
+<span class="sd">          - 2D elements: `Tria3`, `Tria6`, `Quad4`, `Quad8` and `Quad9`</span>
+<span class="sd">          - 3D elements: `Tetra4`, `Pyramid5`, `Prism6`, `Hexa8` and `Prism18`</span>
+<span class="sd">      order(int): the integration order. 0 represents the standard integration</span>
+<span class="sd">                  for an element (e.g. Guass 2x2 for a Quad4 element); +1 indicates a </span>
+<span class="sd">                  higher order integration (3x3 for a Quad4 element); -1 indicates a </span>
+<span class="sd">                  lower order (1x1).</span>
+<span class="sd">      scheme(str): Integration scheme (is redundant).</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      tuple(list[list],list[float]): A list of coordinates in the parent </span>
+<span class="sd">      element and a list of weights. The length of the lists is equal to 3.</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: when the element type is not known.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="n">xi</span>     <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">weight</span> <span class="o">=</span> <span class="p">[]</span>
+  
+  <span class="k">if</span> <span class="n">elemType</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Line&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Line2&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Line3&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">xi</span><span class="p">,</span><span class="n">weight</span> <span class="o">=</span> <span class="n">gauss_scheme</span><span class="p">(</span> <span class="n">stdOrder</span> <span class="o">+</span> <span class="n">order</span> <span class="p">)</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">xi</span><span class="p">]</span>
+
+  <span class="k">elif</span> <span class="n">elemType</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Tria&quot;</span><span class="p">:</span>
+    <span class="n">orderArray</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Tria3&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Tria6&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">1</span>  
+    <span class="n">xi</span><span class="p">,</span><span class="n">weight</span> <span class="o">=</span> <span class="n">tria_scheme</span><span class="p">(</span> <span class="n">orderArray</span><span class="p">[</span><span class="n">stdOrder</span> <span class="o">+</span> <span class="n">order</span><span class="p">]</span> <span class="p">)</span>
+    
+  <span class="k">elif</span> <span class="n">elemType</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Tetra&quot;</span><span class="p">:</span>
+    <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">xi</span><span class="p">,</span><span class="n">weight</span> <span class="o">=</span> <span class="n">tetra_scheme</span><span class="p">(</span> <span class="n">stdOrder</span> <span class="o">+</span> <span class="n">order</span> <span class="p">)</span>
+    
+  <span class="k">elif</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Pyramid5&quot;</span><span class="p">:</span>
+    <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">xi</span><span class="p">,</span><span class="n">weight</span> <span class="o">=</span> <span class="n">pyramid_scheme</span><span class="p">(</span> <span class="n">stdOrder</span> <span class="o">+</span> <span class="n">order</span> <span class="p">)</span>    
+
+  <span class="k">elif</span> <span class="n">elemType</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Quad&quot;</span><span class="p">:</span>  
+    <span class="k">if</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Quad4&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Quad8&quot;</span> <span class="ow">or</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Quad9&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">3</span>  
+    <span class="n">stdOrder</span> <span class="o">+=</span> <span class="n">order</span>
+
+    <span class="n">ip</span><span class="p">,</span><span class="n">w</span>  <span class="o">=</span> <span class="n">gauss_scheme</span><span class="p">(</span> <span class="n">stdOrder</span> <span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stdOrder</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stdOrder</span><span class="p">):</span>
+        <span class="n">xi</span><span class="o">.</span>    <span class="n">append</span><span class="p">(</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">ip</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">ip</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)]</span> <span class="p">)</span>
+        <span class="n">weight</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">)</span>
+        
+  <span class="k">elif</span> <span class="n">elemType</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Hexa&quot;</span><span class="p">:</span>  
+    <span class="k">if</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Hexa8&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">2</span>
+      
+    <span class="n">stdOrder</span> <span class="o">+=</span> <span class="n">order</span>
+
+    <span class="n">ip</span><span class="p">,</span><span class="n">w</span>  <span class="o">=</span> <span class="n">gauss_scheme</span><span class="p">(</span> <span class="n">stdOrder</span> <span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stdOrder</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stdOrder</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stdOrder</span><span class="p">):</span>
+          <span class="n">xi</span><span class="o">.</span>    <span class="n">append</span><span class="p">(</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">ip</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">ip</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">ip</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)]</span> <span class="p">)</span>
+          <span class="n">weight</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="p">)</span>
+          
+  <span class="k">elif</span> <span class="n">elemType</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Prism&quot;</span><span class="p">:</span>
+    <span class="n">orderArray</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s2">&quot;Prism6&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">elif</span> <span class="n">elemtype</span> <span class="o">==</span> <span class="s2">&quot;Prism18&quot;</span><span class="p">:</span>
+      <span class="n">stdOrder</span> <span class="o">=</span> <span class="mi">3</span>      
+      
+    <span class="n">stdOrder</span> <span class="o">+=</span> <span class="n">order</span>
+    
+    <span class="n">ip0</span><span class="p">,</span><span class="n">w0</span> <span class="o">=</span> <span class="n">tria_scheme</span><span class="p">(</span> <span class="n">orderArray</span><span class="p">[</span><span class="n">stdOrder</span><span class="p">]</span> <span class="p">)</span>
+    <span class="n">ip1</span><span class="p">,</span><span class="n">w1</span> <span class="o">=</span> <span class="n">gauss_scheme</span><span class="p">(</span> <span class="n">stdOrder</span> <span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">orderArray</span><span class="p">[</span><span class="n">stdOrder</span><span class="p">]):</span>
+      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">stdOrder</span><span class="p">):</span>
+        <span class="n">xi</span><span class="o">.</span>    <span class="n">append</span><span class="p">(</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">ip0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">ip0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">ip1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="p">)]</span> <span class="p">)</span>
+        <span class="n">weight</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">w0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">w1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Element type not known.&#39;</span><span class="p">)</span>        
+
+  <span class="k">return</span> <span class="n">xi</span> <span class="p">,</span> <span class="n">weight</span></div>
+
+
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="calcWeightandDerivatives">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.calcWeightandDerivatives">[docs]</a>
+<span class="k">def</span> <span class="nf">calcWeightandDerivatives</span><span class="p">(</span> <span class="n">elemCoords</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">,</span> <span class="n">sData</span> <span class="p">:</span> <span class="n">shapeData</span> <span class="p">,</span> <span class="n">weight</span> <span class="p">:</span> <span class="nb">float</span> <span class="p">):</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function that calculates the derivatives of shapefunctions and their weight in </span>
+<span class="sd">  the physical element.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      elemCoords(ndarray): Matrix (2D array) containing the nodal </span>
+<span class="sd">                           coordinates of the element. The number of rows is the</span>
+<span class="sd">                           number of nodes, the number of columns is the spatial</span>
+<span class="sd">                           dimensions (1,2 or 3).</span>
+<span class="sd">      sData (shapeData):   the current shape data in this integration point. This</span>
+<span class="sd">                           contains the coordinate of the integration point xi and</span>
+<span class="sd">                           the shape function h and its derivative dhdx.</span>
+<span class="sd">      weight(float):       Integration weight.</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      None: </span>
+<span class="sd">      </span>
+<span class="sd">  The physical derivative and weight are store in sData.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+
+  <span class="n">jac</span> <span class="o">=</span> <span class="n">dot</span> <span class="p">(</span> <span class="n">elemCoords</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span> <span class="p">,</span> <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="p">)</span>
+  
+  <span class="k">if</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdx</span> <span class="o">=</span> <span class="n">dot</span> <span class="p">(</span> <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span> <span class="p">,</span> <span class="n">inv</span><span class="p">(</span> <span class="n">jac</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">det</span><span class="p">(</span><span class="n">jac</span><span class="p">))</span> <span class="o">*</span> <span class="n">weight</span>
+
+  <span class="k">elif</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">jac</span><span class="o">*</span><span class="n">jac</span><span class="p">)))</span> <span class="o">*</span> <span class="n">weight</span>
+    
+  <span class="k">elif</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">jac</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">jac3</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    
+    <span class="n">jac3</span><span class="p">[:,:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">jac</span>
+        
+    <span class="n">dA</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+    
+    <span class="n">dA</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">cross</span><span class="p">(</span><span class="n">jac3</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">jac3</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]))</span>
+    <span class="n">dA</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">cross</span><span class="p">(</span><span class="n">jac3</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="n">jac3</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">dA</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">cross</span><span class="p">(</span><span class="n">jac3</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">jac3</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]))</span>
+        
+    <span class="n">sData</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">dA</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span></div>
+
+        
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getElemShapeData">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getElemShapeData">[docs]</a>
+<span class="k">def</span> <span class="nf">getElemShapeData</span><span class="p">(</span> <span class="n">elemCoords</span> <span class="p">:</span> <span class="n">ndarray</span> <span class="p">,</span> <span class="n">order</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> 
+                      <span class="n">method</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Gauss&#39;</span> <span class="p">,</span> <span class="n">elemType</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Default&#39;</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">elemShapeData</span><span class="p">:</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function to determine the element shape functions and integration point data for a given </span>
+<span class="sd">  element with nodal coordinates.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:</span>
+<span class="sd">      elemCoords(ndarray): Matrix (2D array) containing the nodal </span>
+<span class="sd">                           coordinates of the element. The number of rows is the</span>
+<span class="sd">                           number of nodes, the number of columns is the spatial</span>
+<span class="sd">                           dimensions (1,2 or 3).</span>
+<span class="sd">      order(int)         : the order of integration. ) is default and indicates</span>
+<span class="sd">                           a regular integration for such an element.</span>
+<span class="sd">      method(str)        : the integration type. `Gauss` is default.</span>
+<span class="sd">      elemType(str)      : the element type. If the default value is chosen, the</span>
+<span class="sd">                           element type will be determined by means of the</span>
+<span class="sd">                           dimensions of the elemCoords array.</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      elemShapeData:</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: when the elementType is not known.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="n">elemData</span> <span class="o">=</span> <span class="n">elemShapeData</span><span class="p">()</span>
+  
+  <span class="k">if</span> <span class="n">elemType</span> <span class="o">==</span> <span class="s1">&#39;Default&#39;</span><span class="p">:</span>  
+    <span class="n">elemType</span> <span class="o">=</span> <span class="n">getElemType</span><span class="p">(</span> <span class="n">elemCoords</span> <span class="p">)</span>
+    
+  <span class="p">(</span><span class="n">intCrds</span><span class="p">,</span><span class="n">intWghts</span><span class="p">)</span> <span class="o">=</span> <span class="n">getIntegrationPoints</span><span class="p">(</span> <span class="n">elemType</span> <span class="p">,</span> <span class="n">order</span> <span class="p">,</span> <span class="n">method</span> <span class="p">)</span>
+    
+  <span class="k">for</span> <span class="n">xi</span><span class="p">,</span><span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span> <span class="n">intCrds</span> <span class="p">,</span> <span class="n">intWghts</span> <span class="p">):</span>    
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">sData</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span> <span class="s1">&#39;getShape&#39;</span><span class="o">+</span><span class="n">elemType</span><span class="o">+</span><span class="s1">&#39;(xi)&#39;</span> <span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unknown type :&#39;</span><span class="o">+</span><span class="n">elemType</span><span class="p">)</span>
+    
+    <span class="n">calcWeightandDerivatives</span><span class="p">(</span> <span class="n">elemCoords</span> <span class="p">,</span> <span class="n">sData</span> <span class="p">,</span> <span class="n">weight</span> <span class="p">)</span>
+    
+    <span class="n">sData</span><span class="o">.</span><span class="n">x</span>      <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">sData</span><span class="o">.</span><span class="n">h</span><span class="p">,</span><span class="n">elemCoords</span><span class="p">)</span>
+
+    <span class="n">elemData</span><span class="o">.</span><span class="n">sData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sData</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">elemData</span></div>
+
+  
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="getShapeData">
+<a class="viewcode-back" href="../../../pyfem.util.html#pyfem.util.shapeFunctions.getShapeData">[docs]</a>
+<span class="k">def</span> <span class="nf">getShapeData</span><span class="p">(</span> <span class="n">order</span> <span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">method</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Gauss&#39;</span> <span class="p">,</span> <span class="n">elemType</span> <span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Default&#39;</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">elemShapeData</span><span class="p">:</span>
+
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  Function to determine the element shape functions and integration point data for a given </span>
+<span class="sd">  elementtype.</span>
+<span class="sd">  </span>
+<span class="sd">  Args:     </span>
+<span class="sd">      order(int)         : the order of integration. ) is default and indicates</span>
+<span class="sd">                           a regular integration for such an element.</span>
+<span class="sd">      method(str)        : the integration type. `Gauss` is default.</span>
+<span class="sd">      elemType(str)      : the element type.</span>
+<span class="sd">  Returns:</span>
+<span class="sd">      elemShapeData:</span>
+<span class="sd">  Raises:</span>
+<span class="sd">      Error: when the elementType is not known.</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+  
+  <span class="n">shpData</span> <span class="o">=</span> <span class="n">elemShapeData</span><span class="p">()</span>
+      
+  <span class="p">(</span><span class="n">intCrds</span><span class="p">,</span><span class="n">intWghts</span><span class="p">)</span> <span class="o">=</span> <span class="n">getIntegrationPoints</span><span class="p">(</span> <span class="n">elemType</span> <span class="p">,</span> <span class="n">order</span> <span class="p">,</span> <span class="n">method</span> <span class="p">)</span>
+    
+  <span class="k">for</span> <span class="n">xi</span><span class="p">,</span><span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span> <span class="n">intCrds</span> <span class="p">,</span> <span class="n">intWghts</span> <span class="p">):</span>    
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">sData</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span> <span class="s1">&#39;getShape&#39;</span><span class="o">+</span><span class="n">elemType</span><span class="o">+</span><span class="s1">&#39;(xi)&#39;</span> <span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Unknown type :&#39;</span><span class="o">+</span><span class="n">elemType</span><span class="p">)</span>
+    
+    <span class="n">sData</span><span class="o">.</span><span class="n">dhdx</span>   <span class="o">=</span> <span class="n">sData</span><span class="o">.</span><span class="n">dhdxi</span>
+    <span class="n">sData</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span>
+        
+    <span class="n">shpData</span><span class="o">.</span><span class="n">sData</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sData</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">shpData</span>  </div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
