@@ -30,7 +30,7 @@
 
 from .Element import Element
 
-from numpy import zeros, dot, eye
+from numpy import zeros, dot, eye, array
 from scipy.linalg import norm
 from math import atan2, sin, cos, tan
 
@@ -55,7 +55,14 @@ class BeamNL ( Element ):
     self.GA = self.G * self.A
     
     self.family = "BEAM"
-
+    
+    self.bodyForce = False
+    
+    if hasattr(props,"bodyForce"):
+      if props.bodyForce:
+        self.bodyForce = True
+        
+       
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -148,8 +155,25 @@ class BeamNL ( Element ):
     mass *= self.rho*self.A*length/420.0
     
     elemdat.mass = self.loc2glob( mass , T )                  
-    elemdat.lumped = sum(elemdat.mass)    
+    elemdat.lumped = sum(elemdat.mass)   
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+  
+  def getExternalForce( self, elemdat ):
+              
+    if self.bodyForce:   
+
+      length , T = self.getT( elemdat )
          
+      g = array([0.0,-9.81])
+      
+      b = 0.5 * g * self.rho * self.A * length
+      
+      elemdat.fint[:2]  += b
+      elemdat.fint[3:5] += b
+                     
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------

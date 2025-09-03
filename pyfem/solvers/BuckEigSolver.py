@@ -32,6 +32,7 @@ from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array, pi
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness
+from pyfem.fem.Assembly import assembleExternalForce
 
 from pyfem.util.logger   import getLogger
 
@@ -61,8 +62,10 @@ class BuckEigSolver ( BaseModule ):
     self.writeHeader()  
       
     K0,fint  = assembleTangentStiffness( props, globdat )
+    
+    fext     = assembleExternalForce   ( props, globdat )    
 
-    globdat.state = globdat.dofs.solve( K0 , globdat.fhat )
+    globdat.state = globdat.dofs.solve( K0 , fext )
          
     K,fint  = assembleTangentStiffness( props, globdat )
 
