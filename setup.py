@@ -1,24 +1,56 @@
-import setuptools
+# setup.py
+from pathlib import Path
+from setuptools import setup, find_packages
 
-#with open("README.md", "r") as fh:
-#    long_description = fh.read()
+README = Path(__file__).with_name("README.md")
+long_description = README.read_text(encoding="utf-8") if README.exists() else ""
 
-setuptools.setup(
-    name="PyFEM-TUE",
-    version="3.0.2",
-    author="J.J.C. Remmers",
-    author_email="j.j.c.remmers@tue.nl",
-    description="A Python Finite Element package",
-    keywords = ['Finite Element Method', 'Mechanics', 'Wiley'],
-    long_description="PyFEM is a python-based finite element code accompanies the book: 'Non-Linear Finite Element Analysis of Solids and Structures' by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel. The code is open source and intended for educational and scientific purposes only. If you use PyFEM in your research, the  developers would be grateful if you could cite the book in your work.",
+setup(
+    name="pyfem",
+    version="0.1.0",
+    description="A Python finite element code (educational)",
+    long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/jjcremmers/PyFEM",
-    packages=setuptools.find_packages(),
-    install_requires=['numpy','scipy','matplotlib'],
+    author="J.J.C. Remmers",
+    license="GPL-3.0-only",
+    packages=find_packages(include=["pyfem", "pyfem.*"]),
+    include_package_data=True,  # works with MANIFEST.in if you add one
+    python_requires=">=3.9",
+    install_requires=[
+        "numpy",
+        "scipy",
+        "matplotlib",
+        "meshio",
+        "h5py",
+        "PySide6",
+        "vtk",
+        #"pyyaml",   # if you load YAML props in api.py
+        # add other runtime deps used by pyfem/*
+    ],
+    #extras_require={
+    #    "dev": [
+    #        "pytest",
+    #        "black",
+    #        "mypy",
+    #    ],
+    #},
+    entry_points={
+        "console_scripts": [
+            "pyfem2=pyfem.cli:main",
+            "pyfem-gui=pyfem.gui.app:main"
+        ],
+    },
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering",
     ],
-    python_requires='>=3.6',
+    project_urls={
+        "Homepage": "https://github.com/jjcremmers/PyFEM",
+        "Issues": "https://github.com/jjcremmers/PyFEM/issues",
+    },
+    zip_safe=False,
 )
+
