@@ -12,7 +12,6 @@ from pyfem.solvers.Solver   import Solver
 
 def main(argv: list[str] | None = None) -> None:
 
-    print("TTT")
     props,globdat = InputReader( sys.argv )
 
     solver = Solver        ( props , globdat )

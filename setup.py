@@ -7,7 +7,7 @@ long_description = README.read_text(encoding="utf-8") if README.exists() else ""
 
 setup(
     name="pyfem",
-    version="3.0.0",
+    version="2.99",
     description="A Python finite element code (educational)",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -37,7 +37,7 @@ setup(
     #},
     entry_points={
         "console_scripts": [
-            "pyfem2=pyfem.cli:main",
+            "pyfem=pyfem.cli:main",
             "pyfem-gui=pyfem.gui.app:main"
         ],
     },
