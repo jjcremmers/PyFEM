@@ -1,5 +1,79 @@
-Installation
-============
+PyFEM Installation Guide
+========================
+
+PyFEM can be installed directly from the
+`GitHub source <https://github.com/jjcremmers/PyFEM>`_.
+Both the **Python API** and the **command-line interface (CLI)** are included.
+
+Requirements
+------------
+
+- Python **3.9 or newer**
+- ``pip`` (Python package manager)
+- (Optional but recommended) a virtual environment:
+
+.. code-block:: bash
+
+   python3 -m venv .venv
+   source .venv/bin/activate    # Linux / macOS
+   .venv\Scripts\activate       # Windows PowerShell
+
+Installation Steps
+------------------
+
+1. **Clone the repository**
+
+   .. code-block:: bash
+
+      git clone https://github.com/jjcremmers/PyFEM.git
+      cd PyFEM
+
+2. **Install with pip**
+
+   .. code-block:: bash
+
+      pip install .
+
+   For developers who want to make local changes and test immediately, install in editable mode:
+
+   .. code-block:: bash
+
+      pip install -e .
+
+Verifying the Installation
+--------------------------
+
+After installation, verify that both the API and CLI are available.
+
+**API usage**
+
+.. code-block:: python
+
+   from pyfem import run
+
+   output = run("inputfile.pro")
+
+**CLI usage**
+
+.. code-block:: bash
+
+   pyfem inputfile.pro
+
+If both commands run without errors, the installation is successful.
+
+Updating PyFEM
+--------------
+
+To update to the latest version from GitHub:
+
+.. code-block:: bash
+
+   cd PyFEM
+   git pull origin main
+   pip install --upgrade .
+
+OLD
+===
 
 Below, instructions are given how to access PyFEM and install it on windows using Git Bash. 
 
