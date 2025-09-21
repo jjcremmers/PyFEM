@@ -43,7 +43,18 @@ Installation Steps
 Verifying the Installation
 --------------------------
 
-After installation, verify that both the API and CLI are available.
+After installation, verify that both the CLI (the Command Line Interface, the 
+actual exectuable) and the API (the Application Programming interface) are available.
+
+**CLI usage**
+
+   Run one of the example input files.
+   
+.. code-block:: bash
+
+   cd examples
+   cd ch02
+   pyfem PatchTest4.pro
 
 **API usage**
 
@@ -52,14 +63,8 @@ After installation, verify that both the API and CLI are available.
    from pyfem import run
 
    output = run("inputfile.pro")
-
-**CLI usage**
-
-.. code-block:: bash
-
-   pyfem inputfile.pro
-
-If both commands run without errors, the installation is successful.
+   
+If both commands run without errors, the installation is successful.   
 
 Updating PyFEM
 --------------
