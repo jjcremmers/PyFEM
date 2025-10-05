@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem package &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyfem.util package" href="pyfem.util.html" />
+    <link rel="prev" title="pyfem-GITHUB" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyfem-GITHUB</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pyfem package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html">pyfem.util package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-pyfem">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyfem.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyfem.NodeSet"><code class="docutils literal notranslate"><span class="pre">NodeSet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pyfem.ElementSet"><code class="docutils literal notranslate"><span class="pre">ElementSet</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pyfem-GITHUB</a></li>
+      <li class="breadcrumb-item active">pyfem package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyfem-package">
+<h1>pyfem package<a class="headerlink" href="#pyfem-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.util.html">pyfem.util package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.BaseModule">pyfem.util.BaseModule module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.BaseModule.BaseModule"><code class="docutils literal notranslate"><span class="pre">BaseModule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.BaseModule.BaseModule.type"><code class="docutils literal notranslate"><span class="pre">BaseModule.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.BaseModule.BaseModule.writeHeader"><code class="docutils literal notranslate"><span class="pre">BaseModule.writeHeader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.BaseModule.BaseModule.writeFooter"><code class="docutils literal notranslate"><span class="pre">BaseModule.writeFooter()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#pyfem-util-beziershapefunctions-module">pyfem.util.BezierShapeFunctions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.dataStructures">pyfem.util.dataStructures module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.cleanVariable"><code class="docutils literal notranslate"><span class="pre">cleanVariable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.solverStatus"><code class="docutils literal notranslate"><span class="pre">solverStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.solverStatus.increaseStep"><code class="docutils literal notranslate"><span class="pre">solverStatus.increaseStep()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.Properties"><code class="docutils literal notranslate"><span class="pre">Properties</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.Properties.store"><code class="docutils literal notranslate"><span class="pre">Properties.store()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.GlobalData"><code class="docutils literal notranslate"><span class="pre">GlobalData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.GlobalData.readFromFile"><code class="docutils literal notranslate"><span class="pre">GlobalData.readFromFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.GlobalData.printNodes"><code class="docutils literal notranslate"><span class="pre">GlobalData.printNodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.GlobalData.getData"><code class="docutils literal notranslate"><span class="pre">GlobalData.getData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.GlobalData.resetNodalOutput"><code class="docutils literal notranslate"><span class="pre">GlobalData.resetNodalOutput()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.GlobalData.close"><code class="docutils literal notranslate"><span class="pre">GlobalData.close()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.dataStructures.elementData"><code class="docutils literal notranslate"><span class="pre">elementData</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.fileParser">pyfem.util.fileParser module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.containsValue"><code class="docutils literal notranslate"><span class="pre">containsValue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.cleanVariable"><code class="docutils literal notranslate"><span class="pre">cleanVariable()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.isNodeDof"><code class="docutils literal notranslate"><span class="pre">isNodeDof()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.decodeNodeDof"><code class="docutils literal notranslate"><span class="pre">decodeNodeDof()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.getType"><code class="docutils literal notranslate"><span class="pre">getType()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.storeValue"><code class="docutils literal notranslate"><span class="pre">storeValue()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.readItem"><code class="docutils literal notranslate"><span class="pre">readItem()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.readBlock"><code class="docutils literal notranslate"><span class="pre">readBlock()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.fileParser"><code class="docutils literal notranslate"><span class="pre">fileParser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.deepFileParser"><code class="docutils literal notranslate"><span class="pre">deepFileParser()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.nodeTable"><code class="docutils literal notranslate"><span class="pre">nodeTable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.fileParser.readNodeTable"><code class="docutils literal notranslate"><span class="pre">readNodeTable()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.itemList">pyfem.util.itemList module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList"><code class="docutils literal notranslate"><span class="pre">itemList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList.add"><code class="docutils literal notranslate"><span class="pre">itemList.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList.get"><code class="docutils literal notranslate"><span class="pre">itemList.get()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList.getIndices"><code class="docutils literal notranslate"><span class="pre">itemList.getIndices()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList.findID"><code class="docutils literal notranslate"><span class="pre">itemList.findID()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.kinematics">pyfem.util.kinematics module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.kinematics.Kinematics"><code class="docutils literal notranslate"><span class="pre">Kinematics</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.logger">pyfem.util.logger module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.logger.setLogger"><code class="docutils literal notranslate"><span class="pre">setLogger()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.logger.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.plotUtils">pyfem.util.plotUtils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.plotUtils.plotCurve"><code class="docutils literal notranslate"><span class="pre">plotCurve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.plotUtils.plotTime"><code class="docutils literal notranslate"><span class="pre">plotTime()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#pyfem-util-shapefunctions-module">pyfem.util.shapeFunctions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#pyfem-util-transformations-module">pyfem.util.transformations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.utilFunctions">pyfem.util.utilFunctions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.utilFunctions.macauley"><code class="docutils literal notranslate"><span class="pre">macauley()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.utilFunctions.sign"><code class="docutils literal notranslate"><span class="pre">sign()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util.vtkUtils">pyfem.util.vtkUtils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.storeNodes"><code class="docutils literal notranslate"><span class="pre">storeNodes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.storeElements"><code class="docutils literal notranslate"><span class="pre">storeElements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.storeDofField"><code class="docutils literal notranslate"><span class="pre">storeDofField()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.storeDofFields"><code class="docutils literal notranslate"><span class="pre">storeDofFields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.storeNodeField"><code class="docutils literal notranslate"><span class="pre">storeNodeField()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.storeElementField"><code class="docutils literal notranslate"><span class="pre">storeElementField()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.setCellNodes"><code class="docutils literal notranslate"><span class="pre">setCellNodes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insertElement"><code class="docutils literal notranslate"><span class="pre">insertElement()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insert2Dcontinuum"><code class="docutils literal notranslate"><span class="pre">insert2Dcontinuum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insert3Dcontinuum"><code class="docutils literal notranslate"><span class="pre">insert3Dcontinuum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insert2Dinterface"><code class="docutils literal notranslate"><span class="pre">insert2Dinterface()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insert3Dinterface"><code class="docutils literal notranslate"><span class="pre">insert3Dinterface()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insert2Dsurface"><code class="docutils literal notranslate"><span class="pre">insert2Dsurface()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insert3Dsurface"><code class="docutils literal notranslate"><span class="pre">insert3Dsurface()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insertBeam"><code class="docutils literal notranslate"><span class="pre">insertBeam()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.html#pyfem.util.vtkUtils.insertShell"><code class="docutils literal notranslate"><span class="pre">insertShell()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#module-pyfem.util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="module-pyfem">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyfem" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/api.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.run" title="Link to this definition"></a></dt>
+<dd><p>Run a PyFEM analysis from a dict or YAML/JSON file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>props</strong> (<em>dict</em><em> | </em><em>str</em><em> | </em><em>Path</em>) – Analysis settings (or a path to YAML/JSON).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A results dictionary (or switch to a dataclass).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.NodeSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NodeSet</span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList" title="pyfem.util.itemList.itemList"><code class="xref py py-class docutils literal notranslate"><span class="pre">itemList</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.NodeSet.addToGroup">
+<span class="sig-name descname"><span class="pre">addToGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.addToGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet.addToGroup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.NodeSet.getNodeCoords">
+<span class="sig-name descname"><span class="pre">getNodeCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodeIDs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.getNodeCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet.getNodeCoords" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.NodeSet.readFromFile">
+<span class="sig-name descname"><span class="pre">readFromFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readFromFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet.readFromFile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.NodeSet.readGmshFile">
+<span class="sig-name descname"><span class="pre">readGmshFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readGmshFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet.readGmshFile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.NodeSet.readNodalCoords">
+<span class="sig-name descname"><span class="pre">readNodalCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readNodalCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet.readNodalCoords" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.NodeSet.readNodegroup">
+<span class="sig-name descname"><span class="pre">readNodegroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readNodegroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.NodeSet.readNodegroup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.ElementSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ElementSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyfem.util.html#pyfem.util.itemList.itemList" title="pyfem.util.itemList.itemList"><code class="xref py py-class docutils literal notranslate"><span class="pre">itemList</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementNodes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.add" title="Link to this definition"></a></dt>
+<dd><p>Adds an item with an ID to the list. This item will be stored in the list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ID</strong> (<em>int</em>) – the ID of the item to be stored.</p></li>
+<li><p><strong>item</strong> – the value(s) of the item to be stored.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.addGroup">
+<span class="sig-name descname"><span class="pre">addGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupIDs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.addGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.addGroup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.addToGroup">
+<span class="sig-name descname"><span class="pre">addToGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.addToGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.addToGroup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.commitHistory">
+<span class="sig-name descname"><span class="pre">commitHistory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.commitHistory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.commitHistory" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.elementGroupCount">
+<span class="sig-name descname"><span class="pre">elementGroupCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.elementGroupCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.elementGroupCount" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.getDofTypes">
+<span class="sig-name descname"><span class="pre">getDofTypes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.getDofTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.getDofTypes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.getFamilyIDs">
+<span class="sig-name descname"><span class="pre">getFamilyIDs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.getFamilyIDs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.getFamilyIDs" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.iterElementGroup">
+<span class="sig-name descname"><span class="pre">iterElementGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.iterElementGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.iterElementGroup" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.iterGroupNames">
+<span class="sig-name descname"><span class="pre">iterGroupNames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.iterGroupNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.iterGroupNames" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.readFromFile">
+<span class="sig-name descname"><span class="pre">readFromFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.readFromFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.readFromFile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.ElementSet.readGmshFile">
+<span class="sig-name descname"><span class="pre">readGmshFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.readGmshFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.ElementSet.readGmshFile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="pyfem-GITHUB" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyfem.util.html" class="btn btn-neutral float-right" title="pyfem.util package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
