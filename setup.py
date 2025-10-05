@@ -7,7 +7,7 @@ long_description = README.read_text(encoding="utf-8") if README.exists() else ""
 
 setup(
     name="pyfem",
-    version="2.99",
+    version="3.00",
     description="A Python finite element code (educational)",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -705,6 +705,6 @@
 </NodeConstraints>
  
 <ExternalForces>
-  v[ 61 ] = -0.01;
-  v[ 366 ] = 0.01;
+  v[ 61 ] = -0.005;
+  v[ 366 ] = 0.005;
 </ExternalForces>

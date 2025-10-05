@@ -82,7 +82,7 @@ graph =
 {
   type = "GraphWriter";
 
-  onScreen = True;
+  onScreen = False;
 
   columns = ["disp","load","stress","lam","cycle","iiter"];
 

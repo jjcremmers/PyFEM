@@ -30,7 +30,7 @@
 #  Usage:       pyfem PeelTest60.pro                                       #
 ############################################################################
 
-input = "PeelTest40.dat";
+input = "PeelTest60pres.dat";
 
 ContElem =
 {
@@ -50,27 +50,20 @@ InterfaceElem =
 
   material = 
   {
-    type = "PowerLawModeI";
     type = "XuNeedleman";
-    type = "ThoulessModeI";
-
-    Tult = 1.0;
+    
+    Tult = 0.5;
     Gc   = 0.1;
-    d1d3 = 0.1;
-    d2d3 = 0.6;
   };
 };
 
 solver =
 {
-  type = "DissipatedEnergySolver";
+  type = "NonlinearSolver";
 
   maxCycle   = 60;
   tol        = 10e-4;
-  maxLam     = 20;
-
-  switchEnergy = 1.0e-3; 
-  maxdTau    = 0.05;
+  lam        = 100.0;
 };
 
 outputModules = ["vtk","graph","contour"];
@@ -93,14 +86,14 @@ graph =
   disp =
   {
     type = "state";
-    node = 246;
+    node = 366;
     dof  = "v";
   };
   
   load =
   {
     type = "fint";
-    node = 246;
+    node = 366;
     dof  = "v";
   };
 };
@@ -108,6 +101,6 @@ graph =
 contour =
 {
   type = "ContourWriter";
-
-  nodes = [ 83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119 ];
+  
+  nodes = [123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177];
 };

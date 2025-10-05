@@ -49,7 +49,7 @@ solver =
   type = "LinearSolver";
 };
 
-outputModules = ["vtk","output"];
+outputModules = ["vtk","output","h5"];
 
 vtk =
 {
@@ -61,4 +61,9 @@ output =
   type = "OutputWriter";
 
   onScreen = true;
+};
+
+h5 =
+{
+  type = "HDF5Writer";
 };

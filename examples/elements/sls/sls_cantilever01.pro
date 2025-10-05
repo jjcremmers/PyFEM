@@ -47,7 +47,7 @@ SLSElem =
 
 solver =
 {
-  type = "LinearSolver";
+  type = "NonlinearSolver";
 };
 
 outputModules = ["vtk","output"];
