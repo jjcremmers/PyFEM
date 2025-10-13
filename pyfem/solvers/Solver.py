@@ -28,24 +28,37 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
+import importlib
+
 class Solver:
+    
+    def __init__(self, props, globdat):
+        
+        solverProps = getattr(props, "solver")
 
-  def __init__( self , props , globdat ):
+        solverType  = solverProps.type             
 
-    solverProps = getattr( props, "solver" )
+        try:
+            mod = importlib.import_module(f"pyfem.solvers.{solverType}")
+            SolverClass = getattr(mod, solverType)  
+        except ModuleNotFoundError as e:
+            raise ImportError(
+                f"Solver module 'pyfem.solvers.{solverType}' not found."
+            ) from e
+        except AttributeError as e:
+            raise ImportError(
+                f"Class '{solverType}' not found in module "
+                f"'pyfem.solvers.{solverType}'."
+            ) from e
 
-    solverType = solverProps.type
+        props.currentModule = "solver"
 
-    exec("from pyfem.solvers."+solverType+" import "+solverType)
-
-    props.currentModule = "solver"
-
-    self.solver = eval(solverType+"( props , globdat )")
+        self.solver = SolverClass(props, globdat)    
     
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
         
-  def run( self , props , globdat ):
+    def run( self , props , globdat ):
 
-    self.solver.run( props , globdat )
+        self.solver.run( props , globdat )

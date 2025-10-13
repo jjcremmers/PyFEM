@@ -29,6 +29,7 @@
 ################################################################################
 
 import re
+from importlib import import_module
 from pyfem.util.itemList import itemList
 from pyfem.util.logger   import getLogger
 from pyfem.util.dataStructures import solverStatus
@@ -170,11 +171,23 @@ class ElementSet( itemList ):
       modelProps.rank       = self.nodes.rank
       modelProps.solverStat = self.solverStat
 
-      element = getattr(__import__('pyfem.elements.'+modelType , globals(), locals(), modelType , 0 ), modelType )
+      try:
+        model = import_module(f"pyfem.elements.{modelType}")
+      except ModuleNotFoundError as e:
+        raise ImportError(
+          f"Solver module 'pyfem.elements.{modelType}' not found. "
+          f"Check the 'type' in your input file."
+        ) from e    
 
-      #Create the element
+      try:
+        model_cls = getattr(model,modelType)           
+      except AttributeError as e:
+        raise ImportError(
+          f"Class '{matType}' not found in module 'pyfem.materials.{matType}'. "
+          f"Ensure the class name matches the file name."
+        ) from e
  
-      elem = element( elementNodes , modelProps )
+      elem = model_cls( elementNodes , modelProps )
 
       #  Check if the node IDs are valid:
 
