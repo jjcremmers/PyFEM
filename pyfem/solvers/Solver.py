@@ -29,18 +29,28 @@
 ################################################################################
 
 class Solver:
+    def __init__(self, props, globdat):
+        solverProps = getattr(props, "solver")
+        solverType  = solverProps.type  # e.g. "DissipatedEnergySolver"
 
-  def __init__( self , props , globdat ):
+        try:
+            module = import_module(f"pyfem.solvers.{solverType}")
+        except ModuleNotFoundError as e:
+            raise ImportError(
+                f"Solver module 'pyfem.solvers.{solverType}' not found. "
+                f"Check the 'type' in your input file."
+            ) from e
 
-    solverProps = getattr( props, "solver" )
+        try:
+            solver_cls = getattr(module, solverType)
+        except AttributeError as e:
+            raise ImportError(
+                f"Class '{solverType}' not found in module 'pyfem.solvers.{solverType}'. "
+                f"Ensure the class name matches the file name."
+            ) from e
 
-    solverType = solverProps.type
-
-    exec("from pyfem.solvers."+solverType+" import "+solverType)
-
-    props.currentModule = "solver"
-
-    self.solver = eval(solverType+"( props , globdat )")
+        props.currentModule = "solver"
+        self.solver = solver_cls(props, globdat)
     
 #-------------------------------------------------------------------------------
 #
