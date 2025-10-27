@@ -1,0 +1,143 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Windows &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyfem-GITHUB</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Windows</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/windows.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="windows">
+<h1>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h1>
+<ol class="arabic simple">
+<li><p>Install Python</p></li>
+</ol>
+<p>In this instruction, we use the Anaconda Python distribution.
+Download the Python 3.6 version of Anaconda from: <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a>
+You are advised to use the default settings in the installation process, and to not select
+the option to also install Visual Studio. Besides the Python 3 interpreter the Anaconda
+distribution contains tools, such as the linear algebra package NumPy, the scientific
+computing package SciPy, the plotting library MatplotLib, and the Integrated Development
+Environment (IDE) Spyder.</p>
+<ol class="arabic simple" start="2">
+<li><p>Install Git</p></li>
+</ol>
+<ul class="simple">
+<li><p>Go to the official Git website <a class="reference external" href="https://git-scm.com/">https://git-scm.com/</a> and download and install Git by following the download link and selecting the appropriate operating system (most likely 64-bit Windows).</p></li>
+<li><p>Plenty of documentation is available through the Git site, which you will have to consult while working with Git. In particular the first two chapters of the online Git reference manual <a class="reference external" href="https://git-scm.com/doc">https://git-scm.com/doc</a> are highly recommended to read.Git Bash and Git GUI are now installed on your computer. Try them both with an example project you make on your own Gitlab account. You may choose the interface you prefer, however, for the rest of this instruction the Git Bash is used. A site that may be usefull: <a class="reference external" href="https://www.atlassian.com/git/tutorials/git-bash">https://www.atlassian.com/git/tutorials/git-bash</a> In the Git Bash window, you can type Git Commands that can be found in documentation/internet. Tip: there are cheat sheets  available for the commands on the internet.</p></li>
+</ul>
+<ol class="arabic simple" start="3">
+<li><p>Install PyFEM using Git Bash</p></li>
+</ol>
+<ul class="simple">
+<li><p>Go to the directory on your computer where you would like to save/clone the PyFEM files, preferably this directory does not contain any spaces, e.g. C:Users.….. Right click and select ‘Git Bash here’.</p></li>
+<li><p>In the bash window you can now type   Git Commands. You can clone the PyFEM repository (or required branch) by typing ‘git clone’ followed by the https link of the repository you would like to clone and press enter. This https link can be found on the Gitlab repository by clicking on the blue ‘clone’ button (first select the required branch as this is different as the standard shown master branch). The files associated with PyFEM are automatically downloaded.</p></li>
+<li><p>Open the Anaconda prompt: click the windows button and search &amp; select it. Navigate to the directory install.py  (in the PyFEM folder you just cloned with Git Bash). You can change the current directory and navigate to your folders by using ‘cdfoldername’ to open a subfolder or ‘cd ..’ to move up again. Type now ‘python install.py’. This will check whether all required packages are available and gives you the path PyFEM is installed. An error message may occur stating</p></li>
+</ul>
+<p>that meshi is not installed. In this case, install meshio first bytyping conda install -c conda-forge meshio in the anaconda prompt. Then run install.py again.</p>
+</section>
+<section id="linux">
+<h1>Linux<a class="headerlink" href="#linux" title="Link to this heading"></a></h1>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

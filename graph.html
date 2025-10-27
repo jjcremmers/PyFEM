@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph output writer &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyfem-GITHUB</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Graph output writer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/graph.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="graph-output-writer">
+<h1>Graph output writer<a class="headerlink" href="#graph-output-writer" title="Link to this heading"></a></h1>
+<p>The output is stored in a multi column file by this writer. By defaults,
+the file is stored with the extnsion <cite>.out</cite>. The first two columns of
+the output can be shown on the screen as a curve during the simulation.
+Please note that this option is only working when PyFEM is used in
+a Linux environment.</p>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Name</p></td>
+<td><p>GraphWriter</p></td>
+</tr>
+<tr class="row-even"><td><p>Source</p></td>
+<td><p>pyfem/io/GraphWriter.py</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mandatory-parameters">
+<h2>Mandatory parameters:<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>columns</p></td>
+<td><p>Array of strings indicating the
+column that will be stored. For
+each column, the type of data,
+and if needed, the node, degree of
+freedom and scaling factor needs
+to be specified.</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>Type of data. This can be either
+state, velo, fint, stress, etc.</p></td>
+</tr>
+<tr class="row-even"><td><p>node</p></td>
+<td><p>Node ID.</p></td>
+</tr>
+<tr class="row-odd"><td><p>dof</p></td>
+<td><p>Degree of freedom. This is most
+likely ’u’ or ’v’</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-parameters">
+<h2>Optional parameters<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><strong>Name</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>factor</p></td>
+<td><p>The scaling factor for the output.
+The default value is 1.0.</p></td>
+</tr>
+<tr class="row-odd"><td><p>onScreen</p></td>
+<td><p>When set to true the first two
+columns will be shown on the
+screen. The default value is false.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>The graph writer is used to plot the load-displacement curve in the
+example in <cite>examples/ch03/NewtonRaphson.pro’. In this case, the external load,
+the load factor `lambda</cite> is plotted against the vertical displacement of node 21.</p>
+<p>First the graph writer is called in the list of output modules</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mesh&quot;</span> <span class="p">,</span> <span class="s2">&quot;graph&quot;</span> <span class="p">];</span>
+</pre></div>
+</div>
+<p>where <cite>mesh</cite> refers to the VTK output writer, which is discussed here, and ‘graph’ refers to this
+<cite>GraphWriter</cite>. The following code block in the input-file describes the input paramers.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;GraphWriter&quot;</span><span class="p">;</span>
+  <span class="n">onScreen</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+
+  <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;disp&quot;</span> <span class="p">,</span> <span class="s2">&quot;load&quot;</span> <span class="p">];</span>
+
+  <span class="n">disp</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;state&quot;</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="mi">21</span><span class="p">;</span>
+    <span class="n">dof</span>  <span class="o">=</span> <span class="s2">&quot;v&quot;</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">load</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;lam&quot;</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>In this example, the output file consists of two columns, labeled ‘disp’ and ‘load’. The
+first colum contains the displacement of node 21 in the y-direction. In the code, the displacement
+is stored as ‘state’, whereas the ‘v’ degree-of-freedom is the displacement in the vertical direction.
+In a similar fashion, the temperature or a rotation of a specific node can be plotted by
+using the degree-of-freedom names, ‘temp’, ‘rx’, ‘ry’ or ‘rz’.</p>
+<p>The argument ‘onScreen = true;’ indicates that the results are plotted on screen during the simulation. Please not that this
+only works in a Linux environment.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
