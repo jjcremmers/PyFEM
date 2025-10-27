@@ -44,6 +44,8 @@ def runAll( args ):
   props,globdat = InputRead( args )
   
   run( props, globdat )
+  
+  return globdat
 
 #-------------------------------------------------------------------------------
 #

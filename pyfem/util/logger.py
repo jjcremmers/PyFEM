@@ -45,36 +45,38 @@ def setLogger( props : dict ):
     
     level = "normal"
   
-    '''root = logging.getLogger()
-    
-    if root.handlers:   # already configured -> do nothing
-        return
-    '''
-        
-    if hasattr(props,"logger"):
-        level = props.logger.level
-    
-        if level not in ["normal","info","debug","critical","warning","silent"]:
-            raise NotImplementedError('Logger level should be "normal", "info", "debug", "critical", "silent" or "warning"')
-    
-    logger    = logging.getLogger()
-    handler   = logging.StreamHandler()
-    
-    if level == "debug":
-        formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
-        logger .setLevel(logging.DEBUG)
-    elif level == "critical" or level == "silent":
-        formatter = logging.Formatter('  %(message)s')
-        logger .setLevel(logging.CRITICAL)    
-    elif level == "warning":
-        formatter = logging.Formatter('  %(message)s')
-        logger .setLevel(logging.WARNING)      
-    else:
-        formatter = logging.Formatter('  %(message)s')
-        logger .setLevel(logging.INFO)
-    
-    handler.setFormatter(formatter)
-    logger .addHandler(handler)
+
+    # Default to INFO level
+    level = getattr(getattr(props, "logger", None), "level", "info")
+
+    if level not in ["normal", "info", "debug", "critical", "warning", "silent"]:
+        raise NotImplementedError(
+            'Logger level should be "normal", "info", "debug", "critical", "silent" or "warning"'
+        )
+
+    logger = logging.getLogger()          # root logger
+    logger.propagate = False              # avoid duplicates via parent loggers
+
+    # Only add a handler if none exists
+    if not logger.handlers:
+        handler = logging.StreamHandler()
+
+        # Configure formatter and level
+        if level == "debug":
+            formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+            logger.setLevel(logging.DEBUG)
+        elif level in ["critical", "silent"]:
+            formatter = logging.Formatter('  %(message)s')
+            logger.setLevel(logging.CRITICAL)
+        elif level == "warning":
+            formatter = logging.Formatter('  %(message)s')
+            logger.setLevel(logging.WARNING)
+        else:
+            formatter = logging.Formatter('  %(message)s')
+            logger.setLevel(logging.INFO)
+
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
 
     return logger
   
