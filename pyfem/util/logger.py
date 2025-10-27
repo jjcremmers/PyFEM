@@ -42,8 +42,14 @@ def setLogger( props : dict ):
         logger: an instance of the logger.
     """
     
+    
     level = "normal"
   
+    root = logging.getLogger()
+    
+    if root.handlers:   # already configured -> do nothing
+        return
+        
     if hasattr(props,"logger"):
         level = props.logger.level
     
