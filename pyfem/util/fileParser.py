@@ -214,6 +214,8 @@ def fileParser( fileName ):
   ln = f2.replace('\n','').replace('\t','').replace(' ','').replace('\r','')
 
   readBlock( ln , db )
+  
+  f.close()
 
   return db
 
@@ -226,6 +228,8 @@ def deepFileParser( fileName , db ):
   ln = open(fileName).read().replace('\n','').replace('\t','').replace(' ','').replace('\r','')
 
   readBlock( ln , db )
+  
+  ln.close()
 
   return db
 
@@ -314,6 +318,8 @@ def readNodeTable( fileName , label , nodes = None ):
                   for nodeID in nodeIDs:
                     dt = [ dofType,int(nodeID),rhs,slaveDofType,slaveNodeID,factor ]
                     nt.data.append(dt)
+  
+  fin.close()
                                                     
   return output
 

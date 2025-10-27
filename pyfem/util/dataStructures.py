@@ -187,6 +187,8 @@ class GlobalData ( Properties ):
               nodeID  = eval(c[1].split(']')[0])
               
               self.fhat[self.dofs.getForType(nodeID,dofType)] = eval(b[1])
+              
+    fin.close()
 
 #---------------------------------------------------------------------------------
 #

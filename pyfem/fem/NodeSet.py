@@ -79,6 +79,8 @@ class NodeSet( itemList ):
        
       line = fin.readline() 
       
+    fin.close()
+    
     fin = open( fname , 'r' )
     
     line = fin.readline() 
@@ -93,6 +95,8 @@ class NodeSet( itemList ):
           
     for key in self.groups:
       self.groups[key] = list(set(self.groups[key]))
+      
+    fin.close()
               
 #-------------------------------------------------------------------------------
 #
