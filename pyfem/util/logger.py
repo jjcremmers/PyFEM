@@ -45,10 +45,11 @@ def setLogger( props : dict ):
     
     level = "normal"
   
-    root = logging.getLogger()
+    '''root = logging.getLogger()
     
     if root.handlers:   # already configured -> do nothing
         return
+    '''
         
     if hasattr(props,"logger"):
         level = props.logger.level
