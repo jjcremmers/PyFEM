@@ -67,13 +67,13 @@ class SmallStrainContinuum( Element ):
       
       b = self.getBmatrix( iData.dhdx )
 
-      self.kin.strain  = dot ( b , elemdat.state )
-      self.kin.dstrain = dot ( b , elemdat.Dstate )
+      self.kin.strain  = b @ elemdat.state
+      self.kin.dstrain = b @ elemdat.Dstate
       
       sigma,tang = self.mat.getStress( self.kin )
 
-      elemdat.stiff += dot ( b.transpose() , dot ( tang , b ) ) * iData.weight
-      elemdat.fint  += dot ( b.transpose() , sigma ) * iData.weight
+      elemdat.stiff += b.transpose() @ ( tang @ b ) * iData.weight
+      elemdat.fint  += b.transpose() @ sigma * iData.weight
 
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
       
@@ -92,12 +92,12 @@ class SmallStrainContinuum( Element ):
     for iData in sData:
       b = self.getBmatrix( iData.dhdx )
 
-      self.kin.strain  = dot ( b , elemdat.state )
-      self.kin.dstrain = dot ( b , elemdat.Dstate )
+      self.kin.strain  = b @ elemdat.state
+      self.kin.dstrain = b @ elemdat.Dstate
 
       sigma,tang = self.mat.getStress( self.kin )
 
-      elemdat.fint    += dot ( b.transpose() , sigma ) * iData.weight
+      elemdat.fint    += b.transpose() @ sigma * iData.weight
 
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
  
@@ -110,15 +110,15 @@ class SmallStrainContinuum( Element ):
     for iData in sData:
       b = self.getBmatrix( iData.dhdx )
 
-      self.kin.strain  = dot ( b , elemdat.state )
-      self.kin.dstrain = dot ( b , elemdat.Dstate )
+      self.kin.strain  = b @ elemdat.state
+      self.kin.dstrain = b @ elemdat.Dstate
 
       self.mat.getStress( self.kin )
 
       self.kin.dgdstrain = zeros( 3 )
       self.kin.g = 0.0
             
-      elemdat.fint += dot ( b.transpose() , self.kin.dgdstrain ) * iData.weight
+      elemdat.fint += b.transpose() @ self.kin.dgdstrain * iData.weight
       elemdat.diss += self.kin.g * iData.weight
            
 #----------------------------------------------------------------------
@@ -131,7 +131,7 @@ class SmallStrainContinuum( Element ):
 
     for iData in sData:
       N  = self.getNmatrix( iData.h )
-      elemdat.mass += dot ( N.transpose() , N ) * rho * iData.weight
+      elemdat.mass += N.transpose() @ N * rho * iData.weight
      
     elemdat.lumped = sum(elemdat.mass)
    
