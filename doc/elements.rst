@@ -5,6 +5,8 @@ PyFEM has quite a number of element formulations. In due time, they will
 be described here.
 
 .. toctree::
+   :maxdepth: 1
+   :titlesonly:
 
    elements/smallstraincontinuum.rst
    elements/finitestraincontinuum.rst
