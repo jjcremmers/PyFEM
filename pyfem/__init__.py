@@ -1,4 +1,4 @@
-from .api import run
+from .core.api import run
 from .fem.NodeSet import NodeSet
 from .fem.ElementSet import ElementSet
 from .core.executables import runAll
