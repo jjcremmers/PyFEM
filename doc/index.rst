@@ -16,6 +16,7 @@ documentation for details.
    about
    installation
    quickstart
+   usermanual
    tutorials
    develop 
    api   

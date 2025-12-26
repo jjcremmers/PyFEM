@@ -13,15 +13,15 @@ Some text
 	:maxdepth: 1
 	:titlesonly:
 
-	materials/hookeslaw.rst
-	materials/isotropic.rst
-	materials/isotropichardeningplasticity.rst
-	materials/isokinematichardening.rst
-	materials/multimaterial.rst
-	materials/planestrain.rst
-	materials/planestress.rst
-	materials/sandwichcore.rst
-	materials/transverseisotropic.rst
+	hookeslaw.rst
+    isotropic.rst
+	isotropichardeningplasticity.rst
+    isokinematichardening.rst
+	multimaterial.rst
+	planestrain.rst
+	planestress.rst
+	sandwichcore.rst
+	transverseisotropic.rst
 
 
 
@@ -34,10 +34,10 @@ Some text
 	:maxdepth: 1
 	:titlesonly:
 
-    materials/dummy.rst
-	materials/powerlawmodei.rst
-	materials/thoulessmodei.rst
-	materials/xuneedleman.rst    
+    dummy.rst
+    powerlawmodei.rst
+	thoulessmodei.rst
+	xuneedleman.rst    
 
 Failure criteria
 ----------------
@@ -48,4 +48,4 @@ Some text
 	:maxdepth: 1
 	:titlesonly:
 
-	materials/vonmises.rst    
+	vonmises.rst    

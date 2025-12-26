@@ -9,11 +9,11 @@ examples.
 	:maxdepth: 1
 	:titlesonly:
 
-	io/ContourWriter.rst
-	io/DataDump.rst
-	io/GraphWriter.rst
-	io/HDF5Writer.rst
-	io/InputReader.rst
-	io/MeshWriter.rst
-	io/OutputManager.rst
-	io/OutputWriter.rst
+	ContourWriter.rst
+	DataDump.rst
+	GraphWriter.rst
+	HDF5Writer.rst
+	InputReader.rst
+	MeshWriter.rst
+	OutputManager.rst
+	OutputWriter.rst
