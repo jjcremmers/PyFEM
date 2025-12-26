@@ -10,10 +10,10 @@ elements, materials, solvers, and input/output modules.
    :maxdepth: 2
    :caption: Contents
 
-   elements
-   materials
-   solvers
-   io_modules
+   elements/overview
+   materials/overview
+   solvers/overview
+   io/overview
 
 Each section includes parameter descriptions, usage examples, and
 cross-references to help you build and run your finite element analyses.
