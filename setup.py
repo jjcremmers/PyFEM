@@ -37,7 +37,7 @@ setup(
     #},
     entry_points={
         "console_scripts": [
-            "pyfem=pyfem.cli:main",
+            "pyfem=pyfem.core.cli:main",
             "pyfem-gui=pyfem.gui.app:main"
         ],
     },

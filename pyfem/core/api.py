@@ -57,26 +57,28 @@ class PyFEMAPI:
         self.output = OutputManager(self.props, self.globdat)
 
     @property
-    def is_active(self) -> bool:
+    def isActive(self) -> bool:
         return bool(getattr(self.globdat, 'active', False))
 
-    def step(self) -> None:
-        """Perform a single solver step followed by output processing."""
-        if not self.is_active:
-            return
-        self.solver.run(self.props, self.globdat)
-        self.output.run(self.props, self.globdat)
+    def step(self , nCyc: int = 1 ) -> None:
+        """Perform a single solver step (by default) followed by output processing ."""
 
-    def run_all(self) -> None:
+        for iCyc in range(nCyc):
+            if not self.is_active:
+                return
+            self.solver.run(self.props, self.globdat)
+            self.output.run(self.props, self.globdat)
+
+    def runAll(self) -> None:
         """Run steps until the analysis completes."""
         while self.is_active:
             self.step()
 
-    def get_results(self) -> Any:
+    def getResults(self) -> Any:
         """Return a lightweight results container.
 
         This is a small convenience wrapper; consumers can directly inspect
-        `api.globdat` for detailed state if needed.
+        `self.globdat` for detailed state if needed.
         """
         return {
             'active': self.is_active,

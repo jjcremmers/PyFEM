@@ -311,9 +311,9 @@ class DofSpace:
 
             constrainer.addConstrainedValues(a)
 
-            A_constrained = constrainer.C.transpose() * (A * constrainer.C)
+            A_constrained = constrainer.C.T * (A * constrainer.C)
 
-            b_constrained = constrainer.C.transpose() * (b - A * a)
+            b_constrained = constrainer.C.T * (b - A * a)
 
             x_constrained = spsolve(A_constrained, b_constrained)
 
@@ -347,7 +347,7 @@ class DofSpace:
 
         x = np.zeros(shape=(len(self), count))
 
-        for i, psi in enumerate(eigvecs.transpose()):
+        for i, psi in enumerate(eigvecs.T):
             x[:, i] = self.cons.C * psi
 
         return eigvals, x
@@ -362,7 +362,7 @@ class DofSpace:
         if constrainer is None:
             constrainer = self.cons
 
-        return scipy.linalg.norm(constrainer.C.transpose() * r)
+        return scipy.linalg.norm(constrainer.C.T * r)
     
 #-------------------------------------------------------------------------------
 #
