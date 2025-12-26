@@ -15,10 +15,10 @@ unknowns and the response is governed by a continuum constitutive law.
    :maxdepth: 1
    :titlesonly:
 
-   elements/finitestrainaxisym.rst
-   elements/finitestraincontinuum.rst
-   elements/smallstraincontinuum.rst
-   elements/smallstrainaxisym.rst   
+   finitestrainaxisym.rst
+   finitestraincontinuum.rst
+   smallstraincontinuum.rst
+   smallstrainaxisym.rst   
 
 Shell and Plate Elements
 ------------------------
@@ -31,8 +31,8 @@ specialized kinematics outside standard continuum formulations.
    :maxdepth: 1
    :titlesonly:
 
-   elements/plate.rst
-   elements/sls.rst
+   plate.rst
+   sls.rst
 
 Beam and Rod Elements
 ---------------------
@@ -45,11 +45,11 @@ specialized kinematics outside standard continuum formulations.
    :maxdepth: 1
    :titlesonly:
 
-   elements/beamnl.rst
-   elements/kirchhoffbeam.rst
-   elements/spring.rst
-   elements/timoshenkobeam.rst
-   elements/truss.rst
+   beamnl.rst
+   kirchhoffbeam.rst
+   spring.rst
+   timoshenkobeam.rst
+   truss.rst
 
 Other Elements
 --------------
@@ -62,4 +62,4 @@ specialized kinematics outside standard continuum formulations.
    :maxdepth: 1
    :titlesonly:
    
-   elements/interface.rst
+   interface.rst
