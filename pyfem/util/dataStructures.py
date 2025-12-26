@@ -33,7 +33,7 @@ from typing import Any, Dict, Iterator, List, Optional, Sequence
 
 import numpy as np
 from numpy import zeros
-from pyfem.util.logger import getLogger
+from pyfem.util.logger import getLogger, separator
 
 """
 Utilities for lightweight data structures used across PyFEM.
@@ -255,7 +255,7 @@ class GlobalData ( Properties ):
       print(f" {name:<11}", file=f, end=' ')
 
     print(" ", file = f ) 
-    print(('-' * 100), file = f )
+    print('   ',('-' * 81), file = f )
 
     for nodeID in inodes:
       print(f'  {nodeID:4d}  | ', file=f, end=' ')
@@ -316,11 +316,11 @@ class GlobalData ( Properties ):
     from pyfem.util.plotUtils   import plotTime 
     
     logger.info("")
-    logger.info("=============================================================")
+    separator("=")
     logger.info("  Total elapsed time.......... : " + 
                    plotTime(time.time()-self.startTime))
     logger.info("  PyFem analysis terminated successfully.")
-    logger.info("=============================================================")  
+    separator("=")
             
 #-------------------------------------------------------------------------------
 #

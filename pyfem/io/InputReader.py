@@ -38,7 +38,7 @@ from pyfem.fem.DofSpace        import DofSpace
 from pyfem.models.ModelManager import ModelManager
 
 from pyfem.util.fileParser     import fileParser
-from pyfem.util.logger         import setLogger
+from pyfem.util.logger         import setLogger, separator
 
 import getopt,os.path,pickle,time
 
@@ -87,9 +87,9 @@ def InputRead( fname , dname = None , parameters = None ):
  
   logger = setLogger( props )
   
-  logger.info("=============================================================")
+  separator("=")
   logger.info("  PyFEM analysis: " + fname )
-  logger.info("=============================================================")   
+  separator("=")
 
   nodes = NodeSet()
   nodes.readFromFile( dataFileName )

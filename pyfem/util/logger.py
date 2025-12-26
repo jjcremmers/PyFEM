@@ -101,7 +101,7 @@ def getLogger() -> logging.Logger:
     return logging.getLogger()
 
 
-def separator(symbol: str = "-") -> None:
+def separator(symbol: str = "-", level: str = "info" ) -> None:
     """
     Log a horizontal separator line consisting of two leading spaces followed by
     81 copies of `symbol`.
@@ -112,4 +112,7 @@ def separator(symbol: str = "-") -> None:
     Args:
         symbol: Single-character string used to draw the separator. Defaults to '-'.
     """
-    logging.getLogger().info('  ' + (symbol * 81))
+    if level == "debug":
+        logging.getLogger().debug('  ' + (symbol * 81))
+    else:       
+        logging.getLogger().info('  ' + (symbol * 81))

@@ -156,8 +156,9 @@ class BaseModule:
             logger.info("  " + self.type + cycleString)
             separator("=")
         else:
-            separator()
+            separator(level = "debug" )
             logger.debug("  Module " + self.type)
+            separator(level = "debug" )
 
     def writeFooter(self, globdat: Any) -> None:
         """
@@ -180,7 +181,9 @@ class BaseModule:
         if self.isSolver:
             logger.info("    Elapsed time (this step).. : " + plotTime(t1 - self.t0))
             logger.info("    Total elapsed time........ : " + plotTime(t1 - globdat.startTime))
+            separator()
         else:
             logger.debug("    Elapsed time (this step).. : " + plotTime(t1 - self.t0))
-            logger.debug("    Total elapsed time........ : " + plotTime(t1 - globdat.startTime))         
+            logger.debug("    Total elapsed time........ : " + plotTime(t1 - globdat.startTime))      
+            separator(level = "debug" )   
 
