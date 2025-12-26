@@ -44,56 +44,51 @@ The element is ideal for modeling:
 Parameters
 ----------
 
-Mandatory parameters
-~~~~~~~~~~~~~~~~~~~~
+.. list-table:: 
+   :widths: 20 15 65
+   :header-rows: 1
 
-``type``
-  Must be set to ``"SLS"``
-
-``material``
-  A material block defining the constitutive behavior. For single-layer elements, 
-  specify one material. For multi-layer laminates, use ``MultiMaterial`` type.
-
-  Common material types include:
-
-  - ``"Isotropic"``: For isotropic materials
-  - ``"TransverseIsotropic"``: For unidirectional composites with fiber direction
-  - ``"Orthotropic"``: For fully orthotropic materials
-  - ``"MultiMaterial"``: For laminates with different materials per layer
-
-  Material parameters typically include:
-
-  - For isotropic materials: ``E``, ``nu``, ``rho``
-  - For transversely isotropic materials: ``E1``, ``E2``, ``nu12``, ``G12``, ``rho``
-  - For orthotropic materials: ``E1``, ``E2``, ``E3``, ``nu12``, ``nu13``, ``nu23``, 
-    ``G12``, ``G13``, ``G23``, ``rho``
-
-Optional parameters
-~~~~~~~~~~~~~~~~~~~
-
-``theta``
-  Fiber orientation angle in degrees for single-layer elements with anisotropic 
-  materials. Specifies the angle between the fiber direction and the element 
-  local x-axis. Default is 0.0 if not specified.
-
-``layers``
-  List of layer identifiers for multi-layer laminates. Each layer must be defined 
-  as a separate block containing:
-
-  - ``thickness``: Layer thickness
-  - ``theta``: Fiber orientation angle for this layer (in degrees)
-  - ``material``: Material name (when using ``MultiMaterial`` type)
-
-  Example layer definition structure::
-
-    layers = ["layer1", "layer2", "layer3"];
-
-    layer1 = 
-    {
-      thickness = 0.5;
-      theta     = 0.0;
-      material  = "mat1";
-    };
+   * - Parameter
+     - Required
+     - Description
+   * - ``type``
+     - Yes
+     - Must be set to ``"SLS"``
+   * - ``material``
+     - Yes
+     - Material block defining constitutive behavior. For single-layer elements, 
+       specify one material. For multi-layer laminates, use ``MultiMaterial`` type.
+       
+       Common material types:
+       
+       * ``"Isotropic"``: For isotropic materials (parameters: ``E``, ``nu``, ``rho``)
+       * ``"TransverseIsotropic"``: For unidirectional composites (parameters: ``E1``, ``E2``, ``nu12``, ``G12``, ``rho``)
+       * ``"Orthotropic"``: For fully orthotropic materials (parameters: ``E1``, ``E2``, ``E3``, ``nu12``, ``nu13``, ``nu23``, ``G12``, ``G13``, ``G23``, ``rho``)
+       * ``"MultiMaterial"``: For laminates with different materials per layer
+   * - ``theta``
+     - No
+     - Fiber orientation angle in degrees for single-layer elements with anisotropic 
+       materials. Specifies the angle between the fiber direction and the element 
+       local x-axis. Default is 0.0 if not specified.
+   * - ``layers``
+     - No
+     - List of layer identifiers for multi-layer laminates. Each layer must be defined 
+       as a separate block containing:
+       
+       * ``thickness``: Layer thickness
+       * ``theta``: Fiber orientation angle for this layer (in degrees)
+       * ``material``: Material name (when using ``MultiMaterial`` type)
+       
+       Example layer definition structure::
+       
+         layers = ["layer1", "layer2", "layer3"];
+         
+         layer1 = 
+         {
+           thickness = 0.5;
+           theta     = 0.0;
+           material  = "mat1";
+         };
 
 --------
 Examples

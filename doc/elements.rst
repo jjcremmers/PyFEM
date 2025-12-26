@@ -6,8 +6,8 @@ be described here.
 
 .. toctree::
 
-   smallstraincontinuum.rst
-   finitestraincontinuum.rst
-   sls.rst
-   plate.rst
+   elements/smallstraincontinuum.rst
+   elements/finitestraincontinuum.rst
+   elements/sls.rst
+   elements/plate.rst
 
