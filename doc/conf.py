@@ -10,6 +10,18 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
+# Auto-generate API documentation
+def run_apidoc(_):
+    from sphinx.ext.apidoc import main
+    import os
+    here = os.path.abspath(os.path.dirname(__file__))
+    module = os.path.join(here, "..", "pyfem")
+    output = here
+    main(['-f', '-e', '-M', '-o', output, module])
+
+def setup(app):
+    app.connect('builder-inited', run_apidoc)
+
 project = 'PyFEM'
 copyright = '2025, Joris Remmers'
 author = 'Joris Remmers'
