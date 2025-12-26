@@ -29,6 +29,7 @@
 ################################################################################
 
 from pyfem.util.dataStructures import Properties
+from pathlib import Path
 import re
 
 def containsValue( db , val ):
@@ -198,25 +199,26 @@ def readBlock( ln , db ):
 #
 #-------------------------------------------------------------------------------
 
-def fileParser( fileName ):
+def fileParser(fileName):
+  
+  filePath = Path(fileName)
+
+  if not filePath.is_file():
+    raise FileNotFoundError(f"Input file not found: {fileName}")
 
   db = Properties()
 
-  f = open(fileName)
-  
-  f2 = ''
- 
-  for line in f:
-    if not line.startswith('#'):
-      f2 = f2+line
-    
-  ln = open(fileName).read().replace('\n','').replace('\t','').replace(' ','').replace('\r','')
-  ln = f2.replace('\n','').replace('\t','').replace(' ','').replace('\r','')
+  with filePath.open("r", encoding="utf-8") as f:
+    # Keep lines that are not comments
+    lines = [
+      line for line in f
+      if not line.lstrip().startswith("#")
+    ]
 
-  readBlock( ln , db )
-  
-  f.close()
+  # Remove whitespace characters
+  ln = "".join(lines).translate(str.maketrans("", "", " \t\r\n"))
 
+  readBlock(ln, db)
   return db
 
 #-------------------------------------------------------------------------------

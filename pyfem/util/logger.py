@@ -29,17 +29,26 @@
 ################################################################################
 
 import logging
+from typing import Any
 
 
-def setLogger( props : dict ):
-  
+def setLogger(props: Any) -> logging.Logger:
     """
-    Creates a logger for the current analysis with a given format and level.
-    
+    Create and configure the root logger for the current analysis.
+
+    The function expects a configuration object which may provide
+    a `logger.level` attribute (e.g. a namespace or simple object). The
+    returned logger is the root logger configured with a single stream
+    handler according to the requested verbosity.
+
     Args:
-        props(dict): A dictionary containing the input file of the problem.
+        props: Configuration object (may have a `logger` attribute with `.level`).
+
     Returns:
-        logger: an instance of the logger.
+        logging.Logger: Configured root logger.
+
+    Raises:
+        NotImplementedError: If an unsupported level string is provided.
     """
     
     
@@ -81,14 +90,26 @@ def setLogger( props : dict ):
     return logger
   
   
-def getLogger():
+def getLogger() -> logging.Logger:
+    """
+    Return the active root logger instance.
 
+    Returns:
+        logging.Logger: The active root logger.
     """
-    Function that returns an instance of the active logger.
-     
-    Args:
-        None
-    Returnslogger: an instance of the active logger.
-    """
-        
+
     return logging.getLogger()
+
+
+def separator(symbol: str = "-") -> None:
+    """
+    Log a horizontal separator line consisting of two leading spaces followed by
+    81 copies of `symbol`.
+
+    The separator is emitted using the root logger's INFO level so it respects
+    the currently configured logging output format and level.
+
+    Args:
+        symbol: Single-character string used to draw the separator. Defaults to '-'.
+    """
+    logging.getLogger().info('  ' + (symbol * 81))

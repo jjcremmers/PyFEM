@@ -31,7 +31,8 @@
 from .Element import Element
 from pyfem.util.shapeFunctions  import getElemShapeData
 from pyfem.util.kinematics      import Kinematics
-from numpy import zeros, dot, outer, ones , eye
+
+import numpy as np
 
 class SmallStrainContinuum( Element ):
   
@@ -43,11 +44,11 @@ class SmallStrainContinuum( Element ):
     if self.rank == 2:
       self.dofTypes = [ 'u' , 'v' ]
       self.nstr = 3
-      self.outputLabels = ["s11","s22","s12"]
+      #self.outputLabels = ["s11","s22","s12"]
     elif self.rank == 3:
       self.dofTypes = [ 'u' , 'v' , 'w' ]
       self.nstr = 6
-      self.outputLabels = ["s11","s22","s33","s23","s13","s12"]
+      #self.outputLabels = ["s11","s22","s33","s23","s13","s12"]
 
     self.kin = Kinematics(self.rank,self.nstr)
 
@@ -60,8 +61,8 @@ class SmallStrainContinuum( Element ):
 
     sData = getElemShapeData( elemdat.coords )
     
-    elemdat.outlabel.append(self.outputLabels)
-    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
+    #elemdat.outlabel.append(self.outputLabels)
+    #elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
 
     for iData in sData:
       
@@ -72,8 +73,8 @@ class SmallStrainContinuum( Element ):
       
       sigma,tang = self.mat.getStress( self.kin )
 
-      elemdat.stiff += b.transpose() @ ( tang @ b ) * iData.weight
-      elemdat.fint  += b.transpose() @ sigma * iData.weight
+      elemdat.stiff += b.T @ ( tang @ b ) * iData.weight
+      elemdat.fint  += b.T @ sigma * iData.weight
 
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
       
@@ -86,8 +87,8 @@ class SmallStrainContinuum( Element ):
       
     sData = getElemShapeData( elemdat.coords )
 
-    elemdat.outlabel.append(self.outputLabels)
-    elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
+    #elemdat.outlabel.append(self.outputLabels)
+    #elemdat.outdata  = zeros( shape=(len(elemdat.nodes),self.nstr) )
 
     for iData in sData:
       b = self.getBmatrix( iData.dhdx )
@@ -97,7 +98,7 @@ class SmallStrainContinuum( Element ):
 
       sigma,tang = self.mat.getStress( self.kin )
 
-      elemdat.fint    += b.transpose() @ sigma * iData.weight
+      elemdat.fint    += b.T @ sigma * iData.weight
 
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
  
@@ -115,10 +116,10 @@ class SmallStrainContinuum( Element ):
 
       self.mat.getStress( self.kin )
 
-      self.kin.dgdstrain = zeros( 3 )
+      self.kin.dgdstrain = np.zeros( 3 )
       self.kin.g = 0.0
             
-      elemdat.fint += b.transpose() @ self.kin.dgdstrain * iData.weight
+      elemdat.fint += b.T @ self.kin.dgdstrain * iData.weight
       elemdat.diss += self.kin.g * iData.weight
            
 #----------------------------------------------------------------------
@@ -131,7 +132,7 @@ class SmallStrainContinuum( Element ):
 
     for iData in sData:
       N  = self.getNmatrix( iData.h )
-      elemdat.mass += N.transpose() @ N * rho * iData.weight
+      elemdat.mass += N.T @ N * rho * iData.weight
      
     elemdat.lumped = sum(elemdat.mass)
    
@@ -139,7 +140,7 @@ class SmallStrainContinuum( Element ):
 
   def getBmatrix( self , dphi ):
 
-    b = zeros( shape=( self.nstr , self.dofCount() ) )
+    b = np.zeros( shape=( self.nstr , self.dofCount() ) )
 
     if self.rank == 2:
       for i,dp in enumerate(dphi):
@@ -168,7 +169,7 @@ class SmallStrainContinuum( Element ):
 
   def getNmatrix( self , h ):
 
-    N = zeros( shape=( self.rank , self.rank*len(h) ) )
+    N = np.zeros( shape=( self.rank , self.rank*len(h) ) )
 
     for i,a in enumerate( h ):
       for j in list(range(self.rank)):

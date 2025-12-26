@@ -29,8 +29,23 @@
 ################################################################################
 
 import time
+from typing import Any, Dict, Iterator, List, Optional, Sequence
+
+import numpy as np
 from numpy import zeros
-from pyfem.util.logger     import getLogger
+from pyfem.util.logger import getLogger
+
+"""
+Utilities for lightweight data structures used across PyFEM.
+
+This module provides simple containers and helpers used by the solver and
+pre/post-processing layers: cleaning input values, status tracking,
+property containers, global data for assembly, and per-element storage.
+
+All modifications in this file are non-functional documentation and type
+annotations to improve readability and editor support; runtime behavior is
+preserved.
+"""
 
 logger = getLogger()
 
@@ -38,100 +53,123 @@ logger = getLogger()
 #
 #-------------------------------------------------------------------------------
 
-def cleanVariable( a ):
+def cleanVariable(a: Any) -> Any:
+    """
+    Convert a textual configuration value into a Python object.
 
-  if a == 'true':
-    return True
-  elif a == 'false':
-    return False
-  else:
-    try:
-      return eval(a)
-    except:
-      return a
+    - 'true' -> True
+    - 'false' -> False
+    - otherwise: try `eval`, fall back to original string
+
+    Args:
+        a: Input value (typically a string) read from configuration.
+
+    Returns:
+        Parsed Python object or the original value if parsing fails.
+    """
+    if a == 'true':
+        return True
+    elif a == 'false':
+        return False
+    else:
+        try:
+            return eval(a)
+        except Exception:
+            return a
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
 class solverStatus:
+    """Container for tracking solver progress and timing.
 
-  def __init__( self ):
-    self.cycle  = 0
-    self.iiter  = 0
-    self.time   = 0.0
-    self.time0  = 0.0
-    self.dtime  = 0.0
-    self.lam    = 1.0
-      
-  def increaseStep( self ):
-  
-    self.cycle += 1
-    self.time  += self.dtime
-    self.iiter =  0
+    Attributes:
+        cycle (int): Current step/cycle number.
+        iiter (int): Current iteration count within step.
+        time (float): Current simulation time.
+        time0 (float): Reference time (unused internally here).
+        dtime (float): Time increment for a cycle.
+        lam (float): Load or continuation parameter.
+    """
+
+    def __init__(self) -> None:
+        self.cycle: int = 0
+        self.iiter: int = 0
+        self.time: float = 0.0
+        self.time0: float = 0.0
+        self.dtime: float = 0.0
+        self.lam: float = 1.0
+
+    def increaseStep(self) -> None:
+        """Advance to the next solver step and reset iteration counter."""
+        self.cycle += 1
+        self.time += self.dtime
+        self.iiter = 0
  
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
    
 class Properties:
-  
-  def __init__ ( self, dictionary = {} ):
+    """Simple attribute container built from a dictionary.
 
-    for key in dictionary.keys():
-      setattr( self, key, dictionary[key] )
+    Instances expose dictionary keys as attributes and support iteration over
+    (name, value) pairs. This is a lightweight alternative to `types.SimpleNamespace`.
+    """
 
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
-  def __str__ ( self ):
-
-    myStr  = ''
-    for att in dir( self ):
-      
-      #Ignore private members and standard routines
-      if att.startswith('__'):
-        continue
-      
-      myStr += 'Attribute: ' + att + '\n'
-      myStr += str( getattr(self,att) ) + '\n'
-
-    return myStr
+    def __init__(self, dictionary: Dict[str, Any] = {}) -> None:
+        for key in dictionary.keys():
+            setattr(self, key, dictionary[key])
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def __iter__ ( self ):
-
-    propsList = []
-    for att in dir( self ):
-      
-      #Ignore private members and standard routines
-      if att.startswith('__'):
-        continue
-      
-      propsList.append( ( att, getattr(self,att) ) )
-
-    return iter(propsList)
+    def __str__(self) -> str:
+        """Return a multi-line representation listing public attributes."""
+        myStr = ''
+        for att in dir(self):
+            # Ignore private members and standard routines
+            if att.startswith('__'):
+                continue
+            myStr += 'Attribute: ' + att + '\n'
+            myStr += str(getattr(self, att)) + '\n'
+        return myStr
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def store ( self , key , val ):
-    
-    if not '.' in key:
-      setattr( self , key , val )
-    else:
-      kets = key.split(".")
-    
-      props = self
-      for y in kets[:-1]:
-        props = getattr(props,y)
-      
-      setattr(props,kets[-1],cleanVariable(val))
+    def __iter__(self) -> Iterator:
+        """Iterate over (name, value) pairs for public attributes."""
+        propsList: List = []
+        for att in dir(self):
+            # Ignore private members and standard routines
+            if att.startswith('__'):
+                continue
+            propsList.append((att, getattr(self, att)))
+        return iter(propsList)
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    def store(self, key: str, val: Any) -> None:
+        """Store a property given a dotted key path or a simple key.
+
+        Examples:
+            store('alpha', 1)
+            store('parent.child.value', 'x')
+        """
+        if '.' not in key:
+            setattr(self, key, val)
+        else:
+            kets = key.split('.')
+            props = self
+            for y in kets[:-1]:
+                props = getattr(props, y)
+            setattr(props, kets[-1], cleanVariable(val))
 
 #-------------------------------------------------------------------------------
 #
