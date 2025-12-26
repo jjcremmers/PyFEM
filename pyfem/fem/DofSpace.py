@@ -28,361 +28,352 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
-from numpy import array, dot, zeros, where
+import numpy as np
+from numpy import array,  where
 import scipy.linalg
 
-from scipy.sparse.linalg   import spsolve
-from scipy.sparse.linalg   import eigsh
-from pyfem.util.itemList   import itemList
+from scipy.sparse.linalg import spsolve, eigsh
+from pyfem.util.itemList import itemList
 from pyfem.util.fileParser import readNodeTable
-from pyfem.util.logger     import getLogger
+from pyfem.util.logger import getLogger
 from pyfem.fem.Constrainer import Constrainer
 
 from copy import deepcopy
+from typing import Any, List, Sequence, Optional, Tuple
 
 logger = getLogger()
 
 
 class DofSpace:
+    """Representation of the global degrees-of-freedom space.
 
-  '''
-  Class dofspace
-  '''
-  
-  def __init__ ( self, elements ):
+    The class maps node identifiers and DOF types to global DOF indices and
+    provides utility routines for constraint handling, solves and eigenvalue
+    computations in the constrained subspace.
+    """
 
-    '''
-    Constructor
-    '''
-    
-    self.dofTypes = elements.getDofTypes()
-    self.dofs     = array( list(range( len(elements.nodes) * len(self.dofTypes))) ).reshape( ( len(elements.nodes), len(self.dofTypes) ) )
-    self.nodes    = elements.nodes
-    
-    #Create the ID map
-    self.IDmap = itemList()
-    for ind,ID in enumerate(elements.nodes):
-      self.IDmap.add( ID, ind )
+    def __init__(self, elements: Any) -> None:
+        """Create a DofSpace from an elements container.
 
-    self.allConstrainedDofs = []
+        Args:
+            elements: Element container providing ``nodes`` and ``getDofTypes()``.
+        """
 
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
+        self.dofTypes = elements.getDofTypes()
+        self.dofs = array(list(range(len(elements.nodes) * len(self.dofTypes)))).reshape(
+            (len(elements.nodes), len(self.dofTypes))
+        )
+        self.nodes = elements.nodes
 
-  def __str__ ( self ):
-  
-    '''
-    Prints the total overview of degrees of freedom
-    '''
-    
-    return str(self.dofs)
+        # Create the ID map
+        self.IDmap = itemList()
+        for ind, ID in enumerate(elements.nodes):
+            self.IDmap.add(ID, ind)
+
+        self.allConstrainedDofs: List[int] = []
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def __len__ ( self ):
-  
-    '''
-    Function that returns the length of the dofspace, i.e. the number of
-    degrees of freedeom
-    '''
-       
-    return len(self.dofs.flatten())
+    def __str__(self) -> str:
+        """Return a string representation of the DOF array."""
+
+        return str(self.dofs)
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def setConstrainFactor( self , fac , loadCase = "All_" ):
+    def __len__(self) -> int:
+        """Return the total number of global DOFs."""
 
-    if loadCase == "All_":
-      for name in self.cons.constrainedFac.keys():
-        self.cons.constrainedFac[name] = fac
-    else:
-      self.cons.constrainedFac[loadCase] = fac
+        return len(self.dofs.flatten())
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    def setConstrainFactor(self, fac: float, loadCase: str = "All_") -> None:
+        """Set constraint scaling factor for all or a specific load case."""
+
+        if loadCase == "All_":
+            for name in self.cons.constrainedFac.keys():
+                self.cons.constrainedFac[name] = fac
+        else:
+            self.cons.constrainedFac[loadCase] = fac
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
     
-  def readFromFile( self, fname ):
-      
-    logger.info("  Reading constraints")
-    logger.info("  -----------------------------------------------------------")  
+    def readFromFile(self, fname: str) -> None:
+        """Read constraint definitions from a file and create a Constrainer.
 
-    nodeTable = readNodeTable( fname , "NodeConstraints" , self.nodes )
-   
-    self.cons = self.createConstrainer( nodeTable )
+        The file is parsed with :func:`pyfem.util.fileParser.readNodeTable` and
+        passed to :meth:`createConstrainer`.
+        """
+
+        logger.info("  Reading constraints")
+        logger.info("  -----------------------------------------------------------")
+
+        nodeTable = readNodeTable(fname, "NodeConstraints", self.nodes)
+
+        self.cons = self.createConstrainer(nodeTable)
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
               
-  def createConstrainer ( self, nodeTables = None ):
-        
-    cons = Constrainer(len(self))
-    
-    if nodeTables == None:
-    
-      label = "main"
-      cons.constrainedDofs[label] = []
-      cons.constrainedVals[label] = []
-      cons.constrainedFac [label] = 1.0
-      
-      self.cons = cons
-      return cons
-        
-    for nodeTable in nodeTables:
-      
-      label = nodeTable.subLabel
-      
-      cons.constrainedDofs[label] = []
-      cons.constrainedVals[label] = []
-      cons.constrainedFac [label] = 1.0
-      
-      for item in nodeTable.data:
+    def createConstrainer(self, nodeTables: Optional[Sequence[Any]] = None) -> Constrainer:
+        """Create and return a :class:`Constrainer` from parsed node tables.
 
-        nodeID  = item[1]
-        dofType = item[0]
-        val     = item[2]
-        
-        if not nodeID in self.nodes:
-          raise RuntimeError('Node ID ' + str(nodeID) + ' does not exist')
+        If ``nodeTables`` is None a default main constraint group is created.
+        Otherwise the function iterates over provided node tables and registers
+        constraints accordingly.
+        """
 
-        ind = self.IDmap.get( nodeID )
+        cons = Constrainer(len(self))
 
-        if dofType not in self.dofTypes:
-          raise RuntimeError('DOF type "' + dofType + '" does not exist')
-      
-        if len(item) == 3:          
-          dofID = self.dofs[ind,self.dofTypes.index(dofType)]
-        
-          cons.addConstraint(dofID,val,label)
-        else:
-          slaveNodeID  = item[4]
-          slaveDofType = item[3]
-          factor       = item[5]
+        if nodeTables is None:
 
-          if not slaveNodeID[0] in self.nodes:
-            raise RuntimeError('Node ID ' + str(slaveNodeID) + ' does not exist')
+            label = "main"
+            cons.constrainedDofs[label] = []
+            cons.constrainedVals[label] = []
+            cons.constrainedFac[label] = 1.0
 
-          slaveInd = self.IDmap.get( slaveNodeID )
+            self.cons = cons
+            return cons
 
-          if slaveDofType not in self.dofTypes:
-            raise RuntimeError('DOF type "' + slaveDofType + '" does not exist')
-      
-          slaveDof = self.dofs[slaveInd,self.dofTypes.index(slaveDofType)]
+        for nodeTable in nodeTables:
 
-          dofID = self.dofs[ind,self.dofTypes.index(dofType)]
+            label = nodeTable.subLabel
 
-          cons.addConstraint(dofID , [ val , slaveDof , factor ] , label )     
-      
-    # Check for all tyings whether master of slave is not slave itself
-    cons.checkConstraints( self, nodeTables )
+            cons.constrainedDofs[label] = []
+            cons.constrainedVals[label] = []
+            cons.constrainedFac[label] = 1.0
 
-    cons.flush()
+            for item in nodeTable.data:
 
-    return cons
+                nodeID = item[1]
+                dofType = item[0]
+                val = item[2]
+
+                if not nodeID in self.nodes:
+                    raise RuntimeError("Node ID " + str(nodeID) + " does not exist")
+
+                ind = self.IDmap.get(nodeID)
+
+                if dofType not in self.dofTypes:
+                    raise RuntimeError('DOF type "' + dofType + '" does not exist')
+
+                if len(item) == 3:
+                    dofID = self.dofs[ind, self.dofTypes.index(dofType)]
+
+                    cons.addConstraint(dofID, val, label)
+                else:
+                    slaveNodeID = item[4]
+                    slaveDofType = item[3]
+                    factor = item[5]
+
+                    if not slaveNodeID[0] in self.nodes:
+                        raise RuntimeError("Node ID " + str(slaveNodeID) + " does not exist")
+
+                    slaveInd = self.IDmap.get(slaveNodeID)
+
+                    if slaveDofType not in self.dofTypes:
+                        raise RuntimeError('DOF type "' + slaveDofType + '" does not exist')
+
+                    slaveDof = self.dofs[slaveInd, self.dofTypes.index(slaveDofType)]
+
+                    dofID = self.dofs[ind, self.dofTypes.index(dofType)]
+
+                    cons.addConstraint(dofID, [val, slaveDof, factor], label)
+
+        # Check for all tyings whether master of slave is not slave itself
+        cons.checkConstraints(self, nodeTables)
+
+        cons.flush()
+
+        return cons
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def getForType ( self, nodeIDs, dofType ):
-  
-    '''
-    Returns all dofIDs for given dofType for a list of nodes
-    '''
-   
-    return self.dofs[self.IDmap.get( nodeIDs ), self.dofTypes.index(dofType)]
+    def getForType(self, nodeIDs: Sequence[Any], dofType: str) -> array:
+        """Return DOF indices for a given DOF type and list of node IDs."""
+
+        return self.dofs[self.IDmap.get(nodeIDs), self.dofTypes.index(dofType)]
       
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def getForTypes( self, nodeIDs, dofTypes ):
-  
-    '''
-    Returns all dofIDs for given list of dofType for a list of nodes
-    '''
+    def getForTypes(self, nodeIDs: Sequence[Any], dofTypes: Sequence[str]) -> List[int]:
+        """Return DOF indices for multiple DOF types and multiple nodes."""
 
-    dofs = []
-        
-    for node in nodeIDs:
-      for dofType in dofTypes:
-        dofs.append(self.dofs[self.IDmap.get( node ),self.dofTypes.index(dofType)])
-      
-    return dofs
+        dofs: List[int] = []
+
+        for node in nodeIDs:
+            for dofType in dofTypes:
+                dofs.append(self.dofs[self.IDmap.get(node), self.dofTypes.index(dofType)])
+
+        return dofs
     
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def getDofName( self , dofID ):
-  
-    '''
-    Returns the dofID as a string. For example 'u[14]'
-    '''
-    
-    return self.getTypeName(dofID)+'['+str(self.getNodeID(dofID))+']'
+    def getDofName(self, dofID: int) -> str:
+        """Return a human readable name for a DOF, e.g. 'u[14]'."""
+
+        return self.getTypeName(dofID) + '[' + str(self.getNodeID(dofID)) + ']'
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
    
-  def getNodeID( self, dofID ):
-  
-    '''
-    Returns the node ID of dofID
-    '''
-    
-    return self.nodes.findID(int(where(self.dofs == dofID)[0]))
+    def getNodeID(self, dofID: int) -> Any:
+        """Return the node identifier associated with a DOF index."""
+
+        return self.nodes.findID(int(where(self.dofs == dofID)[0]))
     
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def getType( self, dofID ):
-  
-    '''
-    Returns the type of dofID
-    '''
-  
-    return int(where(self.dofs == dofID)[1])
+    def getType(self, dofID: int) -> int:
+        """Return the local DOF type index for a global DOF id."""
+
+        return int(where(self.dofs == dofID)[1])
     
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def getTypeName( self, dofID ):
-  
-    '''
-    Returns the name of the dofType
-    '''
-  
-    return self.dofTypes[self.getType(dofID)]
+    def getTypeName(self, dofID: int) -> str:
+        """Return the DOF type name for a given DOF id."""
+
+        return self.dofTypes[self.getType(dofID)]
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def get ( self, nodeIDs ):
-  
-    '''Returns all dofIDs for a list of nodes'''
-    
-    return self.dofs[self.IDmap.get(nodeIDs)].flatten()
+    def get(self, nodeIDs: Sequence[Any]) -> array:
+        """Return all DOF ids for the provided node IDs."""
+
+        return self.dofs[self.IDmap.get(nodeIDs)].flatten()
 
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def copyConstrainer( self , dofTypes: list = None ):
-  
-    '''
-    
-    '''
-    
-    newCons = deepcopy(self.cons)
-       
-    if type(dofTypes) is str:
-      dofTypes = [dofTypes]
-          
-    for dofType in dofTypes:
-      for iDof in self.dofs[:,self.dofTypes.index(dofType)]:
-        for label in newCons.constrainedFac.keys():
-          newCons.addConstraint(iDof,0.0,label)
-                  
-    newCons.flush()
-                  
-    return newCons
+    def copyConstrainer(self, dofTypes: Optional[Sequence[str]] = None) -> Constrainer:
+        """Return a copy of the current constrainer with additional DOF types."""
+
+        newCons = deepcopy(self.cons)
+
+        if type(dofTypes) is str:
+            dofTypes = [dofTypes]
+
+        if dofTypes is None:
+            return newCons
+
+        for dofType in dofTypes:
+            for iDof in self.dofs[:, self.dofTypes.index(dofType)]:
+                for label in newCons.constrainedFac.keys():
+                    newCons.addConstraint(iDof, 0.0, label)
+
+        newCons.flush()
+
+        return newCons
 
 #-------------------------------------------------------------------------------
 #  
 #-------------------------------------------------------------------------------
 
-  def solve ( self, A, b, constrainer = None ):
+    def solve(self, A: array, b: array, constrainer: Optional[Constrainer] = None) -> array:
+        """Solve the linear system Ax=b respecting constraints and return x.
 
-    '''Solves the system Ax = b using the internal constraints matrix.
-       Returns the total solution vector x.'''
+        For a matrix problem the constrained system is assembled and solved
+        in the reduced space. For a diagonal 'A' (len(A.shape)==1) the solve
+        is performed element-wise.
+        """
+
+        if constrainer is None:
+            constrainer = self.cons
+
+        if len(A.shape) == 2:
+
+            a = np.zeros(len(self))
+
+            constrainer.addConstrainedValues(a)
+
+            A_constrained = constrainer.C.transpose() * (A * constrainer.C)
+
+            b_constrained = constrainer.C.transpose() * (b - A * a)
+
+            x_constrained = spsolve(A_constrained, b_constrained)
+
+            x = constrainer.C * x_constrained
+
+            constrainer.addConstrainedValues(x)
+
+        elif len(A.shape) == 1:
+            x = b / A
+
+            constrainer.setConstrainedValues(x)
+
+        return x
     
-    if constrainer is None:
-      constrainer = self.cons
-      
-    if len(A.shape) == 2:
-
-      a = zeros(len(self))
-      
-      constrainer.addConstrainedValues( a )
-
-      A_constrained = constrainer.C.transpose() * (A * constrainer.C )
-
-      b_constrained = constrainer.C.transpose() * ( b - A * a )
-
-      x_constrained = spsolve( A_constrained, b_constrained )
-
-      x = constrainer.C * x_constrained
-
-      constrainer.addConstrainedValues( x )
-          
-    elif len(A.shape) == 1:
-      x = b / A
-
-      constrainer.setConstrainedValues( x )
-   
-    return x
-    
-    
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
-  def eigensolve( self, A , B , count=5 ):
-
-    '''Calculates the first count eigenvalues and eigenvectors of a
-       system with ( A lambda B ) x '''
-       
-    A_constrained = dot( dot( self.cons.C.transpose(), A ), self.cons.C )
-    B_constrained = dot( dot( self.cons.C.transpose(), B ), self.cons.C )
-
-    eigvals , eigvecs = eigsh( A_constrained, count , B_constrained , sigma = 0. , which = 'LM' )
-
-    x = zeros(shape=(len(self),count))
-
-    for i,psi in enumerate(eigvecs.transpose()):
-      x[:,i] = self.cons.C * psi
-      
-    return eigvals,x
-
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
-
-  def norm ( self, r, constrainer = None  ):
-  
-    '''
-    Calculates the norm of vector r excluding the constrained dofs
-    '''
-    
-    if constrainer is None:
-      constrainer = self.cons
-    
-    return scipy.linalg.norm( constrainer.C.transpose() * r )
     
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
 
-  def maskPrescribed( self, a, val = 0.0 , constrainer = None  ):
-  
-    '''
-    Replaced the prescribed dofs by val
-    '''
+    def eigensolve(self, A: array, B: array, count: int = 5) -> Tuple[array, array]:
+        """Compute the lowest ``count`` eigenpairs for the generalized problem A x = lambda B x.
+
+        The computation is performed in the constrained subspace and the eigenvectors
+        are expanded back to the full DOF space before returning.
+        """
+
+        A_constrained = self.cons.C.T @ ( A @ self.cons.C )
+        B_constrained = self.cons.C.T @ ( B @ self.cons.C )
+
+        eigvals, eigvecs = eigsh(A_constrained, count, B_constrained, sigma=0.0, which="LM")
+
+        x = np.zeros(shape=(len(self), count))
+
+        for i, psi in enumerate(eigvecs.transpose()):
+            x[:, i] = self.cons.C * psi
+
+        return eigvals, x
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    def norm(self, r: array, constrainer: Optional[Constrainer] = None) -> float:
+        """Return the norm of ``r`` excluding constrained DOFs."""
+
+        if constrainer is None:
+            constrainer = self.cons
+
+        return scipy.linalg.norm(constrainer.C.transpose() * r)
     
-    if constrainer is None:
-      constrainer = self.cons
-    
-    a[constrainer.constrainedDofs["None"]] = val
-    
-    return a
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    def maskPrescribed(self, a: array, val: float = 0.0, constrainer: Optional[Constrainer] = None) -> array:
+        """Replace prescribed DOFs in ``a`` with ``val`` and return the array."""
+
+        if constrainer is None:
+            constrainer = self.cons
+
+        a[constrainer.constrainedDofs["None"]] = val
+
+        return a

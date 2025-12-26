@@ -28,8 +28,10 @@
 #  event caused by the use of the program.                                     #
 ################################################################################
 
-from numpy import zeros, ones, ix_ , append, repeat, array
+import numpy as np
+from numpy import zeros, ones, ix_, append, repeat, array
 from scipy.sparse import coo_matrix
+from typing import Any, Tuple, Iterable
 from pyfem.util.dataStructures import Properties
 from pyfem.util.dataStructures import elementData
 
@@ -38,113 +40,85 @@ from pyfem.util.dataStructures import elementData
 #  Assemble Internal force
 #-------------------------------------------------------------------------------
 
-def assembleArray ( props, globdat, rank, action ):
+def assembleArray(props: Properties, globdat: Any, rank: int, action: str) -> Tuple[Any, Any]:
+    """Assemble global arrays (forces or matrices) from element contributions.
 
-  #Initialize the global array A with rank 2
+    This routine iterates over element groups and elements, calls the
+    requested element action (e.g. ``getInternalForce``, ``getTangentStiffness``)
+    and assembles the returned element-level vectors or matrices into
+    global arrays. The function returns a tuple; for vector assembly the
+    tuple is (B, cc) where B is the assembled array and cc the accumulated
+    dissipation. For matrix assembly the tuple is (sparse_matrix, B) where
+    B is the assembled residual vector.
 
-  B = zeros( len(globdat.dofs) * ones(1,dtype=int) )
-  cc = 0.0
+    Args:
+        props: Global properties container (typically a ``Properties`` instance).
+        globdat: Global data/state object used by elements.
+        rank: Assembly rank (1 for vectors, 2 for matrices).
+        action: Name of the element method to call for contributions.
 
-  val   = array([],dtype=float)
-  row   = array([],dtype=int)
-  col   = array([],dtype=int)
+    Returns:
+        A tuple containing assembled objects. Types depend on ``rank``.
+    """
 
-  nDof  = len(globdat.dofs)
+    # Initialize the global array B with rank 1
+    B = zeros(len(globdat.dofs) * ones(1, dtype=int))
+    cc = 0.0
 
-  if action != 'commit':
-    globdat.resetNodalOutput()
+    val = array([], dtype=float)
+    row = array([], dtype=int)
+    col = array([], dtype=int)
 
-  for elementGroup in globdat.elements.iterGroupNames():
+    nDof = len(globdat.dofs)
 
-    el_props = getattr( props, elementGroup )
+    if action != "commit":
+        globdat.resetNodalOutput()
 
-    for iElm,element in enumerate(globdat.elements.iterElementGroup( elementGroup )):
+    for elementGroup in globdat.elements.iterGroupNames():
+        el_props = getattr(props, elementGroup)
 
-      '''
-      #Get the element nodes
-      el_nodes = element.getNodes()
+        for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
+            elemdat = getElementData(element, el_props, globdat)
 
-      #Get the element coordinates
-      el_coords = globdat.nodes.getNodeCoords( el_nodes )
+            elemdat.iElm = iElm
+            element.iElm = iElm
 
-      #Get the element degrees of freedom
-      el_dofs = globdat.dofs.getForTypes( el_nodes , element.dofTypes )
-      
-      #Get the element state
-      el_a  = globdat.state [el_dofs]
-      el_Da = globdat.Dstate[el_dofs]
+            if hasattr(element, "mat"):
+                element.mat.reset()
 
-      #Create the an element state to pass through to the element
-      #el_state = Properties( { 'state' : el_a, 'Dstate' : el_Da } )
-      elemdat = elementData( el_a , el_Da )
+            # Get the element contribution by calling the specified action
+            if hasattr(element, action):
+                getattr(element, action)(elemdat)
 
-      elemdat.coords   = el_coords
-      elemdat.nodes    = el_nodes
-      elemdat.props    = el_props
-      elemdat.iElm     = iElm 
+            # Assemble in the global array
+            if rank == 1:
+                B[elemdat.el_dofs] += elemdat.fint
+                cc += elemdat.diss
+            elif rank == 2 and action == "getTangentStiffness":
+                row = append(row, repeat(elemdat.el_dofs, len(elemdat.el_dofs)))
 
-      element.globdat  = globdat
-      element.iElm     = iElm
-                   
-      if hasattr( element , "matProps" ):
-        elemdat.matprops = element.matProps
-        
-      '''
-      
-      elemdat = getElementData( element , el_props , globdat )
-      
-      elemdat.iElm     = iElm 
-      element.iElm     = iElm      
+                for i in range(len(elemdat.el_dofs)):
+                    col = append(col, elemdat.el_dofs)
 
-      if hasattr( element , "mat" ):
-        element.mat.reset()
+                val = append(val, elemdat.stiff.reshape(len(elemdat.el_dofs) * len(elemdat.el_dofs)))
 
-      #Get the element contribution by calling the specified action
-      if hasattr( element , action ):
-        getattr( element, action )( elemdat )
+                B[elemdat.el_dofs] += elemdat.fint
+            elif rank == 2 and action == "getMassMatrix":
+                row = append(row, repeat(elemdat.el_dofs, len(elemdat.el_dofs)))
 
-      #for label in elemdat.outlabel:	
-      #  element.appendNodalOutput( label , globdat , elemdat.outdata )
+                for i in range(len(elemdat.el_dofs)):
+                    col = append(col, elemdat.el_dofs)
 
-      #Assemble in the global array
-      if rank == 1:
-        B[elemdat.el_dofs] += elemdat.fint
-        cc         += elemdat.diss
-      elif rank == 2 and action == "getTangentStiffness":  
+                val = append(val, elemdat.mass.reshape(len(elemdat.el_dofs) * len(elemdat.el_dofs)))
 
-        row = append(row,repeat(elemdat.el_dofs,len(elemdat.el_dofs)))
+                B[elemdat.el_dofs] += elemdat.lumped
 
-        for i in range(len(elemdat.el_dofs)):
-          col=append(col,elemdat.el_dofs)        
+    globdat.models.run(props, globdat)
 
-        val = append(val,elemdat.stiff.reshape(len(elemdat.el_dofs)*len(elemdat.el_dofs)))
-
-        B[elemdat.el_dofs] += elemdat.fint
-      elif rank == 2 and action == "getMassMatrix": 
-
-        row = append(row,repeat(elemdat.el_dofs,len(elemdat.el_dofs)))
-
-        for i in range(len(elemdat.el_dofs)):
-          col=append(col,elemdat.el_dofs)        
-
-        val = append(val,elemdat.mass.reshape(len(elemdat.el_dofs)*len(elemdat.el_dofs))) 
-
-        B[elemdat.el_dofs] += elemdat.lumped
-  #    else:
-  #      raise NotImplementedError('assemleArray is only implemented for vectors and matrices.')
- 
-  globdat.models.run( props , globdat)
-  
-  if rank == 1:
-    return B,cc
-  elif rank == 2:
-
-    '''
-    if globdat.contact.flag:
-      row , val , col = globdat.contact.checkContact( row , val , col , B , globdat )
-    '''
-    
-    return coo_matrix((val,(row,col)), shape=(nDof,nDof)),B
+    if rank == 1:
+        return B, cc
+    elif rank == 2:
+        return coo_matrix((val, (row, col)), shape=(nDof, nDof)), B
 
 
 #-------------------------------------------------------------------------------
@@ -152,8 +126,18 @@ def assembleArray ( props, globdat, rank, action ):
 #-------------------------------------------------------------------------------
 
 
-def assembleInternalForce ( props, globdat ):
-  fint = assembleArray( props, globdat, rank = 1, action = 'getInternalForce' )
+def assembleInternalForce(props: Properties, globdat: Any) -> Any:
+  """Assemble and return the global internal force vector.
+
+  Args:
+    props: Global properties container.
+    globdat: Global data/state object.
+
+  Returns:
+    The assembled internal force array.
+  """
+
+  fint = assembleArray(props, globdat, rank=1, action="getInternalForce")
   return fint[0]
 
 
@@ -162,10 +146,16 @@ def assembleInternalForce ( props, globdat ):
 #-------------------------------------------------------------------------------
 
 
-def assembleExternalForce ( props, globdat ):
-  fext = assembleArray( props, globdat, rank = 1, action = 'getExternalForce' )   
+def assembleExternalForce(props: Properties, globdat: Any) -> Any:
+    """Assemble and return the global external force vector.
 
-  return fext[0] + globdat.fhat * globdat.solverStatus.lam
+    The external force returned includes contributions assembled from
+    elements plus any scaled forcing term stored on ``globdat``.
+    """
+
+    fext = assembleArray(props, globdat, rank=1, action="getExternalForce")
+
+    return fext[0] + globdat.fhat * globdat.solverStatus.lam
 
 
 #-------------------------------------------------------------------------------
@@ -173,8 +163,15 @@ def assembleExternalForce ( props, globdat ):
 #-------------------------------------------------------------------------------
   
   
-def assembleDissipation ( props, globdat ):
-  return assembleArray( props, globdat, rank = 1, action = 'getDissipation' )   
+def assembleDissipation(props: Properties, globdat: Any) -> Any:
+    """Assemble and return dissipation contributions.
+
+    Returns the tuple produced by :func:`assembleArray` for the
+    ``getDissipation`` action. The first element typically contains
+    the assembled vector and the second the scalar dissipation.
+    """
+
+    return assembleArray(props, globdat, rank=1, action="getDissipation")
  
  
 #-------------------------------------------------------------------------------
@@ -182,8 +179,13 @@ def assembleDissipation ( props, globdat ):
 #-------------------------------------------------------------------------------
 
 
-def assembleTangentStiffness ( props, globdat ):
-  return assembleArray( props, globdat, rank = 2, action = 'getTangentStiffness' )
+def assembleTangentStiffness(props: Properties, globdat: Any) -> Tuple[Any, Any]:
+    """Assemble and return the global tangent stiffness matrix and residual.
+
+    Returns a tuple (stiff_matrix, residual_vector).
+    """
+
+    return assembleArray(props, globdat, rank=2, action="getTangentStiffness")
 
 
 #-------------------------------------------------------------------------------
@@ -191,8 +193,13 @@ def assembleTangentStiffness ( props, globdat ):
 #-------------------------------------------------------------------------------
 
 
-def assembleMassMatrix ( props, globdat ):
-  return assembleArray( props, globdat, rank = 2, action = 'getMassMatrix' )
+def assembleMassMatrix(props: Properties, globdat: Any) -> Tuple[Any, Any]:
+    """Assemble and return the global mass matrix and lumped vector.
+
+    Returns a tuple (mass_matrix, lumped_vector).
+    """
+
+    return assembleArray(props, globdat, rank=2, action="getMassMatrix")
 
 
 #-------------------------------------------------------------------------------
@@ -200,8 +207,13 @@ def assembleMassMatrix ( props, globdat ):
 #-------------------------------------------------------------------------------
 
 
-def commit ( props, globdat ):
-  return assembleArray( props, globdat, rank = 0, action = 'commit' )
+def commit(props: Properties, globdat: Any) -> Any:
+    """Commit element states by calling the element ``commit`` action.
+
+    Delegates to :func:`assembleArray` with the ``commit`` action.
+    """
+
+    return assembleArray(props, globdat, rank=0, action="commit")
 
 
 #-------------------------------------------------------------------------------
@@ -209,54 +221,70 @@ def commit ( props, globdat ):
 #-------------------------------------------------------------------------------
 
 
-def getAllConstraints ( props , globdat ):
+def getAllConstraints(props: Properties, globdat: Any) -> None:
+    """Invoke `getConstraints` on all elements to collect constraint data.
 
-  #Loop over the element groups
-  for elementGroup in globdat.elements.iterGroupNames():
+    Note: this function relies on an ``elemdat`` structure being available
+    in the local scope of the caller. The current implementation mirrors the
+    original behaviour and intentionally does not change the logic.
+    """
 
-    #Get the properties corresponding to the elementGroup
-    el_props = getattr( props, elementGroup )
+    # Loop over the element groups
+    for elementGroup in globdat.elements.iterGroupNames():
 
-    #Loop over the elements in the elementGroup
-    for element in globdat.elements.iterElementGroup( elementGroup ):
+        # Get the properties corresponding to the elementGroup
+        el_props = getattr(props, elementGroup)
 
-      #Get the element nodes
-      el_nodes = element.getNodes()
+        # Pre-create a placeholder element data container so that
+        # calls to element.getConstraints can always receive an object.
+        elemdat = elementData(np.array([]), np.array([]))
 
-      elemdat.nodes    = el_nodes
-      elemdat.props    = el_props
-      
-      #Get the element contribution by calling the specified action
-      getattr( element, 'getConstraints', None )( elemdat )
+        # Loop over the elements in the elementGroup
+        for element in globdat.elements.iterElementGroup(elementGroup):
+
+            # Get the element nodes
+            el_nodes = element.getNodes()
+
+            elemdat.nodes = el_nodes
+            elemdat.props = el_props
+
+            # Get the element contribution by calling the specified action
+            getattr(element, "getConstraints", None)(elemdat)
 
 #-------------------------------------------------------------------------------
 #  getElementData
 #-------------------------------------------------------------------------------
 
 
-def getElementData( element , el_props, globdat ):
+def getElementData(element: Any, el_props: Properties, globdat: Any) -> elementData:
+    """Create and populate an ``elementData`` instance for an element.
 
-  el_nodes = element.getNodes()
-  
-  el_coords = globdat.nodes.getNodeCoords( el_nodes )
+    This helper collects node indices, coordinates, DOF indices and the
+    current element state from ``globdat`` and stores them in an
+    ``elementData`` instance which is returned.
+    """
 
-  el_dofs = globdat.dofs.getForTypes( el_nodes , element.dofTypes )
-     
-  el_a  = globdat.state [el_dofs]
-  el_Da = globdat.Dstate[el_dofs]
+    el_nodes = element.getNodes()
 
-  elemdat = elementData( el_a , el_Da )
+    el_coords = globdat.nodes.getNodeCoords(el_nodes)
 
-  elemdat.coords   = el_coords
-  elemdat.nodes    = el_nodes
-  elemdat.props    = el_props
-  #elemdat.iElm     = iElm 
+    el_dofs = globdat.dofs.getForTypes(el_nodes, element.dofTypes)
 
-  element.globdat  = globdat
-  #element.iElm     = iElm
-  elemdat.el_dofs  = el_dofs
-  
-  if hasattr( element , "matProps" ):
-    elemdat.matprops = element.matProps  
-  
-  return elemdat
+    el_a = globdat.state[el_dofs]
+    el_Da = globdat.Dstate[el_dofs]
+
+    elemdat = elementData(el_a, el_Da)
+
+    elemdat.coords = el_coords
+    elemdat.nodes = el_nodes
+    elemdat.props = el_props
+    # elemdat.iElm = iElm
+
+    element.globdat = globdat
+    # element.iElm = iElm
+    elemdat.el_dofs = el_dofs
+
+    if hasattr(element, "matProps"):
+        elemdat.matprops = element.matProps
+
+    return elemdat
