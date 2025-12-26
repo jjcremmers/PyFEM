@@ -50,6 +50,7 @@ Mandatory Parameters
 .. list-table:: 
    :widths: 25 75
    :header-rows: 1
+   :width: 100%
 
    * - Parameter
      - Description
@@ -71,6 +72,7 @@ Optional Parameters
 .. list-table:: 
    :widths: 25 75
    :header-rows: 1
+   :width: 100%
 
    * - Parameter
      - Description
