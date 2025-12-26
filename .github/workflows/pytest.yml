@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10" , "3.11"]
+        python-version: ["3.9", "3.10" , "3.11", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Checkout repository
@@ -31,3 +31,9 @@ jobs:
       - name: Run tests
         run: |
           python -m unittest discover -s test -p "*.py"
+
+      - name: Run tests with coverage
+        run: |
+          pip install coverage
+          coverage run -m unittest discover -s test -p "*.py"
+          coverage report           
