@@ -15,8 +15,41 @@ unknowns and the response is governed by a continuum constitutive law.
    :maxdepth: 1
    :titlesonly:
 
+   elements/finitestrainaxisym.rst
    elements/finitestraincontinuum.rst
    elements/smallstraincontinuum.rst
+   elements/smallstrainaxisym.rst   
+
+Shell and Plate Elements
+------------------------
+
+Beam, plate/shell, interface, and axisymmetric elements, plus utilities.
+Choose these for slender members, layered shells, cohesive interfaces, or
+specialized kinematics outside standard continuum formulations.
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   elements/plate.rst
+   elements/sls.rst
+
+Beam and Rod Elements
+---------------------
+
+Beam, plate/shell, interface, and axisymmetric elements, plus utilities.
+Choose these for slender members, layered shells, cohesive interfaces, or
+specialized kinematics outside standard continuum formulations.
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   elements/beamnl.rst
+   elements/kirchhoffbeam.rst
+   elements/spring.rst
+   elements/timoshenkobeam.rst
+   elements/truss.rst
 
 Other Elements
 --------------
@@ -28,15 +61,5 @@ specialized kinematics outside standard continuum formulations.
 .. toctree::
    :maxdepth: 1
    :titlesonly:
-
-   elements/beamnl.rst
-   elements/finitestrainaxisym.rst
+   
    elements/interface.rst
-   elements/kirchhoffbeam.rst
-   elements/plate.rst
-   elements/sls.rst
-   elements/smallstrainaxisym.rst
-   elements/spring.rst
-   elements/timoshenkobeam.rst
-   elements/truss.rst
-
