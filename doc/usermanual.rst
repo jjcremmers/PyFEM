@@ -8,10 +8,13 @@ elements, materials, solvers, and input/output modules.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
 
    elements/overview
    materials/overview
+
+.. toctree::
+   :maxdepth: 1
+
    solvers/overview
    io/overview
 
