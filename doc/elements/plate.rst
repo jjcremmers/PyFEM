@@ -11,11 +11,44 @@ freedom (``u`` , ``v`` and ``w``) which describe the displacements in the
 of freedom (``rx`` and ``ry``) that represent the rotations around the 
 ``x`` and ``y`` axis, respectively.
 
----------
-Arguments
----------
+Parameters
+----------
 
-Element type: Plate
+Mandatory Parameters
+~~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :widths: 25 75
+   :header-rows: 1
+   :width: 100%
+
+   * - Parameter
+     - Description
+   * - ``type``
+     - Must be set to ``"Plate"``
+   * - ``material``
+     - Single-material block defining constitutive behavior (e.g., ``E``, ``nu``, ``rho``) for isotropic plates.
+   * - ``thickness``
+     - Plate thickness for single-material configurations.
+
+Optional Parameters
+~~~~~~~~~~~~~~~~~~~
+
+.. list-table::
+   :widths: 25 75
+   :header-rows: 1
+   :width: 100%
+
+   * - Parameter
+     - Description
+   * - ``materials``
+     - List of material names for multilayer laminates.
+   * - ``layers``
+     - List of layer identifiers. Each layer must define:
+       
+       * ``material`` — reference to a material name (for ``materials`` lists)
+       * ``theta`` — fiber orientation angle in degrees
+       * ``thickness`` — layer thickness
 
 
 
@@ -47,6 +80,24 @@ not that all dimensions are in mm, kg and Pa.::
   };
 
 This is the end.
+
+------------------
+Additional Examples
+------------------
+
+The ``Plate`` element is used in multiple example input files:
+
+- ``examples/elements/plate/plate_cantilever01.pro``
+- ``examples/elements/plate/plate_cantilever02.pro``
+- ``examples/plate/platetest.pro``
+- ``examples/plate/platetest2.pro``
+- ``examples/plate/plate_test_02.pro``
+- ``examples/plate/plate_test_03.pro``
+- ``examples/plate/plate_test_05.pro``
+- ``examples/plate/plate_test_06.pro``
+- ``examples/plate/plate_test_07.pro``
+- ``examples/plate/platedyn.pro``
+- ``examples/plate/platedynSS.pro``
 
 ---------------------------
 Example: Layered composite

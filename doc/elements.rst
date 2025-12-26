@@ -10,4 +10,12 @@ be described here.
    elements/finitestraincontinuum.rst
    elements/sls.rst
    elements/plate.rst
+   elements/interface.rst
+   elements/kirchhoffbeam.rst
+   elements/timoshenkobeam.rst
+   elements/beamnl.rst
+   elements/truss.rst
+   elements/spring.rst
+   elements/finitestrainaxisym.rst
+   elements/smallstrainaxisym.rst
 
