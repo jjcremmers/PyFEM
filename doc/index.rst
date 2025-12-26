@@ -14,11 +14,11 @@ documentation for details.
    :maxdepth: 2
 
    about
-   installation
+   installation/overview
    quickstart
    usermanual
-   tutorials
-   develop 
+   tutorials/overview
+   develop/overview
    api   
    modules
 
