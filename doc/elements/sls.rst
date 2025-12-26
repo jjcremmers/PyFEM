@@ -44,20 +44,19 @@ The element is ideal for modeling:
 Parameters
 ----------
 
+Mandatory Parameters
+~~~~~~~~~~~~~~~~~~~~
+
 .. list-table:: 
-   :widths: 20 15 65
+   :widths: 25 75
    :header-rows: 1
 
    * - Parameter
-     - Required
      - Description
    * - ``type``
-     - Yes
      - Must be set to ``"SLS"``
    * - ``material``
-     - Yes
-     - Material block defining constitutive behavior. For single-layer elements, 
-       specify one material. For multi-layer laminates, use ``MultiMaterial`` type.
+     - Material block defining constitutive behavior. For single-layer elements, specify one material. For multi-layer laminates, use ``MultiMaterial`` type.
        
        Common material types:
        
@@ -65,15 +64,20 @@ Parameters
        * ``"TransverseIsotropic"``: For unidirectional composites (parameters: ``E1``, ``E2``, ``nu12``, ``G12``, ``rho``)
        * ``"Orthotropic"``: For fully orthotropic materials (parameters: ``E1``, ``E2``, ``E3``, ``nu12``, ``nu13``, ``nu23``, ``G12``, ``G13``, ``G23``, ``rho``)
        * ``"MultiMaterial"``: For laminates with different materials per layer
+
+Optional Parameters
+~~~~~~~~~~~~~~~~~~~
+
+.. list-table:: 
+   :widths: 25 75
+   :header-rows: 1
+
+   * - Parameter
+     - Description
    * - ``theta``
-     - No
-     - Fiber orientation angle in degrees for single-layer elements with anisotropic 
-       materials. Specifies the angle between the fiber direction and the element 
-       local x-axis. Default is 0.0 if not specified.
+     - Fiber orientation angle in degrees for single-layer elements with anisotropic materials. Specifies the angle between the fiber direction and the element local x-axis. Default is 0.0 if not specified.
    * - ``layers``
-     - No
-     - List of layer identifiers for multi-layer laminates. Each layer must be defined 
-       as a separate block containing:
+     - List of layer identifiers for multi-layer laminates. Each layer must be defined as a separate block containing:
        
        * ``thickness``: Layer thickness
        * ``theta``: Fiber orientation angle for this layer (in degrees)
