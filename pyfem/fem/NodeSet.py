@@ -45,12 +45,38 @@ logger = getLogger()
 class NodeSet(itemList):
     """Container for nodes and node groups.
 
-    Maintains nodal coordinates, dimensionality (`rank`), and groupings read
-    from legacy `.pro` files or Gmsh meshes. Provides convenience methods for
-    retrieving coordinates and iterating group contents.
+    Inherits from itemList to store nodal coordinates indexed by node ID.
+    Maintains nodal coordinates, spatial dimensionality (`rank`), and named
+    groupings read from legacy `.pro` files or Gmsh meshes. Provides convenience
+    methods for retrieving coordinates and iterating group contents.
+
+    Attributes
+    ----------
+    rank : int
+        Spatial dimension of the mesh (2 for 2D, 3 for 3D). Initialized to -1
+        and set automatically when first node is added.
+    groups : Dict[str, List[int]]
+        Dictionary mapping group names to lists of node IDs. Groups are typically
+        used to define boundary conditions (e.g., 'Left', 'Right', 'Top', 'Bottom').
+
+    Notes
+    -----
+    The NodeSet class extends itemList, inheriting methods like add(), get(),
+    and __len__(). Node coordinates are stored internally and can be retrieved
+    via getNodeCoords().
+
+    Examples
+    --------
+    >>> nodes = NodeSet()
+    >>> nodes.add(0, [0.0, 0.0])      # Add node 0 at origin
+    >>> nodes.add(1, [1.0, 0.0])      # Add node 1 at (1, 0)
+    >>> nodes.addToGroup('Bottom', 0)
+    >>> nodes.addToGroup('Bottom', 1)
+    >>> coords = nodes.getNodeCoords('Bottom')
     """
 
     def __init__(self) -> None:
+        """Initialize an empty NodeSet with undefined rank and no groups."""
         self.rank: int = -1
         self.groups: Dict[str, List[int]] = {}
 
@@ -134,10 +160,24 @@ class NodeSet(itemList):
     def readFromFile(self, fname: str) -> None:
         """Read nodes and groups from legacy `.pro` file format.
 
+        Parses the input file twice: first pass reads nodal coordinates from
+        <Nodes> blocks or references external Gmsh files; second pass reads
+        <NodeGroup> definitions. Duplicate nodes in groups are automatically
+        removed.
+
         Parameters
         ----------
         fname : str
-            Path to input file.
+            Path to input file (.pro format or referencing a Gmsh file).
+
+        Notes
+        -----
+        Supported file formats:
+        1. Native .pro format with <Nodes> and <NodeGroup> blocks
+        2. Gmsh reference: line containing 'gmsh = "filename.msh"'
+
+        The file is parsed line by line. Comments and whitespace are handled.
+        Node groups are deduplicated after reading.
         """
 
         logger.info("  Reading nodes")
@@ -192,10 +232,27 @@ class NodeSet(itemList):
     def readGmshFile(self, fname: str) -> None:
         """Read nodes and groups from a Gmsh mesh file.
 
+        Uses meshio to parse Gmsh format and extract nodes and physical groups.
+        Automatically detects spatial dimension (2D/3D) based on element types.
+        Physical groups from Gmsh become node groups in PyFEM.
+
         Parameters
         ----------
         fname : str
-            Path to the Gmsh file.
+            Path to the Gmsh file (.msh format, versions 2 or 4).
+
+        Notes
+        -----
+        3D element detection:
+        - Checks for prisms, pyramids, hexahedra, wedges, and tetrahedra
+        - Sets rank=3 if any 3D elements found, otherwise rank=2
+
+        Node groups are populated from Gmsh's cell_sets_dict, with
+        'gmsh:bounding_entities' excluded. All nodes in elements belonging
+        to a physical group are added to the corresponding PyFEM group.
+
+        Requires:
+        - meshio package for reading Gmsh files
         """
 
         import meshio
@@ -229,14 +286,22 @@ class NodeSet(itemList):
 #-------------------------------------------------------------------------------
 
     def addToGroup(self, modelType: str, ID: Union[int, str]) -> None:
-      """Register a node id to a group.
+      """Register a node ID to a named group.
+
+      Creates the group if it doesn't exist, otherwise appends the node to
+      the existing group. String node IDs are automatically converted to integers.
 
       Parameters
       ----------
       modelType : str
-        Group name.
+        Name of the node group (e.g., 'Left', 'Right', 'Bottom', 'Top').
       ID : Union[int, str]
-        Node identifier (string parsed to int or already int).
+        Node identifier. String values are converted to int.
+
+      Examples
+      --------
+      >>> nodes.addToGroup('Boundary', 5)
+      >>> nodes.addToGroup('Boundary', '10')  # String converted to int
       """
 
       if modelType not in self.groups:
@@ -249,7 +314,25 @@ class NodeSet(itemList):
 #-------------------------------------------------------------------------------
 
     def __repr__(self) -> str:
-        """Human-readable summary of node and group counts."""
+        """Return human-readable summary of node and group counts.
+
+        Returns
+        -------
+        str
+            Formatted string showing total node count and, if groups exist,
+            a table of group names with their respective node counts.
+
+        Examples
+        --------
+        >>> print(nodes)
+          Number of nodes ............ 100
+            Number of  groups .......... 4
+            -----------------------------------
+              name                       #nodes
+              ---------------------------------
+              Left                            25
+              Right                           25
+        """
         msg = f"  Number of nodes ............ {len(self):6d}\n"
 
         if len(self.groups) > 0:
@@ -270,10 +353,24 @@ class NodeSet(itemList):
     def readNodalCoords(self, fin: TextIO) -> None:
         """Read nodal coordinates from an open file stream.
 
+        Parses node definitions from a <Nodes> block until </Nodes> is encountered.
+        Each line should contain: nodeID x [y [z]] with semicolon separators.
+        Comments starting with // or # are ignored. Spatial dimension (rank)
+        is inferred from the first valid node entry.
+
         Parameters
         ----------
         fin : TextIO
             Open file handle positioned at the start of the `<Nodes>` block.
+
+        Notes
+        -----
+        Format:
+        - Multiple nodes per line separated by semicolons
+        - Format: nodeID x y [z];
+        - Whitespace is normalized before parsing
+        - Comments (// or #) are skipped
+        - rank is set from first node (2D or 3D)
         """
 
         while True:
@@ -303,12 +400,23 @@ class NodeSet(itemList):
     def readNodegroup(self, fin: TextIO, key: str) -> None:
         """Read a node group from an open file stream.
 
+        Parses node IDs from a <NodeGroup> block until </NodeGroup> is encountered.
+        Node IDs are whitespace-separated integers. All valid integers found are
+        added to the specified group.
+
         Parameters
         ----------
         fin : TextIO
             Open file handle positioned at the start of a `<NodeGroup>` block.
         key : str
-            Group name label.
+            Group name label to assign these nodes to.
+
+        Notes
+        -----
+        Format:
+        - <NodeGroup name="groupname">
+        - nodeID1 nodeID2 nodeID3 ...
+        - </NodeGroup>
         """
 
         while True:
@@ -333,5 +441,5 @@ class NodeSet(itemList):
         """
         if self.rank == -1:
             self.rank = len(self.get(0))
-            
+
         return self.rank
