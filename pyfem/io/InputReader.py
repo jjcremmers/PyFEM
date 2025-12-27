@@ -109,7 +109,7 @@ def InputRead( fname , dname = None , parameters = None ):
   globdat.active = True
   globdat.prefix = os.path.splitext(fname)[0]
    
-  globdat.models  = ModelManager( props )
+  globdat.models  = ModelManager( props , globdat )
   
   globdat.startTime = t1  
   	

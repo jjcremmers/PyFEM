@@ -202,7 +202,20 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
     def getForType(self, nodeIDs: Sequence[Any], dofType: str) -> array:
-        """Return DOF indices for a given DOF type and list of node IDs."""
+        """Return DOF indices for a given DOF type and node ID(s).
+
+        Parameters
+        ----------
+        nodeIDs : Sequence[Any] or int
+            Single node ID or sequence of node IDs.
+        dofType : str
+            DOF type name (e.g., 'u', 'v', 'w').
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of global DOF indices.
+        """
 
         return self.dofs[self.IDmap.get(nodeIDs), self.dofTypes.index(dofType)]
       
@@ -211,7 +224,20 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
     def getForTypes(self, nodeIDs: Sequence[Any], dofTypes: Sequence[str]) -> List[int]:
-        """Return DOF indices for multiple DOF types and multiple nodes."""
+        """Return DOF indices for multiple DOF types and multiple nodes.
+
+        Parameters
+        ----------
+        nodeIDs : Sequence[Any]
+            Sequence of node IDs.
+        dofTypes : Sequence[str]
+            Sequence of DOF type names.
+
+        Returns
+        -------
+        List[int]
+            Flat list of global DOF indices ordered by node, then by DOF type.
+        """
 
         dofs: List[int] = []
 
@@ -262,8 +288,23 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
     def get(self, nodeIDs: Sequence[Any]) -> array:
-        """Return all DOF ids for the provided node IDs."""
+        """Return all DOF indices for the provided node ID(s).
 
+        Parameters
+        ----------
+        nodeIDs : Sequence[Any], int, or np.integer
+            Single node ID or sequence of node IDs. Accepts both Python integers
+            and NumPy integer types.
+
+        Returns
+        -------
+        numpy.ndarray
+            Flattened array of all DOF indices for the specified nodes, in order.
+        """
+
+        if isinstance(nodeIDs, (int, np.integer)):
+            nodeIDs = [nodeIDs]
+            
         return self.dofs[self.IDmap.get(nodeIDs)].flatten()
 
 #-------------------------------------------------------------------------------
@@ -271,7 +312,19 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
     def copyConstrainer(self, dofTypes: Optional[Sequence[str]] = None) -> Constrainer:
-        """Return a copy of the current constrainer with additional DOF types."""
+        """Return a copy of the current constrainer with additional DOF types.
+
+        Parameters
+        ----------
+        dofTypes : Optional[Sequence[str] or str]
+            DOF type(s) to constrain to zero. If None, returns a simple copy.
+            Can be a single string or sequence of strings.
+
+        Returns
+        -------
+        Constrainer
+            Deep copy of the constrainer with additional zero constraints applied.
+        """
 
         newCons = deepcopy(self.cons)
 
@@ -300,6 +353,20 @@ class DofSpace:
         For a matrix problem the constrained system is assembled and solved
         in the reduced space. For a diagonal 'A' (len(A.shape)==1) the solve
         is performed element-wise.
+
+        Parameters
+        ----------
+        A : numpy.ndarray
+            System matrix (2D) or diagonal elements (1D).
+        b : numpy.ndarray
+            Right-hand side vector.
+        constrainer : Optional[Constrainer]
+            Constrainer to use. If None, uses self.cons.
+
+        Returns
+        -------
+        numpy.ndarray
+            Solution vector x with constraints applied.
         """
 
         if constrainer is None:
@@ -338,6 +405,22 @@ class DofSpace:
 
         The computation is performed in the constrained subspace and the eigenvectors
         are expanded back to the full DOF space before returning.
+
+        Parameters
+        ----------
+        A : numpy.ndarray
+            Stiffness matrix.
+        B : numpy.ndarray
+            Mass matrix.
+        count : int, optional
+            Number of eigenpairs to compute (default: 5).
+
+        Returns
+        -------
+        eigvals : numpy.ndarray
+            Array of eigenvalues in ascending order.
+        eigvecs : numpy.ndarray
+            Matrix where each column is an eigenvector in the full DOF space.
         """
 
         A_constrained = self.cons.C.T @ ( A @ self.cons.C )
@@ -357,7 +440,20 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
     def norm(self, r: array, constrainer: Optional[Constrainer] = None) -> float:
-        """Return the norm of ``r`` excluding constrained DOFs."""
+        """Return the norm of ``r`` excluding constrained DOFs.
+
+        Parameters
+        ----------
+        r : numpy.ndarray
+            Vector to compute the norm of.
+        constrainer : Optional[Constrainer]
+            Constrainer to use. If None, uses self.cons.
+
+        Returns
+        -------
+        float
+            L2 norm of the unconstrained portion of r.
+        """
 
         if constrainer is None:
             constrainer = self.cons
@@ -369,7 +465,22 @@ class DofSpace:
 #-------------------------------------------------------------------------------
 
     def maskPrescribed(self, a: array, val: float = 0.0, constrainer: Optional[Constrainer] = None) -> array:
-        """Replace prescribed DOFs in ``a`` with ``val`` and return the array."""
+        """Replace prescribed DOFs in ``a`` with ``val`` and return the array.
+
+        Parameters
+        ----------
+        a : numpy.ndarray
+            Array to modify.
+        val : float, optional
+            Value to set for prescribed DOFs (default: 0.0).
+        constrainer : Optional[Constrainer]
+            Constrainer to use. If None, uses self.cons.
+
+        Returns
+        -------
+        numpy.ndarray
+            Modified array with prescribed DOFs set to val.
+        """
 
         if constrainer is None:
             constrainer = self.cons

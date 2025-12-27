@@ -123,8 +123,6 @@ class BaseModule:
 
                     for name, val in self.myProps:
                         setattr(self, name, val)
-        else:
-            print("NNOO")
 
         self.type = self.__class__.__name__
 

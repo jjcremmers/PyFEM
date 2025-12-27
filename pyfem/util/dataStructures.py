@@ -199,6 +199,14 @@ class GlobalData ( Properties ):
 
   def readFromFile( self , fname ):
 
+    fin = open( fname )
+
+    lines = fin.readlines()
+
+    if not any('<ExternalForces>' in line for line in lines):
+      logger.warning("No <ExternalForces> section found")
+      return
+    
     logger.info("Reading external forces ......")
 
     fin = open( fname )

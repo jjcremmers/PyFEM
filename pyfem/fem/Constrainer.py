@@ -70,7 +70,7 @@ class Constrainer:
 #
 #-------------------------------------------------------------------------------
            
-    def addConstraint(self, dofID: int, val: Any, label: str) -> None:
+    def addConstraint(self, dofID: int, val: Any, label: str ) -> None:
         """Register a constraint on a DOF.
 
         The ``val`` argument may be a scalar or a triplet [value, masterID, factor]
@@ -178,7 +178,7 @@ class Constrainer:
                     if type(item) is not list:
                         continue
                     else:
-                        if item[1][0] in self.constrainData:
+                        if item[1] in self.constrainData:
                             # Something not checked correct in checkConstraint2
                             raise RuntimeError("ERROR - Master of slave is a slave itself")
                         else:
@@ -194,7 +194,7 @@ class Constrainer:
         # Assign correct slaves to masters
         for iSlave in master:
             fac = master[iSlave][2]
-            masterDofID = master[iSlave][1][0]
+            masterDofID = master[iSlave][1]
 
             # Find column for free DOF of the Master
             rowID = row.index(masterDofID)
@@ -273,4 +273,3 @@ class Constrainer:
             counter += len(self.constrainedDofs[name])
 
         return counter
-      

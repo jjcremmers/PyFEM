@@ -58,21 +58,75 @@ class NodeSet(itemList):
 #
 #-------------------------------------------------------------------------------
 
-    def getNodeCoords(self, nodeIDs: Union[int, List[int]]) -> array:
+    def getNodeCoords(self, nodeIDs: Union[int, List[int], str]) -> array:
       """Return coordinates for one or more nodes as a NumPy array.
 
       Parameters
       ----------
-      nodeIDs : Union[int, List[int]]
-        Single node id or list of node ids.
+      nodeIDs : Union[int, List[int], str]
+        Single node ID (int), list of node IDs (list), or node group name (str).
+        When a string is provided, it references a node group defined in the model.
 
       Returns
       -------
       numpy.array
-        Array containing nodal coordinates.
-      """
-      return array(self.get(nodeIDs))
+        Array containing nodal coordinates. For a single node, returns a 1D array
+        of shape (rank,). For multiple nodes, returns a 2D array of shape (n, rank)
+        where n is the number of nodes and rank is the spatial dimension.
 
+      Examples
+      --------
+      >>> nodes.getNodeCoords(5)           # Single node
+      array([1.0, 2.0, 0.0])
+      
+      >>> nodes.getNodeCoords([1, 2, 3])   # Multiple nodes
+      array([[0.0, 0.0, 0.0],
+             [1.0, 0.0, 0.0],
+             [2.0, 0.0, 0.0]])
+      
+      >>> nodes.getNodeCoords('Left')      # Node group
+      array([[0.0, 0.0, 0.0],
+             [0.0, 1.0, 0.0]])
+      """
+
+      if type(nodeIDs) == str:
+        try:
+            nodeIDs = self.groups[nodeIDs]
+        except KeyError:
+            logger.error(f"Node group '{nodeIDs}' not found.")
+            sys.exit(1)
+
+      return array(self.get(nodeIDs))
+    
+#
+# 
+#     
+
+    def getNodeIDs(self, groupName: str) -> List[int]:
+        """Return list of node IDs in the specified group.
+    
+        Parameters
+        ----------
+        groupName : str
+            Name of the node group.
+    
+        Returns
+        -------
+        List[int]
+            List of node IDs in the specified group.
+    
+        Examples
+        --------
+        >>> nodes.getNodeIDs('Left')
+        [0, 1, 2]
+        """
+    
+        try:
+            return self.groups[groupName]
+        except KeyError:
+            logger.error(f"Node group '{groupName}' not found.")
+            sys.exit(1)
+            
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
