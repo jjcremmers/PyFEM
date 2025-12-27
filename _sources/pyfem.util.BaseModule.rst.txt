@@ -1,0 +1,7 @@
+pyfem.util.BaseModule module
+============================
+
+.. automodule:: pyfem.util.BaseModule
+   :members:
+   :show-inheritance:
+   :undoc-members:

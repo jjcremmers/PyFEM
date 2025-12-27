@@ -1,0 +1,7 @@
+pyfem.elements.FiniteStrainAxiSym module
+========================================
+
+.. automodule:: pyfem.elements.FiniteStrainAxiSym
+   :members:
+   :show-inheritance:
+   :undoc-members:

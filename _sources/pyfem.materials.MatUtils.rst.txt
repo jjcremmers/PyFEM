@@ -1,0 +1,7 @@
+pyfem.materials.MatUtils module
+===============================
+
+.. automodule:: pyfem.materials.MatUtils
+   :members:
+   :show-inheritance:
+   :undoc-members:

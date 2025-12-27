@@ -1,0 +1,7 @@
+pyfem.solvers.DynEigSolver module
+=================================
+
+.. automodule:: pyfem.solvers.DynEigSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

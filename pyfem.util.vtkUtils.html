@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.vtkUtils module &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pyfem.util.utilFunctions module" href="pyfem.util.utilFunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyfem</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyfem.html">pyfem package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pyfem.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyfem.core.html">pyfem.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.elements.html">pyfem.elements package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.fem.html">pyfem.fem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.gui.html">pyfem.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.html">pyfem.io package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.materials.html">pyfem.materials package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.models.html">pyfem.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.solvers.html">pyfem.solvers package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pyfem.util.html">pyfem.util package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pyfem</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.html">pyfem package</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.util.html">pyfem.util package</a></li>
+      <li class="breadcrumb-item active">pyfem.util.vtkUtils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.util.vtkUtils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyfem.util.vtkUtils">
+<span id="pyfem-util-vtkutils-module"></span><h1>pyfem.util.vtkUtils module<a class="headerlink" href="#module-pyfem.util.vtkUtils" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.storeNodes">
+<span class="sig-name descname"><span class="pre">storeNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globdat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData" title="pyfem.util.dataStructures.GlobalData"><span class="pre">GlobalData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#storeNodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.storeNodes" title="Link to this definition"></a></dt>
+<dd><p>Store node coordinates from the global data into a VTK grid.</p>
+<p>Converts node coordinates to 3D format (padding 2D coordinates with z=0.0)
+and inserts them into the VTK grid’s point data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to store points in</p></li>
+<li><p><strong>globdat</strong> – Global data object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.storeElements">
+<span class="sig-name descname"><span class="pre">storeElements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globdat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData" title="pyfem.util.dataStructures.GlobalData"><span class="pre">GlobalData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementGroup</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'All'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#storeElements"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.storeElements" title="Link to this definition"></a></dt>
+<dd><p>Store elements from the global data into a VTK grid.</p>
+<p>Iterates through elements in the specified group and inserts them into
+the VTK grid with appropriate cell types based on element family and rank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to store cells in</p></li>
+<li><p><strong>globdat</strong> – Global data object containing element information</p></li>
+<li><p><strong>elementGroup</strong> – Name of element group to store. Defaults to “All”</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.storeDofField">
+<span class="sig-name descname"><span class="pre">storeDofField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globdat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData" title="pyfem.util.dataStructures.GlobalData"><span class="pre">GlobalData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dofTypes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#storeDofField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.storeDofField" title="Link to this definition"></a></dt>
+<dd><p>Store a degree-of-freedom field as point data in the VTK grid.</p>
+<p>Creates a VTK array containing values for specified DOF types at each node.
+Missing DOF types are filled with zeros.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to add array to</p></li>
+<li><p><strong>data</strong> – Array of DOF values indexed by global DOF numbers</p></li>
+<li><p><strong>globdat</strong> – Global data object containing DOF information</p></li>
+<li><p><strong>dofTypes</strong> – List of DOF type strings (e.g., [“u”, “v”, “w”]) or single string</p></li>
+<li><p><strong>label</strong> – Name for the VTK array</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.storeDofFields">
+<span class="sig-name descname"><span class="pre">storeDofFields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globdat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData" title="pyfem.util.dataStructures.GlobalData"><span class="pre">GlobalData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#storeDofFields"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.storeDofFields" title="Link to this definition"></a></dt>
+<dd><p>Store all available DOF fields into the VTK grid.</p>
+<p>Automatically detects and stores displacement, temperature, and phase fields
+if they exist in the global data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to add arrays to</p></li>
+<li><p><strong>data</strong> – Array of all DOF values</p></li>
+<li><p><strong>globdat</strong> – Global data object containing DOF information</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.storeNodeField">
+<span class="sig-name descname"><span class="pre">storeNodeField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globdat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData" title="pyfem.util.dataStructures.GlobalData"><span class="pre">GlobalData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#storeNodeField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.storeNodeField" title="Link to this definition"></a></dt>
+<dd><p>Store a scalar field defined at nodes as point data in the VTK grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to add array to</p></li>
+<li><p><strong>data</strong> – Array of scalar values, one per node</p></li>
+<li><p><strong>globdat</strong> – Global data object (for consistency with other functions)</p></li>
+<li><p><strong>name</strong> – Name for the VTK array</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.storeElementField">
+<span class="sig-name descname"><span class="pre">storeElementField</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globdat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData" title="pyfem.util.dataStructures.GlobalData"><span class="pre">GlobalData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#storeElementField"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.storeElementField" title="Link to this definition"></a></dt>
+<dd><p>Store a scalar field defined at elements as cell data in the VTK grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to add array to</p></li>
+<li><p><strong>data</strong> – Array of scalar values, one per element</p></li>
+<li><p><strong>globdat</strong> – Global data object (for consistency with other functions)</p></li>
+<li><p><strong>name</strong> – Name for the VTK array</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.setCellNodes">
+<span class="sig-name descname"><span class="pre">setCellNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkCell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#setCellNodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.setCellNodes" title="Link to this definition"></a></dt>
+<dd><p>Set the node IDs for a VTK cell.</p>
+<p>Maps the provided element node indices to the VTK cell’s point IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> – VTK cell object to set nodes for</p></li>
+<li><p><strong>elemNodes</strong> – List of node indices for the cell</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insertElement">
+<span class="sig-name descname"><span class="pre">insertElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">family</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insertElement"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insertElement" title="Link to this definition"></a></dt>
+<dd><p>Insert an element into the VTK grid.</p>
+<p>Routes element insertion to appropriate function based on element family
+(CONTINUUM, INTERFACE, SURFACE, BEAM, SHELL) and spatial rank (2D or 3D).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of node indices for the element</p></li>
+<li><p><strong>rank</strong> – Spatial dimension (2 or 3)</p></li>
+<li><p><strong>family</strong> – Element family type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element family or rank combination is not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insert2Dcontinuum">
+<span class="sig-name descname"><span class="pre">insert2Dcontinuum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insert2Dcontinuum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insert2Dcontinuum" title="Link to this definition"></a></dt>
+<dd><p>Insert a 2D continuum element into the VTK grid.</p>
+<p>Supports 2, 3, 4, 6, 8, and 9 node elements. Higher-order elements are
+converted to linear elements using only corner nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of node indices for the element</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element has unsupported number of nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insert3Dcontinuum">
+<span class="sig-name descname"><span class="pre">insert3Dcontinuum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insert3Dcontinuum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insert3Dcontinuum" title="Link to this definition"></a></dt>
+<dd><p>Insert a 3D continuum element into the VTK grid.</p>
+<p>Supports 4, 5, 6, 8, and 16 node elements (tetrahedra, pyramids, wedges,
+and hexahedra). Higher-order elements are converted to linear elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of node indices for the element</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element has unsupported number of nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insert2Dinterface">
+<span class="sig-name descname"><span class="pre">insert2Dinterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insert2Dinterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insert2Dinterface" title="Link to this definition"></a></dt>
+<dd><p>Insert a 2D interface element into the VTK grid.</p>
+<p>Represents interface elements as two separate line segments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert elements into</p></li>
+<li><p><strong>elemNodes</strong> – List of 4 node indices (2 nodes per side)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element does not have 4 nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insert3Dinterface">
+<span class="sig-name descname"><span class="pre">insert3Dinterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insert3Dinterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insert3Dinterface" title="Link to this definition"></a></dt>
+<dd><p>Insert a 3D interface element into the VTK grid.</p>
+<p>Represents interface elements as two separate surfaces (triangles or quads).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert elements into</p></li>
+<li><p><strong>elemNodes</strong> – List of 6 (triangular) or 8 (quadrilateral) node indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element does not have 6 or 8 nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insert2Dsurface">
+<span class="sig-name descname"><span class="pre">insert2Dsurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insert2Dsurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insert2Dsurface" title="Link to this definition"></a></dt>
+<dd><p>Insert a 2D surface element into the VTK grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of 2 node indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element does not have 2 nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insert3Dsurface">
+<span class="sig-name descname"><span class="pre">insert3Dsurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insert3Dsurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insert3Dsurface" title="Link to this definition"></a></dt>
+<dd><p>Insert a 3D surface element into the VTK grid.</p>
+<p>Supports triangular and quadrilateral surface elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of 3 (triangular) or 4 (quadrilateral) node indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element does not have 3 or 4 nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insertBeam">
+<span class="sig-name descname"><span class="pre">insertBeam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insertBeam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insertBeam" title="Link to this definition"></a></dt>
+<dd><p>Insert a beam element into the VTK grid.</p>
+<p>Supports 2-node (linear) and 3-node (quadratic) beam elements. For 3-node
+elements, only the end nodes are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of 2 or 3 node indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element does not have 2 or 3 nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.vtkUtils.insertShell">
+<span class="sig-name descname"><span class="pre">insertShell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">vtkUnstructuredGrid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elemNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/vtkUtils.html#insertShell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.vtkUtils.insertShell" title="Link to this definition"></a></dt>
+<dd><p>Insert a shell element into the VTK grid.</p>
+<p>Supports triangular and quadrilateral shell elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>grid</strong> – VTK grid object to insert element into</p></li>
+<li><p><strong>elemNodes</strong> – List of 3 (triangular) or 4 (quadrilateral) node indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If element does not have 3 or 4 nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyfem.util.utilFunctions.html" class="btn btn-neutral float-left" title="pyfem.util.utilFunctions module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

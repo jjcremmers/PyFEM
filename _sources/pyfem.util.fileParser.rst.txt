@@ -1,0 +1,7 @@
+pyfem.util.fileParser module
+============================
+
+.. automodule:: pyfem.util.fileParser
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.elements.ThermoSurface module
+===================================
+
+.. automodule:: pyfem.elements.ThermoSurface
+   :members:
+   :show-inheritance:
+   :undoc-members:

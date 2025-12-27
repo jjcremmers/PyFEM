@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.io.HDF5Writer &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.io.HDF5Writer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.io.HDF5Writer</h1><div class="highlight"><pre>
+<span></span><span class="c1">################################################################################</span>
+<span class="c1">#  This Python file is part of PyFEM, the code that accompanies the book:      #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#    &#39;Non-Linear Finite Element Analysis of Solids and Structures&#39;             #</span>
+<span class="c1">#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #</span>
+<span class="c1">#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #</span>
+<span class="c1">#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #</span>
+<span class="c1">#  then augmented and maintained by Joris J.C. Remmers.                        #</span>
+<span class="c1">#  All rights reserved.                                                        #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  A github repository, with the most up to date version of the code,          #</span>
+<span class="c1">#  can be found here:                                                          #</span>
+<span class="c1">#     https://github.com/jjcremmers/PyFEM/                                     #</span>
+<span class="c1">#     https://pyfem.readthedocs.io/                                            #	</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  The original code can be downloaded from the web-site:                      #</span>
+<span class="c1">#     http://www.wiley.com/go/deborst                                          #</span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  The code is open source and intended for educational and scientific         #</span>
+<span class="c1">#  purposes only. If you use PyFEM in your research, the developers would      #</span>
+<span class="c1">#  be grateful if you could cite the book.                                     #    </span>
+<span class="c1">#                                                                              #</span>
+<span class="c1">#  Disclaimer:                                                                 #</span>
+<span class="c1">#  The authors reserve all rights but do not guarantee that the code is        #</span>
+<span class="c1">#  free from errors. Furthermore, the authors shall not be liable in any       #</span>
+<span class="c1">#  event caused by the use of the program.                                     #</span>
+<span class="c1">################################################################################</span>
+
+<span class="kn">from</span> <span class="nn">pyfem.util.BaseModule</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="HDF5Writer">
+<a class="viewcode-back" href="../../../pyfem.io.HDF5Writer.html#pyfem.io.HDF5Writer.HDF5Writer">[docs]</a>
+<span class="k">class</span> <span class="nc">HDF5Writer</span><span class="p">(</span> <span class="n">BaseModule</span> <span class="p">):</span>
+
+  <span class="k">def</span> <span class="fm">__init__</span> <span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">props</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">):</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>    <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">prefix</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.h5&quot;</span>
+    
+    <span class="bp">self</span><span class="o">.</span><span class="n">dispDofs</span>    <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">,</span><span class="s2">&quot;v&quot;</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">extraFields</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;rx&quot;</span><span class="p">,</span><span class="s2">&quot;ry&quot;</span><span class="p">,</span><span class="s2">&quot;rz&quot;</span><span class="p">,</span><span class="s2">&quot;temp&quot;</span><span class="p">,</span><span class="s2">&quot;pres&quot;</span><span class="p">,</span><span class="s2">&quot;phase&quot;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">singleFile</span>  <span class="o">=</span> <span class="kc">True</span>
+    
+    <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> <span class="n">props</span> <span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">props</span> <span class="p">,</span> <span class="s2">&quot;interval&quot;</span> <span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+    
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singleFile</span><span class="p">:</span>  
+      <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>            
+      <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;cycleCount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+           
+<span class="c1">#------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="HDF5Writer.run">
+<a class="viewcode-back" href="../../../pyfem.io.HDF5Writer.html#pyfem.io.HDF5Writer.HDF5Writer.run">[docs]</a>
+  <span class="k">def</span> <span class="nf">run</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> <span class="n">props</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">):</span>
+  
+    <span class="n">cycle</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">globdat</span><span class="p">,</span><span class="s2">&quot;eigenvecs&quot;</span><span class="p">):</span>
+      
+      <span class="bp">self</span><span class="o">.</span><span class="n">writeHeader</span><span class="p">()</span>
+      <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+      
+      <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+      
+      <span class="bp">self</span><span class="o">.</span><span class="n">writeCycle</span><span class="p">(</span> <span class="n">f</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;modes&quot;</span> <span class="p">)</span>
+   
+    <span class="k">elif</span> <span class="n">cycle</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        
+      <span class="bp">self</span><span class="o">.</span><span class="n">writeHeader</span><span class="p">()</span>
+      
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">singleFile</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">,</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;cycleCount&quot;</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;cycleCount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span>
+        
+        <span class="n">gName</span> <span class="o">=</span> <span class="s2">&quot;cycle&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">gName</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeCycle</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">gName</span><span class="p">]</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">)</span>
+        
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">)</span>
+      
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+              
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeCycle</span><span class="p">(</span><span class="n">f</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+ 
+<span class="c1">#----------------------------------------------------------------------------------</span>
+<span class="c1">#  writeCycle</span>
+<span class="c1">#----------------------------------------------------------------------------------</span>
+  
+<div class="viewcode-block" id="HDF5Writer.writeCycle">
+<a class="viewcode-back" href="../../../pyfem.io.HDF5Writer.html#pyfem.io.HDF5Writer.HDF5Writer.writeCycle">[docs]</a>
+  <span class="k">def</span> <span class="nf">writeCycle</span><span class="p">(</span> <span class="bp">self</span> <span class="p">,</span> <span class="n">cdat</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">,</span> <span class="n">method</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span> <span class="p">):</span>  
+      
+    <span class="n">cdat</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;elements&quot;</span><span class="p">)</span>
+           
+    <span class="n">elemCount</span>    <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">connectivity</span> <span class="o">=</span> <span class="p">[]</span>
+      
+    <span class="n">i0</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>    
+      <span class="n">i0</span> <span class="o">=</span> <span class="n">i0</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+      <span class="n">elemCount</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i0</span><span class="p">)</span>
+      <span class="n">connectivity</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+       
+    <span class="n">connectivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getIndices</span><span class="p">(</span><span class="n">connectivity</span><span class="p">),</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>
+    <span class="n">elemCount</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elemCount</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>
+    <span class="n">elemIDs</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">getIndices</span><span class="p">(),</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>
+    <span class="n">familyIDs</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">getFamilyIDs</span><span class="p">(),</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>
+              
+    <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;offsets&quot;</span><span class="p">,</span> <span class="n">elemCount</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>    
+                                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">elemCount</span> <span class="p">)</span>
+    <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;connectivity&quot;</span><span class="p">,</span> <span class="n">connectivity</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
+                                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">connectivity</span> <span class="p">)</span>
+    <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;elementIDs&quot;</span><span class="p">,</span> <span class="n">elemIDs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">elemIDs</span> <span class="p">)</span>
+    <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;elements&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;familyIDs&quot;</span><span class="p">,</span> <span class="n">familyIDs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>      
+                                    <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">familyIDs</span> <span class="p">)</span>    
+    
+    <span class="n">cdat</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;elementGroups&quot;</span><span class="p">)</span>
+      
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+      <span class="n">elementIDs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">getIndices</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>      
+      <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;elementGroups&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span> <span class="n">key</span> <span class="p">,</span> <span class="n">elementIDs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">elementIDs</span> <span class="p">)</span>
+            
+    <span class="n">cdat</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">)</span>
+            
+    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[]</span>
+      
+    <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+      <span class="n">coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="n">nodeID</span><span class="p">))</span>
+         
+    <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">nodeIDs</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getIndices</span><span class="p">(),</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>
+              
+    <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
+                                 <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">coordinates</span><span class="p">)</span>   
+    <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;nodeIDs&quot;</span><span class="p">,</span> <span class="n">nodeIDs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> 
+                                 <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">nodeIDs</span><span class="p">)</span>       
+              
+    <span class="n">dofs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispDofs</span><span class="p">[:</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+          
+    <span class="n">cdat</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;nodeGroups&quot;</span><span class="p">)</span>      
+       
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+      <span class="n">nodeIDs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getIndices</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">key</span><span class="p">]),</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span> <span class="p">)</span>      
+      <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodeGroups&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span> <span class="n">key</span> <span class="p">,</span> <span class="n">nodeIDs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;i&#39;</span> <span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">nodeIDs</span> <span class="p">)</span>
+                
+    <span class="n">cdat</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;nodeData&quot;</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>       
+      <span class="n">displacements</span> <span class="o">=</span> <span class="p">[]</span>
+
+      <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dispDof</span> <span class="ow">in</span> <span class="n">dofs</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">dispDof</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="n">dispDof</span><span class="p">)])</span>
+          <span class="k">else</span><span class="p">:</span> 
+            <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+        <span class="n">displacements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        
+      <span class="n">displacements</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">displacements</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">)</span>
+ 
+      <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodeData&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;displacements&quot;</span><span class="p">,</span><span class="n">displacements</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">displacements</span><span class="p">)</span>   
+           
+      <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extraFields</span><span class="p">:</span>     	              
+        <span class="k">if</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>  
+          <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+                     
+          <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>      
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="n">field</span><span class="p">)])</span>
+  
+          <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">output</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">)</span>
+      
+          <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodeData&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">field</span><span class="p">,</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>   
+      
+      <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>      
+        <span class="n">output</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span> <span class="n">name</span> <span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="p">)))</span> <span class="p">)</span>
+        
+        <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">output</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">)</span>
+      
+        <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodeData&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>
+ 
+      <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span> <span class="n">globdat</span> <span class="p">,</span> <span class="s2">&quot;elementData&quot;</span> <span class="p">):</span> 
+        <span class="n">cdat</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;elemData&quot;</span><span class="p">)</span>      
+        <span class="n">elemData</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">elementData</span>
+                          
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">elemData</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>      
+          <span class="n">data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span> <span class="n">elemData</span> <span class="p">,</span> <span class="n">name</span> <span class="p">)</span>
+        
+          <span class="n">output</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">data</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">)</span>
+      
+          <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;elemData&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">output</span><span class="p">)</span>            
+                            
+        
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;modes&quot;</span><span class="p">:</span>
+    
+      <span class="n">allModes</span> <span class="o">=</span> <span class="p">[]</span>
+      
+      <span class="k">for</span> <span class="n">iMod</span><span class="p">,</span><span class="n">eigenvecs</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">eigenvecs</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="p">[]</span>
+      
+        <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+          <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span>
+          <span class="k">for</span> <span class="n">dispDof</span> <span class="ow">in</span> <span class="n">dofs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dispDof</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+              <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">eigenvecs</span><span class="p">[</span><span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="n">dispDof</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span> 
+              <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+          <span class="n">mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        
+        <span class="n">allModes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+        
+      <span class="n">allModes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">allModes</span><span class="p">,</span><span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">)</span>
+ 
+      <span class="n">cdat</span><span class="p">[</span><span class="s2">&quot;nodeData&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;modes&quot;</span><span class="p">,</span><span class="n">allModes</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">allModes</span><span class="p">)</span>   
+      
+      <span class="n">eigenvals</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">eigenvals</span>
+      
+      <span class="n">cdat</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s2">&quot;eigenvals&quot;</span><span class="p">,</span><span class="n">eigenvals</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">eigenvals</span><span class="p">)</span>   </div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

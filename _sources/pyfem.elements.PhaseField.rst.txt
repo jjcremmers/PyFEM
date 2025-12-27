@@ -1,0 +1,7 @@
+pyfem.elements.PhaseField module
+================================
+
+.. automodule:: pyfem.elements.PhaseField
+   :members:
+   :show-inheritance:
+   :undoc-members:

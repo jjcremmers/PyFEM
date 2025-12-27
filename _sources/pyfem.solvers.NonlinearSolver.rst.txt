@@ -1,0 +1,7 @@
+pyfem.solvers.NonlinearSolver module
+====================================
+
+.. automodule:: pyfem.solvers.NonlinearSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

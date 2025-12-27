@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.dataStructures module &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyfem.util.fileParser module" href="pyfem.util.fileParser.html" />
+    <link rel="prev" title="pyfem.util.BezierShapeFunctions module" href="pyfem.util.BezierShapeFunctions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyfem</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyfem.html">pyfem package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pyfem.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyfem.core.html">pyfem.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.elements.html">pyfem.elements package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.fem.html">pyfem.fem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.gui.html">pyfem.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.html">pyfem.io package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.materials.html">pyfem.materials package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.models.html">pyfem.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.solvers.html">pyfem.solvers package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pyfem.util.html">pyfem.util package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pyfem</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.html">pyfem package</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.util.html">pyfem.util package</a></li>
+      <li class="breadcrumb-item active">pyfem.util.dataStructures module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.util.dataStructures.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyfem.util.dataStructures">
+<span id="pyfem-util-datastructures-module"></span><h1>pyfem.util.dataStructures module<a class="headerlink" href="#module-pyfem.util.dataStructures" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.cleanVariable">
+<span class="sig-name descname"><span class="pre">cleanVariable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#cleanVariable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.cleanVariable" title="Link to this definition"></a></dt>
+<dd><p>Convert a textual configuration value into a Python object.</p>
+<ul class="simple">
+<li><p>‘true’ -&gt; True</p></li>
+<li><p>‘false’ -&gt; False</p></li>
+<li><p>otherwise: try <cite>eval</cite>, fall back to original string</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>a</strong> – Input value (typically a string) read from configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parsed Python object or the original value if parsing fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">solverStatus</span></span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#solverStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container for tracking solver progress and timing.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.cycle">
+<span class="sig-name descname"><span class="pre">cycle</span></span><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.cycle" title="Link to this definition"></a></dt>
+<dd><p>Current step/cycle number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.iiter">
+<span class="sig-name descname"><span class="pre">iiter</span></span><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.iiter" title="Link to this definition"></a></dt>
+<dd><p>Current iteration count within step.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.time" title="Link to this definition"></a></dt>
+<dd><p>Current simulation time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.time0">
+<span class="sig-name descname"><span class="pre">time0</span></span><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.time0" title="Link to this definition"></a></dt>
+<dd><p>Reference time (unused internally here).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.dtime">
+<span class="sig-name descname"><span class="pre">dtime</span></span><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.dtime" title="Link to this definition"></a></dt>
+<dd><p>Time increment for a cycle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.lam">
+<span class="sig-name descname"><span class="pre">lam</span></span><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.lam" title="Link to this definition"></a></dt>
+<dd><p>Load or continuation parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.solverStatus.increaseStep">
+<span class="sig-name descname"><span class="pre">increaseStep</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#solverStatus.increaseStep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.solverStatus.increaseStep" title="Link to this definition"></a></dt>
+<dd><p>Advance to the next solver step and reset iteration counter.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.Properties">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#Properties"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.Properties" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Simple attribute container built from a dictionary.</p>
+<p>Instances expose dictionary keys as attributes and support iteration over
+(name, value) pairs. This is a lightweight alternative to <cite>types.SimpleNamespace</cite>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.Properties.store">
+<span class="sig-name descname"><span class="pre">store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#Properties.store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.Properties.store" title="Link to this definition"></a></dt>
+<dd><p>Store a property given a dotted key path or a simple key.</p>
+<p class="rubric">Examples</p>
+<p>store(‘alpha’, 1)
+store(‘parent.child.value’, ‘x’)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.GlobalData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">GlobalData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dofs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#GlobalData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.GlobalData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyfem.util.dataStructures.Properties" title="pyfem.util.dataStructures.Properties"><code class="xref py py-class docutils literal notranslate"><span class="pre">Properties</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.GlobalData.readFromFile">
+<span class="sig-name descname"><span class="pre">readFromFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#GlobalData.readFromFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.GlobalData.readFromFile" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.GlobalData.printNodes">
+<span class="sig-name descname"><span class="pre">printNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fileName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inodes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#GlobalData.printNodes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.GlobalData.printNodes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.GlobalData.getData">
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outputName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inodes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#GlobalData.getData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.GlobalData.getData" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.GlobalData.resetNodalOutput">
+<span class="sig-name descname"><span class="pre">resetNodalOutput</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#GlobalData.resetNodalOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.GlobalData.resetNodalOutput" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.GlobalData.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#GlobalData.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.GlobalData.close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.util.dataStructures.elementData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">elementData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elstate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elDstate</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/dataStructures.html#elementData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.dataStructures.elementData" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyfem.util.BezierShapeFunctions.html" class="btn btn-neutral float-left" title="pyfem.util.BezierShapeFunctions module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyfem.util.fileParser.html" class="btn btn-neutral float-right" title="pyfem.util.fileParser module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

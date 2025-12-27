@@ -1,0 +1,7 @@
+pyfem.materials.HookesLaw module
+================================
+
+.. automodule:: pyfem.materials.HookesLaw
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.fem.Constrainer module
+============================
+
+.. automodule:: pyfem.fem.Constrainer
+   :members:
+   :show-inheritance:
+   :undoc-members:

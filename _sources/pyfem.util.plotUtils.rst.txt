@@ -1,0 +1,7 @@
+pyfem.util.plotUtils module
+===========================
+
+.. automodule:: pyfem.util.plotUtils
+   :members:
+   :show-inheritance:
+   :undoc-members:
