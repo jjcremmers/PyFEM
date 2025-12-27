@@ -126,7 +126,7 @@ class NodeSet(itemList):
         except KeyError:
             logger.error(f"Node group '{groupName}' not found.")
             sys.exit(1)
-            
+
 #-------------------------------------------------------------------------------
 #
 #-------------------------------------------------------------------------------
@@ -322,3 +322,16 @@ class NodeSet(itemList):
             for b in a:
                 if getType(b) == int:
                     self.addToGroup(key, b)
+
+    def getRank(self) -> int:
+        """Return the spatial dimension (rank) of the nodes.
+
+        Returns
+        -------
+        int
+            Spatial dimension (rank) of the nodes.
+        """
+        if self.rank == -1:
+            self.rank = len(self.get(0))
+            
+        return self.rank

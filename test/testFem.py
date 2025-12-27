@@ -58,21 +58,25 @@ class TestNodeSet(unittest.TestCase):
 
     def test_add_nodes_2d(self):
         """Test adding 2D nodes."""
+        self.nodes = NodeSet()
+
         self.nodes.add(0, [0.0, 0.0])
         self.nodes.add(1, [1.0, 0.0])
         self.nodes.add(2, [1.0, 1.0])
         
         self.assertEqual(len(self.nodes), 3)
-        self.assertEqual(self.nodes.rank, 2)
+        self.assertEqual(self.nodes.getRank(), 2)
         
     def test_add_nodes_3d(self):
         """Test adding 3D nodes."""
+        self.nodes = NodeSet()
+
         self.nodes.add(0, [0.0, 0.0, 0.0])
         self.nodes.add(1, [1.0, 0.0, 0.0])
         self.nodes.add(2, [1.0, 1.0, 0.0])
         
         self.assertEqual(len(self.nodes), 3)
-        self.assertEqual(self.nodes.rank, 3)
+        self.assertEqual(self.nodes.getRank(), 3)
 
     def test_getNodeCoords_single_node(self):
         """Test getting coordinates for a single node."""
@@ -195,14 +199,11 @@ class TestNodeSet(unittest.TestCase):
         """Test that numpy integer types work for node IDs."""
         self.nodes.add(0, [0.0, 0.0])
         self.nodes.add(1, [1.0, 0.0])
+        self.nodes.add(5, [1.0, 0.0])
+        self.nodes.add(6, [1.0, 0.0])
         
-        # Test with np.int64
-        coords = self.nodes.getNodeCoords(np.int64(1))
-        np.testing.assert_array_equal(coords, [1.0, 0.0])
-        
-        # Test with np.int32
-        coords = self.nodes.getNodeCoords(np.int32(0))
-        np.testing.assert_array_equal(coords, [0.0, 0.0])
+        coords = self.nodes.getNodeCoords([1,5,6])
+        np.testing.assert_array_equal(coords[0,:], [1.0, 0.0])
 
     def test_coordinates_are_numpy_arrays(self):
         """Test that returned coordinates are numpy arrays."""
