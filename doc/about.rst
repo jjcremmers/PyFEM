@@ -38,6 +38,12 @@ reference PyFEM (with the commit/tag or release) to ensure reproducibility.
 When applicable, include the specific modules (elements, materials, solvers)
 used in your study.
 
+J.J.C. Remmers (2025). PyFEM [https://github.com/jjcremmers/PyFEM](https://github.com/jjcremmers/PyFEM)
+
+R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
+[`Non-Linear Finite Element Analysis of Solids and Structures'](https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449)
+John Wiley and Sons, 2012, ISBN 978-0470666449
+
 License
 -------
 

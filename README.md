@@ -12,4 +12,4 @@ The code is open source and intended for educational and scientific purposes onl
 If you use PyFEM in your research, the 
 developers would be grateful if you could cite the book in your work.
 
-[![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](#how-to-cite)
+[![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](doc/about.rst#how-to-cite)
