@@ -1,0 +1,167 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mesh output writer &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Mesh output writer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/mesh.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mesh-output-writer">
+<h1>Mesh output writer<a class="headerlink" href="#mesh-output-writer" title="Link to this heading"></a></h1>
+<p>The mesh output writer saves all data during a simulation to the disk.
+The data is organised as follows: during a simulation, a single output
+file filename.pvd will be created which refers to the output of single
+steps, which are stored in the file filename-xx.vtu, where xx indicates
+the step number. This data can be visualised by opening the file
+filename.pvd in the external program Paraview.</p>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>Name:</p></td>
+<td><p>MeshWriter</p></td>
+</tr>
+<tr class="row-even"><td><p>Source:</p></td>
+<td><p>pyfem/io/MeshWriter.py</p></td>
+</tr>
+</tbody>
+</table>
+<section id="mandatory-parameters">
+<h2>Mandatory parameters:<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h2>
+<p>None. By default, every step is stored in the files with
+the prefix of the current job.</p>
+</section>
+<section id="optional-parameters">
+<h2>Optional parameters:<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p>prefix</p></td>
+<td><p>The prefix of the output
+filename that will be
+used. By default, the
+prefix of the input
+filename is used.</p></td>
+</tr>
+<tr class="row-even"><td><p>interval</p></td>
+<td><p>The interval (number of
+cycles) for which output
+is stored. By default,
+every step is stored.</p></td>
+</tr>
+<tr class="row-odd"><td><p>elementgroup</p></td>
+<td><p>When specified, only the
+elements in this group
+will be stored. By
+default, all elements
+will be stored.</p></td>
+</tr>
+</tbody>
+</table>
+<p>Examples:
+ch03: cantilever8.pro
+ch05: StressWave20x20.pro
+ch06: ContDamExample.pro
+ch13: PeelTest.pro</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

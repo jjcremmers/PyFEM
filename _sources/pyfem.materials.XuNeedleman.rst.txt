@@ -1,0 +1,7 @@
+pyfem.materials.XuNeedleman module
+==================================
+
+.. automodule:: pyfem.materials.XuNeedleman
+   :members:
+   :show-inheritance:
+   :undoc-members:

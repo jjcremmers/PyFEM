@@ -1,0 +1,7 @@
+pyfem.fem.Assembly module
+=========================
+
+.. automodule:: pyfem.fem.Assembly
+   :members:
+   :show-inheritance:
+   :undoc-members:

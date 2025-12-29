@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About the code &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="#" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyFEM Installation Guide" href="installation/overview.html" />
+    <link rel="prev" title="PyFEM: A Python finite element code" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">About the code</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#goals-and-scope">Goals and scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-cite">How to cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">About the code</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/about.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="about-the-code">
+<h1>About the code<a class="headerlink" href="#about-the-code" title="Link to this heading"></a></h1>
+<p>This is the user manual for PyFEM. This python-based finite element code
+accompanies the book:</p>
+<p>R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+<a class="reference external" href="https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449">Non-Linear Finite Element Analysis of Solids and
+Structures</a>
+John Wiley and Sons, 2012, ISBN 978-0470666449</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg"><img alt="The cover of Non-linear Finite element Anaylsis of Solids and Structures" src="https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg" style="width: 200px;" />
+</a>
+</figure>
+<p>The code is open source and intended for educational and scientific
+purposes only. If you use PyFEM in your research, the developers would
+be grateful if you could cite the book in your work.</p>
+<section id="goals-and-scope">
+<h2>Goals and scope<a class="headerlink" href="#goals-and-scope" title="Link to this heading"></a></h2>
+<p>PyFEM aims to provide a clear, well-documented reference implementation for
+nonlinear finite element analysis, suited for teaching, prototyping, and
+reproducible research. The code emphasizes readability over micro-optimizations
+and includes a growing set of elements, material models, solvers, and I/O
+modules to cover common solid mechanics problems.</p>
+</section>
+<section id="how-to-cite">
+<h2>How to cite<a class="headerlink" href="#how-to-cite" title="Link to this heading"></a></h2>
+<p>If PyFEM contributes to a publication, please cite the textbook above and
+reference PyFEM (with the commit/tag or release) to ensure reproducibility.
+When applicable, include the specific modules (elements, materials, solvers)
+used in your study.</p>
+<p>J.J.C. Remmers (2025). PyFEM <a class="reference external" href="https://github.com/jjcremmers/PyFEM">https://github.com/jjcremmers/PyFEM</a></p>
+<p>R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
+<a class="reference external" href="https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449">Non-Linear Finite Element Analysis of Solids and Structures</a>
+John Wiley and Sons, 2012, ISBN 978-0470666449</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>PyFEM is distributed under the MIT License to support broad educational and
+research use.</p>
+<ul class="simple">
+<li><p>Project-level license: see the file <a class="reference external" href="../LICENSE">LICENSE</a> (MIT License).</p></li>
+<li><dl class="simple">
+<dt>File-level notices: each source file includes attribution and disclaimer</dt><dd><p>text from the textbook and project history. Please retain these notices in
+redistributed or modified files.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Under the MIT License terms, you may use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the software, provided that you
+include the copyright notice and permission notice. The software is provided
+“as is” without warranty of any kind.</p>
+<section id="important">
+<h3>Important<a class="headerlink" href="#important" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><dl class="simple">
+<dt>The effective legal terms for any given distribution are determined by the</dt><dd><p>project-level license in the repository you use (see <a class="reference external" href="../LICENSE">LICENSE</a>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Regardless of the project-level license, retain the file headers with</dt><dd><p>attribution and disclaimer text present at the top of each source file.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>If you plan to adopt MIT licensing for your own distribution or fork, please</dt><dd><p>keep the file-level notices intact and include an MIT license file in your
+distribution.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="PyFEM: A Python finite element code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="installation/overview.html" class="btn btn-neutral float-right" title="PyFEM Installation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

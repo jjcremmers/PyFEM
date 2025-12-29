@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plate &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SLS" href="sls.html" />
+    <link rel="prev" title="SmallStrainAxiSym" href="smallstrainaxisym.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#continuum-elements">Continuum Elements</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#shell-and-plate-elements">Shell and Plate Elements</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Plate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sls.html">SLS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#beam-and-rod-elements">Beam and Rod Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#other-elements">Other Elements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">IO Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Elements</a></li>
+      <li class="breadcrumb-item active">Plate</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/plate.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="plate">
+<h1>Plate<a class="headerlink" href="#plate" title="Link to this heading"></a></h1>
+<p>The plate element is an implementation of the Kirchhoff-Love finite
+element as presented in Chapter 3 of the book XX. The element can
+be used to model flat structures in the <code class="docutils literal notranslate"><span class="pre">x-y</span></code> plane as 3, 4, 6 and 8 node
+elements with 5 degrees of freedom per node. Three translation degrees of
+freedom (<code class="docutils literal notranslate"><span class="pre">u</span></code> , <code class="docutils literal notranslate"><span class="pre">v</span></code> and <code class="docutils literal notranslate"><span class="pre">w</span></code>) which describe the displacements in the
+<code class="docutils literal notranslate"><span class="pre">x</span></code> , <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> direction, respectively, and 2 rotational degrees
+of freedom (<code class="docutils literal notranslate"><span class="pre">rx</span></code> and <code class="docutils literal notranslate"><span class="pre">ry</span></code>) that represent the rotations around the
+<code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> axis, respectively.</p>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="mandatory-parameters">
+<h3>Mandatory Parameters<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default" style="width: 100%">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be set to <code class="docutils literal notranslate"><span class="pre">&quot;Plate&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>Single-material block defining constitutive behavior (e.g., <code class="docutils literal notranslate"><span class="pre">E</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">rho</span></code>) for isotropic plates.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thickness</span></code></p></td>
+<td><p>Plate thickness for single-material configurations.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-parameters">
+<h3>Optional Parameters<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default" style="width: 100%">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">materials</span></code></p></td>
+<td><p>List of material names for multilayer laminates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layers</span></code></p></td>
+<td><p>List of layer identifiers. Each layer must define:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">material</span></code> — reference to a material name (for <code class="docutils literal notranslate"><span class="pre">materials</span></code> lists)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">theta</span></code> — fiber orientation angle in degrees</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">thickness</span></code> — layer thickness</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<section id="example-isotropic-material">
+<h4>Example: Isotropic material<a class="headerlink" href="#example-isotropic-material" title="Link to this heading"></a></h4>
+<p>The plate element can be used to model a thin-walled structure, made of
+a single, isotropic material. In the following example, a plate with a
+thickness of 1.2 mm is considered, which is made of aluminium. The Young’s
+modulus is equal to <span class="math notranslate nohighlight">\(E=72\)</span> GPa, the Poisson ratio <span class="math notranslate nohighlight">\(\nu=0.3\)</span> and
+<span class="math notranslate nohighlight">\(\rho=2780\)</span> kg/m3.</p>
+<p>The block in the input file that describes this plate is given below. Please
+not that all dimensions are in mm, kg and Pa.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PlateElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Plate&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">72e9</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+    <span class="n">rho</span>  <span class="o">=</span> <span class="mf">2780.</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">thickness</span> <span class="o">=</span> <span class="mf">0.0012</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This is the end.</p>
+</section>
+<section id="additional-examples">
+<h4>Additional Examples<a class="headerlink" href="#additional-examples" title="Link to this heading"></a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">Plate</span></code> element is used in multiple example input files:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/elements/plate/plate_cantilever01.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/elements/plate/plate_cantilever02.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/platetest.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/platetest2.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/plate_test_02.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/plate_test_03.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/plate_test_05.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/plate_test_06.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/plate_test_07.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/platedyn.pro</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/plate/platedynSS.pro</span></code></p></li>
+</ul>
+</section>
+<section id="example-layered-composite">
+<h4>Example: Layered composite<a class="headerlink" href="#example-layered-composite" title="Link to this heading"></a></h4>
+<p>Alternatively, the element can be used to model flat, composite structures.
+In the following example, a composite consisting of 5 layers is modeled, with
+the following stacking sequence:</p>
+<div class="math notranslate nohighlight">
+\[\lbrack 0_w , 0 , 90 , 0 , 0_w\rbrack\]</div>
+<p>where <span class="math notranslate nohighlight">\(0_w\)</span> is a woven layer thickness 0.22 mm with the following
+properties: <span class="math notranslate nohighlight">\(E_1=10\)</span> GPa, <span class="math notranslate nohighlight">\(E_2=10\)</span> GPa, <span class="math notranslate nohighlight">\(\nu_{12}=0.25\)</span> and
+<span class="math notranslate nohighlight">\(G_{12}=45\)</span> GPa. The three centre layers are made of a UD composite
+with thickness 0.22 mm and properties: <span class="math notranslate nohighlight">\(E_1=10\)</span> GPa,
+<span class="math notranslate nohighlight">\(E_2=10\)</span> GPa, <span class="math notranslate nohighlight">\(\nu_{12}=0.25\)</span> and <span class="math notranslate nohighlight">\(G_{12}=45\)</span> GPa.</p>
+<p>These properties are given in the input file in the following way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PlateElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Plate&quot;</span><span class="p">;</span>
+
+  <span class="n">materials</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;Woven&quot;</span> <span class="p">,</span> <span class="s2">&quot;UD&quot;</span> <span class="p">];</span>
+
+  <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;W&quot;</span> <span class="p">,</span> <span class="s2">&quot;C0&quot;</span> <span class="p">,</span> <span class="s2">&quot;C90&quot;</span> <span class="p">,</span> <span class="s2">&quot;C0&quot;</span> <span class="p">,</span> <span class="s2">&quot;W&quot;</span> <span class="p">];</span>
+
+  <span class="n">Woven</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="n">E1</span>   <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">E2</span>   <span class="o">=</span> <span class="mf">0.5e5</span><span class="p">;</span>
+    <span class="n">nu12</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+    <span class="n">G12</span>  <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+    <span class="n">rho</span>  <span class="o">=</span> <span class="mf">1.0e3</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">UD</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="n">E1</span>   <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">E2</span>   <span class="o">=</span> <span class="mf">0.5e5</span><span class="p">;</span>
+    <span class="n">nu12</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+    <span class="n">G12</span>  <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+    <span class="n">rho</span>  <span class="o">=</span> <span class="mf">1.0e3</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">W</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="n">material</span>  <span class="o">=</span> <span class="s2">&quot;Woven&quot;</span><span class="p">;</span>
+    <span class="n">theta</span>     <span class="o">=</span> <span class="mf">0.</span><span class="p">;</span>
+    <span class="n">thickness</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">C0</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="n">material</span>  <span class="o">=</span> <span class="s2">&quot;UD&quot;</span><span class="p">;</span>
+    <span class="n">theta</span>     <span class="o">=</span> <span class="mf">0.</span><span class="p">;</span>
+    <span class="n">thickness</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="n">C90</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="n">material</span>  <span class="o">=</span> <span class="s2">&quot;UD&quot;</span><span class="p">;</span>
+    <span class="n">theta</span>     <span class="o">=</span> <span class="mf">90.</span><span class="p">;</span>
+    <span class="n">thickness</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This is the end.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="smallstrainaxisym.html" class="btn btn-neutral float-left" title="SmallStrainAxiSym" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sls.html" class="btn btn-neutral float-right" title="SLS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

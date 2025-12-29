@@ -1,0 +1,7 @@
+pyfem.elements.Interface module
+===============================
+
+.. automodule:: pyfem.elements.Interface
+   :members:
+   :show-inheritance:
+   :undoc-members:

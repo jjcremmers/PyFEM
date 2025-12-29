@@ -1,0 +1,7 @@
+pyfem.materials.Dummy module
+============================
+
+.. automodule:: pyfem.materials.Dummy
+   :members:
+   :show-inheritance:
+   :undoc-members:

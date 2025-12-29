@@ -1,0 +1,7 @@
+pyfem.elements.SmallStrainAxiSym module
+=======================================
+
+.. automodule:: pyfem.elements.SmallStrainAxiSym
+   :members:
+   :show-inheritance:
+   :undoc-members:

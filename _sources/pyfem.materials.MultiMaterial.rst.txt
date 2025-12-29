@@ -1,0 +1,7 @@
+pyfem.materials.MultiMaterial module
+====================================
+
+.. automodule:: pyfem.materials.MultiMaterial
+   :members:
+   :show-inheritance:
+   :undoc-members:

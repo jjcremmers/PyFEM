@@ -1,0 +1,7 @@
+pyfem.util.utilFunctions module
+===============================
+
+.. automodule:: pyfem.util.utilFunctions
+   :members:
+   :show-inheritance:
+   :undoc-members:

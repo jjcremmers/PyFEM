@@ -1,0 +1,7 @@
+pyfem.solvers.LinearSolver module
+=================================
+
+.. automodule:: pyfem.solvers.LinearSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

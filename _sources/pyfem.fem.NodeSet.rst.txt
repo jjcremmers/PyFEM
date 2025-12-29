@@ -1,0 +1,7 @@
+pyfem.fem.NodeSet module
+========================
+
+.. automodule:: pyfem.fem.NodeSet
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.materials.MaterialManager module
+======================================
+
+.. automodule:: pyfem.materials.MaterialManager
+   :members:
+   :show-inheritance:
+   :undoc-members:
