@@ -1,0 +1,38 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the book as below."
+type: software
+title: "PyFEM"
+abstract: "Python-based Finite Element Method code accompanying the book 'Non-Linear Finite Element Analysis of Solids and Structures'"
+authors:
+  - family-names: Remmers
+    given-names: Joris J.C.
+    orcid: https://orcid.org/0000-0002-1531-0644
+repository-code: "https://github.com/jjcremmers/PyFEM"
+url: "https://jjcremmers.github.io/PyFEM"
+license: MIT
+keywords:
+  - finite element method
+  - nonlinear analysis
+  - structural mechanics
+  - computational mechanics
+  - python
+version: 4.0.0
+date-released: 2025-01-01
+
+references:
+  - type: book
+    title: "Non-Linear Finite Element Analysis of Solids and Structures"
+    authors:
+      - family-names: de Borst
+        given-names: René
+      - family-names: Crisfield
+        given-names: M.A.
+      - family-names: Remmers
+        given-names: Joris J.C.
+      - family-names: Verhoosel
+        given-names: Clemens V.
+    publisher:
+      name: "John Wiley & Sons"
+    year: 2012
+    isbn: "978-0470666449"
+    edition: "2nd"
