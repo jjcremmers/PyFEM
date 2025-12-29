@@ -93,11 +93,10 @@ def InputRead( fname , dname = None , parameters = None ):
 
   nodes = NodeSet()
   nodes.readFromFile( dataFileName )
-  logger.info(nodes)
   
   elems = ElementSet( nodes , props )
   elems.readFromFile( dataFileName )
-  logger.info(elems)  
+  elems.logInfo()
   
   dofs = DofSpace( elems )
   dofs.readFromFile( dataFileName )

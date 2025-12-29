@@ -35,7 +35,7 @@ import scipy.linalg
 from scipy.sparse.linalg import spsolve, eigsh
 from pyfem.util.itemList import itemList
 from pyfem.util.fileParser import readNodeTable
-from pyfem.util.logger import getLogger
+from pyfem.util.logger import getLogger, separator
 from pyfem.fem.Constrainer import Constrainer
 
 from copy import deepcopy
@@ -114,8 +114,8 @@ class DofSpace:
         passed to :meth:`createConstrainer`.
         """
 
-        logger.info("  Reading constraints")
-        logger.info("  -----------------------------------------------------------")
+        logger.info("Reading constraints")
+        separator()
 
         nodeTable = readNodeTable(fname, "NodeConstraints", self.nodes)
 

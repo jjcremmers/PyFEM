@@ -113,6 +113,79 @@ def separator(symbol: str = "-", level: str = "info" ) -> None:
         symbol: Single-character string used to draw the separator. Defaults to '-'.
     """
     if level == "debug":
-        logging.getLogger().debug('  ' + (symbol * 81))
+        logging.getLogger().debug(symbol * 81)
     else:       
-        logging.getLogger().info('  ' + (symbol * 81))
+        logging.getLogger().info(symbol * 81)
+
+def logVariable(description: str, value: Any, width: int = 35, level: str = "info") -> None:
+    """
+    Log a variable in a formatted way with aligned colons.
+    
+    Prints in the format: "[description] ............. : [value]"
+    where the colon is always at the same position determined by `width`.
+    
+    Args:
+        description: Description text for the variable (left side).
+        value: Value to display (right side of colon).
+        width: Total width for description + dots before colon. Defaults to 35.
+        level: Logging level ("info" or "debug"). Defaults to "info".
+    
+    Examples:
+        >>> logVariable("Number of nodes", 100)
+        Number of nodes ............... : 100
+        >>> logVariable("Young's modulus", 210e9, width=40)
+        Young's modulus ........................ : 210000000000.0
+    """
+    # Calculate number of dots needed to reach the desired width
+    num_dots = width - len(description)
+    
+    # Ensure at least one space and one dot
+    if num_dots < 2:
+        num_dots = 2
+    
+    # Create the formatted string
+    formatted = f"{description} {'.' * num_dots} : {value}"
+    
+    # Log at the appropriate level
+    if level == "debug":
+        logging.getLogger().debug(formatted)
+    else:
+        logging.getLogger().info(formatted)
+
+
+def logHeader(left_text: str, right_text: str, width: int = 35, level: str = "info") -> None:
+    """
+    Log two strings with aligned spacing similar to logVariable.
+    
+    Prints in the format: "[left_text] ............. : [right_text]"
+    where the colon is always at the same position determined by `width`.
+    
+    Args:
+        left_text: Text to display on the left side.
+        right_text: Text to display on the right side of colon.
+        width: Total width for left text + dots before colon. Defaults to 35.
+        level: Logging level ("info" or "debug"). Defaults to "info".
+    
+    Examples:
+        >>> logHeader("Parameter", "Value")
+        Parameter ......................... : Value
+        >>> logHeader("Solver type", "Nonlinear", width=40)
+        Solver type ............................ : Nonlinear
+    """
+    # Calculate number of dots needed to reach the desired width
+    numSpaces = width - len(left_text)
+    
+    # Ensure at least one space and one dot
+    if numSpaces < 2:
+        numSpaces = 2
+    
+    # Create the formatted string
+    formatted = f"{left_text} {' ' * numSpaces} : {right_text}"
+    
+    # Log at the appropriate level
+    if level == "debug":
+        logging.getLogger().debug(formatted)
+        separator(level="debug")
+    else:
+        logging.getLogger().info(formatted)        
+        separator()

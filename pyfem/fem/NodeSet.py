@@ -34,7 +34,7 @@ from pyfem.util.itemList import itemList
 from pyfem.util.fileParser import getType
 import re, sys
 
-from pyfem.util.logger import getLogger
+from pyfem.util.logger import getLogger, separator, logVariable
 
 logger = getLogger()
 
@@ -180,8 +180,8 @@ class NodeSet(itemList):
         Node groups are deduplicated after reading.
         """
 
-        logger.info("  Reading nodes")
-        logger.info("  -----------------------------------------------------------")
+        logger.info("Reading nodes")
+        separator()
 
         fin = open(fname, 'r')
 
@@ -224,6 +224,10 @@ class NodeSet(itemList):
             self.groups[key] = list(set(self.groups[key]))
 
         fin.close()
+
+        self.logInfo()
+
+        separator("=")
               
 #-------------------------------------------------------------------------------
 #
@@ -345,6 +349,35 @@ class NodeSet(itemList):
                 msg += f"      {name:<16s}           {len(self.groups[name]):6d} \n"
 
         return msg
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    def logInfo(self) -> None:
+        """Log node and group information using the logger.
+        
+        Outputs the same information as __repr__ but using the logger,
+        with properly formatted output for number of nodes and groups.
+        
+        Examples
+        --------
+        >>> nodes.logInfo()
+        # Logs:
+        # Number of nodes ................. : 100
+        # Number of groups ................ : 4
+        # Group table with names and counts
+        """
+        logVariable("Number of nodes", len(self))
+        
+        if len(self.groups) > 0:
+            logVariable("Number of groups", len(self.groups))
+            logger.info("    -----------------------------------")
+            logger.info("      name                       #nodes")
+            logger.info("      ---------------------------------")
+            
+            for name in self.groups:
+                logger.info(f"      {name:<16s}           {len(self.groups[name]):6d}")
     
 #-------------------------------------------------------------------------------
 #
