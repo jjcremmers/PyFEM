@@ -391,6 +391,7 @@ class ElementSet(itemList):
         Returns:
             Total count of elements in the specified group(s).
         """
+
         if groupName == "All":
             return len(self)
         elif isinstance(groupName, list):
