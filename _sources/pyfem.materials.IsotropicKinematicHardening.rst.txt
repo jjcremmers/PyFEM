@@ -1,0 +1,7 @@
+pyfem.materials.IsotropicKinematicHardening module
+==================================================
+
+.. automodule:: pyfem.materials.IsotropicKinematicHardening
+   :members:
+   :show-inheritance:
+   :undoc-members:

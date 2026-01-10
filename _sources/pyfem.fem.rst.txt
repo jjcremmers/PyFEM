@@ -1,0 +1,19 @@
+pyfem.fem package
+=================
+
+.. automodule:: pyfem.fem
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.fem.Assembly
+   pyfem.fem.Constrainer
+   pyfem.fem.DofSpace
+   pyfem.fem.ElementSet
+   pyfem.fem.NodeSet

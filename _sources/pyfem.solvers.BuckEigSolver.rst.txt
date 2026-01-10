@@ -1,0 +1,7 @@
+pyfem.solvers.BuckEigSolver module
+==================================
+
+.. automodule:: pyfem.solvers.BuckEigSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.solvers.ExplicitSolver module
+===================================
+
+.. automodule:: pyfem.solvers.ExplicitSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

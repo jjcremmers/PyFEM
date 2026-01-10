@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.logger &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.logger</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.logger</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+
+<div class="viewcode-block" id="setLogger">
+<a class="viewcode-back" href="../../../pyfem.util.logger.html#pyfem.util.logger.setLogger">[docs]</a>
+<span class="k">def</span> <span class="nf">setLogger</span><span class="p">(</span><span class="n">props</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create and configure the root logger for the current analysis.</span>
+
+<span class="sd">    The function expects a configuration object which may provide</span>
+<span class="sd">    a `logger.level` attribute (e.g. a namespace or simple object). The</span>
+<span class="sd">    returned logger is the root logger configured with a single stream</span>
+<span class="sd">    handler according to the requested verbosity.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        props: Configuration object (may have a `logger` attribute with `.level`).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        logging.Logger: Configured root logger.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If an unsupported level string is provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    
+    <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span>
+  
+
+    <span class="c1"># Default to INFO level</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="s2">&quot;logger&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s2">&quot;level&quot;</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">level</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span> <span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="s2">&quot;debug&quot;</span><span class="p">,</span> <span class="s2">&quot;critical&quot;</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">,</span> <span class="s2">&quot;silent&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s1">&#39;Logger level should be &quot;normal&quot;, &quot;info&quot;, &quot;debug&quot;, &quot;critical&quot;, &quot;silent&quot; or &quot;warning&quot;&#39;</span>
+        <span class="p">)</span>
+
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>          <span class="c1"># root logger</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">propagate</span> <span class="o">=</span> <span class="kc">False</span>              <span class="c1"># avoid duplicates via parent loggers</span>
+
+    <span class="c1"># Only add a handler if none exists</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+        <span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+
+        <span class="c1"># Configure formatter and level</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;debug&quot;</span><span class="p">:</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)-8s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;critical&quot;</span><span class="p">,</span> <span class="s2">&quot;silent&quot;</span><span class="p">]:</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">CRITICAL</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;warning&quot;</span><span class="p">:</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;  </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+        <span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">logger</span></div>
+
+  
+  
+<div class="viewcode-block" id="getLogger">
+<a class="viewcode-back" href="../../../pyfem.util.logger.html#pyfem.util.logger.getLogger">[docs]</a>
+<span class="k">def</span> <span class="nf">getLogger</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the active root logger instance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        logging.Logger: The active root logger.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="separator">
+<a class="viewcode-back" href="../../../pyfem.util.logger.html#pyfem.util.logger.separator">[docs]</a>
+<span class="k">def</span> <span class="nf">separator</span><span class="p">(</span><span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;info&quot;</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Log a horizontal separator line consisting of two leading spaces followed by</span>
+<span class="sd">    81 copies of `symbol`.</span>
+
+<span class="sd">    The separator is emitted using the root logger&#39;s INFO level so it respects</span>
+<span class="sd">    the currently configured logging output format and level.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        symbol: Single-character string used to draw the separator. Defaults to &#39;-&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;debug&quot;</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">symbol</span> <span class="o">*</span> <span class="mi">81</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>       
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">symbol</span> <span class="o">*</span> <span class="mi">81</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logVariable">
+<a class="viewcode-back" href="../../../pyfem.util.logger.html#pyfem.util.logger.logVariable">[docs]</a>
+<span class="k">def</span> <span class="nf">logVariable</span><span class="p">(</span><span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">35</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;info&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Log a variable in a formatted way with aligned colons.</span>
+<span class="sd">    </span>
+<span class="sd">    Prints in the format: &quot;[description] ............. : [value]&quot;</span>
+<span class="sd">    where the colon is always at the same position determined by `width`.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        description: Description text for the variable (left side).</span>
+<span class="sd">        value: Value to display (right side of colon).</span>
+<span class="sd">        width: Total width for description + dots before colon. Defaults to 35.</span>
+<span class="sd">        level: Logging level (&quot;info&quot; or &quot;debug&quot;). Defaults to &quot;info&quot;.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; logVariable(&quot;Number of nodes&quot;, 100)</span>
+<span class="sd">        Number of nodes ............... : 100</span>
+<span class="sd">        &gt;&gt;&gt; logVariable(&quot;Young&#39;s modulus&quot;, 210e9, width=40)</span>
+<span class="sd">        Young&#39;s modulus ........................ : 210000000000.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate number of dots needed to reach the desired width</span>
+    <span class="n">num_dots</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+    
+    <span class="c1"># Ensure at least one space and one dot</span>
+    <span class="k">if</span> <span class="n">num_dots</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">num_dots</span> <span class="o">=</span> <span class="mi">2</span>
+    
+    <span class="c1"># Create the formatted string</span>
+    <span class="n">formatted</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39;.&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">num_dots</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+    
+    <span class="c1"># Log at the appropriate level</span>
+    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;debug&quot;</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="logHeader">
+<a class="viewcode-back" href="../../../pyfem.util.logger.html#pyfem.util.logger.logHeader">[docs]</a>
+<span class="k">def</span> <span class="nf">logHeader</span><span class="p">(</span><span class="n">left_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">right_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">35</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;info&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Log two strings with aligned spacing similar to logVariable.</span>
+<span class="sd">    </span>
+<span class="sd">    Prints in the format: &quot;[left_text] ............. : [right_text]&quot;</span>
+<span class="sd">    where the colon is always at the same position determined by `width`.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        left_text: Text to display on the left side.</span>
+<span class="sd">        right_text: Text to display on the right side of colon.</span>
+<span class="sd">        width: Total width for left text + dots before colon. Defaults to 35.</span>
+<span class="sd">        level: Logging level (&quot;info&quot; or &quot;debug&quot;). Defaults to &quot;info&quot;.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; logHeader(&quot;Parameter&quot;, &quot;Value&quot;)</span>
+<span class="sd">        Parameter ......................... : Value</span>
+<span class="sd">        &gt;&gt;&gt; logHeader(&quot;Solver type&quot;, &quot;Nonlinear&quot;, width=40)</span>
+<span class="sd">        Solver type ............................ : Nonlinear</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Calculate number of dots needed to reach the desired width</span>
+    <span class="n">numSpaces</span> <span class="o">=</span> <span class="n">width</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_text</span><span class="p">)</span>
+    
+    <span class="c1"># Ensure at least one space and one dot</span>
+    <span class="k">if</span> <span class="n">numSpaces</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">numSpaces</span> <span class="o">=</span> <span class="mi">2</span>
+    
+    <span class="c1"># Create the formatted string</span>
+    <span class="n">formatted</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">left_text</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">numSpaces</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">right_text</span><span class="si">}</span><span class="s2">&quot;</span>
+    
+    <span class="c1"># Log at the appropriate level</span>
+    <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="s2">&quot;debug&quot;</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
+        <span class="n">separator</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;debug&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>        
+        <span class="n">separator</span><span class="p">()</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

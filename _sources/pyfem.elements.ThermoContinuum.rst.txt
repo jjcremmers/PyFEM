@@ -1,0 +1,7 @@
+pyfem.elements.ThermoContinuum module
+=====================================
+
+.. automodule:: pyfem.elements.ThermoContinuum
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,36 @@
+pyfem.materials package
+=======================
+
+.. automodule:: pyfem.materials
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.materials.BaseFailure
+   pyfem.materials.BaseMaterial
+   pyfem.materials.Dummy
+   pyfem.materials.HookesLaw
+   pyfem.materials.Isotropic
+   pyfem.materials.IsotropicHardeningPlasticity
+   pyfem.materials.IsotropicKinematicHardening
+   pyfem.materials.MatUtils
+   pyfem.materials.MaterialManager
+   pyfem.materials.MaxStrain
+   pyfem.materials.MaxStress
+   pyfem.materials.MultiMaterial
+   pyfem.materials.PlaneStrain
+   pyfem.materials.PlaneStrainDamage
+   pyfem.materials.PlaneStress
+   pyfem.materials.PowerLawModeI
+   pyfem.materials.SandwichCore
+   pyfem.materials.ThoulessModeI
+   pyfem.materials.TransverseIsotropic
+   pyfem.materials.TsaiWu
+   pyfem.materials.VonMises
+   pyfem.materials.XuNeedleman

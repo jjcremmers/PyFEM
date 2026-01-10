@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.fem.NodeSet module &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyfem.gui package" href="pyfem.gui.html" />
+    <link rel="prev" title="pyfem.fem.ElementSet module" href="pyfem.fem.ElementSet.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyfem</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyfem.html">pyfem package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pyfem.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyfem.core.html">pyfem.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.elements.html">pyfem.elements package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pyfem.fem.html">pyfem.fem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.gui.html">pyfem.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.html">pyfem.io package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.materials.html">pyfem.materials package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.models.html">pyfem.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.solvers.html">pyfem.solvers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html">pyfem.util package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pyfem</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.html">pyfem package</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.fem.html">pyfem.fem package</a></li>
+      <li class="breadcrumb-item active">pyfem.fem.NodeSet module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.fem.NodeSet.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyfem.fem.NodeSet">
+<span id="pyfem-fem-nodeset-module"></span><h1>pyfem.fem.NodeSet module<a class="headerlink" href="#module-pyfem.fem.NodeSet" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">NodeSet</span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyfem.util.itemList.html#pyfem.util.itemList.itemList" title="pyfem.util.itemList.itemList"><code class="xref py py-class docutils literal notranslate"><span class="pre">itemList</span></code></a></p>
+<p>Container for nodes and node groups.</p>
+<p>Inherits from itemList to store nodal coordinates indexed by node ID.
+Maintains nodal coordinates, spatial dimensionality (<cite>rank</cite>), and named
+groupings read from legacy <cite>.pro</cite> files or Gmsh meshes. Provides convenience
+methods for retrieving coordinates and iterating group contents.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.rank">
+<span class="sig-name descname"><span class="pre">rank</span></span><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.rank" title="Link to this definition"></a></dt>
+<dd><p>Spatial dimension of the mesh (2 for 2D, 3 for 3D). Initialized to -1
+and set automatically when first node is added.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.groups" title="Link to this definition"></a></dt>
+<dd><p>Dictionary mapping group names to lists of node IDs. Groups are typically
+used to define boundary conditions (e.g., ‘Left’, ‘Right’, ‘Top’, ‘Bottom’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, List[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>The NodeSet class extends itemList, inheriting methods like add(), get(),
+and __len__(). Node coordinates are stored internally and can be retrieved
+via getNodeCoords().</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span> <span class="o">=</span> <span class="n">NodeSet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>      <span class="c1"># Add node 0 at origin</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>      <span class="c1"># Add node 1 at (1, 0)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coords</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.getNodeCoords">
+<span class="sig-name descname"><span class="pre">getNodeCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodeIDs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.getNodeCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.getNodeCoords" title="Link to this definition"></a></dt>
+<dd><p>Return coordinates for one or more nodes as a NumPy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nodeIDs</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>str</em><em>]</em>) – Single node ID (int), list of node IDs (list), or node group name (str).
+When a string is provided, it references a node group defined in the model.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Array containing nodal coordinates. For a single node, returns a 1D array
+of shape (rank,). For multiple nodes, returns a 2D array of shape (n, rank)
+where n is the number of nodes and rank is the spatial dimension.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>           <span class="c1"># Single node</span>
+<span class="go">array([1.0, 2.0, 0.0])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>   <span class="c1"># Multiple nodes</span>
+<span class="go">array([[0.0, 0.0, 0.0],</span>
+<span class="go">       [1.0, 0.0, 0.0],</span>
+<span class="go">       [2.0, 0.0, 0.0]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>      <span class="c1"># Node group</span>
+<span class="go">array([[0.0, 0.0, 0.0],</span>
+<span class="go">       [0.0, 1.0, 0.0]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.getNodeIDs">
+<span class="sig-name descname"><span class="pre">getNodeIDs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.getNodeIDs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.getNodeIDs" title="Link to this definition"></a></dt>
+<dd><p>Return list of node IDs in the specified group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>groupName</strong> (<em>str</em>) – Name of the node group.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of node IDs in the specified group.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[int]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeIDs</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+<span class="go">[0, 1, 2]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.readFromFile">
+<span class="sig-name descname"><span class="pre">readFromFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readFromFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.readFromFile" title="Link to this definition"></a></dt>
+<dd><p>Read nodes and groups from legacy <cite>.pro</cite> file format.</p>
+<p>Parses the input file twice: first pass reads nodal coordinates from
+&lt;Nodes&gt; blocks or references external Gmsh files; second pass reads
+&lt;NodeGroup&gt; definitions. Duplicate nodes in groups are automatically
+removed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – Path to input file (.pro format or referencing a Gmsh file).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Supported file formats:
+1. Native .pro format with &lt;Nodes&gt; and &lt;NodeGroup&gt; blocks
+2. Gmsh reference: line containing ‘gmsh = “filename.msh”’</p>
+<p>The file is parsed line by line. Comments and whitespace are handled.
+Node groups are deduplicated after reading.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.readGmshFile">
+<span class="sig-name descname"><span class="pre">readGmshFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readGmshFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.readGmshFile" title="Link to this definition"></a></dt>
+<dd><p>Read nodes and groups from a Gmsh mesh file.</p>
+<p>Uses meshio to parse Gmsh format and extract nodes and physical groups.
+Automatically detects spatial dimension (2D/3D) based on element types.
+Physical groups from Gmsh become node groups in PyFEM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fname</strong> (<em>str</em>) – Path to the Gmsh file (.msh format, versions 2 or 4).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>3D element detection:
+- Checks for prisms, pyramids, hexahedra, wedges, and tetrahedra
+- Sets rank=3 if any 3D elements found, otherwise rank=2</p>
+<p>Node groups are populated from Gmsh’s cell_sets_dict, with
+‘gmsh:bounding_entities’ excluded. All nodes in elements belonging
+to a physical group are added to the corresponding PyFEM group.</p>
+<p>Requires:
+- meshio package for reading Gmsh files</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.addToGroup">
+<span class="sig-name descname"><span class="pre">addToGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.addToGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.addToGroup" title="Link to this definition"></a></dt>
+<dd><p>Register a node ID to a named group.</p>
+<p>Creates the group if it doesn’t exist, otherwise appends the node to
+the existing group. String node IDs are automatically converted to integers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modelType</strong> (<em>str</em>) – Name of the node group (e.g., ‘Left’, ‘Right’, ‘Bottom’, ‘Top’).</p></li>
+<li><p><strong>ID</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>str</em><em>]</em>) – Node identifier. String values are converted to int.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">&#39;Boundary&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="s1">&#39;Boundary&#39;</span><span class="p">,</span> <span class="s1">&#39;10&#39;</span><span class="p">)</span>  <span class="c1"># String converted to int</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.logInfo">
+<span class="sig-name descname"><span class="pre">logInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.logInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.logInfo" title="Link to this definition"></a></dt>
+<dd><p>Log node and group information using the logger.</p>
+<p>Outputs the same information as __repr__ but using the logger,
+with properly formatted output for number of nodes and groups.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nodes</span><span class="o">.</span><span class="n">logInfo</span><span class="p">()</span>
+<span class="go"># Logs:</span>
+<span class="go"># Number of nodes ................. : 100</span>
+<span class="go"># Number of groups ................ : 4</span>
+<span class="go"># Group table with names and counts</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.readNodalCoords">
+<span class="sig-name descname"><span class="pre">readNodalCoords</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readNodalCoords"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.readNodalCoords" title="Link to this definition"></a></dt>
+<dd><p>Read nodal coordinates from an open file stream.</p>
+<p>Parses node definitions from a &lt;Nodes&gt; block until &lt;/Nodes&gt; is encountered.
+Each line should contain: nodeID x [y [z]] with semicolon separators.
+Comments starting with // or # are ignored. Spatial dimension (rank)
+is inferred from the first valid node entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fin</strong> (<em>TextIO</em>) – Open file handle positioned at the start of the <cite>&lt;Nodes&gt;</cite> block.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Format:
+- Multiple nodes per line separated by semicolons
+- Format: nodeID x y [z];
+- Whitespace is normalized before parsing
+- Comments (// or #) are skipped
+- rank is set from first node (2D or 3D)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.readNodegroup">
+<span class="sig-name descname"><span class="pre">readNodegroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.readNodegroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.readNodegroup" title="Link to this definition"></a></dt>
+<dd><p>Read a node group from an open file stream.</p>
+<p>Parses node IDs from a &lt;NodeGroup&gt; block until &lt;/NodeGroup&gt; is encountered.
+Node IDs are whitespace-separated integers. All valid integers found are
+added to the specified group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fin</strong> (<em>TextIO</em>) – Open file handle positioned at the start of a <cite>&lt;NodeGroup&gt;</cite> block.</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – Group name label to assign these nodes to.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Format:
+- &lt;NodeGroup name=”groupname”&gt;
+- nodeID1 nodeID2 nodeID3 …
+- &lt;/NodeGroup&gt;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.NodeSet.NodeSet.getRank">
+<span class="sig-name descname"><span class="pre">getRank</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/pyfem/fem/NodeSet.html#NodeSet.getRank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.NodeSet.NodeSet.getRank" title="Link to this definition"></a></dt>
+<dd><p>Return the spatial dimension (rank) of the nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Spatial dimension (rank) of the nodes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyfem.fem.ElementSet.html" class="btn btn-neutral float-left" title="pyfem.fem.ElementSet module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyfem.gui.html" class="btn btn-neutral float-right" title="pyfem.gui package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

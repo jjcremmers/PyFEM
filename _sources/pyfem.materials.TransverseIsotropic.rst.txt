@@ -1,0 +1,7 @@
+pyfem.materials.TransverseIsotropic module
+==========================================
+
+.. automodule:: pyfem.materials.TransverseIsotropic
+   :members:
+   :show-inheritance:
+   :undoc-members:

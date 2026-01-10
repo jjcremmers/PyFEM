@@ -1,0 +1,7 @@
+pyfem.elements.Plate module
+===========================
+
+.. automodule:: pyfem.elements.Plate
+   :members:
+   :show-inheritance:
+   :undoc-members:

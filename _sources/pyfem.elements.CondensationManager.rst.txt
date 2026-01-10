@@ -1,0 +1,7 @@
+pyfem.elements.CondensationManager module
+=========================================
+
+.. automodule:: pyfem.elements.CondensationManager
+   :members:
+   :show-inheritance:
+   :undoc-members:

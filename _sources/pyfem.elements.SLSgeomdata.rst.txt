@@ -1,0 +1,7 @@
+pyfem.elements.SLSgeomdata module
+=================================
+
+.. automodule:: pyfem.elements.SLSgeomdata
+   :members:
+   :show-inheritance:
+   :undoc-members:

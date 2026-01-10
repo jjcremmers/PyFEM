@@ -1,0 +1,359 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.fem.ElementSet module &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pyfem.fem.NodeSet module" href="pyfem.fem.NodeSet.html" />
+    <link rel="prev" title="pyfem.fem.DofSpace module" href="pyfem.fem.DofSpace.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyFEM API</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pyfem</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pyfem.html">pyfem package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="pyfem.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pyfem.core.html">pyfem.core package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.elements.html">pyfem.elements package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="pyfem.fem.html">pyfem.fem package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.gui.html">pyfem.gui package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.html">pyfem.io package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.materials.html">pyfem.materials package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.models.html">pyfem.models package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.solvers.html">pyfem.solvers package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.html">pyfem.util package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">pyfem</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.html">pyfem package</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.fem.html">pyfem.fem package</a></li>
+      <li class="breadcrumb-item active">pyfem.fem.ElementSet module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.fem.ElementSet.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyfem.fem.ElementSet">
+<span id="pyfem-fem-elementset-module"></span><h1>pyfem.fem.ElementSet module<a class="headerlink" href="#module-pyfem.fem.ElementSet" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ElementSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">props</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.Properties" title="pyfem.util.dataStructures.Properties"><span class="pre">Properties</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="pyfem.util.itemList.html#pyfem.util.itemList.itemList" title="pyfem.util.itemList.itemList"><code class="xref py py-class docutils literal notranslate"><span class="pre">itemList</span></code></a></p>
+<p>Container for finite elements and element groups.</p>
+<p>Manages a collection of finite element objects indexed by element ID.
+Elements are organized into named groups based on their model type (material,
+element type, etc.). Provides methods for iterating over elements, reading
+from input files, and managing element groups.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.nodes" title="Link to this definition"></a></dt>
+<dd><p>NodeSet object containing the mesh nodes.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.props">
+<span class="sig-name descname"><span class="pre">props</span></span><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.props" title="Link to this definition"></a></dt>
+<dd><p>Properties object containing model and material properties.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.solverStat">
+<span class="sig-name descname"><span class="pre">solverStat</span></span><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.solverStat" title="Link to this definition"></a></dt>
+<dd><p>Solver status tracker for time stepping and iterations.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.groups">
+<span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.groups" title="Link to this definition"></a></dt>
+<dd><p>Dictionary mapping group names to lists of element IDs.</p>
+</dd></dl>
+
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span> <span class="o">=</span> <span class="n">ElementSet</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">elements</span><span class="o">.</span><span class="n">readFromFile</span><span class="p">(</span><span class="s1">&#39;input.pro&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="c1"># Process each element</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.logInfo">
+<span class="sig-name descname"><span class="pre">logInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.logInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.logInfo" title="Link to this definition"></a></dt>
+<dd><p>Log element and group information using the logger.</p>
+<p>Outputs the same information as __repr__ but using the logger,
+with properly formatted output for number of elements and groups.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.getDofTypes">
+<span class="sig-name descname"><span class="pre">getDofTypes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.getDofTypes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.getDofTypes" title="Link to this definition"></a></dt>
+<dd><p>Get all unique degree of freedom (DOF) types from all elements.</p>
+<p>Iterates through all elements and collects unique DOF types (e.g., ‘u’, ‘v’,
+‘w’ for displacements, ‘temp’ for temperature, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of unique DOF type strings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.readFromFile">
+<span class="sig-name descname"><span class="pre">readFromFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.readFromFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.readFromFile" title="Link to this definition"></a></dt>
+<dd><p>Read element definitions from an input file.</p>
+<p>Parses elements from a legacy .pro file format or references a Gmsh file.
+Supports &lt;Elements&gt; blocks with element definitions or gmsh file references.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fname</strong> – Path to input file (.pro format or referencing Gmsh file).</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Format for &lt;Elements&gt; block:
+elemID modelName nodeID1 nodeID2 …;</p>
+<p>Format for Gmsh reference:
+gmsh = “filename.msh”;</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.readGmshFile">
+<span class="sig-name descname"><span class="pre">readGmshFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.readGmshFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.readGmshFile" title="Link to this definition"></a></dt>
+<dd><p>Read elements from a Gmsh mesh file.</p>
+<p>Uses meshio to parse Gmsh format and extract elements. Physical groups
+from Gmsh become element groups in PyFEM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fname</strong> – Path to the Gmsh file (.msh format).</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Requires:</dt><dd><p>meshio package for reading Gmsh files.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modelName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elementNodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.add" title="Link to this definition"></a></dt>
+<dd><p>Add a finite element to the element set.</p>
+<p>Creates an element instance of the specified type with given nodes,
+validates node IDs, and adds the element to the appropriate group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ID</strong> – Unique element identifier.</p></li>
+<li><p><strong>modelName</strong> – Name of the model/material (must exist in props).</p></li>
+<li><p><strong>elementNodes</strong> – List of node IDs that define the element connectivity.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>RuntimeError</strong> – If model is missing ‘type’ attribute or node ID invalid.</p></li>
+<li><p><strong>ImportError</strong> – If element module or class cannot be found.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.addToGroup">
+<span class="sig-name descname"><span class="pre">addToGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modelType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.addToGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.addToGroup" title="Link to this definition"></a></dt>
+<dd><p>Register an element ID to a named group.</p>
+<p>Creates the group if it doesn’t exist, otherwise appends the element ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>modelType</strong> – Name of the element group.</p></li>
+<li><p><strong>ID</strong> – Element identifier to add to the group.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.addGroup">
+<span class="sig-name descname"><span class="pre">addGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupIDs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.addGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.addGroup" title="Link to this definition"></a></dt>
+<dd><p>Create or replace a named group with specified element IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>groupName</strong> – Name for the element group.</p></li>
+<li><p><strong>groupIDs</strong> – List of element IDs to include in the group.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.iterGroupNames">
+<span class="sig-name descname"><span class="pre">iterGroupNames</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.iterGroupNames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.iterGroupNames" title="Link to this definition"></a></dt>
+<dd><p>Return the dictionary of group names and their element IDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary mapping group names to lists of element IDs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.iterElementGroup">
+<span class="sig-name descname"><span class="pre">iterElementGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.iterElementGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.iterElementGroup" title="Link to this definition"></a></dt>
+<dd><p>Iterate over element objects in specified group(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>groupName</strong> – Name of group to iterate, ‘All’ for all elements,
+or list of group names to iterate multiple groups.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterator over element objects in the specified group(s).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="o">.</span><span class="n">iterElementGroup</span><span class="p">(</span><span class="s1">&#39;Material1&#39;</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="c1"># Process elements in Material1 group</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elements</span><span class="o">.</span><span class="n">iterElementGroup</span><span class="p">([</span><span class="s1">&#39;Mat1&#39;</span><span class="p">,</span> <span class="s1">&#39;Mat2&#39;</span><span class="p">]):</span>
+<span class="gp">... </span>    <span class="c1"># Process elements in both groups</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.elementGroupCount">
+<span class="sig-name descname"><span class="pre">elementGroupCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.elementGroupCount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.elementGroupCount" title="Link to this definition"></a></dt>
+<dd><p>Return the number of elements in specified group(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>groupName</strong> – Name of group, ‘All’ for all elements,
+or list of group names.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total count of elements in the specified group(s).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.getFamilyIDs">
+<span class="sig-name descname"><span class="pre">getFamilyIDs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.getFamilyIDs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.getFamilyIDs" title="Link to this definition"></a></dt>
+<dd><p>Get family type indices for all elements.</p>
+<p>Returns a list of integer indices representing the element family
+(CONTINUUM=0, INTERFACE=1, SURFACE=2, BEAM=3, SHELL=4) for each element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of family indices, one per element.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyfem.fem.ElementSet.ElementSet.commitHistory">
+<span class="sig-name descname"><span class="pre">commitHistory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pyfem/fem/ElementSet.html#ElementSet.commitHistory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.fem.ElementSet.ElementSet.commitHistory" title="Link to this definition"></a></dt>
+<dd><p>Commit history variables for all elements.</p>
+<p>Calls commitHistory() on all element objects to update internal
+state variables after a successful time/load step. Typically used
+for storing plastic strains, damage variables, etc.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyfem.fem.DofSpace.html" class="btn btn-neutral float-left" title="pyfem.fem.DofSpace module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyfem.fem.NodeSet.html" class="btn btn-neutral float-right" title="pyfem.fem.NodeSet module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

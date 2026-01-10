@@ -1,0 +1,7 @@
+pyfem.materials.TsaiWu module
+=============================
+
+.. automodule:: pyfem.materials.TsaiWu
+   :members:
+   :show-inheritance:
+   :undoc-members:

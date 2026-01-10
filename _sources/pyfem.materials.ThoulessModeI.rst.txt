@@ -1,0 +1,7 @@
+pyfem.materials.ThoulessModeI module
+====================================
+
+.. automodule:: pyfem.materials.ThoulessModeI
+   :members:
+   :show-inheritance:
+   :undoc-members:

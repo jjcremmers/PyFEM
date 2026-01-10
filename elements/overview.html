@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elements &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FiniteStrainAxiSym" href="finitestrainaxisym.html" />
+    <link rel="prev" title="User Manual" href="../usermanual.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About the code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html#old">OLD</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#continuum-elements">Continuum Elements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="finitestrainaxisym.html">FiniteStrainAxiSym</a></li>
+<li class="toctree-l4"><a class="reference internal" href="finitestraincontinuum.html">FiniteStrainContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="smallstraincontinuum.html">SmallStrainContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="smallstrainaxisym.html">SmallStrainAxiSym</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#shell-and-plate-elements">Shell and Plate Elements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="plate.html">Plate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sls.html">SLS</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#beam-and-rod-elements">Beam and Rod Elements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="beamnl.html">BeamNL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kirchhoffbeam.html">KirchhoffBeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spring.html">Spring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="timoshenkobeam.html">TimoshenkoBeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="truss.html">Truss</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#other-elements">Other Elements</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="interface.html">Interface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">IO Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developers guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+      <li class="breadcrumb-item active">Elements</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="elements">
+<h1>Elements<a class="headerlink" href="#elements" title="Link to this heading"></a></h1>
+<p>PyFEM has quite a number of element formulations. In due time, they will
+be described here.</p>
+<section id="continuum-elements">
+<h2>Continuum Elements<a class="headerlink" href="#continuum-elements" title="Link to this heading"></a></h2>
+<p>Solid continuum elements for bulk materials under small or finite strains.
+Use these when modeling 2D/3D solids where displacements are the primary
+unknowns and the response is governed by a continuum constitutive law.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="finitestrainaxisym.html">FiniteStrainAxiSym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="finitestraincontinuum.html">FiniteStrainContinuum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smallstraincontinuum.html">SmallStrainContinuum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smallstrainaxisym.html">SmallStrainAxiSym</a></li>
+</ul>
+</div>
+</section>
+<section id="shell-and-plate-elements">
+<h2>Shell and Plate Elements<a class="headerlink" href="#shell-and-plate-elements" title="Link to this heading"></a></h2>
+<p>Beam, plate/shell, interface, and axisymmetric elements, plus utilities.
+Choose these for slender members, layered shells, cohesive interfaces, or
+specialized kinematics outside standard continuum formulations.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plate.html">Plate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sls.html">SLS</a></li>
+</ul>
+</div>
+</section>
+<section id="beam-and-rod-elements">
+<h2>Beam and Rod Elements<a class="headerlink" href="#beam-and-rod-elements" title="Link to this heading"></a></h2>
+<p>Beam, plate/shell, interface, and axisymmetric elements, plus utilities.
+Choose these for slender members, layered shells, cohesive interfaces, or
+specialized kinematics outside standard continuum formulations.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="beamnl.html">BeamNL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kirchhoffbeam.html">KirchhoffBeam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spring.html">Spring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timoshenkobeam.html">TimoshenkoBeam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="truss.html">Truss</a></li>
+</ul>
+</div>
+</section>
+<section id="other-elements">
+<h2>Other Elements<a class="headerlink" href="#other-elements" title="Link to this heading"></a></h2>
+<p>Beam, plate/shell, interface, and axisymmetric elements, plus utilities.
+Choose these for slender members, layered shells, cohesive interfaces, or
+specialized kinematics outside standard continuum formulations.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="interface.html">Interface</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../usermanual.html" class="btn btn-neutral float-left" title="User Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="finitestrainaxisym.html" class="btn btn-neutral float-right" title="FiniteStrainAxiSym" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

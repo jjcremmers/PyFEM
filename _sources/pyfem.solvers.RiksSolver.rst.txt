@@ -1,0 +1,7 @@
+pyfem.solvers.RiksSolver module
+===============================
+
+.. automodule:: pyfem.solvers.RiksSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:
