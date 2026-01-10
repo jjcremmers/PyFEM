@@ -23,7 +23,7 @@ def setup(app):
     app.connect('builder-inited', run_apidoc)
 
 project = 'PyFEM'
-copyright = '2025, Joris Remmers'
+copyright = '2026, Joris Remmers'
 author = 'Joris Remmers'
 
 # -- General configuration ---------------------------------------------------

@@ -1,37 +1,11 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from pyfem.materials.BaseMaterial import BaseMaterial
 from pyfem.materials.MatUtils     import vonMisesStress,hydrostaticStress,Hardening
-from numpy import zeros, ones, dot, array, outer
+
 from math import sqrt
+import numpy as np
 
 class IsotropicHardeningPlasticity( BaseMaterial ):
 
@@ -50,7 +24,7 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
 
     self.hardLaw = Hardening( props )
 
-    self.ctang = zeros(shape=(6,6))
+    self.ctang = np.zeros(shape=(6,6))
 
     self.ctang[:3,:3] = self.elam
 
@@ -62,16 +36,16 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
     self.ctang[4,4] = self.ctang[3,3]
     self.ctang[5,5] = self.ctang[3,3]
  
-    self.setHistoryParameter( 'sigma'  , zeros(6) )
-    self.setHistoryParameter( 'eelas'  , zeros(6) )
-    self.setHistoryParameter( 'eplas'  , zeros(6) )
-    self.setHistoryParameter( 'eqplas' , zeros(1) )
+    self.setHistoryParameter( 'sigma'  , np.zeros(6) )
+    self.setHistoryParameter( 'eelas'  , np.zeros(6) )
+    self.setHistoryParameter( 'eplas'  , np.zeros(6) )
+    self.setHistoryParameter( 'eqplas' , np.zeros(1) )
 
     self.commitHistory()
 
     #Set the labels for the output data in this material model
     self.outLabels = [ "S11" , "S22" , "S33" , "S23" , "S13" , "S12" , "Epl" ]
-    self.outData   = zeros(7)
+    self.outData   = np.zeros(7)
 
 #------------------------------------------------------------------------------
 #  pre:  kinematics object containing current strain (kinemtics.strain)
@@ -89,7 +63,7 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
 
     eelas += kinematics.dstrain
 
-    sigma += dot( self.ctang , kinematics.dstrain )
+    sigma += self.ctang @ kinematics.dstrain
 
     smises = vonMisesStress( sigma )
 
@@ -103,7 +77,7 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
    
       flow = sigma
 
-      flow[:3] = flow[:3]-shydro*ones(3)
+      flow[:3] = flow[:3]-shydro*np.ones(3)
       flow *= 1.0/smises
 
       syield = self.syield0
@@ -118,15 +92,13 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
         k = k+1
 
         if k > 10:
-          printf("rrrr")
+          print("rrrr")
 
         rhs   = smises-self.eg3*deqpl - syield
         deqpl = deqpl+rhs/(self.eg3+hard)
 
         syield , hard = self.hardLaw.getHardening( eqplas + deqpl )
  
-        print("SS",syield,eqplas+deqpl)
-
       eplas[:3] +=  1.5 * flow[:3] * deqpl
       eelas[:3] += -1.5 * flow[:3] * deqpl
 
@@ -134,7 +106,7 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
       eelas[3:] += -3.0 * flow[:3] * deqpl
 
       sigma = flow * syield
-      sigma[:3] += shydro * ones(3)
+      sigma[:3] += shydro * np.ones(3)
 
       eqplas += deqpl
 
@@ -152,7 +124,7 @@ class IsotropicHardeningPlasticity( BaseMaterial ):
         tang[i,i]     += effg2
         tang[i+3,i+3] += effg
 
-      tang += effhdr*outer(flow,flow)
+      tang += effhdr*np.outer(flow,flow)
  
     self.setHistoryParameter( 'eelas' , eelas  )
     self.setHistoryParameter( 'eplas' , eplas  )

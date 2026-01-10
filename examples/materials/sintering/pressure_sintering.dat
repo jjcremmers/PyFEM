@@ -1,0 +1,89 @@
+############################################################################
+#  Mesh file for pressure-assisted sintering (hot pressing)
+#
+#  Rectangular ceramic sample under uniaxial compression
+#  Dimensions: 10 mm × 5 mm (2D plane stress)
+#  Applied pressure accelerates densification
+############################################################################
+
+<Nodes>
+  # Bottom row (y = 0)
+  1   0.0  0.0  0.0;
+  2   2.5  0.0  0.0;
+  3   5.0  0.0  0.0;
+  4   7.5  0.0  0.0;
+  5  10.0  0.0  0.0;
+
+  # Second row (y = 1.25)
+  6   0.0  1.25 0.0;
+  7   2.5  1.25 0.0;
+  8   5.0  1.25 0.0;
+  9   7.5  1.25 0.0;
+ 10  10.0  1.25 0.0;
+
+  # Third row (y = 2.5)
+ 11   0.0  2.5  0.0;
+ 12   2.5  2.5  0.0;
+ 13   5.0  2.5  0.0;
+ 14   7.5  2.5  0.0;
+ 15  10.0  2.5  0.0;
+
+  # Fourth row (y = 3.75)
+ 16   0.0  3.75 0.0;
+ 17   2.5  3.75 0.0;
+ 18   5.0  3.75 0.0;
+ 19   7.5  3.75 0.0;
+ 20  10.0  3.75 0.0;
+
+  # Top row (y = 5.0)
+ 21   0.0  5.0  0.0;
+ 22   2.5  5.0  0.0;
+ 23   5.0  5.0  0.0;
+ 24   7.5  5.0  0.0;
+ 25  10.0  5.0  0.0;
+</Nodes>
+
+<Elements>
+  # 4-node quadrilateral elements
+  1  'Continuum'  1  2  7  6;
+  2  'Continuum'  2  3  8  7;
+  3  'Continuum'  3  4  9  8;
+  4  'Continuum'  4  5 10  9;
+  
+  5  'Continuum'  6  7 12 11;
+  6  'Continuum'  7  8 13 12;
+  7  'Continuum'  8  9 14 13;
+  8  'Continuum'  9 10 15 14;
+  
+  9  'Continuum' 11 12 17 16;
+ 10  'Continuum' 12 13 18 17;
+ 11  'Continuum' 13 14 19 18;
+ 12  'Continuum' 14 15 20 19;
+ 
+ 13  'Continuum' 16 17 22 21;
+ 14  'Continuum' 17 18 23 22;
+ 15  'Continuum' 18 19 24 23;
+ 16  'Continuum' 19 20 25 24;
+</Elements>
+
+<NodeConstraints>
+  # Fix bottom in vertical direction (rigid die surface)
+  v 1 0.0;
+  v 2 0.0;
+  v 3 0.0;
+  v 4 0.0;
+  v 5 0.0;
+  
+  # Fix one corner horizontally to prevent rigid body motion
+  u 1 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+  # Apply compressive pressure on top surface
+  # Pressure accelerates densification
+  v 21 "-5.0e5*t";   # Gradually apply 5 MPa pressure
+  v 22 "-5.0e5*t";
+  v 23 "-5.0e5*t";
+  v 24 "-5.0e5*t";
+  v 25 "-5.0e5*t";
+</ExternalForces>

@@ -1,36 +1,9 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2025. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from typing import Tuple
 from pyfem.materials.BaseMaterial import BaseMaterial
-from numpy import zeros, dot, ndarray
+import numpy as np
 
 
 class Isotropic(BaseMaterial):
@@ -88,7 +61,7 @@ class Isotropic(BaseMaterial):
         BaseMaterial.__init__(self, props)
 
         # Create the hookean matrix
-        self.H = zeros((6, 6))
+        self.H = np.zeros((6, 6))
 
         fac = 1.0 / (2.0 * self.nu * self.nu + self.nu - 1.0)
       
@@ -109,14 +82,14 @@ class Isotropic(BaseMaterial):
         self.outLabels = ["S11", "S22", "S33", "S23", "S13", "S12"]
         
         if self.incremental:
-            self.setHistoryParameter('sigma', zeros(6))
+            self.setHistoryParameter('sigma', np.zeros(6))
             self.commitHistory()
 
     # ---------------------------------------------------------------------------
     #
     # ---------------------------------------------------------------------------
 
-    def getStress(self, deformation) -> Tuple[ndarray, ndarray]:
+    def getStress(self, deformation) -> Tuple[np.ndarray, np.ndarray]:
         """
         Compute stress and material tangent matrix.
         
@@ -138,16 +111,16 @@ class Isotropic(BaseMaterial):
         """
         if self.incremental:
             sigma = self.getHistoryParameter('sigma')
-            sigma += dot(self.H, deformation.dstrain)
+            sigma += self.H @ deformation.dstrain
             self.setHistoryParameter('sigma', sigma)
         else:
-            sigma = dot(self.H, deformation.strain)
+            sigma = self.H @ deformation.strain
 
         self.outData = sigma
 
         return sigma, self.H
 
-    def getTangent(self) -> ndarray:
+    def getTangent(self) -> np.ndarray:
         """
         Get the material tangent stiffness matrix.
         
