@@ -89,84 +89,10 @@ cd examples/ch02
 pyfem PatchTest.pro
 ```
 
-### Python API
-
-Use PyFEM programmatically in Python scripts:
-
-```python
-from pyfem import run
-
-# Run a complete analysis
-results = run("examples/ch02/PatchTest.pro")
-
-# Access results
-globdat = results['globdat']
-displacements = globdat.state
-```
-
-### Step-by-Step Control
-
-For advanced control over the analysis:
-
-```python
-from pyfem.core.api import PyFEMAPI
-
-# Initialize analysis
-api = PyFEMAPI("input.pro")
-
-# Run step by step
-while api.isActive:
-    api.step()
-    
-    # Access current state
-    current_disp = api.globdat.state
-    load_factor = api.globdat.lam
-    
-    # Custom processing
-    print(f"Load factor: {load_factor}")
-
-# Get final results
-results = api.getResults()
-api.close()
-```
-
-### Example: Cantilever Beam
-
-```text
-# cantilever.pro
-input = "cantilever.dat";
-
-ContElem = {
-  type = "SmallStrainContinuum";
-  material = {
-    type = "PlaneStress";
-    E = 210.0e3;
-    nu = 0.3;
-  };
-};
-
-solver = {
-  type = "NonlinearSolver";
-  maxCycle = 20;
-};
-
-outputModules = ["vtk"];
-
-vtk = {
-  type = "MeshWriter";
-};
-```
-
-Run it:
+View results in [ParaView](https://www.paraview.org/download/):
 
 ```bash
-pyfem cantilever.pro
-```
-
-View results in ParaView:
-
-```bash
-paraview cantilever.pvd
+paraview PatchTest.pvd
 ```
 
 ## 📖 Documentation
@@ -281,7 +207,7 @@ If PyFEM contributes to a publication, please cite:
 
 **Software:**
 ```
-J.J.C. Remmers (2025). PyFEM - A Python Finite Element Code.
+J.J.C. Remmers (2026). PyFEM - A Python Finite Element Code.
 https://github.com/jjcremmers/PyFEM
 ```
 
@@ -296,11 +222,9 @@ John Wiley & Sons, ISBN 978-0470666449.
 
 PyFEM is developed and maintained by:
 
-- **J.J.C. Remmers** - Eindhoven University of Technology
+- **Joris Remmers** - Eindhoven University of Technology
 - Contributors and users from the computational mechanics community
 
 The code accompanies the textbook by de Borst, Crisfield, Remmers, and Verhoosel, which provides the theoretical foundation for the implemented methods.
 
----
-
-**Made with ❤️ for computational mechanics education and research**
+[paraViewURL]: paraview.org
