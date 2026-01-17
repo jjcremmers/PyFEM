@@ -52,5 +52,5 @@ Examples
 
 See Also
 --------
-- :doc:`../io_modules`
-- Related writers: ``MeshWriter``, ``GraphWriter``, ``ContourWriter``
+- :doc:`overview`
+- Related writers: :doc:`MeshWriter`, :doc:`GraphWriter`, :doc:`ContourWriter`

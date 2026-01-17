@@ -62,5 +62,5 @@ Examples
 
 See Also
 --------
-- :doc:`../io_modules`
-- :doc:`InputReader <InputReader>` for reading dumps
+- :doc:`overview`
+- :doc:`InputReader` for reading dumps

@@ -92,5 +92,5 @@ Minimal output configuration in a ``.pro`` file:
 
 See Also
 --------
-- :doc:`../io_modules`
-- Related writers: ``MeshWriter``, ``OutputWriter``, ``GraphWriter``, ``ContourWriter``
+- :doc:`overview`
+- Related writers: :doc:`MeshWriter`, :doc:`OutputWriter`, :doc:`GraphWriter`, :doc:`ContourWriter`

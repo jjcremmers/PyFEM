@@ -156,5 +156,5 @@ Configure two columns for a force-displacement curve:
 
 See Also
 --------
-- :doc:`../io_modules`
-- Related writers: ``ContourWriter``, ``OutputWriter``, ``MeshWriter``
+- :doc:`overview`
+- Related writers: :doc:`ContourWriter`, :doc:`OutputWriter`, :doc:`MeshWriter`

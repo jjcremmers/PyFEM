@@ -62,5 +62,5 @@ Examples
 
 See Also
 --------
-- :doc:`../io_modules`
-- Related writers: ``HDF5Writer``, ``OutputWriter``, ``GraphWriter``
+- :doc:`overview`
+- Related writers: :doc:`HDF5Writer`, :doc:`OutputWriter`, :doc:`GraphWriter`
