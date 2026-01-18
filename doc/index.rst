@@ -28,8 +28,9 @@ Goals and Scope
 PyFEM aims to provide a clear, well-documented reference implementation for
 nonlinear finite element analysis, suited for teaching, prototyping, and
 reproducible research. The code emphasizes readability over micro-optimizations
-and includes a growing set of elements, material models, solvers, and I/O
-modules to cover common solid mechanics problems.
+and includes a growing set of :doc:`elements/overview`, 
+:doc:`material models <materials/overview>`, :doc:`solvers/overview`, and 
+:doc:`I/O modules <io/overview>` to cover common solid mechanics problems.
 
 How to Cite
 -----------
