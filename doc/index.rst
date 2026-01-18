@@ -20,8 +20,8 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      <a href="https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg" target="_blank">
        <img src="https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg" alt="The cover of Non-linear Finite element Analysis of Solids and Structures" style="width:200px; box-shadow: 2px 2px 8px rgba(0,0,0,0.18); display:inline-block; vertical-align:middle;"/>
      </a>
-     <a href="img/book_page.png" target="_blank">
-       <img src="img/book_page.png" alt="Sample book page - Click to enlarge" style="width:200px; box-shadow: 2px 2px 8px rgba(0,0,0,0.18); display:inline-block; vertical-align:middle;"/>
+     <a href="_static/book_page.png" target="_blank">
+       <img src="_static/book_page.png" alt="Sample book page - Click to enlarge" style="width:200px; box-shadow: 2px 2px 8px rgba(0,0,0,0.18); display:inline-block; vertical-align:middle;"/>
      </a>
    </div>
 
@@ -40,7 +40,20 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      <a href="https://www.barnesandnoble.com/w/non-linear-finite-element-analysis-of-solids-and-structures-ren-de-borst/1101190392" target="_blank">
        <img alt="Barnes & Noble" src="https://img.shields.io/badge/Barnes%20%26%20Noble-Buy-green?logo=barnesandnoble"/>
      </a>
-   </p>   
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+       <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
+     </a>
+   </p>
+
+   <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em;">
+     @book{deBorst2012,
+       title={Non-Linear Finite Element Analysis of Solids and Structures},
+       author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
+       year={2012},
+       publisher={John Wiley and Sons},
+       isbn={978-0470666449}
+     }
+   </div>
 
 The code is open source and intended for educational and scientific
 purposes only. If you use PyFEM in your research, the developers would
