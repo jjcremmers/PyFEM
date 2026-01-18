@@ -54,7 +54,7 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
          publisher={John Wiley and Sons},
          isbn={978-0470666449}
        }
-     </pre>
+    </pre id="bibtex-text" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
    </div>
 
 The code is open source and intended for educational and scientific
@@ -81,31 +81,38 @@ used in your study.
 
 
 J.J.C. Remmers (2026). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
-<a href="#" onclick="var bib=document.getElementById('pyfem-bibtex-cite'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;" style="margin-left:8px; vertical-align:middle;">
-  <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex" style="height:1.2em;"/>
-</a>
-<div id="pyfem-bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-  <span id="pyfem-bibtex-text">
-      <pre style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit;">
-</div>
+
+.. raw:: html
+
+   <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+     <pre id="bibtex-text">
+       @misc{PyFEM2026,
+         author    = {J.J.C. Remmers},
+         title     = {PyFEM},
+         year      = {2026},
+         howpublished = {\url{https://github.com/jjcremmers/PyFEM}},
+         note      = {Python Finite Element Method code.}
+       }
+     </pre id="bibtex-text" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+   </div>
 
 R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
 `Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__
 John Wiley and Sons, 2012, ISBN 978-0470666449
-<a href="#" onclick="var bib=document.getElementById('book-bibtex-cite'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;" style="margin-left:8px; vertical-align:middle;">
-  <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex" style="height:1.2em;"/>
-</a>
-<div id="book-bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-  <span id="book-bibtex-text">
-@book{deBorst2012,<br>
-  title={Non-Linear Finite Element Analysis of Solids and Structures},<br>
-  author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},<br>
-  year={2012},<br>
-  publisher={John Wiley and Sons},<br>
-  isbn={978-0470666449}<br>
-}<br>
-  </span>
-</div>
+
+.. raw:: html
+
+   <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+     <pre id="bibtex-text">
+       @book{deBorst2012,
+         title={Non-Linear Finite Element Analysis of Solids and Structures},
+         author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
+         year={2012},
+         publisher={John Wiley and Sons},
+         isbn={978-0470666449}
+       }
+     </pre id="bibtex-text" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+   </div>
 
 License
 -------
