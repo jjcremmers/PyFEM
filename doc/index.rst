@@ -46,15 +46,15 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
    </p>
 
    <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-     <span id="bibtex-text">
+     <pre id="bibtex-text">
        @book{deBorst2012,
          title={Non-Linear Finite Element Analysis of Solids and Structures},
          author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
          year={2012},
          publisher={John Wiley and Sons},
          isbn={978-0470666449}
-       }<br>
-     </span>
+       }
+     </pre>
    </div>
 
 The code is open source and intended for educational and scientific
@@ -86,13 +86,7 @@ J.J.C. Remmers (2026). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
 </a>
 <div id="pyfem-bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
   <span id="pyfem-bibtex-text">
-@misc{PyFEM2026,<br>
-  author = {J.J.C. Remmers},<br>
-  title = {PyFEM},<br>
-  year = {2026},<br>
-  howpublished = {\url{https://github.com/jjcremmers/PyFEM}}<br>
-}
-  </span>
+      <pre style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit;">
 </div>
 
 R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
