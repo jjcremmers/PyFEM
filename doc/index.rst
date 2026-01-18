@@ -13,6 +13,17 @@ R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
 `Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__  
 John Wiley and Sons, 2012, ISBN 978-0470666449
 
+.. figure:: https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg
+   :width: 200px
+   :alt: The cover of Non-linear Finite element Analysis of Solids and Structures
+   :align: center
+
+.. raw:: html
+
+   <a href="img/book_page.png" target="_blank">
+     <img src="img/book_page.png" alt="Sample book page" style="width:200px; margin-left:20px; vertical-align:middle; display:inline-block; box-shadow: 2px 2px 8px rgba(0,0,0,0.18);"/>
+   </a>
+
 .. raw:: html
 
    <p>
@@ -25,12 +36,10 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      <a href="https://www.bol.com/nl/nl/p/non-linear-finite-element-analysis-of-solids-and-structures/9200000009780470/" target="_blank">
        <img alt="Bol.com" src="https://img.shields.io/badge/Bol.com-Buy-blue?logo=bolcom"/>
      </a>
-   </p>
-
-.. figure:: https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg
-   :width: 200px
-   :alt: The cover of Non-linear Finite element Analysis of Solids and Structures
-   :align: center
+     <a href="https://www.barnesandnoble.com/w/non-linear-finite-element-analysis-of-solids-and-structures-ren-de-borst/1101190392" target="_blank">
+       <img alt="Barnes & Noble" src="https://img.shields.io/badge/Barnes%20%26%20Noble-Buy-green?logo=barnesandnoble"/>
+     </a>
+   </p>   
 
 The code is open source and intended for educational and scientific
 purposes only. If you use PyFEM in your research, the developers would
