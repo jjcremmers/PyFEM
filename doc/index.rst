@@ -20,8 +20,8 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
 
 .. raw:: html
 
-   <a href="img/book_page.png" target="_blank">
-     <img src="img/book_page.png" alt="Sample book page" style="width:200px; margin-left:20px; vertical-align:middle; display:inline-block; box-shadow: 2px 2px 8px rgba(0,0,0,0.18);"/>
+   <a href="_static/book_page.png" target="_blank">
+     <img src="_static/book_page.png" alt="Sample book page" style="width:200px; margin-left:20px; vertical-align:middle; display:inline-block; box-shadow: 2px 2px 8px rgba(0,0,0,0.18);"/>
    </a>
 
 .. raw:: html
@@ -33,7 +33,7 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      <a href="https://www.amazon.com/dp/0470666447" target="_blank">
        <img alt="Amazon" src="https://img.shields.io/badge/Amazon-Buy-orange?logo=amazon"/>
      </a>
-     <a href="https://www.bol.com/nl/nl/p/non-linear-finite-element-analysis-of-solids-and-structures/9200000009780470/" target="_blank">
+     <a href="https://www.bol.com/nl/nl/p/nonlinear-finite-element-analysis-of-solids-and-structures/9200000002230150/?s2a=&bltgh=tyDCX4LwsfJHhGbeEVtF3A.4_25_26.27.FeatureOptionButton#productTitle" target="_blank">
        <img alt="Bol.com" src="https://img.shields.io/badge/Bol.com-Buy-blue?logo=bolcom"/>
      </a>
      <a href="https://www.barnesandnoble.com/w/non-linear-finite-element-analysis-of-solids-and-structures-ren-de-borst/1101190392" target="_blank">
