@@ -39,7 +39,7 @@ reference PyFEM (with the commit/tag or release) to ensure reproducibility.
 When applicable, include the specific modules (elements, materials, solvers)
 used in your study.
 
-J.J.C. Remmers (2025). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
+J.J.C. Remmers (2026). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
 
 R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
 `Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__
@@ -48,13 +48,8 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
 License
 -------
 
-PyFEM is distributed under the MIT License to support broad educational and
-research use.
-
-- Project-level license: see the file `LICENSE <../LICENSE>`__ (MIT License).
-- File-level notices: each source file includes attribution and disclaimer
-   text from the textbook and project history. Please retain these notices in
-   redistributed or modified files.
+PyFEM is released under the MIT License, enabling broad use for education and research. 
+For full license details, see the `LICENSE <../LICENSE>`__ file.
 
 Under the MIT License terms, you may use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the software, provided that you
@@ -64,19 +59,22 @@ include the copyright notice and permission notice. The software is provided
 Important
 ~~~~~~~~~
 
-- The effective legal terms for any given distribution are determined by the
-   project-level license in the repository you use (see `LICENSE <../LICENSE>`__).
-- Regardless of the project-level license, retain the file headers with
-   attribution and disclaimer text present at the top of each source file.
+- The official PyFEM repository and its releases are licensed under the MIT
+  License as described above (see `LICENSE <../LICENSE>`__).
+- If you obtain PyFEM as part of a third-party distribution, fork, or bundled
+  project, the licensing of that distribution may differ; always consult that
+  project's license in addition to the original MIT-licensed PyFEM sources.
+- Regardless of the surrounding project license, retain the file headers with
+  attribution and disclaimer text present at the top of each source file.
 - If you plan to adopt MIT licensing for your own distribution or fork, please
-   keep the file-level notices intact and include an MIT license file in your
-   distribution.
+  keep the file-level notices intact and include an MIT license file in your
+  distribution.
 
 Documentation Contents
 ======================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    installation/overview
    quickstart

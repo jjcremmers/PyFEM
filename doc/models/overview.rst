@@ -42,6 +42,7 @@ Available Models
    :maxdepth: 1
    :titlesonly:
 
+   contact
    rve
 
 See Also
