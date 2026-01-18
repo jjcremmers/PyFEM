@@ -40,11 +40,11 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      <a href="https://www.barnesandnoble.com/w/non-linear-finite-element-analysis-of-solids-and-structures-ren-de-borst/1101190392" target="_blank">
        <img alt="Barnes & Noble" src="https://img.shields.io/badge/Barnes%20%26%20Noble-Buy-green?logo=barnesandnoble"/>
      </a>
-     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book-1'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
        <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
      </a>
-     <div id="bibtex-cite-book" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-       <pre id="bibtex-text-book" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+     <div id="bibtex-cite-book-1" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+       <pre id="bibtex-text-book-1" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
          @book{deBorst2012,
            title={Non-Linear Finite Element Analysis of Solids and Structures},
            author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
@@ -84,11 +84,11 @@ J.J.C. Remmers (2026). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
 .. raw:: html
 
    <p>
-     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book-2'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
        <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
      </a>
-     <div id="bibtex-cite-book" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-       <pre id="bibtex-text-book" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+     <div id="bibtex-cite-book-2" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+       <pre id="bibtex-text-book-2" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
          @misc{PyFEM2026,
            author    = {J.J.C. Remmers},
            title     = {PyFEM},
@@ -107,11 +107,11 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
 .. raw:: html
 
    <p>
-     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book-3'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
        <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
      </a>
-     <div id="bibtex-cite-book" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-       <pre id="bibtex-text-book" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+     <div id="bibtex-cite-book-3" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+       <pre id="bibtex-text-book-3" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
          @book{deBorst2012,
            title={Non-Linear Finite Element Analysis of Solids and Structures},
            author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
