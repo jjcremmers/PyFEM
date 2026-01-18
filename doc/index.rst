@@ -46,7 +46,6 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
    </p>
 
    <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-     <button onclick="navigator.clipboard.writeText(document.getElementById('bibtex-text').innerText); this.innerText='Copied!'; setTimeout(()=>{this.innerText='Copy';},1200);" style="position:absolute; top:12px; right:12px; padding:2px 8px; font-size:0.9em; cursor:pointer;">Copy</button>
      <span id="bibtex-text">
        @book{deBorst2012,
          title={Non-Linear Finite Element Analysis of Solids and Structures},
