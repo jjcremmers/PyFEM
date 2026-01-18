@@ -17,6 +17,7 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
 .. figure:: https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg
    :width: 200px
    :alt: The cover of Non-linear Finite element Analysis of Solids and Structures
+   :align: center
 
 The code is open source and intended for educational and scientific
 purposes only. If you use PyFEM in your research, the developers would
