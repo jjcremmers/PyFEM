@@ -9,10 +9,23 @@ PyFEM: A Python Finite Element Code
 This is the user manual for PyFEM, a Python-based finite element code that
 accompanies the book:
 
-R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
-`Non-Linear Finite Element Analysis of Solids and
-Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__
+R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel  
+`Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__  
 John Wiley and Sons, 2012, ISBN 978-0470666449
+
+.. raw:: html
+
+   <p>
+     <a href="https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449" target="_blank">
+       <img alt="Wiley" src="https://img.shields.io/badge/Wiley-Buy-blue?logo=wiley" style="margin-right:5px;"/>
+     </a>
+     <a href="https://www.amazon.com/dp/0470666447" target="_blank">
+       <img alt="Amazon" src="https://img.shields.io/badge/Amazon-Buy-orange?logo=amazon"/>
+     </a>
+     <a href="https://www.bol.com/nl/nl/p/non-linear-finite-element-analysis-of-solids-and-structures/9200000009780470/" target="_blank">
+       <img alt="Bol.com" src="https://img.shields.io/badge/Bol.com-Buy-blue?logo=bolcom"/>
+     </a>
+   </p>
 
 .. figure:: https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg
    :width: 200px
