@@ -80,11 +80,39 @@ reference PyFEM (with the commit/tag or release) to ensure reproducibility.
 When applicable, include the specific modules (elements, materials, solvers)
 used in your study.
 
+
 J.J.C. Remmers (2026). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
+<a href="#" onclick="var bib=document.getElementById('pyfem-bibtex-cite'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;" style="margin-left:8px; vertical-align:middle;">
+  <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex" style="height:1.2em;"/>
+</a>
+<div id="pyfem-bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+  <span id="pyfem-bibtex-text">
+@misc{PyFEM2026,<br>
+  author = {J.J.C. Remmers},<br>
+  title = {PyFEM},<br>
+  year = {2026},<br>
+  howpublished = {\url{https://github.com/jjcremmers/PyFEM}}<br>
+}
+  </span>
+</div>
 
 R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
 `Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__
 John Wiley and Sons, 2012, ISBN 978-0470666449
+<a href="#" onclick="var bib=document.getElementById('book-bibtex-cite'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;" style="margin-left:8px; vertical-align:middle;">
+  <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex" style="height:1.2em;"/>
+</a>
+<div id="book-bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+  <span id="book-bibtex-text">
+@book{deBorst2012,<br>
+  title={Non-Linear Finite Element Analysis of Solids and Structures},<br>
+  author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},<br>
+  year={2012},<br>
+  publisher={John Wiley and Sons},<br>
+  isbn={978-0470666449}<br>
+}<br>
+  </span>
+</div>
 
 License
 -------
