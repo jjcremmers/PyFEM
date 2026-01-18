@@ -40,22 +40,21 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      <a href="https://www.barnesandnoble.com/w/non-linear-finite-element-analysis-of-solids-and-structures-ren-de-borst/1101190392" target="_blank">
        <img alt="Barnes & Noble" src="https://img.shields.io/badge/Barnes%20%26%20Noble-Buy-green?logo=barnesandnoble"/>
      </a>
-     <a href="#" onclick="var bib=document.getElementById('bibtex-cite'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
        <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
      </a>
+     <div id="bibtex-cite-book" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+       <pre id="bibtex-text-book" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+         @book{deBorst2012,
+           title={Non-Linear Finite Element Analysis of Solids and Structures},
+           author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
+           year={2012},
+           publisher={John Wiley and Sons},
+           isbn={978-0470666449}
+         }
+       </pre>
+     </div>
    </p>
-
-   <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-     <pre id="bibtex-text">
-       @book{deBorst2012,
-         title={Non-Linear Finite Element Analysis of Solids and Structures},
-         author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
-         year={2012},
-         publisher={John Wiley and Sons},
-         isbn={978-0470666449}
-       }
-    </pre id="bibtex-text" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
-   </div>
 
 The code is open source and intended for educational and scientific
 purposes only. If you use PyFEM in your research, the developers would
@@ -84,17 +83,22 @@ J.J.C. Remmers (2026). PyFEM `<https://github.com/jjcremmers/PyFEM>`__
 
 .. raw:: html
 
-   <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-     <pre id="bibtex-text">
-       @misc{PyFEM2026,
-         author    = {J.J.C. Remmers},
-         title     = {PyFEM},
-         year      = {2026},
-         howpublished = {\url{https://github.com/jjcremmers/PyFEM}},
-         note      = {Python Finite Element Method code.}
-       }
-     </pre id="bibtex-text" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
-   </div>
+   <p>
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+       <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
+     </a>
+     <div id="bibtex-cite-book" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+       <pre id="bibtex-text-book" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+         @book{deBorst2012,
+           title={Non-Linear Finite Element Analysis of Solids and Structures},
+           author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
+           year={2012},
+           publisher={John Wiley and Sons},
+           isbn={978-0470666449}
+         }
+       </pre>
+     </div>
+   </p>
 
 R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel (2012)
 `Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__
@@ -102,17 +106,22 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
 
 .. raw:: html
 
-   <div id="bibtex-cite" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
-     <pre id="bibtex-text">
-       @book{deBorst2012,
-         title={Non-Linear Finite Element Analysis of Solids and Structures},
-         author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
-         year={2012},
-         publisher={John Wiley and Sons},
-         isbn={978-0470666449}
-       }
-     </pre id="bibtex-text" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
-   </div>
+   <p>
+     <a href="#" onclick="var bib=document.getElementById('bibtex-cite-book'); bib.style.display=(bib.style.display==='block')?'none':'block'; return false;">
+       <img alt="BibTeX" src="https://img.shields.io/badge/BibTeX-Cite-red?logo=latex"/>
+     </a>
+     <div id="bibtex-cite-book" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
+       <pre id="bibtex-text-book" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
+         @book{deBorst2012,
+           title={Non-Linear Finite Element Analysis of Solids and Structures},
+           author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
+           year={2012},
+           publisher={John Wiley and Sons},
+           isbn={978-0470666449}
+         }
+       </pre>
+     </div>
+   </p>
 
 License
 -------
