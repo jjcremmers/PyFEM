@@ -45,13 +45,13 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      </a>
      <div id="bibtex-cite-book-1" style="display:none; background:#f8f8f8; border:1px solid #ddd; border-radius:6px; padding:12px; margin:10px 0; font-family:monospace; font-size:0.95em; position:relative;">
        <pre id="bibtex-text-book-1" style="margin:0; background:none; border:none; font-family:inherit; font-size:inherit; overflow-x:auto; white-space:pre;">
-         @book{deBorst2012,
-           title={Non-Linear Finite Element Analysis of Solids and Structures},
-           author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
-           year={2012},
-           publisher={John Wiley and Sons},
-           isbn={978-0470666449}
-         }
+@book{deBorst2012,
+    title={Non-Linear Finite Element Analysis of Solids and Structures},
+    author={de Borst, R. and Crisfield, M.A. and Remmers, J.J.C. and Verhoosel, C.V.},
+    year={2012},
+    publisher={John Wiley and Sons},
+    isbn={978-0470666449}
+}
        </pre>
      </div>
    </p>
