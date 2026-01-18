@@ -13,16 +13,17 @@ R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
 `Non-Linear Finite Element Analysis of Solids and Structures <https://www.wiley.com/en-us/Nonlinear+Finite+Element+Analysis+of+Solids+and+Structures%2C+2nd+Edition-p-9780470666449>`__  
 John Wiley and Sons, 2012, ISBN 978-0470666449
 
-.. figure:: https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg
-   :width: 200px
-   :alt: The cover of Non-linear Finite element Analysis of Solids and Structures
-   :align: center
 
 .. raw:: html
 
-   <a href="_static/book_page.png" target="_blank">
-     <img src="_static/book_page.png" alt="Sample book page" style="width:200px; margin-left:20px; vertical-align:middle; display:inline-block; box-shadow: 2px 2px 8px rgba(0,0,0,0.18);"/>
-   </a>
+   <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 1em;">
+     <a href="https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg" target="_blank">
+       <img src="https://media.wiley.com/product_data/coverImage300/47/04706664/0470666447.jpg" alt="The cover of Non-linear Finite element Analysis of Solids and Structures" style="width:200px; box-shadow: 2px 2px 8px rgba(0,0,0,0.18); display:inline-block; vertical-align:middle;"/>
+     </a>
+     <a href="img/book_page.png" target="_blank">
+       <img src="img/book_page.png" alt="Sample book page - Click to enlarge" style="width:200px; box-shadow: 2px 2px 8px rgba(0,0,0,0.18); display:inline-block; vertical-align:middle;"/>
+     </a>
+   </div>
 
 .. raw:: html
 
