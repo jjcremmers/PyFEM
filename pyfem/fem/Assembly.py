@@ -120,12 +120,7 @@ def assembleArray(props: Properties, globdat: Any, rank: int, action: str) -> Tu
     globdat.row = row
     globdat.col = col
 
-    print("before ", B)
-
     globdat.models.run(props, globdat)
-
-    print("after ", B)
-
 
     # Return appropriate result based on assembly rank
     if rank == 1:
