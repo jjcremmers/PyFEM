@@ -12,9 +12,9 @@ from pyfem.models.BaseModel import BaseModel
 
 class Contact( BaseModel):
 
-    def __init__ ( self , props ):
+    def __init__ ( self , props , globdat ):
   
-        BaseModel.__init__( self , props )
+        BaseModel.__init__( self , props , globdat )
           
         self.flag = False
         self.dispDofs = ["u","v"]
@@ -22,28 +22,25 @@ class Contact( BaseModel):
         self.direction = [0.0,0.0]
         self.radius = 10.
         self.penalty = 1.e6
-    
-        if hasattr( props.contact , 'type' ):
-            self.type      = props.type
-        
+            
         if self.type == "sphere":
           self.dispDofs = ["u","v","w"] 
           
         self.flag      = True
-        self.centre    = np.array(props.contact.centre)
-        self.radius    = props.contact.radius
-        self.penalty   = props.contact.penalty
-        self.direction = np.array(props.contact.direction)
+        self.centre    = np.array(props.centre)
+        self.radius    = props.radius
+        self.penalty   = props.penalty
+        self.direction = np.array(props.direction)
 
 #-------------------------------------------------------------------------------
 #  checkContact   (with flag)
 #-------------------------------------------------------------------------------
 
 
-    def getTangentStiffness( self , props , globdat ):
+    def run( self , props , globdat ):
           
         centre = self.centre + globdat.lam * self.direction
-     
+
         for nodeID in list(globdat.nodes.keys()):
             crd = globdat.nodes.getNodeCoords(nodeID)
       
@@ -59,15 +56,14 @@ class Contact( BaseModel):
             if overlap > 0:
                 normal = ds / dsnorm
         
-                B[idofs] += -self.penalty * overlap * normal
+                globdat.B[idofs] += -self.penalty * overlap * normal
         
+                print("Contqact",crd,self.penalty,overlap)
                 mat = self.penalty * np.outer( normal , normal )
 
-                row = append(row,repeat(idofs,len(idofs)))
+                globdat.row = append(globdat.row,repeat(idofs,len(idofs)))
         
                 for i in range(len(idofs)):
-                    col=append(col,idofs)        
+                    globdat.col=append(globdat.col,idofs)        
 
-                val = append(val,mat.reshape(len(idofs)*len(idofs)))
-              
-        return row , val , col
+                globdat.val = append(globdat.val,mat.reshape(len(idofs)*len(idofs)))

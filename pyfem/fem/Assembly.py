@@ -114,7 +114,18 @@ def assembleArray(props: Properties, globdat: Any, rank: int, action: str) -> Tu
                 B[elemdat.el_dofs] += elemdat.lumped
 
     # Run any additional models (constraints, boundary conditions, etc.)
+
+    globdat.B = B
+    globdat.val = val
+    globdat.row = row
+    globdat.col = col
+
+    print("before ", B)
+
     globdat.models.run(props, globdat)
+
+    print("after ", B)
+
 
     # Return appropriate result based on assembly rank
     if rank == 1:

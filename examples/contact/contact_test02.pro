@@ -11,13 +11,13 @@ ContElem =
   };
 };
 
-contact =
+Contact =
 {
   type = "disc";
   
   radius    = 1.0;
   centre    = [ 8.0 , 1.4 ];
-  direction = [0.,-0.5];
+  direction = [0.,-0.001];
   penalty   = 1.0e6;
 };
 

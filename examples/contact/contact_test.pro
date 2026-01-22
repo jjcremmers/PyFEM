@@ -12,7 +12,7 @@ ContElem =
   };
 };
 
-contact =
+Contact =
 {
   type = "disc";
   
