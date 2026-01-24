@@ -84,9 +84,9 @@ class RVE( BaseModel ):
         5. Applies periodic constraints to all interior boundary nodes.
         """
         strain = np.zeros(3)
-        strain[0] = 0.01
+        strain[0] = 0.0
         strain[1] = 0.02
-        strain[2] = 0.02
+        strain[2] = 0.0
 
         if self.boundaryType == "Prescribed":
             self.applyPrescribedBC(strain, props, globdat)
@@ -94,6 +94,38 @@ class RVE( BaseModel ):
             self.applyPeriodicBC(strain, props, globdat)
         else:
             sys.exit("Error: boundaryType must be 'Periodic' or 'Prescribed'")
+
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+    def commit(self, props, globdat, mbuilder):
+        """
+        Finalize the current step (placeholder).
+
+        This method is called at the end of a load step or increment. It can be used to
+        update state variables, store results, or perform post-processing. Currently, it
+        only prints the internal force vector for debugging purposes.
+
+        Parameters
+        ----------
+        props : Properties
+            Model properties (currently unused).
+        globdat : GlobalData
+            Global data structure containing nodes, elements, and DOFs.
+        mbuilder : MatrixBuilder
+            MatrixBuilder instance (not used in this model, included for interface compatibility).
+        """
+        print(globdat.fint)
+
+        force = np.zeros(2)
+
+        for nodeTop in self.nodesTop:
+            dofIDs = globdat.dofs.get( nodeTop )
+
+            force += globdat.fint[dofIDs]
+
+        print(force)        
 
 #-------------------------------------------------------------------------------
 #
