@@ -1,11 +1,11 @@
 import unittest
 import numpy as np
-from pyfem.fem.Assembly import ModelBuilder
+from pyfem.fem.Assembly import MatrixBuilder
 
-class TestModelBuilder(unittest.TestCase):
+class TestMatrixBuilder(unittest.TestCase):
     def setUp(self):
         self.nDofs = 4
-        self.mb = ModelBuilder(self.nDofs)
+        self.mb = MatrixBuilder(self.nDofs)
 
     def test_initialization(self):
         self.assertEqual(self.mb.nDofs, self.nDofs)

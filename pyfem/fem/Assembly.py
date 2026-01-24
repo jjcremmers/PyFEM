@@ -15,7 +15,7 @@ from pyfem.util.dataStructures import elementData
 #-------------------------------------------------------------------------------
 
 
-class ModelBuilder:
+class MatrixBuilder:
     """
     Incrementally build sparse matrix data in COO format for finite element assembly.
     Also stores a global vector B and a scalar c for additional model data.
@@ -92,7 +92,7 @@ def assembleInternalForce(props: Properties, globdat: Any) -> NDArray[np.floatin
         np.ndarray: The assembled internal force vector.
     """
 
-    mbuilder = ModelBuilder(len(globdat.dofs))
+    mbuilder = MatrixBuilder(len(globdat.dofs))
 
     globdat.resetNodalOutput()
 
@@ -138,7 +138,7 @@ def assembleExternalForce(props: Properties, globdat: Any) -> NDArray[np.floatin
         the scaled load factor contribution (globdat.fhat * globdat.solverStatus.lam).
     """
 
-    mbuilder = ModelBuilder(len(globdat.dofs))
+    mbuilder = MatrixBuilder(len(globdat.dofs))
 
     globdat.resetNodalOutput()
 
@@ -182,7 +182,7 @@ def assembleDissipation(props: Properties, globdat: Any) -> Tuple[NDArray[np.flo
             - accumulated_dissipation: Total scalar dissipation from all elements
     """
 
-    mbuilder = ModelBuilder(len(globdat.dofs))
+    mbuilder = MatrixBuilder(len(globdat.dofs))
 
     globdat.resetNodalOutput()
 
@@ -228,7 +228,7 @@ def assembleTangentStiffness(props: Properties, globdat: Any) -> Tuple[coo_matri
             - residual_vector: Assembled internal force residual vector
     """
 
-    mbuilder = ModelBuilder(len(globdat.dofs))
+    mbuilder = MatrixBuilder(len(globdat.dofs))
 
     globdat.resetNodalOutput()
 
@@ -275,7 +275,7 @@ def assembleMassMatrix(props: Properties, globdat: Any) -> Tuple[coo_matrix, NDA
             - lumped_mass_vector: Assembled lumped mass vector (diagonal approximation)
     """
 
-    mbuilder = ModelBuilder(len(globdat.dofs))
+    mbuilder = MatrixBuilder(len(globdat.dofs))
 
     globdat.resetNodalOutput()
 
@@ -317,7 +317,7 @@ def commit(props: Properties, globdat: Any) -> None:
         globdat (Any): Global data/state object.
     """
 
-    mbuilder = ModelBuilder(len(globdat.dofs))
+    mbuilder = MatrixBuilder(len(globdat.dofs))
     
     for elementGroup in globdat.elements.iterGroupNames():
         el_props = getattr(props, elementGroup)

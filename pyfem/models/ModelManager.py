@@ -28,39 +28,44 @@ class ModelManager():
                 a supported model type, that model will be instantiated with those properties.
             globdat (Any): Global data structure containing nodes, elements, dofs, and state vectors.
         """
-        modelTypes = ["Contact", "RVE"]
-        self.models: List[BaseModel] = []
 
-        for modelType in modelTypes:
-            if hasattr(props, modelType):
-                modelProps = getattr(props, modelType)
-                modelProps.modelType = modelType
-                try:
-                    module = import_module(f"pyfem.models.{modelType}")
-                except ModuleNotFoundError as e:
-                    raise ImportError(
-                        f"Model module 'pyfem.models.{modelType}' not found. "
-                        f"Check the 'type' in your input file."
-                    ) from e
-                try:
-                    model_cls = getattr(module, modelType)
-                except AttributeError as e:
-                    raise ImportError(
-                        f"Class '{modelType}' not found in module 'pyfem.models.{modelType}'. "
-                        f"Ensure the class name matches the file name."
-                    ) from e
-                self.models.append(model_cls(modelProps, globdat))
+        self.modelss = []
+        self.models = props.models
 
-    def takeAction(self, action, mbuilder, props: Any, globdat: Any) -> None:
+        for model in self.models:
+            modelProps = getattr(props, model)
+            modelType  = modelProps.type
+
+            try:
+                mode = import_module(f"pyfem.models.{modelType}")
+            except ModuleNotFoundError as e:
+                raise ImportError(
+                    f"Model module 'pyfem.models.{modelType}' not found. "
+                    f"Check the 'type' in your input file."
+                ) from e
+            
+            try:
+                model_cls = getattr(mode, modelType)           
+            except AttributeError as e:
+                raise ImportError(
+                    f"Class '{modelType}' not found in module 'pyfem.materials.{modelType}'. "
+                    f"Ensure the class name matches the file name."
+                ) from e
+
+            self.modelss.append( model_cls(modelProps ,globdat ) )
+            
+    def takeAction(self, action: str, mbuilder, props: Any, globdat: Any) -> None:
         """
-        Execute all active models in sequence.
+        Execute the method named by the string 'action' on all active models, if it exists.
 
         Args:
-            action: Action to perform (currently ignored, for compatibility).
-            mbuilder: ModelBuilder instance (currently ignored, for compatibility).
-            props (Any): Global properties object passed to each model's run method.
+            action (str): Name of the method to call on each model (as a string).
+            mbuilder: MatrixBuilder instance to pass as argument.
+            props (Any): Global properties object passed to the model method.
             globdat (Any): Global data structure containing nodes, elements, dofs, and state vectors.
         """
         
-        for model in self.models:
-            model.run(props, globdat)
+        for model in self.modelss:
+            method = getattr(model, action, None)
+            if callable(method):
+                method(props, globdat, mbuilder)
