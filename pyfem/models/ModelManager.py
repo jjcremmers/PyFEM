@@ -28,14 +28,24 @@ class ModelManager():
                 a supported model type, that model will be instantiated with those properties.
             globdat (Any): Global data structure containing nodes, elements, dofs, and state vectors.
         """
-
         self.modelss = []
-        self.models = props.models
 
+        if hasattr(props, "models"):
+            self._getModels(props, globdat)
+
+    def _getModels(self, props: Any, globdat: Any) -> None:
+        """
+        Private method to load and instantiate models from props.models.
+
+        Args:
+            props (Any): Global properties object containing 'models' attribute.
+            globdat (Any): Global data/state object.
+        """
+
+        self.models = props.models
         for model in self.models:
             modelProps = getattr(props, model)
-            modelType  = modelProps.type
-
+            modelType = modelProps.type
             try:
                 mode = import_module(f"pyfem.models.{modelType}")
             except ModuleNotFoundError as e:
@@ -43,16 +53,14 @@ class ModelManager():
                     f"Model module 'pyfem.models.{modelType}' not found. "
                     f"Check the 'type' in your input file."
                 ) from e
-            
             try:
-                model_cls = getattr(mode, modelType)           
+                model_cls = getattr(mode, modelType)
             except AttributeError as e:
                 raise ImportError(
                     f"Class '{modelType}' not found in module 'pyfem.materials.{modelType}'. "
                     f"Ensure the class name matches the file name."
                 ) from e
-
-            self.modelss.append( model_cls(modelProps ,globdat ) )
+            self.modelss.append(model_cls(modelProps, globdat))
             
     def takeAction(self, action: str, mbuilder, props: Any, globdat: Any) -> None:
         """
@@ -64,7 +72,7 @@ class ModelManager():
             props (Any): Global properties object passed to the model method.
             globdat (Any): Global data structure containing nodes, elements, dofs, and state vectors.
         """
-        
+
         for model in self.modelss:
             method = getattr(model, action, None)
             if callable(method):

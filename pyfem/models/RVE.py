@@ -43,11 +43,11 @@ class RVE( BaseModel ):
    
         BaseModel.__init__( self , props , globdat )
 
-        if not hasattr( self , "type" ):
-            self.type = "Periodic"
+        if not hasattr( self , "boundaryType" ):
+            self.boundaryType = "Periodic"
 
-        if self.type not in [ "Periodic" , "Prescribed"]:
-            sys.exit("Error: RVE type must be 'Periodic' or 'Prescribed'")  
+        if self.boundaryType not in [ "Periodic" , "Prescribed"]:
+            sys.exit("Error: RVE boundaryType must be 'Periodic' or 'Prescribed'")  
                        
         self.getBoundaries( props , globdat )
 
@@ -57,8 +57,9 @@ class RVE( BaseModel ):
 #
 #------------------------------------------------------------------------------
 
-    def run( self , props , globdat ):
-        """Apply periodic boundary constraints based on prescribed macroscopic strain.
+    def getTangentStiffness(self, props, globdat, mbuilder):
+        """
+        Apply periodic boundary constraints based on prescribed macroscopic strain.
 
         This method applies displacement constraints to corner nodes and periodic
         constraints to boundary nodes to enforce a prescribed macroscopic strain state.
@@ -70,6 +71,8 @@ class RVE( BaseModel ):
             Model properties (currently unused).
         globdat : GlobalData
             Global data structure containing nodes, elements, and DOFs.
+        mbuilder : MatrixBuilder
+            MatrixBuilder instance (not used in this model, included for interface compatibility).
 
         Notes
         -----
@@ -80,19 +83,17 @@ class RVE( BaseModel ):
         4. Applies calculated displacements to the three other corner nodes.
         5. Applies periodic constraints to all interior boundary nodes.
         """
-    
         strain = np.zeros(3)
-
         strain[0] = 0.01
         strain[1] = 0.02
-        strain[2] = 0.02   
+        strain[2] = 0.02
 
-        if self.type == "Prescribed":
-            self.applyPrescribedBC( strain , props , globdat )
-        elif self.type == "Periodic":
-            self.applyPeriodicBC( strain , props , globdat )
+        if self.boundaryType == "Prescribed":
+            self.applyPrescribedBC(strain, props, globdat)
+        elif self.boundaryType == "Periodic":
+            self.applyPeriodicBC(strain, props, globdat)
         else:
-            sys.exit("Error: RVE type must be 'Periodic' or 'Prescribed'")
+            sys.exit("Error: boundaryType must be 'Periodic' or 'Prescribed'")
 
 #-------------------------------------------------------------------------------
 #

@@ -12,9 +12,11 @@ ContElem =
   };
 };
 
-RVE =
+models = ["rve"];
+
+rve =
 {
-  type = "Prescribed";
+  type = "RVE";
 };
 
 solver =
