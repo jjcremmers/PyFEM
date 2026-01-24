@@ -57,7 +57,7 @@ class RVE( BaseModel ):
 #
 #------------------------------------------------------------------------------
 
-    def getTangentStiffness(self, props, globdat, mbuilder):
+    def prepare(self, props, globdat, mbuilder):
         """
         Apply periodic boundary constraints based on prescribed macroscopic strain.
 

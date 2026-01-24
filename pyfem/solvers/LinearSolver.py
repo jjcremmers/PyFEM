@@ -4,7 +4,8 @@
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
-from pyfem.fem.Assembly import assembleInternalForce, assembleExternalForce, assembleTangentStiffness, commit
+from pyfem.fem.Assembly import assembleInternalForce, assembleExternalForce
+from pyfem.fem.Assembly import assembleTangentStiffness, prepare, commit
 
 #-------------------------------------------------------------------------------
 #
@@ -27,6 +28,8 @@ class LinearSolver ( BaseModule ):
     self.writeHeader() 
 
     globdat.solverStatus.increaseStep()
+
+    prepare( props , globdat )
       
     K,fint = assembleTangentStiffness( props, globdat )
     fext   = assembleExternalForce   ( props, globdat )

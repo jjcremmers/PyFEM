@@ -6,6 +6,9 @@ from typing import Any, List
 from importlib import import_module
 from pyfem.models.BaseModel import BaseModel
 
+from pyfem.util.logger import getLogger, separator, logVariable
+
+logger = getLogger()
 
 class ModelManager():
     """
@@ -32,7 +35,7 @@ class ModelManager():
 
         if hasattr(props, "models"):
             self._getModels(props, globdat)
-
+        
     def _getModels(self, props: Any, globdat: Any) -> None:
         """
         Private method to load and instantiate models from props.models.
@@ -61,6 +64,14 @@ class ModelManager():
                     f"Ensure the class name matches the file name."
                 ) from e
             self.modelss.append(model_cls(modelProps, globdat))
+
+        separator("=")
+        logger.info("Reading models")
+
+        for model in self.models:
+            logger.info(f"  {model}")      
+
+        separator("=")
             
     def takeAction(self, action: str, mbuilder, props: Any, globdat: Any) -> None:
         """

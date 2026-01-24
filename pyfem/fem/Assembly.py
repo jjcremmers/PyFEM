@@ -73,6 +73,30 @@ class MatrixBuilder:
 
 
 #-------------------------------------------------------------------------------
+#  Prepare
+#-------------------------------------------------------------------------------
+
+
+def prepare(props: Properties, globdat: Any) -> None:
+    """
+    Commit element states by calling the element 'commit' method.
+
+    This function is called after a successful time step or load step to
+    finalize and store the current element states (e.g., history variables,
+    plastic strains, damage parameters).
+
+    Args:
+        props (Properties): Global properties container.
+        globdat (Any): Global data/state object.
+    """
+
+    mbuilder = MatrixBuilder(len(globdat.dofs))
+    
+    globdat.models.takeAction( "prepare" , mbuilder , props , globdat )
+
+    return None
+
+#-------------------------------------------------------------------------------
 #  Assemble Internal force
 #-------------------------------------------------------------------------------
 

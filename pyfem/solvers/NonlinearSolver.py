@@ -5,7 +5,7 @@ from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness
-from pyfem.fem.Assembly import assembleExternalForce
+from pyfem.fem.Assembly import assembleExternalForce, prepare, commit
 from math import sin,cos,exp
 
 import sys
@@ -67,6 +67,8 @@ class NonlinearSolver( BaseModule ):
     fint  = zeros( dofCount ) 
         
     self.setLoadAndConstraints( globdat )
+
+    prepare( props , globdat )
     
     K,fint = assembleTangentStiffness( props, globdat )
 
@@ -118,6 +120,8 @@ class NonlinearSolver( BaseModule ):
     Da[:]  = zeros( len(globdat.dofs) )
 
     globdat.fint = fint
+
+    commit ( props , globdat )
     
     if stat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
