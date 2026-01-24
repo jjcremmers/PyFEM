@@ -51,8 +51,8 @@ class SmallStrainContinuum( Element ):
 
       self.appendNodalOutput( self.mat.outLabels() , self.mat.outData() )
       
-      import numpy as np
-      self.appendElementOutput( ["A","B"] , (self.iElm+1)*np.array([6,7]) )
+      #import numpy as np
+      #self.appendElementOutput( ["A","B"] , (self.iElm+1)*np.array([6,7]) )
      
 #-------------------------------------------------------------------------
 

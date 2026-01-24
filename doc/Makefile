@@ -16,7 +16,8 @@ help:
 
 # Auto-generate API documentation from source code
 apidoc:
-	sphinx-apidoc -f -e -M -o . ../pyfem
+	mkdir -p _api
+	sphinx-apidoc -f -e -M -o _api ../pyfem
 	@echo "API documentation generated. Run 'make html' to build."
 
 # Catch-all target: route all unknown targets to Sphinx using the new
