@@ -17,6 +17,7 @@ models = ["rve"];
 rve =
 {
   type = "RVE";
+  boundaryType = "Prescribed";
   unitStrain = [0.034,0.15,0.01];
 };
 
@@ -25,9 +26,17 @@ solver =
   type = "LinearSolver";
 };
 
-outputModules = ["vtk"];
+outputModules = ["vtk","graph"];
 
 vtk =
 {
   type = "MeshWriter";
 };
+
+graph =
+
+{
+  type = "GraphWriter";
+
+
+}

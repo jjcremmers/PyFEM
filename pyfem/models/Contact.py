@@ -50,16 +50,16 @@ class Contact(BaseModel):
 #-------------------------------------------------------------------------------
 
 
-    def getTangentStiffness(self, props: object, globdat: object, mbuilder: object) -> None:
+    def getTangentStiffness(self, props: object, globdat: object ) -> None:
         """
         Compute and assemble the contact tangent stiffness matrix contribution.
 
         Args:
             props: Global properties object.
             globdat: Global data/state object.
-            mbuilder: MatrixBuilder instance for assembly.
         """
-        print("Contact getTangentStiffness")
+        mbuilder = globdat.mbuilder
+
         centre = self.centre + globdat.lam * self.direction
         for nodeID in list(globdat.nodes.keys()):
             crd = globdat.nodes.getNodeCoords(nodeID)

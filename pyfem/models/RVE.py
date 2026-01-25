@@ -48,7 +48,16 @@ class RVE( BaseModel ):
 
         if self.boundaryType not in [ "Periodic" , "Prescribed"]:
             sys.exit("Error: RVE boundaryType must be 'Periodic' or 'Prescribed'")  
-                       
+
+        if not hasattr( self , "unitStrain" ):
+            raise ValueError("Illegal input: RVE requires 'unitStrain' to be defined.")
+
+        if len(self.unitStrain) != 3:
+            raise ValueError("Illegal input: RVE 'unitStrain' must be a vector of length 3.")
+        
+        self.unitStrain = np.array( self.unitStrain )
+        self.stress = np.zeros(3)
+
         self.getBoundaries( props , globdat )
 
         globdat.dofs.createConstrainer()   
@@ -57,7 +66,7 @@ class RVE( BaseModel ):
 #
 #------------------------------------------------------------------------------
 
-    def prepare(self, props, globdat, mbuilder):
+    def prepare(self, props, globdat ):
         """
         Apply periodic boundary constraints based on prescribed macroscopic strain.
 
@@ -71,8 +80,6 @@ class RVE( BaseModel ):
             Model properties (currently unused).
         globdat : GlobalData
             Global data structure containing nodes, elements, and DOFs.
-        mbuilder : MatrixBuilder
-            MatrixBuilder instance (not used in this model, included for interface compatibility).
 
         Notes
         -----
@@ -83,15 +90,13 @@ class RVE( BaseModel ):
         4. Applies calculated displacements to the three other corner nodes.
         5. Applies periodic constraints to all interior boundary nodes.
         """
-        strain = np.zeros(3)
-        strain[0] = 0.0
-        strain[1] = 0.02
-        strain[2] = 0.0
+
+        self.strain =  self.unitStrain * globdat.solverStatus.lam
 
         if self.boundaryType == "Prescribed":
-            self.applyPrescribedBC(strain, props, globdat)
+            self.applyPrescribedBC( globdat )
         elif self.boundaryType == "Periodic":
-            self.applyPeriodicBC(strain, props, globdat)
+            self.applyPeriodicBC( globdat )
         else:
             sys.exit("Error: boundaryType must be 'Periodic' or 'Prescribed'")
 
@@ -99,7 +104,7 @@ class RVE( BaseModel ):
 #
 #-------------------------------------------------------------------------------
 
-    def commit(self, props, globdat, mbuilder):
+    def commit(self, props, globdat ):
         """
         Finalize the current step (placeholder).
 
@@ -113,19 +118,54 @@ class RVE( BaseModel ):
             Model properties (currently unused).
         globdat : GlobalData
             Global data structure containing nodes, elements, and DOFs.
-        mbuilder : MatrixBuilder
-            MatrixBuilder instance (not used in this model, included for interface compatibility).
         """
-        print(globdat.fint)
+
+        self._calculateResultant(globdat)
+        self._report(globdat)
+
+#-----------------
+#
+#----------------------
+
+    def _calculateResultant(self, globdat: object) -> None:
+        """
+        Calculate and update the macroscopic stress components from nodal forces.
+
+        This method computes the resultant forces on the right and top boundaries
+        and updates the stress vector (Voigt notation: [σ_xx, σ_yy, σ_xy]) for the RVE.
+
+        Parameters
+        ----------
+        globdat : object
+            Global data structure containing nodal forces and DOF mappings.
+        """
+        force = np.zeros(2)
+        for nodeRight in self.nodesRight:
+            dofIDs = globdat.dofs.get(nodeRight)
+            force += globdat.fint[dofIDs]
+        self.stress[0] = force[0] / self.dy
 
         force = np.zeros(2)
-
         for nodeTop in self.nodesTop:
-            dofIDs = globdat.dofs.get( nodeTop )
-
+            dofIDs = globdat.dofs.get(nodeTop)
             force += globdat.fint[dofIDs]
+        self.stress[1] = force[1] / self.dx
+        self.stress[2] = force[0] / self.dy
 
-        print(force)        
+#----------------
+# 
+#         ----------------
+
+    def _report( self , globdat ):
+
+        globdat.equivStress = self.stress
+        globdat.equivStrain = self.strain
+        
+        logger.info("RVE")
+        logger.info(f" Stress....: {self.stress[0]:6.3e}, {self.stress[1]:6.3e}, {self.stress[2]:6.3e}")
+        logger.info(f" Strain....: {self.strain[0]:6.3e}, {self.strain[1]:6.3e}, {self.strain[2]:6.3e}")
+        logger.info("==================================")
+    
 
 #-------------------------------------------------------------------------------
 #
@@ -237,7 +277,7 @@ class RVE( BaseModel ):
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
-    def applyPeriodicBC(self, strain: np.ndarray, props, globdat) -> None:
+    def applyPeriodicBC(self, globdat) -> None:
         
         """Apply periodic boundary constraints for prescribed macroscopic strain.
 
@@ -271,13 +311,13 @@ class RVE( BaseModel ):
         u12 = np.zeros(2)
         u14 = np.zeros(2)
 
-        u12[0] =      self.dx * strain[0]
-        u12[1] = 0.5* self.dx * strain[2] 
+        u12[0] =      self.dx * self.strain[0]
+        u12[1] = 0.5* self.dx * self.strain[2] 
 
-        u14[0] = 0.5* self.dy * strain[2]  
-        u14[1] =      self.dy * strain[1]
+        u14[0] = 0.5* self.dy * self.strain[2]  
+        u14[1] =      self.dy * self.strain[1]
 
-         # Constrain node 1 (left bottom corner)
+        # Constrain node 1 (left bottom corner)
         
         dofIDs = globdat.dofs.get( [self.nodesLeft[0]] )
         for i in dofIDs:
@@ -322,7 +362,7 @@ class RVE( BaseModel ):
 #-------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------
 
-    def applyPrescribedBC(self, strain: np.ndarray, props, globdat) -> None:
+    def applyPrescribedBC(self, globdat) -> None:
 
         """Apply prescribed displacement boundary conditions for uniform strain.
 
@@ -361,8 +401,8 @@ class RVE( BaseModel ):
         for nodeID,crd in zip(allBoundaryNodes,crds):
             dofIDs = globdat.dofs.get( [nodeID] )
 
-            uX = strain[0]*crd[0] + 0.5*strain[2]*crd[1]
-            uY = strain[1]*crd[1] + 0.5*strain[2]*crd[0]
+            uX = self.strain[0]*crd[0] + 0.5*self.strain[2]*crd[1]
+            uY = self.strain[1]*crd[1] + 0.5*self.strain[2]*crd[0]
 
             globdat.dofs.cons.addConstraint( dofIDs[0] , uX , "main" )
             globdat.dofs.cons.addConstraint( dofIDs[1] , uY , "main" )

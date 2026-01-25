@@ -89,14 +89,21 @@ class GraphWriter(BaseModule):
                 data = globdat.getData(col.type, col.node)
                 
             elif hasattr(globdat, col.type):
+                print(col.type)
                 b = getattr(globdat, col.type)
+                print(b)
                 if type(b) is ndarray:
-                    if type(col.node) is list:
-                        data = 0.0
-                        for nod in col.node:
-                            data += b[globdat.dofs.getForType(int(nod), col.dof)]
+                    if hasattr(col,"node"):
+                        if type(col.node) is list:
+                            data = 0.0
+                            for nod in col.node:
+                                data += b[globdat.dofs.getForType(int(nod), col.dof)]
+                        else:
+                            data = b[globdat.dofs.getForType(col.node, col.dof)]
+                    if hasattr(col,"comp"):
+                        data = b[col.comp]
                     else:
-                        data = b[globdat.dofs.getForType(col.node, col.dof)]
+                        data =b
                 else:
                     data = b
                     
@@ -114,9 +121,9 @@ class GraphWriter(BaseModule):
             a.append(data)
         
             self.outfile.write(str(data) + ' ',)
-            self.outfile.flush()
 
-        self.outfile.write('\\n')
+        self.outfile.write('\n')
+        self.outfile.flush()
 
         if self.onScreen:
             self.output.append(a)

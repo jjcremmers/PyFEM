@@ -90,9 +90,7 @@ def prepare(props: Properties, globdat: Any) -> None:
         globdat (Any): Global data/state object.
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-    
-    globdat.models.takeAction( "prepare" , mbuilder , props , globdat )
+    globdat.models.takeAction( "prepare" , props , globdat )
 
     return None
 
@@ -116,27 +114,24 @@ def assembleInternalForce(props: Properties, globdat: Any) -> NDArray[np.floatin
         np.ndarray: The assembled internal force vector.
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-
+    globdat.mbuilder = MatrixBuilder(len(globdat.dofs))
     globdat.resetNodalOutput()
 
     for elementGroup in globdat.elements.iterGroupNames():
         el_props = getattr(props, elementGroup)
-
         for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
             elemdat = getElementData(iElm, element, el_props, globdat)
 
             if hasattr(element, "mat"):
                 element.mat.reset()
-
             if hasattr(element, "getInternalForce"):
                 element.getInternalForce(elemdat)
 
-            mbuilder.B[elemdat.el_dofs] += elemdat.fint
+            globdat.mbuilder.B[elemdat.el_dofs] += elemdat.fint
 
-    globdat.models.takeAction( "getInternalForce" , mbuilder , props , globdat )
+    globdat.models.takeAction( "getInternalForce" , props , globdat )
 
-    return mbuilder.B
+    return globdat.mbuilder.B
 
 
 #-------------------------------------------------------------------------------
@@ -162,27 +157,24 @@ def assembleExternalForce(props: Properties, globdat: Any) -> NDArray[np.floatin
         the scaled load factor contribution (globdat.fhat * globdat.solverStatus.lam).
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-
+    globdat.mbuilder = MatrixBuilder(len(globdat.dofs))
     globdat.resetNodalOutput()
 
     for elementGroup in globdat.elements.iterGroupNames():
         el_props = getattr(props, elementGroup)
-
         for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
             elemdat = getElementData(iElm, element, el_props, globdat)
 
             if hasattr(element, "mat"):
                 element.mat.reset()
-
             if hasattr(element, "getExternalForce"):
                 element.getExternalForce(elemdat)
 
-            mbuilder.B[elemdat.el_dofs] += elemdat.fint
+            globdat.mbuilder.B[elemdat.el_dofs] += elemdat.fint
 
-    globdat.models.takeAction( "getExternalForce" , mbuilder , props , globdat )
+    globdat.models.takeAction( "getExternalForce" , props , globdat )
 
-    return mbuilder.B + globdat.fhat * globdat.solverStatus.lam
+    return globdat.mbuilder.B + globdat.fhat * globdat.solverStatus.lam
 
 
 #-------------------------------------------------------------------------------
@@ -206,28 +198,25 @@ def assembleDissipation(props: Properties, globdat: Any) -> Tuple[NDArray[np.flo
             - accumulated_dissipation: Total scalar dissipation from all elements
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-
+    globdat.mbuilder = MatrixBuilder(len(globdat.dofs))
     globdat.resetNodalOutput()
 
     for elementGroup in globdat.elements.iterGroupNames():
         el_props = getattr(props, elementGroup)
-
         for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
             elemdat = getElementData(iElm, element, el_props, globdat)
 
             if hasattr(element, "mat"):
                 element.mat.reset()
-
             if hasattr(element, "getDissipation"):
                 element.getDissipation(elemdat)
 
-            mbuilder.B[elemdat.el_dofs] += elemdat.fint
-            mbuilder.c += elemdat.diss
+            globdat.mbuilder.B[elemdat.el_dofs] += elemdat.fint
+            globdat.mbuilder.c += elemdat.diss
 
-    globdat.models.takeAction( "getDissipation" , mbuilder , props , globdat )
+    globdat.models.takeAction( "getDissipation" , props , globdat )
 
-    return mbuilder.B, mbuilder.c
+    return globdat.mbuilder.B, globdat.mbuilder.c
  
  
 #-------------------------------------------------------------------------------
@@ -252,29 +241,25 @@ def assembleTangentStiffness(props: Properties, globdat: Any) -> Tuple[coo_matri
             - residual_vector: Assembled internal force residual vector
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-
+    globdat.mbuilder = MatrixBuilder(len(globdat.dofs))
     globdat.resetNodalOutput()
 
     for elementGroup in globdat.elements.iterGroupNames():
         el_props = getattr(props, elementGroup)
-
         for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
             elemdat = getElementData(iElm, element, el_props, globdat)
- 
+
             if hasattr(element, "mat"):
                 element.mat.reset()
-
             if hasattr(element, "getTangentStiffness"):
                 element.getTangentStiffness(elemdat)
 
-            mbuilder.append(elemdat.stiff, elemdat.el_dofs)
+            globdat.mbuilder.append(elemdat.stiff, elemdat.el_dofs)
+            globdat.mbuilder.B[elemdat.el_dofs] += elemdat.fint
 
-            mbuilder.B[elemdat.el_dofs] += elemdat.fint
-    
-    globdat.models.takeAction( "getTangentStiffness" , mbuilder , props , globdat )
+    globdat.models.takeAction( "getTangentStiffness" , props , globdat )
 
-    return mbuilder.getMatrix(), mbuilder.B
+    return globdat.mbuilder.getMatrix(), globdat.mbuilder.B
 
 
 #-------------------------------------------------------------------------------
@@ -299,29 +284,25 @@ def assembleMassMatrix(props: Properties, globdat: Any) -> Tuple[coo_matrix, NDA
             - lumped_mass_vector: Assembled lumped mass vector (diagonal approximation)
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-
+    globdat.mbuilder = MatrixBuilder(len(globdat.dofs))
     globdat.resetNodalOutput()
 
     for elementGroup in globdat.elements.iterGroupNames():
-        el_props = getattr(props, elementGroup)
-
+        el_props = getattr(props, elementGroup)    
         for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
             elemdat = getElementData(iElm, element, el_props, globdat)
 
             if hasattr(element, "mat"):
                 element.mat.reset()
-
             if hasattr(element, "getMassMatrix"):
                 element.getMassMatrix(elemdat)
 
-            mbuilder.append(elemdat.mass, elemdat.el_dofs)
+            globdat.mbuilder.append(elemdat.mass, elemdat.el_dofs)
+            globdat.mbuilder.B[elemdat.el_dofs] += elemdat.lumped
 
-            mbuilder.B[elemdat.el_dofs] += elemdat.lumped
-    
-    globdat.models.takeAction( "getMassMatrix" , mbuilder , props , globdat )
+    globdat.models.takeAction( "getMassMatrix" , props , globdat )
 
-    return mbuilder.getMatrix(), mbuilder.B
+    return globdat.mbuilder.getMatrix(), globdat.mbuilder.B
 
 #-------------------------------------------------------------------------------
 #  Commit
@@ -341,21 +322,17 @@ def commit(props: Properties, globdat: Any) -> None:
         globdat (Any): Global data/state object.
     """
 
-    mbuilder = MatrixBuilder(len(globdat.dofs))
-    
     for elementGroup in globdat.elements.iterGroupNames():
         el_props = getattr(props, elementGroup)
-
         for iElm, element in enumerate(globdat.elements.iterElementGroup(elementGroup)):
             elemdat = getElementData(iElm, element, el_props, globdat)
 
             if hasattr(element, "mat"):
                 element.mat.reset()
-
             if hasattr(element, "commit"):
                 element.commit(elemdat)
 
-    globdat.models.takeAction( "commit" , mbuilder , props , globdat )
+    globdat.models.takeAction( "commit" , props , globdat )
 
     return None
 
