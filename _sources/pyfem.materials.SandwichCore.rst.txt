@@ -1,0 +1,7 @@
+pyfem.materials.SandwichCore module
+===================================
+
+.. automodule:: pyfem.materials.SandwichCore
+   :members:
+   :show-inheritance:
+   :undoc-members:

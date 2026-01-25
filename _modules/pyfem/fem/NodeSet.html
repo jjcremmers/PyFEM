@@ -1,0 +1,590 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.fem.NodeSet &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.fem.NodeSet</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.fem.NodeSet</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.itemList</span> <span class="kn">import</span> <span class="n">itemList</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.fileParser</span> <span class="kn">import</span> <span class="n">getType</span>
+<span class="kn">import</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">pyfem.util.logger</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">logVariable</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">()</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet">[docs]</a>
+<span class="k">class</span> <span class="nc">NodeSet</span><span class="p">(</span><span class="n">itemList</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for nodes and node groups.</span>
+
+<span class="sd">    Inherits from itemList to store nodal coordinates indexed by node ID.</span>
+<span class="sd">    Maintains nodal coordinates, spatial dimensionality (`rank`), and named</span>
+<span class="sd">    groupings read from legacy `.pro` files or Gmsh meshes. Provides convenience</span>
+<span class="sd">    methods for retrieving coordinates and iterating group contents.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    rank : int</span>
+<span class="sd">        Spatial dimension of the mesh (2 for 2D, 3 for 3D). Initialized to -1</span>
+<span class="sd">        and set automatically when first node is added.</span>
+<span class="sd">    groups : Dict[str, List[int]]</span>
+<span class="sd">        Dictionary mapping group names to lists of node IDs. Groups are typically</span>
+<span class="sd">        used to define boundary conditions (e.g., &#39;Left&#39;, &#39;Right&#39;, &#39;Top&#39;, &#39;Bottom&#39;).</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The NodeSet class extends itemList, inheriting methods like add(), get(),</span>
+<span class="sd">    and __len__(). Node coordinates are stored internally and can be retrieved</span>
+<span class="sd">    via getNodeCoords().</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; nodes = NodeSet()</span>
+<span class="sd">    &gt;&gt;&gt; nodes.add(0, [0.0, 0.0])      # Add node 0 at origin</span>
+<span class="sd">    &gt;&gt;&gt; nodes.add(1, [1.0, 0.0])      # Add node 1 at (1, 0)</span>
+<span class="sd">    &gt;&gt;&gt; nodes.addToGroup(&#39;Bottom&#39;, 0)</span>
+<span class="sd">    &gt;&gt;&gt; nodes.addToGroup(&#39;Bottom&#39;, 1)</span>
+<span class="sd">    &gt;&gt;&gt; coords = nodes.getNodeCoords(&#39;Bottom&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an empty NodeSet with undefined rank and no groups.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet.getNodeCoords">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.getNodeCoords">[docs]</a>
+    <span class="k">def</span> <span class="nf">getNodeCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodeIDs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">array</span><span class="p">:</span>
+<span class="w">      </span><span class="sd">&quot;&quot;&quot;Return coordinates for one or more nodes as a NumPy array.</span>
+
+<span class="sd">      Parameters</span>
+<span class="sd">      ----------</span>
+<span class="sd">      nodeIDs : Union[int, List[int], str]</span>
+<span class="sd">        Single node ID (int), list of node IDs (list), or node group name (str).</span>
+<span class="sd">        When a string is provided, it references a node group defined in the model.</span>
+
+<span class="sd">      Returns</span>
+<span class="sd">      -------</span>
+<span class="sd">      numpy.array</span>
+<span class="sd">        Array containing nodal coordinates. For a single node, returns a 1D array</span>
+<span class="sd">        of shape (rank,). For multiple nodes, returns a 2D array of shape (n, rank)</span>
+<span class="sd">        where n is the number of nodes and rank is the spatial dimension.</span>
+
+<span class="sd">      Examples</span>
+<span class="sd">      --------</span>
+<span class="sd">      &gt;&gt;&gt; nodes.getNodeCoords(5)           # Single node</span>
+<span class="sd">      array([1.0, 2.0, 0.0])</span>
+<span class="sd">      </span>
+<span class="sd">      &gt;&gt;&gt; nodes.getNodeCoords([1, 2, 3])   # Multiple nodes</span>
+<span class="sd">      array([[0.0, 0.0, 0.0],</span>
+<span class="sd">             [1.0, 0.0, 0.0],</span>
+<span class="sd">             [2.0, 0.0, 0.0]])</span>
+<span class="sd">      </span>
+<span class="sd">      &gt;&gt;&gt; nodes.getNodeCoords(&#39;Left&#39;)      # Node group</span>
+<span class="sd">      array([[0.0, 0.0, 0.0],</span>
+<span class="sd">             [0.0, 1.0, 0.0]])</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">nodeIDs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nodeIDs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">nodeIDs</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node group &#39;</span><span class="si">{</span><span class="n">nodeIDs</span><span class="si">}</span><span class="s2">&#39; not found.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+      <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nodeIDs</span><span class="p">))</span></div>
+
+    
+<span class="c1">#</span>
+<span class="c1"># </span>
+<span class="c1">#     </span>
+
+<div class="viewcode-block" id="NodeSet.getNodeIDs">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.getNodeIDs">[docs]</a>
+    <span class="k">def</span> <span class="nf">getNodeIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupName</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of node IDs in the specified group.</span>
+<span class="sd">    </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        groupName : str</span>
+<span class="sd">            Name of the node group.</span>
+<span class="sd">    </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[int]</span>
+<span class="sd">            List of node IDs in the specified group.</span>
+<span class="sd">    </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; nodes.getNodeIDs(&#39;Left&#39;)</span>
+<span class="sd">        [0, 1, 2]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">groupName</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node group &#39;</span><span class="si">{</span><span class="n">groupName</span><span class="si">}</span><span class="s2">&#39; not found.&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+    
+<div class="viewcode-block" id="NodeSet.readFromFile">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.readFromFile">[docs]</a>
+    <span class="k">def</span> <span class="nf">readFromFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read nodes and groups from legacy `.pro` file format.</span>
+
+<span class="sd">        Parses the input file twice: first pass reads nodal coordinates from</span>
+<span class="sd">        &lt;Nodes&gt; blocks or references external Gmsh files; second pass reads</span>
+<span class="sd">        &lt;NodeGroup&gt; definitions. Duplicate nodes in groups are automatically</span>
+<span class="sd">        removed.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : str</span>
+<span class="sd">            Path to input file (.pro format or referencing a Gmsh file).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Supported file formats:</span>
+<span class="sd">        1. Native .pro format with &lt;Nodes&gt; and &lt;NodeGroup&gt; blocks</span>
+<span class="sd">        2. Gmsh reference: line containing &#39;gmsh = &quot;filename.msh&quot;&#39;</span>
+
+<span class="sd">        The file is parsed line by line. Comments and whitespace are handled.</span>
+<span class="sd">        Node groups are deduplicated after reading.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading nodes&quot;</span><span class="p">)</span>
+        <span class="n">separator</span><span class="p">()</span>
+
+        <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;Nodes&gt;&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readNodalCoords</span><span class="p">(</span><span class="n">fin</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gmsh&#39;</span><span class="p">):</span>
+                <span class="n">ln</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">ln</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readGmshFile</span><span class="p">(</span><span class="n">ln</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">break</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;NodeGroup&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">readNodegroup</span><span class="p">(</span><span class="n">fin</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">key</span><span class="p">]))</span>
+
+        <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logInfo</span><span class="p">()</span>
+
+        <span class="n">separator</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span></div>
+
+              
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet.readGmshFile">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.readGmshFile">[docs]</a>
+    <span class="k">def</span> <span class="nf">readGmshFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read nodes and groups from a Gmsh mesh file.</span>
+
+<span class="sd">        Uses meshio to parse Gmsh format and extract nodes and physical groups.</span>
+<span class="sd">        Automatically detects spatial dimension (2D/3D) based on element types.</span>
+<span class="sd">        Physical groups from Gmsh become node groups in PyFEM.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : str</span>
+<span class="sd">            Path to the Gmsh file (.msh format, versions 2 or 4).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        3D element detection:</span>
+<span class="sd">        - Checks for prisms, pyramids, hexahedra, wedges, and tetrahedra</span>
+<span class="sd">        - Sets rank=3 if any 3D elements found, otherwise rank=2</span>
+
+<span class="sd">        Node groups are populated from Gmsh&#39;s cell_sets_dict, with</span>
+<span class="sd">        &#39;gmsh:bounding_entities&#39; excluded. All nodes in elements belonging</span>
+<span class="sd">        to a physical group are added to the corresponding PyFEM group.</span>
+
+<span class="sd">        Requires:</span>
+<span class="sd">        - meshio package for reading Gmsh files</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">import</span> <span class="nn">meshio</span>
+
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">meshio</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;gmsh&quot;</span><span class="p">)</span>
+
+        <span class="n">obj3d</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pris&quot;</span><span class="p">,</span> <span class="s2">&quot;pyra&quot;</span><span class="p">,</span> <span class="s2">&quot;hexa&quot;</span><span class="p">,</span> <span class="s2">&quot;wedg&quot;</span><span class="p">,</span> <span class="s2">&quot;tetr&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">typ</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="ow">in</span> <span class="n">obj3d</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="k">for</span> <span class="n">nodeID</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">points</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span> <span class="n">p</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;gmsh:bounding_entities&quot;</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">typ</span><span class="p">]:</span>
+                        <span class="n">iNodes</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cells_dict</span><span class="p">[</span><span class="n">typ</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">iNodes</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">nodeID</span><span class="p">)</span></div>
+
+  
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet.addToGroup">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.addToGroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">addToGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modelType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ID</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">      </span><span class="sd">&quot;&quot;&quot;Register a node ID to a named group.</span>
+
+<span class="sd">      Creates the group if it doesn&#39;t exist, otherwise appends the node to</span>
+<span class="sd">      the existing group. String node IDs are automatically converted to integers.</span>
+
+<span class="sd">      Parameters</span>
+<span class="sd">      ----------</span>
+<span class="sd">      modelType : str</span>
+<span class="sd">        Name of the node group (e.g., &#39;Left&#39;, &#39;Right&#39;, &#39;Bottom&#39;, &#39;Top&#39;).</span>
+<span class="sd">      ID : Union[int, str]</span>
+<span class="sd">        Node identifier. String values are converted to int.</span>
+
+<span class="sd">      Examples</span>
+<span class="sd">      --------</span>
+<span class="sd">      &gt;&gt;&gt; nodes.addToGroup(&#39;Boundary&#39;, 5)</span>
+<span class="sd">      &gt;&gt;&gt; nodes.addToGroup(&#39;Boundary&#39;, &#39;10&#39;)  # String converted to int</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+
+      <span class="k">if</span> <span class="n">modelType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">modelType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">ID</span><span class="p">)]</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">modelType</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ID</span><span class="p">))</span></div>
+
+      
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return human-readable summary of node and group counts.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Formatted string showing total node count and, if groups exist,</span>
+<span class="sd">            a table of group names with their respective node counts.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; print(nodes)</span>
+<span class="sd">          Number of nodes ............ 100</span>
+<span class="sd">            Number of  groups .......... 4</span>
+<span class="sd">            -----------------------------------</span>
+<span class="sd">              name                       #nodes</span>
+<span class="sd">              ---------------------------------</span>
+<span class="sd">              Left                            25</span>
+<span class="sd">              Right                           25</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;  Number of nodes ............ </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;    Number of  groups .......... </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;    -----------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;      name                       #nodes</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;      ---------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;      </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;16s</span><span class="si">}</span><span class="s2">           </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">msg</span>
+    
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet.logInfo">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.logInfo">[docs]</a>
+    <span class="k">def</span> <span class="nf">logInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log node and group information using the logger.</span>
+<span class="sd">        </span>
+<span class="sd">        Outputs the same information as __repr__ but using the logger,</span>
+<span class="sd">        with properly formatted output for number of nodes and groups.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; nodes.logInfo()</span>
+<span class="sd">        # Logs:</span>
+<span class="sd">        # Number of nodes ................. : 100</span>
+<span class="sd">        # Number of groups ................ : 4</span>
+<span class="sd">        # Group table with names and counts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logVariable</span><span class="p">(</span><span class="s2">&quot;Number of nodes&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logVariable</span><span class="p">(</span><span class="s2">&quot;Number of groups&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;    -----------------------------------&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;      name                       #nodes&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;      ---------------------------------&quot;</span><span class="p">)</span>
+            
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;      </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;16s</span><span class="si">}</span><span class="s2">           </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet.readNodalCoords">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.readNodalCoords">[docs]</a>
+    <span class="k">def</span> <span class="nf">readNodalCoords</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fin</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read nodal coordinates from an open file stream.</span>
+
+<span class="sd">        Parses node definitions from a &lt;Nodes&gt; block until &lt;/Nodes&gt; is encountered.</span>
+<span class="sd">        Each line should contain: nodeID x [y [z]] with semicolon separators.</span>
+<span class="sd">        Comments starting with // or # are ignored. Spatial dimension (rank)</span>
+<span class="sd">        is inferred from the first valid node entry.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fin : TextIO</span>
+<span class="sd">            Open file handle positioned at the start of the `&lt;Nodes&gt;` block.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Format:</span>
+<span class="sd">        - Multiple nodes per line separated by semicolons</span>
+<span class="sd">        - Format: nodeID x y [z];</span>
+<span class="sd">        - Whitespace is normalized before parsing</span>
+<span class="sd">        - Comments (// or #) are skipped</span>
+<span class="sd">        - rank is set from first node (2D or 3D)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;/Nodes&gt;&#39;</span><span class="p">):</span>
+                <span class="k">return</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="p">[</span><span class="nb">eval</span><span class="p">(</span><span class="n">crd</span><span class="p">)</span> <span class="k">for</span> <span class="n">crd</span> <span class="ow">in</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">:]])</span></div>
+
+          
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NodeSet.readNodegroup">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.readNodegroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">readNodegroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fin</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read a node group from an open file stream.</span>
+
+<span class="sd">        Parses node IDs from a &lt;NodeGroup&gt; block until &lt;/NodeGroup&gt; is encountered.</span>
+<span class="sd">        Node IDs are whitespace-separated integers. All valid integers found are</span>
+<span class="sd">        added to the specified group.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fin : TextIO</span>
+<span class="sd">            Open file handle positioned at the start of a `&lt;NodeGroup&gt;` block.</span>
+<span class="sd">        key : str</span>
+<span class="sd">            Group name label to assign these nodes to.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Format:</span>
+<span class="sd">        - &lt;NodeGroup name=&quot;groupname&quot;&gt;</span>
+<span class="sd">        - nodeID1 nodeID2 nodeID3 ...</span>
+<span class="sd">        - &lt;/NodeGroup&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;/NodeGro&#39;</span><span class="p">):</span>
+                <span class="k">return</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">getType</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="NodeSet.getRank">
+<a class="viewcode-back" href="../../../pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet.getRank">[docs]</a>
+    <span class="k">def</span> <span class="nf">getRank</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the spatial dimension (rank) of the nodes.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Spatial dimension (rank) of the nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

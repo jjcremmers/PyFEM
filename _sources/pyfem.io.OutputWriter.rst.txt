@@ -1,0 +1,7 @@
+pyfem.io.OutputWriter module
+============================
+
+.. automodule:: pyfem.io.OutputWriter
+   :members:
+   :show-inheritance:
+   :undoc-members:

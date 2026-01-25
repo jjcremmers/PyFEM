@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FiniteStrainContinuum &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SmallStrainContinuum" href="smallstraincontinuum.html" />
+    <link rel="prev" title="FiniteStrainAxiSym" href="finitestrainaxisym.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#configuration-in-input-files">Configuration in Input Files</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#element-categories">Element Categories</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="overview.html#continuum-elements">Continuum Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html#shell-and-plate-elements">Shell and Plate Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html#beam-and-rod-elements">Beam and Rod Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html#other-elements">Other Elements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Elements</a></li>
+      <li class="breadcrumb-item active">FiniteStrainContinuum</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/finitestraincontinuum.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="finitestraincontinuum">
+<h1>FiniteStrainContinuum<a class="headerlink" href="#finitestraincontinuum" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">FiniteStrainContinuum</span></code> element is a displacement-based finite element
+for 2D and 3D large deformation analysis in continuum mechanics. This element
+formulation accounts for geometric nonlinearity through finite strain kinematics,
+making it suitable for problems involving large displacements, large rotations,
+and moderate to large strains.</p>
+<p>The element supports both Total Lagrangian (TL) and Updated Lagrangian (UL)
+formulations, automatically adapts to 2D or 3D analysis based on the problem
+dimension (<code class="docutils literal notranslate"><span class="pre">rank</span></code>), and can be combined with various material models including
+hyperelastic and inelastic constitutive laws.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Element type: <code class="docutils literal notranslate"><span class="pre">FiniteStrainContinuum</span></code></p>
+<p>The element implements:</p>
+<ul class="simple">
+<li><p><strong>Total Lagrangian (TL) formulation</strong>: Reference configuration-based approach
+using the initial geometry throughout the analysis</p></li>
+<li><p><strong>Updated Lagrangian (UL) formulation</strong>: Current configuration-based approach
+where the reference is updated at each increment</p></li>
+<li><p><strong>2D formulation</strong>: Plane stress or plane strain analysis with triangular
+or quadrilateral elements (displacement DOFs: <code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code>)</p></li>
+<li><p><strong>3D formulation</strong>: Full 3D analysis with tetrahedral or hexahedral elements
+(displacement DOFs: <code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code>)</p></li>
+<li><p><strong>Geometric nonlinearity</strong>: Full consideration of large displacement and
+rotation effects through geometric stiffness contributions</p></li>
+<li><p><strong>Material nonlinearity</strong>: Compatible with hyperelastic, plastic, and other
+nonlinear constitutive models</p></li>
+</ul>
+<p>The element computes the tangent stiffness matrix including both material and
+geometric contributions, internal force vector, and mass matrix for dynamic
+analysis. The formulation includes strain-displacement relations appropriate
+for finite deformations.</p>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="mandatory-parameters">
+<h3>Mandatory parameters<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">type</span></code></dt><dd><p>Must be set to <code class="docutils literal notranslate"><span class="pre">&quot;FiniteStrainContinuum&quot;</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">material</span></code></dt><dd><p>A material block defining the constitutive behavior for finite strains.
+The material block must include a <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter specifying the material
+model.</p>
+<p>Common material types include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;PlaneStress&quot;</span></code>: For 2D plane stress analysis (can handle finite strains)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;PlaneStrain&quot;</span></code>: For 2D plane strain analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;Isotropic&quot;</span></code>: For 3D isotropic elasticity</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;NeoHookean&quot;</span></code>: Hyperelastic material model for rubber-like behavior</p></li>
+<li><p>Other finite strain material models as available</p></li>
+</ul>
+<p>Within the material block, material-specific parameters must be provided:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>: Young’s modulus</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nu</span></code>: Poisson’s ratio</p></li>
+<li><p>Additional parameters depending on the material type</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="optional-parameters">
+<h3>Optional parameters<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h3>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">method</span></code></dt><dd><p>Specifies the Lagrangian formulation to use. Options are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;TL&quot;</span></code>: Total Lagrangian formulation (default)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;UL&quot;</span></code>: Updated Lagrangian formulation</p></li>
+</ul>
+<p>If not specified, the Total Lagrangian formulation is used.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1-2d-nonlinear-beam-total-lagrangian">
+<h3>Example 1: 2D Nonlinear Beam (Total Lagrangian)<a class="headerlink" href="#example-1-2d-nonlinear-beam-total-lagrangian" title="Link to this heading"></a></h3>
+<p>A cantilever beam subjected to large displacements using the default Total
+Lagrangian formulation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ContElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FiniteStrainContinuum&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStress&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration is used with a nonlinear solver in:
+<code class="docutils literal notranslate"><span class="pre">examples/ch03/NewtonRaphson.pro</span></code></p>
+</section>
+<section id="example-2-3d-finite-strain-analysis">
+<h3>Example 2: 3D Finite Strain Analysis<a class="headerlink" href="#example-2-3d-finite-strain-analysis" title="Link to this heading"></a></h3>
+<p>A 3D structure undergoing large deformations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ContElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FiniteStrainContinuum&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Isotropic&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration is used in: <code class="docutils literal notranslate"><span class="pre">examples/ch03/NewtonRaphson3D.pro</span></code></p>
+</section>
+<section id="example-3-dynamic-analysis-with-finite-strains">
+<h3>Example 3: Dynamic Analysis with Finite Strains<a class="headerlink" href="#example-3-dynamic-analysis-with-finite-strains" title="Link to this heading"></a></h3>
+<p>The element can be used for explicit dynamic analysis with finite strain effects:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ContElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FiniteStrainContinuum&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStress&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+    <span class="n">rho</span>  <span class="o">=</span> <span class="mf">1000.</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration is used in dynamic stress wave propagation:
+<code class="docutils literal notranslate"><span class="pre">examples/ch05/StressWave_20x20.pro</span></code></p>
+</section>
+</section>
+<section id="additional-examples">
+<h2>Additional Examples<a class="headerlink" href="#additional-examples" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">FiniteStrainContinuum</span></code> element is used in various examples demonstrating
+large deformation behavior:</p>
+<ul class="simple">
+<li><p><strong>Nonlinear beam analysis</strong>: <code class="docutils literal notranslate"><span class="pre">examples/ch03/cantilever8.pro</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/ch03/cantilever8PrescribedDisp.pro</span></code></p></li>
+<li><p><strong>Newton-Raphson examples</strong>: <code class="docutils literal notranslate"><span class="pre">examples/ch03/NewtonRaphson.pro</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/ch03/NewtonRaphson3D.pro</span></code></p></li>
+<li><p><strong>Dynamic analysis</strong>: <code class="docutils literal notranslate"><span class="pre">examples/ch05/StressWave_20x20.pro</span></code></p></li>
+<li><p><strong>Contact mechanics</strong>: <code class="docutils literal notranslate"><span class="pre">examples/contact/contact_test.pro</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/contact/contact_test02.pro</span></code></p></li>
+<li><p><strong>Buckling analysis</strong>: <code class="docutils literal notranslate"><span class="pre">examples/solver/dissipatedEnergySolver/delam_buckling100.pro</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/solver/dissipatedEnergySolver/delam_buckling200.pro</span></code></p></li>
+</ul>
+</section>
+<section id="solver-requirements">
+<h2>Solver Requirements<a class="headerlink" href="#solver-requirements" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">FiniteStrainContinuum</span></code> element requires a nonlinear solver due to the
+geometric nonlinearity. Use solvers such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NonlinearSolver</span></code>: Standard Newton-Raphson solution procedure</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">RiksSolver</span></code>: Arc-length method for tracing equilibrium paths</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DissipatedEnergySolver</span></code>: For problems with softening behavior</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ExplicitSolver</span></code>: For explicit dynamic analysis</p></li>
+</ul>
+<ul class="simple">
+<li><p><a class="reference internal" href="smallstraincontinuum.html"><span class="doc">SmallStrainContinuum</span></a> - Small strain continuum element</p></li>
+<li><p><span class="xref std std-doc">materials</span> - Available material models</p></li>
+<li><p><span class="xref std std-doc">solvers</span> - Nonlinear solution procedures</p></li>
+<li><p><span class="xref std std-doc">tutorial1</span> - Introduction to PyFEM input files</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="finitestrainaxisym.html" class="btn btn-neutral float-left" title="FiniteStrainAxiSym" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="smallstraincontinuum.html" class="btn btn-neutral float-right" title="SmallStrainContinuum" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContourWriter &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="DataDump" href="DataDump.html" />
+    <link rel="prev" title="I/O Modules" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements/overview.html">Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">I/O Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#available-modules">Available Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#common-parameters">Common Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#best-practices">Best Practices</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#module-reference">Module Reference</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ContourWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="DataDump.html">DataDump</a></li>
+<li class="toctree-l4"><a class="reference internal" href="GraphWriter.html">GraphWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="HDF5Writer.html">HDF5Writer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="InputReader.html">InputReader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="MeshWriter.html">MeshWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="OutputWriter.html">OutputWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">I/O Modules</a></li>
+      <li class="breadcrumb-item active">ContourWriter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/io/ContourWriter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contourwriter">
+<h1>ContourWriter<a class="headerlink" href="#contourwriter" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ContourWriter</span></code> I/O module writes a plain-text table of nodal data for a
+selected set of nodes at a given interval. Each file is named
+<code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;-contour-&lt;k&gt;.out</span></code> where <code class="docutils literal notranslate"><span class="pre">k</span></code> increments per write.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Module type: <code class="docutils literal notranslate"><span class="pre">ContourWriter</span></code></p>
+<ul class="simple">
+<li><p>Writes node ID, coordinates, all active dof values, and custom outputs in
+<code class="docutils literal notranslate"><span class="pre">globdat.outputNames</span></code>.</p></li>
+<li><p>One row per node; header includes columns for coordinates and outputs.</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="mandatory-parameters">
+<h3>Mandatory Parameters<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default" style="width: 100%">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be set to <code class="docutils literal notranslate"><span class="pre">&quot;ContourWriter&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nodes</span></code></p></td>
+<td><p>List of node IDs or a node group name selecting the nodes to output</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-parameters">
+<h3>Optional Parameters<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default" style="width: 100%">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">interval</span></code></p></td>
+<td><p>Output interval in cycles (default: <code class="docutils literal notranslate"><span class="pre">1</span></code>)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<p>Here’s a complete example showing how to configure the <code class="docutils literal notranslate"><span class="pre">ContourWriter</span></code> to
+output data along a contour of nodes during a nonlinear analysis:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;model.dat&quot;</span><span class="p">;</span>
+
+<span class="n">solver</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;NonlinearSolver&quot;</span><span class="p">;</span>
+  <span class="n">maxCycle</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">];</span>
+
+<span class="n">contour</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;ContourWriter&quot;</span><span class="p">;</span>
+
+  <span class="c1"># Specify nodes to track (can be a list or node group)</span>
+  <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">];</span>
+
+  <span class="c1"># Output every 5 cycles</span>
+  <span class="n">interval</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration will create output files named <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;-contour-0.out</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;-contour-1.out</span></code>, etc., at every 5th cycle. Each file contains a
+table with the following columns:</p>
+<ul class="simple">
+<li><p>Node ID</p></li>
+<li><p>Nodal coordinates (x, y, and optionally z)</p></li>
+<li><p>All active degree of freedom values (e.g., u, v, w)</p></li>
+<li><p>Any custom output variables defined in <code class="docutils literal notranslate"><span class="pre">globdat.outputNames</span></code></p></li>
+</ul>
+</section>
+<section id="using-node-groups">
+<h3>Using Node Groups<a class="headerlink" href="#using-node-groups" title="Link to this heading"></a></h3>
+<p>Instead of listing individual nodes, you can reference a node group defined
+in your input file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contour</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;ContourWriter&quot;</span><span class="p">;</span>
+
+  <span class="c1"># Reference a node group from the mesh</span>
+  <span class="n">nodes</span> <span class="o">=</span> <span class="s2">&quot;crackPath&quot;</span><span class="p">;</span>
+
+  <span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This is particularly useful for tracking complex contours or when the node
+IDs are not known in advance.</p>
+</section>
+<section id="output-format">
+<h3>Output Format<a class="headerlink" href="#output-format" title="Link to this heading"></a></h3>
+<p>The output files are plain-text tables with the following format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Node  x-coor     y-coor     u          v          stress     strain</span>
+   <span class="mi">10</span>  <span class="mf">0.000e+00</span>  <span class="mf">1.000e+00</span>  <span class="mf">1.234e-03</span>  <span class="mf">5.678e-04</span>  <span class="mf">2.345e+01</span>  <span class="mf">1.234e-03</span>
+   <span class="mi">11</span>  <span class="mf">1.000e-01</span>  <span class="mf">1.000e+00</span>  <span class="mf">1.456e-03</span>  <span class="mf">5.890e-04</span>  <span class="mf">2.456e+01</span>  <span class="mf">1.345e-03</span>
+   <span class="mi">12</span>  <span class="mf">2.000e-01</span>  <span class="mf">1.000e+00</span>  <span class="mf">1.678e-03</span>  <span class="mf">6.012e-04</span>  <span class="mf">2.567e+01</span>  <span class="mf">1.456e-03</span>
+   <span class="o">...</span>
+</pre></div>
+</div>
+<p>This format can be easily imported into post-processing tools or plotting
+libraries like matplotlib, gnuplot, or spreadsheet applications.</p>
+</section>
+<section id="additional-examples">
+<h3>Additional Examples<a class="headerlink" href="#additional-examples" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/elements/interface/PeelTest.pro</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="overview.html"><span class="doc">I/O Modules</span></a></p></li>
+<li><p>Related writers: <a class="reference internal" href="GraphWriter.html"><span class="doc">GraphWriter</span></a>, <a class="reference internal" href="OutputWriter.html"><span class="doc">OutputWriter</span></a>, <a class="reference internal" href="MeshWriter.html"><span class="doc">MeshWriter</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="I/O Modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="DataDump.html" class="btn btn-neutral float-right" title="DataDump" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

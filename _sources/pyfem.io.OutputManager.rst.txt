@@ -1,0 +1,7 @@
+pyfem.io.OutputManager module
+=============================
+
+.. automodule:: pyfem.io.OutputManager
+   :members:
+   :show-inheritance:
+   :undoc-members:

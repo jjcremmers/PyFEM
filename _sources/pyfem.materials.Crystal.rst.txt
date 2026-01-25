@@ -1,0 +1,7 @@
+pyfem.materials.Crystal module
+==============================
+
+.. automodule:: pyfem.materials.Crystal
+   :members:
+   :show-inheritance:
+   :undoc-members:

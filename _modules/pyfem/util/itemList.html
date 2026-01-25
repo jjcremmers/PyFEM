@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.itemList &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.itemList</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.itemList</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="itemList">
+<a class="viewcode-back" href="../../../pyfem.util.itemList.html#pyfem.util.itemList.itemList">[docs]</a>
+<span class="k">class</span> <span class="nc">itemList</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A dictionary-based container that maintains items with both global IDs and</span>
+<span class="sd">    continuous local indices.</span>
+
+<span class="sd">    This class extends the built-in dict to provide a mapping from global identifiers</span>
+<span class="sd">    (IDs) to items, and also provides methods to query items by their position in the</span>
+<span class="sd">    dictionary. It is commonly used in finite element analysis to manage collections</span>
+<span class="sd">    of elements, nodes, or other entities that require both global and local numbering.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        Items are stored with integer IDs as keys and arbitrary values as items.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        Create and populate an itemList:</span>
+<span class="sd">        &gt;&gt;&gt; items = itemList()</span>
+<span class="sd">        &gt;&gt;&gt; items.add(1, &quot;element_1&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; items.add(5, &quot;element_5&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; items.get(1)</span>
+<span class="sd">        &#39;element_1&#39;</span>
+<span class="sd">        &gt;&gt;&gt; items.findID(0)</span>
+<span class="sd">        1</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If attempting to add an item with a duplicate ID, or if</span>
+<span class="sd">            invalid arguments are provided to methods.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="itemList.add">
+<a class="viewcode-back" href="../../../pyfem.util.itemList.html#pyfem.util.itemList.itemList.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an item with an associated ID to the list.</span>
+
+<span class="sd">        If the ID already exists in the itemList, a RuntimeError is raised to</span>
+<span class="sd">        prevent accidental overwriting of existing items.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ID (int): The unique global identifier for the item. Must be unique</span>
+<span class="sd">                within this itemList.</span>
+<span class="sd">            item (Any): The value or object to store. Can be any type (int, str,</span>
+<span class="sd">                object instance, etc.).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If the ID already exists in the itemList.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; items = itemList()</span>
+<span class="sd">            &gt;&gt;&gt; items.add(10, &quot;data&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.add(10, &quot;other&quot;)  # doctest: +SKIP</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">                ...</span>
+<span class="sd">            RuntimeError: ID 10 already exists in itemList</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ID</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;ID &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; already exists in &#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span></div>
+
+
+<div class="viewcode-block" id="itemList.get">
+<a class="viewcode-back" href="../../../pyfem.util.itemList.html#pyfem.util.itemList.itemList.get">[docs]</a>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve item(s) from the list by ID or list of IDs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            IDs (int | list[int]): A single ID (returns one item) or a list of</span>
+<span class="sd">                IDs (returns a list of items).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Any: If IDs is an int, returns the single item. If IDs is a list,</span>
+<span class="sd">                returns a list of items corresponding to the requested IDs.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If IDs is neither an int nor a list.</span>
+<span class="sd">            KeyError: If a requested ID does not exist in the itemList.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; items = itemList()</span>
+<span class="sd">            &gt;&gt;&gt; items.add(1, &quot;first&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.add(2, &quot;second&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.get(1)</span>
+<span class="sd">            &#39;first&#39;</span>
+<span class="sd">            &gt;&gt;&gt; items.get([1, 2])</span>
+<span class="sd">            [&#39;first&#39;, &#39;second&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IDs</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">IDs</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IDs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span> <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">IDs</span><span class="p">]</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;illegal argument for itemList.get&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="itemList.getIndices">
+<a class="viewcode-back" href="../../../pyfem.util.itemList.html#pyfem.util.itemList.itemList.getIndices">[docs]</a>
+    <span class="k">def</span> <span class="nf">getIndices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">IDs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the local index/indices corresponding to one or more global IDs.</span>
+
+<span class="sd">        Returns the position(s) of items in the dictionary&#39;s key sequence. Useful</span>
+<span class="sd">        for converting between global IDs and continuous local numbering (0, 1, 2, ...).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            IDs (int | list[int], optional): A single ID, list of IDs, or -1 to</span>
+<span class="sd">                retrieve all indices. Defaults to -1 (all indices).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list[int]: If IDs is -1, returns list of all keys. If IDs is an int,</span>
+<span class="sd">                returns the index (int) of that ID. If IDs is a list, returns a</span>
+<span class="sd">                list of indices for those IDs.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If IDs is not of type int, list, or -1.</span>
+<span class="sd">            ValueError: If a requested ID does not exist.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; items = itemList()</span>
+<span class="sd">            &gt;&gt;&gt; items.add(100, &quot;first&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.add(200, &quot;second&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.getIndices()</span>
+<span class="sd">            [100, 200]</span>
+<span class="sd">            &gt;&gt;&gt; items.getIndices(100)</span>
+<span class="sd">            0</span>
+<span class="sd">            &gt;&gt;&gt; items.getIndices([100, 200])</span>
+<span class="sd">            [0, 1]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">IDs</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IDs</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">IDs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">IDs</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span> <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">IDs</span><span class="p">]</span>
+
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;illegal argument for itemList.getIndices&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="itemList.findID">
+<a class="viewcode-back" href="../../../pyfem.util.itemList.html#pyfem.util.itemList.itemList.findID">[docs]</a>
+    <span class="k">def</span> <span class="nf">findID</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Retrieve the global ID of an item at a given local index.</span>
+
+<span class="sd">        This is the inverse operation of getIndices() for a single index, converting</span>
+<span class="sd">        from continuous local numbering (0, 1, 2, ...) back to global IDs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index (int): The local index (position) of the item in the ordered</span>
+<span class="sd">                sequence of items.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The global ID of the item at the specified index.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            IndexError: If the index is out of range.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; items = itemList()</span>
+<span class="sd">            &gt;&gt;&gt; items.add(10, &quot;first&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.add(20, &quot;second&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; items.findID(0)</span>
+<span class="sd">            10</span>
+<span class="sd">            &gt;&gt;&gt; items.findID(1)</span>
+<span class="sd">            20</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">index</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

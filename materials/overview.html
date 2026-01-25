@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Materials &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Isotropic" href="isotropic.html" />
+    <link rel="prev" title="Interface" href="../elements/interface.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements/overview.html">Elements</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-in-input-files">Configuration in Input Files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-syntax">Basic Syntax</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#material-types-and-state-models">Material Types and State Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-materials">Named Materials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-material-support">Multi-Material Support</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#material-categories">Material Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Material Categories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#constitutive-relations-for-continua">Constitutive Relations for Continua</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cohesive-constitutive-relations">Cohesive Constitutive Relations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#failure-criteria">Failure Criteria</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+      <li class="breadcrumb-item active">Materials</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/materials/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="materials">
+<h1>Materials<a class="headerlink" href="#materials" title="Link to this heading"></a></h1>
+<p>PyFEM provides a range of material models for linear and nonlinear analysis,
+including elastic, elastoplastic, and cohesive zone models. Material models
+define the constitutive behavior that relates stress to strain (or traction
+to displacement jump for cohesive elements).</p>
+<section id="configuration-in-input-files">
+<h2>Configuration in Input Files<a class="headerlink" href="#configuration-in-input-files" title="Link to this heading"></a></h2>
+<p>Material models are configured within element definitions in the <code class="docutils literal notranslate"><span class="pre">.pro</span></code>
+input file. Each element group can have its own material definition, or
+materials can be defined globally and referenced by name.</p>
+<section id="basic-syntax">
+<h3>Basic Syntax<a class="headerlink" href="#basic-syntax" title="Link to this heading"></a></h3>
+<p>The material block is nested inside an element definition:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ElementGroup =
+{
+  type = &quot;SmallStrainContinuum&quot;;
+
+  material =
+  {
+    type = &quot;PlaneStress&quot;;
+    E    = 100.0;
+    nu   = 0.3;
+  };
+};
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter specifies which material model to use, and subsequent
+parameters define the material properties (e.g., Young’s modulus <code class="docutils literal notranslate"><span class="pre">E</span></code>,
+Poisson’s ratio <code class="docutils literal notranslate"><span class="pre">nu</span></code>).</p>
+</section>
+<section id="material-types-and-state-models">
+<h3>Material Types and State Models<a class="headerlink" href="#material-types-and-state-models" title="Link to this heading"></a></h3>
+<p>PyFEM uses a hierarchical material system:</p>
+<ol class="arabic simple">
+<li><p><strong>State models</strong> (e.g., PlaneStress, PlaneStrain) - Define the stress state</p></li>
+<li><p><strong>Constitutive models</strong> (e.g., HookesLaw, VonMises) - Define material behavior</p></li>
+</ol>
+<p>For simple elastic materials, the state model can be specified directly:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>material =
+{
+  type = &quot;PlaneStress&quot;;  # State model only
+  E    = 100.0;
+  nu   = 0.3;
+};
+</pre></div>
+</div>
+<p>For complex behavior, nest a constitutive model inside a state model:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>material =
+{
+  type = &quot;PlaneStrain&quot;;
+  E    = 210.0e3;
+  nu   = 0.3;
+
+  model =
+  {
+    type  = &quot;IsotropicHardeningPlasticity&quot;;
+    sY    = 250.0;
+    hard  = 1000.0;
+  };
+};
+</pre></div>
+</div>
+</section>
+<section id="named-materials">
+<h3>Named Materials<a class="headerlink" href="#named-materials" title="Link to this heading"></a></h3>
+<p>For complex models or when using the same material in multiple elements,
+define materials by name and reference them:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Steel =
+{
+  type = &quot;PlaneStress&quot;;
+  E    = 210.0e3;
+  nu   = 0.3;
+};
+
+Aluminum =
+{
+  type = &quot;PlaneStress&quot;;
+  E    = 70.0e3;
+  nu   = 0.33;
+};
+
+Element1 =
+{
+  type     = &quot;SmallStrainContinuum&quot;;
+  material = &quot;Steel&quot;;
+};
+
+Element2 =
+{
+  type     = &quot;SmallStrainContinuum&quot;;
+  material = &quot;Aluminum&quot;;
+};
+</pre></div>
+</div>
+</section>
+<section id="multi-material-support">
+<h3>Multi-Material Support<a class="headerlink" href="#multi-material-support" title="Link to this heading"></a></h3>
+<p>Some elements support spatially varying materials using <code class="docutils literal notranslate"><span class="pre">MultiMaterial</span></code>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>material =
+{
+  type      = &quot;MultiMaterial&quot;;
+  materials = [&quot;Steel&quot;, &quot;Aluminum&quot;];
+};
+</pre></div>
+</div>
+<p>The material assignment is typically based on element IDs or integration
+point locations defined in the mesh file.</p>
+</section>
+</section>
+<section id="material-categories">
+<h2>Material Categories<a class="headerlink" href="#material-categories" title="Link to this heading"></a></h2>
+</section>
+<section id="id1">
+<h2>Material Categories<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<section id="constitutive-relations-for-continua">
+<h3>Constitutive Relations for Continua<a class="headerlink" href="#constitutive-relations-for-continua" title="Link to this heading"></a></h3>
+<p>These materials are used with continuum elements (2D, 3D, and axisymmetric):</p>
+<ul class="simple">
+<li><p>Linear elastic models (Hooke’s law, isotropic, transverse isotropic)</p></li>
+<li><p>Stress state wrappers (plane stress, plane strain)</p></li>
+<li><p>Elastoplastic models (isotropic hardening, kinematic hardening)</p></li>
+<li><p>Specialized models (sandwich cores, multi-material)</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="isotropic.html">Isotropic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isotropic.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotropic.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="isotropic.html#mandatory-parameters">Mandatory Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="isotropic.html#optional-parameters">Optional Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="isotropic.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isokinematichardening.html">IsotropicKinematicHardening</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isokinematichardening.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isokinematichardening.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="isokinematichardening.html#mandatory-parameters">Mandatory Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="isokinematichardening.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isokinematichardening.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="cohesive-constitutive-relations">
+<h3>Cohesive Constitutive Relations<a class="headerlink" href="#cohesive-constitutive-relations" title="Link to this heading"></a></h3>
+<p>These materials model interface behavior and fracture mechanics:</p>
+<ul class="simple">
+<li><p>Cohesive zone models for delamination and crack propagation</p></li>
+<li><p>Traction-separation laws for interface elements</p></li>
+<li><p>Mode I and mixed-mode fracture models</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dummy.html">Dummy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dummy.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dummy.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dummy.html#mandatory-parameters">Mandatory Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dummy.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="powerlawmodei.html">PowerLawModeI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="powerlawmodei.html#mandatory-parameters">Mandatory Parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="failure-criteria">
+<h3>Failure Criteria<a class="headerlink" href="#failure-criteria" title="Link to this heading"></a></h3>
+<p>These models define yield surfaces and failure conditions:</p>
+<ul class="simple">
+<li><p>Von Mises plasticity</p></li>
+<li><p>Other stress-based failure criteria</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="vonmises.html">VonMises</a></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../elements/interface.html" class="btn btn-neutral float-left" title="Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="isotropic.html" class="btn btn-neutral float-right" title="Isotropic" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

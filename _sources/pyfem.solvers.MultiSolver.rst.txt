@@ -1,0 +1,7 @@
+pyfem.solvers.MultiSolver module
+================================
+
+.. automodule:: pyfem.solvers.MultiSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

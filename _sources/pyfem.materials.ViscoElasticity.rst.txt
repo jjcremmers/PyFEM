@@ -1,0 +1,7 @@
+pyfem.materials.ViscoElasticity module
+======================================
+
+.. automodule:: pyfem.materials.ViscoElasticity
+   :members:
+   :show-inheritance:
+   :undoc-members:

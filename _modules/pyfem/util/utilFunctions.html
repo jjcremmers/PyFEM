@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.utilFunctions &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.utilFunctions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.utilFunctions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+
+<div class="viewcode-block" id="macauley">
+<a class="viewcode-back" href="../../../pyfem.util.utilFunctions.html#pyfem.util.utilFunctions.macauley">[docs]</a>
+<span class="k">def</span> <span class="nf">macauley</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute the Macaulay bracket operation on a value.</span>
+<span class="sd">    </span>
+<span class="sd">    The Macaulay operation returns the input value when positive and zero</span>
+<span class="sd">    when negative. Commonly used in mechanics for stress and strain calculations.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        x: The input value (int or float)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The Macauley value: x if x &gt;= 0, else 0</span>
+<span class="sd">        </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; macauley(5.0)</span>
+<span class="sd">        5.0</span>
+<span class="sd">        &gt;&gt;&gt; macauley(-3.0)</span>
+<span class="sd">        0</span>
+<span class="sd">        &gt;&gt;&gt; macauley(0.0)</span>
+<span class="sd">        0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+
+
+<div class="viewcode-block" id="sign">
+<a class="viewcode-back" href="../../../pyfem.util.utilFunctions.html#pyfem.util.utilFunctions.sign">[docs]</a>
+<span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the sign of a value.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns 1.0 for positive or zero values, and -1.0 for negative values.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        x: The input value (int or float)</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        The sign: 1.0 if x &gt;= 0, else -1.0</span>
+<span class="sd">        </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; sign(5.0)</span>
+<span class="sd">        1.0</span>
+<span class="sd">        &gt;&gt;&gt; sign(-3.0)</span>
+<span class="sd">        -1.0</span>
+<span class="sd">        &gt;&gt;&gt; sign(0.0)</span>
+<span class="sd">        1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="k">return</span> <span class="mf">1.0</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

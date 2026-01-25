@@ -1,0 +1,7 @@
+pyfem.util.shapeFunctions module
+================================
+
+.. automodule:: pyfem.util.shapeFunctions
+   :members:
+   :show-inheritance:
+   :undoc-members:

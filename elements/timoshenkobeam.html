@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimoshenkoBeam &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Truss" href="truss.html" />
+    <link rel="prev" title="Spring" href="spring.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#configuration-in-input-files">Configuration in Input Files</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#element-categories">Element Categories</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="overview.html#continuum-elements">Continuum Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html#shell-and-plate-elements">Shell and Plate Elements</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="overview.html#beam-and-rod-elements">Beam and Rod Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="overview.html#other-elements">Other Elements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Elements</a></li>
+      <li class="breadcrumb-item active">TimoshenkoBeam</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/timoshenkobeam.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="timoshenkobeam">
+<h1>TimoshenkoBeam<a class="headerlink" href="#timoshenkobeam" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">TimoshenkoBeam</span></code> element models beams including shear deformation effects,
+providing improved accuracy for moderately thick beams compared to Kirchhoff
+beam theory.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Element type: <code class="docutils literal notranslate"><span class="pre">TimoshenkoBeam</span></code></p>
+<p>Supports:
+- Bending with shear deformation
+- Frame analysis where shear effects are non-negligible</p>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="mandatory-parameters">
+<h3>Mandatory Parameters<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default" style="width: 100%">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be set to <code class="docutils literal notranslate"><span class="pre">&quot;TimoshenkoBeam&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>Material block with elastic properties (e.g., <code class="docutils literal notranslate"><span class="pre">E</span></code>, <code class="docutils literal notranslate"><span class="pre">G</span></code>, <code class="docutils literal notranslate"><span class="pre">rho</span></code>).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="optional-parameters">
+<h3>Optional Parameters<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default" style="width: 100%">
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 75.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">section</span></code></p></td>
+<td><p>Optional section properties reference (if supported by input).</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Representative examples using <code class="docutils literal notranslate"><span class="pre">TimoshenkoBeam</span></code>:
+- <code class="docutils literal notranslate"><span class="pre">examples/ch09/FrameTimoshenko.pro</span></code></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="spring.html" class="btn btn-neutral float-left" title="Spring" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="truss.html" class="btn btn-neutral float-right" title="Truss" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

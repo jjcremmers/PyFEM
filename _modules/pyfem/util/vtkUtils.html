@@ -1,0 +1,680 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.vtkUtils &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/overview.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">PyFEM API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pyfem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.vtkUtils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.vtkUtils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.BaseModule</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.dataStructures</span> <span class="kn">import</span> <span class="n">GlobalData</span>
+<span class="kn">import</span> <span class="nn">vtk</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<div class="viewcode-block" id="storeNodes">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeNodes">[docs]</a>
+<span class="k">def</span> <span class="nf">storeNodes</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">globdat</span><span class="p">:</span> <span class="n">GlobalData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store node coordinates from the global data into a VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Converts node coordinates to 3D format (padding 2D coordinates with z=0.0)</span>
+<span class="sd">    and inserts them into the VTK grid&#39;s point data.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to store points in</span>
+<span class="sd">        globdat: Global data object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkPoints</span><span class="p">()</span>
+        
+    <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">crd</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span>
+
+        <span class="n">crd1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>            
+            
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">crd</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">crd1</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">crd</span>
+            <span class="n">crd1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">crd1</span> <span class="o">=</span> <span class="n">crd</span>
+          
+        <span class="n">points</span><span class="o">.</span><span class="n">InsertNextPoint</span><span class="p">(</span><span class="n">crd1</span><span class="p">)</span>
+
+    <span class="n">grid</span><span class="o">.</span><span class="n">SetPoints</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> </div>
+
+    
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="storeElements">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeElements">[docs]</a>
+<span class="k">def</span> <span class="nf">storeElements</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">globdat</span><span class="p">:</span> <span class="n">GlobalData</span><span class="p">,</span> <span class="n">elementGroup</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;All&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store elements from the global data into a VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Iterates through elements in the specified group and inserts them into</span>
+<span class="sd">    the VTK grid with appropriate cell types based on element family and rank.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to store cells in</span>
+<span class="sd">        globdat: Global data object containing element information</span>
+<span class="sd">        elementGroup: Name of element group to store. Defaults to &quot;All&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rank</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">rank</span>
+
+    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">iterElementGroup</span><span class="p">(</span> <span class="n">elementGroup</span> <span class="p">):</span>
+        <span class="n">el_nodes</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getIndices</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">getNodes</span><span class="p">())</span>
+    
+        <span class="n">insertElement</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">el_nodes</span> <span class="p">,</span> <span class="n">rank</span> <span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">family</span> <span class="p">)</span></div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="storeDofField">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeDofField">[docs]</a>
+<span class="k">def</span> <span class="nf">storeDofField</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">globdat</span><span class="p">:</span> <span class="n">GlobalData</span><span class="p">,</span> <span class="n">dofTypes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">],</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store a degree-of-freedom field as point data in the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Creates a VTK array containing values for specified DOF types at each node.</span>
+<span class="sd">    Missing DOF types are filled with zeros.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to add array to</span>
+<span class="sd">        data: Array of DOF values indexed by global DOF numbers</span>
+<span class="sd">        globdat: Global data object containing DOF information</span>
+<span class="sd">        dofTypes: List of DOF type strings (e.g., [&quot;u&quot;, &quot;v&quot;, &quot;w&quot;]) or single string</span>
+<span class="sd">        label: Name for the VTK array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkDoubleArray</span><span class="p">()</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">SetName</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">SetNumberOfComponents</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dofTypes</span><span class="p">))</span>
+          
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+              
+    <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">dispDof</span> <span class="ow">in</span> <span class="n">dofTypes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dispDof</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">InsertComponent</span><span class="p">(</span> <span class="n">i</span> <span class="p">,</span> <span class="n">j</span> <span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="n">dispDof</span><span class="p">)]</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">InsertComponent</span><span class="p">(</span> <span class="n">i</span> <span class="p">,</span> <span class="n">j</span> <span class="p">,</span> <span class="mf">0.0</span> <span class="p">)</span>
+            <span class="n">j</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">i</span><span class="o">+=</span><span class="mi">1</span>      
+        
+    <span class="n">grid</span><span class="o">.</span><span class="n">GetPointData</span><span class="p">()</span><span class="o">.</span><span class="n">AddArray</span><span class="p">(</span> <span class="n">d</span> <span class="p">)</span> </div>
+
+    
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="storeDofFields">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeDofFields">[docs]</a>
+<span class="k">def</span> <span class="nf">storeDofFields</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">globdat</span><span class="p">:</span> <span class="n">GlobalData</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store all available DOF fields into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Automatically detects and stores displacement, temperature, and phase fields</span>
+<span class="sd">    if they exist in the global data.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to add arrays to</span>
+<span class="sd">        data: Array of all DOF values</span>
+<span class="sd">        globdat: Global data object containing DOF information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dofTypes</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span> <span class="s2">&quot;u&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span> <span class="p">]</span> <span class="p">,</span> <span class="s2">&quot;temp&quot;</span> <span class="p">,</span> <span class="s2">&quot;phase&quot;</span> <span class="p">]</span>
+    <span class="n">labels</span>   <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;displacements&quot;</span> <span class="p">,</span> <span class="s2">&quot;temperature&quot;</span> <span class="p">,</span> <span class="s2">&quot;phase&quot;</span> <span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">dofs</span><span class="p">,</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dofTypes</span><span class="p">,</span><span class="n">labels</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dofs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">checkDof</span> <span class="o">=</span> <span class="n">dofs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">checkDof</span> <span class="o">=</span> <span class="n">dofs</span>
+            
+        <span class="k">if</span> <span class="n">checkDof</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span> 
+            <span class="n">storeDofField</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">data</span> <span class="p">,</span> <span class="n">globdat</span> <span class="p">,</span> <span class="n">dofs</span> <span class="p">,</span> <span class="n">name</span> <span class="p">)</span></div>
+
+    
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+       
+<div class="viewcode-block" id="storeNodeField">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeNodeField">[docs]</a>
+<span class="k">def</span> <span class="nf">storeNodeField</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">globdat</span><span class="p">:</span> <span class="n">GlobalData</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store a scalar field defined at nodes as point data in the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to add array to</span>
+<span class="sd">        data: Array of scalar values, one per node</span>
+<span class="sd">        globdat: Global data object (for consistency with other functions)</span>
+<span class="sd">        name: Name for the VTK array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkDoubleArray</span><span class="p">();</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">SetName</span><span class="p">(</span> <span class="n">name</span> <span class="p">);</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">SetNumberOfComponents</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+            
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">InsertComponent</span><span class="p">(</span> <span class="n">i</span> <span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">l</span> <span class="p">)</span>
+                                                                 
+    <span class="n">grid</span><span class="o">.</span><span class="n">GetPointData</span><span class="p">()</span><span class="o">.</span><span class="n">AddArray</span><span class="p">(</span> <span class="n">d</span> <span class="p">)</span></div>
+
+   
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+   
+<div class="viewcode-block" id="storeElementField">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeElementField">[docs]</a>
+<span class="k">def</span> <span class="nf">storeElementField</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">globdat</span><span class="p">:</span> <span class="n">GlobalData</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Store a scalar field defined at elements as cell data in the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to add array to</span>
+<span class="sd">        data: Array of scalar values, one per element</span>
+<span class="sd">        globdat: Global data object (for consistency with other functions)</span>
+<span class="sd">        name: Name for the VTK array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkDoubleArray</span><span class="p">();</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">SetName</span><span class="p">(</span> <span class="n">name</span> <span class="p">);</span>
+    <span class="n">d</span><span class="o">.</span><span class="n">SetNumberOfComponents</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+            
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">l</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>        
+        <span class="n">d</span><span class="o">.</span><span class="n">InsertComponent</span><span class="p">(</span> <span class="n">i</span> <span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="n">l</span> <span class="p">)</span>
+                 
+    <span class="n">grid</span><span class="o">.</span><span class="n">GetCellData</span><span class="p">()</span><span class="o">.</span><span class="n">AddArray</span><span class="p">(</span> <span class="n">d</span> <span class="p">)</span>        </div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------  </span>
+     
+<div class="viewcode-block" id="setCellNodes">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.setCellNodes">[docs]</a>
+<span class="k">def</span> <span class="nf">setCellNodes</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkCell</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the node IDs for a VTK cell.</span>
+<span class="sd">    </span>
+<span class="sd">    Maps the provided element node indices to the VTK cell&#39;s point IDs.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        cell: VTK cell object to set nodes for</span>
+<span class="sd">        elemNodes: List of node indices for the cell</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+          
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">inod</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">):</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span><span class="o">.</span><span class="n">SetId</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">inod</span><span class="p">)</span></div>
+
+          
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+          
+<div class="viewcode-block" id="insertElement">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insertElement">[docs]</a>
+<span class="k">def</span> <span class="nf">insertElement</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">rank</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">family</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert an element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Routes element insertion to appropriate function based on element family</span>
+<span class="sd">    (CONTINUUM, INTERFACE, SURFACE, BEAM, SHELL) and spatial rank (2D or 3D).</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of node indices for the element</span>
+<span class="sd">        rank: Spatial dimension (2 or 3)</span>
+<span class="sd">        family: Element family type</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element family or rank combination is not supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>
+  
+    <span class="k">if</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;CONTINUUM&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">insert2Dcontinuum</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>               
+        <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">insert3Dcontinuum</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 2D and 3D continuum elements.&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;INTERFACE&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">insert2Dinterface</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>         
+        <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">insert3Dinterface</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 2D and 3D interface elements.&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;SURFACE&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">insert2Dsurface</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>                 
+        <span class="k">elif</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">insert3Dsurface</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>                
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;BEAM&quot;</span><span class="p">:</span>
+        <span class="n">insertBeam</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>        	     
+    <span class="k">elif</span> <span class="n">family</span> <span class="o">==</span> <span class="s2">&quot;SHELL&quot;</span><span class="p">:</span>
+        <span class="n">insertShell</span><span class="p">(</span> <span class="n">grid</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Family of elements is not known.&#39;</span><span class="p">)</span></div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="insert2Dcontinuum">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert2Dcontinuum">[docs]</a>
+<span class="k">def</span> <span class="nf">insert2Dcontinuum</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a 2D continuum element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Supports 2, 3, 4, 6, 8, and 9 node elements. Higher-order elements are</span>
+<span class="sd">    converted to linear elements using only corner nodes.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of node indices for the element</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element has unsupported number of nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>
+     
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkLine</span><span class="p">()</span>    
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span> 
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkTriangle</span><span class="p">()</span>    
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>     
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkQuad</span><span class="p">()</span>      
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>       
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkTriangle</span><span class="p">()</span>      
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span> 
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">or</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkQuad</span><span class="p">()</span>      
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">nNod</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 2, 3, 4, 6, 8, 9 node continuum elements in 2D.&#39;</span><span class="p">)</span> </div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+      
+<div class="viewcode-block" id="insert3Dcontinuum">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert3Dcontinuum">[docs]</a>
+<span class="k">def</span> <span class="nf">insert3Dcontinuum</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a 3D continuum element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Supports 4, 5, 6, 8, and 16 node elements (tetrahedra, pyramids, wedges,</span>
+<span class="sd">    and hexahedra). Higher-order elements are converted to linear elements.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of node indices for the element</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element has unsupported number of nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkTetra</span><span class="p">()</span>      
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>             
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkPyramid</span><span class="p">()</span>      
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>            
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkWedge</span><span class="p">()</span>      
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>             
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkHexahedron</span><span class="p">()</span>
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>               
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkHexahedron</span><span class="p">()</span>
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">8</span><span class="p">:</span><span class="mi">2</span><span class="p">],</span><span class="n">elemNodes</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">16</span><span class="p">:</span><span class="mi">2</span><span class="p">]))</span> <span class="p">)</span> 
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>                         
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 4, 5, 6, 8 and 16 node continuum elements in 3D.&#39;</span><span class="p">)</span>        </div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+    
+<div class="viewcode-block" id="insert2Dinterface">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert2Dinterface">[docs]</a>
+<span class="k">def</span> <span class="nf">insert2Dinterface</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a 2D interface element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Represents interface elements as two separate line segments.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert elements into</span>
+<span class="sd">        elemNodes: List of 4 node indices (2 nodes per side)</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element does not have 4 nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>
+                    
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkLine</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 4 node interface elements in 2D.&#39;</span><span class="p">)</span>  </div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="insert3Dinterface">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert3Dinterface">[docs]</a>
+<span class="k">def</span> <span class="nf">insert3Dinterface</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a 3D interface element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Represents interface elements as two separate surfaces (triangles or quads).</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert elements into</span>
+<span class="sd">        elemNodes: List of 6 (triangular) or 8 (quadrilateral) node indices</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element does not have 6 or 8 nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>
+                    
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkTria</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>              
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkQuad</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>      
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 6 and 8 node interface elements in 3D.&#39;</span><span class="p">)</span>          </div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+       
+<div class="viewcode-block" id="insert2Dsurface">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert2Dsurface">[docs]</a>
+<span class="k">def</span> <span class="nf">insert2Dsurface</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a 2D surface element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of 2 node indices</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element does not have 2 nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>
+                    
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>         
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkLine</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>        
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 2 node surface elements in 2D.&#39;</span><span class="p">)</span>       </div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+        
+<div class="viewcode-block" id="insert3Dsurface">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert3Dsurface">[docs]</a>
+<span class="k">def</span> <span class="nf">insert3Dsurface</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a 3D surface element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Supports triangular and quadrilateral surface elements.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of 3 (triangular) or 4 (quadrilateral) node indices</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element does not have 3 or 4 nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>   
+    
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkTriangle</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>              
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkQuad</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>            
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 3 and 4 node surface elements in 3D.&#39;</span><span class="p">)</span></div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="insertBeam">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insertBeam">[docs]</a>
+<span class="k">def</span> <span class="nf">insertBeam</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a beam element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Supports 2-node (linear) and 3-node (quadratic) beam elements. For 3-node</span>
+<span class="sd">    elements, only the end nodes are used.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of 2 or 3 node indices</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element does not have 2 or 3 nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span> 
+    
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkLine</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkLine</span><span class="p">()</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span><span class="o">.</span><span class="n">SetId</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">elemNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span><span class="o">.</span><span class="n">SetId</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">elemNodes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 2 and 3 node beam elements.&#39;</span><span class="p">)</span></div>
+
+        
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="insertShell">
+<a class="viewcode-back" href="../../../pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insertShell">[docs]</a>
+<span class="k">def</span> <span class="nf">insertShell</span><span class="p">(</span><span class="n">grid</span><span class="p">:</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkUnstructuredGrid</span><span class="p">,</span> <span class="n">elemNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Insert a shell element into the VTK grid.</span>
+<span class="sd">    </span>
+<span class="sd">    Supports triangular and quadrilateral shell elements.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        grid: VTK grid object to insert element into</span>
+<span class="sd">        elemNodes: List of 3 (triangular) or 4 (quadrilateral) node indices</span>
+<span class="sd">        </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        NotImplementedError: If element does not have 3 or 4 nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nNod</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elemNodes</span><span class="p">)</span>         
+                               
+    <span class="k">if</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkTriangle</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>        
+    <span class="k">elif</span> <span class="n">nNod</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">vtk</span><span class="o">.</span><span class="n">vtkQuad</span><span class="p">()</span> 
+        <span class="n">setCellNodes</span><span class="p">(</span> <span class="n">cell</span> <span class="p">,</span> <span class="n">elemNodes</span> <span class="p">)</span>  
+        <span class="n">grid</span><span class="o">.</span><span class="n">InsertNextCell</span><span class="p">(</span> <span class="n">cell</span><span class="o">.</span><span class="n">GetCellType</span><span class="p">(),</span><span class="n">cell</span><span class="o">.</span><span class="n">GetPointIds</span><span class="p">()</span> <span class="p">)</span>                     
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Only 3 and 4 node shell elements.&#39;</span><span class="p">)</span></div>
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
