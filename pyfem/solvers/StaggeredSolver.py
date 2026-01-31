@@ -7,8 +7,11 @@ from pyfem.util.BaseModule import BaseModule
 import numpy as np
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness, commit
 from pyfem.fem.Assembly import assembleExternalForce
-from pyfem.util.logger import getLogger
+from pyfem.util.logger import getLogger,separator
 import sys
+
+logger = getLogger()
+
 
 #------------------------------------------------------------------------------
 #
@@ -73,7 +76,7 @@ class StaggeredSolver ( BaseModule ):
       
       globdat.state += da  
       
-      logger.info(f'    Solver           : {solver.name}')
+      logger.info(f'    Solver.................... : {solver.name}')
           
       if solver.type == "Nonlinear":
       
@@ -82,7 +85,7 @@ class StaggeredSolver ( BaseModule ):
         else:
           norm = globdat.dofs.norm( fext - fint, solver.cons )
         
-        logger.info('    Newton-Raphson   : L2-norm residual')
+        logger.info('      Newton-Raphson........... : L2-norm residual')
       
         while error > self.tol:
         
@@ -103,7 +106,7 @@ class StaggeredSolver ( BaseModule ):
           else:
             error = globdat.dofs.norm( fext-fint ) / norm
             
-          logger.info(f'    Iteration {stat.iiter:4d}   : {error:6.4e}')
+          logger.info(f'      Iteration {stat.iiter:4d} ........... : {error:6.4e}')
       
           if stat.iiter == self.iterMax:
             raise RuntimeError('Newton-Raphson iterations did not converge!')
@@ -118,6 +121,10 @@ class StaggeredSolver ( BaseModule ):
     
     if stat.cycle == self.maxCycle: # or globdat.lam > self.maxLam:
       globdat.active = False 
+
+    separator()
+    self.writeFooter( globdat )      
+      
 
 #---------------------------------------------------------------------------
 #

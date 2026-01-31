@@ -73,7 +73,7 @@ class ModelManager():
 
         separator("=")
             
-    def takeAction(self, action: str, mbuilder, props: Any, globdat: Any) -> None:
+    def takeAction(self, action: str, props: Any, globdat: Any) -> None:
         """
         Execute the method named by the string 'action' on all active models, if it exists.
 
@@ -87,4 +87,4 @@ class ModelManager():
         for model in self.modelss:
             method = getattr(model, action, None)
             if callable(method):
-                method(props, globdat, mbuilder)
+                method(props, globdat )

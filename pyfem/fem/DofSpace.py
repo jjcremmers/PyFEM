@@ -18,6 +18,7 @@ logger = getLogger()
 
 
 class DofSpace:
+
     """Representation of the global degrees-of-freedom space.
 
     The class maps node identifiers and DOF types to global DOF indices and
@@ -255,6 +256,35 @@ class DofSpace:
         """Return the DOF type name for a given DOF id."""
 
         return self.dofTypes[self.getType(dofID)]
+
+#
+#
+#
+
+    def hasType(self, dofType: str) -> bool:
+        """
+        Check if the given DOF type name exists in the DofSpace.
+
+        Args:
+            dofType (str): The DOF type name to check.
+
+        Returns:
+            bool: True if the DOF type exists, False otherwise.
+        """
+        
+        return dofType in self.dofTypes  
+
+    def getTypeIDs(self, dofNames: Sequence[str]) -> List[int]:
+        """
+        Return the type indices for a list of DOF type names, only if they exist in dofTypes.
+
+        Args:
+            dofNames (Sequence[str]): List of DOF type names to look up.
+
+        Returns:
+            List[int]: List of type indices for the names that exist in dofTypes.
+        """
+        return [self.dofTypes.index(name) for name in dofNames if name in self.dofTypes]  
 
 #-------------------------------------------------------------------------------
 #

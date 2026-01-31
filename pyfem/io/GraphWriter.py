@@ -89,9 +89,7 @@ class GraphWriter(BaseModule):
                 data = globdat.getData(col.type, col.node)
                 
             elif hasattr(globdat, col.type):
-                print(col.type)
                 b = getattr(globdat, col.type)
-                print(b)
                 if type(b) is ndarray:
                     if hasattr(col,"node"):
                         if type(col.node) is list:

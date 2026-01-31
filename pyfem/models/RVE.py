@@ -61,7 +61,7 @@ class RVE( BaseModel ):
         self.getBoundaries( props , globdat )
 
         globdat.dofs.createConstrainer()   
-    
+                
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -204,10 +204,11 @@ class RVE( BaseModel ):
         - dy: Height of the RVE.
         """
 
+        # Sort both left and right coordinates by y-coordinate (column 1)
+
         crdL = globdat.nodes.getNodeCoords( 'Left' )
         crdR = globdat.nodes.getNodeCoords( 'Right' )
 
-        # Sort both left and right coordinates by y-coordinate (column 1)
         sortIdxLeft = np.argsort(crdL[:, 1])
         sortIdxRight = np.argsort(crdR[:, 1])
         
@@ -219,6 +220,7 @@ class RVE( BaseModel ):
         
         self.nodesLeft = nodL[sortIdxLeft]
         self.nodesRight = nodR[sortIdxRight]
+        
         # Verify that y-coordinates match (within tolerance)
 
         x_offsets = self.crdsRight[:, 0] - self.crdsLeft[:, 0]
@@ -308,8 +310,11 @@ class RVE( BaseModel ):
         - Top nodes: u_top = u14 + u_bottom
         """
 
-        u12 = np.zeros(2)
-        u14 = np.zeros(2)
+        dofTypeIDs   = globdat.dofs.getTypeIDs( ["u","v","temp","phase"] )
+        extraTypeIDs = globdat.dofs.getTypeIDs( ["temp","phase"] )
+        
+        u12 = np.zeros(len(dofTypeIDs))
+        u14 = np.zeros(len(dofTypeIDs))
 
         u12[0] =      self.dx * self.strain[0]
         u12[1] = 0.5* self.dx * self.strain[2] 
@@ -328,6 +333,8 @@ class RVE( BaseModel ):
         dofIDs = globdat.dofs.get( [self.nodesRight[0]] )
         for i in range(2):
             globdat.dofs.cons.addConstraint(dofIDs[i],u12[i],"main")
+
+        
 
         # Constrain node 4 top left corner
         dofIDs = globdat.dofs.get( [self.nodesTop[0]] )
