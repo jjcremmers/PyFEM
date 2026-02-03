@@ -54,13 +54,11 @@ solver =
   maxLam    = 10.0; 
 };
 
-outputModules = ["graph"];
+outputModules = ["output","graph"];
 
 graph =
 {
   type = "GraphWriter";
-
-  onScreen = true;
 
   columns = [ "disp" , "load" , "cycle" , "lam" ];
 
@@ -79,4 +77,11 @@ graph =
     dof  = 'v';
     factor = -1.0;
   };
+};
+
+output =
+{
+  type = "OutputWriter";
+
+  onScreen = true;
 };
