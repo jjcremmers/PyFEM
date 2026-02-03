@@ -218,45 +218,41 @@ class GlobalData(Properties):
             dofType[nodeID] = value;
             </ExternalForces>
         """
-        # Open file and read all lines to check for ExternalForces section
-        fin = open(fname)
-        lines = fin.readlines()
 
-        if not any('<ExternalForces>' in line for line in lines):
-            logger.warning("No <ExternalForces> section found")
-            return
         
         logger.info("Reading external forces ......")
 
         # Re-open file for parsing
         fin = open(fname)
       
-        while True:
-            line = fin.readline()
-          
-            # Find the start of ExternalForces section
-            if line.startswith('<ExternalForces>') == True:
-                while True:
-                    line = fin.readline()
+        lines = fin.readlines()
+        inside = False        
 
-                    # Check for end of section
-                    if line.startswith('</ExternalForces>') == True:
-                        return
-                
-                    # Parse force specification line
-                    a = line.strip().split(';')
+        for line in lines:
+        
+            if "<ExternalForces>" in line:
+                inside = True
+                continue
+
+            if "</ExternalForces>" in line:
+                inside = False
+                break   # remove this if there may be multiple blocks
+
+            if inside:     
+                # Parse force specification line
+                a = line.strip().split(';')
                     
-                    if len(a) == 2:
-                        b = a[0].split('=')
+                if len(a) == 2:
+                    b = a[0].split('=')
                     
-                        if len(b) == 2:
-                            c = b[0].split('[')
+                    if len(b) == 2:
+                        c = b[0].split('[')
                             
-                            dofType = c[0]
-                            nodeID = eval(c[1].split(']')[0])
+                        dofType = c[0]
+                        nodeID = eval(c[1].split(']')[0])
                             
-                            # Set external force value
-                            self.fhat[self.dofs.getForType(nodeID, dofType)] = eval(b[1])
+                        # Set external force value
+                        self.fhat[self.dofs.getForType(nodeID, dofType)] = eval(b[1])
                   
         fin.close()
 
