@@ -1,23 +1,23 @@
 pyfem package
 =============
 
+.. automodule:: pyfem
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
-    pyfem.core
-    pyfem.elements
-    pyfem.fem
-    pyfem.io
-    pyfem.materials
-    pyfem.solvers
-    pyfem.util
-
-Module contents
----------------
-
-.. automodule:: pyfem
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   pyfem.core
+   pyfem.elements
+   pyfem.fem
+   pyfem.gui
+   pyfem.io
+   pyfem.materials
+   pyfem.models
+   pyfem.solvers
+   pyfem.util
