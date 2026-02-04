@@ -1,0 +1,42 @@
+<Nodes>
+  1 00.0   0.0 ; 
+  2 20.0   0.0 ;
+  3 40.0   0.0 ;
+  4 60.0   0.0 ; 
+  5 80.0   0.0 ;
+  6 100.0  0.0 ;
+
+  7 00.0   20.0 ; 
+  8 20.0   20.0 ;
+  9 40.0   20.0 ;
+ 10 60.0   20.0 ; 
+ 11 80.0   20.0 ;
+ 12 100.0  20.0 ;
+</Nodes>
+
+<Elements>
+  1 "PlateElem"  1   2   8   7 ;
+  2 "PlateElem"  2   3   9   8 ;
+  3 "PlateElem"  3   4  10   9 ;
+  4 "PlateElem"  4   5  11  10 ;
+  5 "PlateElem"  5   6  12  11 ;  
+</Elements>
+
+<NodeConstraints>
+ u[1]  = 0.0;
+ v[1]  = 0.0;
+ w[1]  = 0.0;
+ rx[1] = 0.0;
+ ry[1] = 0.0;
+
+ u[7]  = 0.0;
+ v[7]  = 0.0;
+ w[7]  = 0.0;
+ rx[7] = 0.0;
+ ry[7] = 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+ w[6]  = 5.0;
+ w[12] = 5.0;
+</ExternalForces>

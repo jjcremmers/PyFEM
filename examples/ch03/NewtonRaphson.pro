@@ -38,7 +38,6 @@ mesh =
 graph =
 {
   type = "GraphWriter";
-  onScreen = true;
 
   columns = [ "disp" , "load" ];
 
