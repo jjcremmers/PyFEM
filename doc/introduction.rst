@@ -119,6 +119,11 @@ John Wiley and Sons, 2012, ISBN 978-0470666449
      </div>
    </p>
 
+Quick start
+-----------
+
+.. include:: quickstart.rst
+
 License
 -------
 
@@ -143,6 +148,4 @@ Important
 - If you plan to adopt MIT licensing for your own distribution or fork, please
   keep the file-level notices intact and include an MIT license file in your
   distribution.
-
-.. include:: installation/overview.rst
    

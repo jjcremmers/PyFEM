@@ -19,6 +19,7 @@ Documentation Contents
    :caption: Table of Contents
 
    introduction
+   installation/overview
    tutorials/quickstart
    usermanual
    develop/overview
