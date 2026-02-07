@@ -144,12 +144,5 @@ Important
   keep the file-level notices intact and include an MIT license file in your
   distribution.
 
-.. include:: test.rst
-
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Installation
-
-   installation/overview
+.. include:: installation/overview.rst
+   
