@@ -1,7 +1,8 @@
 Getting started with PyFEM is straightforward. Follow these steps to install
 and run your first simulation.
 
-**Installation**
+Installation
+~~~~~~~~~~~~
 
 1. Clone the repository:
 
