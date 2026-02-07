@@ -19,7 +19,8 @@ Installation
 
    This installs the ``pyfem`` command-line tool and all required packages.
 
-**Running a Simple Example**
+Running a Simple Example
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 After installation, run a basic example to verify everything works:
 
@@ -30,8 +31,6 @@ After installation, run a basic example to verify everything works:
 
 This runs a simple patch test. You should see solver output showing convergence
 information and generated result files.
-
-**Running More Examples**
 
 PyFEM includes numerous examples organized by chapter:
 
@@ -51,5 +50,6 @@ PyFEM includes numerous examples organized by chapter:
 Each example produces output files (VTK format for visualization, graphs, etc.)
 that can be viewed in ParaView or other post-processing tools.
 
-For detailed installation instructions including virtual environments and
-platform-specific notes, see the full installation guide below.
+For more detailed installation instructions including virtual environments,
+platform-specific notes, and advanced CLI usage, please refer to the
+:doc:`installation guide <installation/overview>`.
