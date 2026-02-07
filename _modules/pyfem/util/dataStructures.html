@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.dataStructures &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">2. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/quickstart.html">3. Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">4. User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">5. Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">6. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.dataStructures</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.dataStructures</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.logger</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">separator</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utilities for lightweight data structures used across PyFEM.</span>
+
+<span class="sd">This module provides simple containers and helpers used by the solver and</span>
+<span class="sd">pre/post-processing layers: cleaning input values, status tracking,</span>
+<span class="sd">property containers, global data for assembly, and per-element storage.</span>
+
+<span class="sd">All modifications in this file are non-functional documentation and type</span>
+<span class="sd">annotations to improve readability and editor support; runtime behavior is</span>
+<span class="sd">preserved.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">()</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="cleanVariable">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.cleanVariable">[docs]</a>
+<span class="k">def</span> <span class="nf">cleanVariable</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a textual configuration value into a Python object.</span>
+
+<span class="sd">    - &#39;true&#39; -&gt; True</span>
+<span class="sd">    - &#39;false&#39; -&gt; False</span>
+<span class="sd">    - otherwise: try `eval`, fall back to original string</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        a: Input value (typically a string) read from configuration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Parsed Python object or the original value if parsing fails.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">a</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">a</span></div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="solverStatus">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.solverStatus">[docs]</a>
+<span class="k">class</span> <span class="nc">solverStatus</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for tracking solver progress and timing.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        cycle (int): Current step/cycle number.</span>
+<span class="sd">        iiter (int): Current iteration count within step.</span>
+<span class="sd">        time (float): Current simulation time.</span>
+<span class="sd">        time0 (float): Reference time (unused internally here).</span>
+<span class="sd">        dtime (float): Time increment for a cycle.</span>
+<span class="sd">        lam (float): Load or continuation parameter.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iiter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dtime</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lam</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<div class="viewcode-block" id="solverStatus.increaseStep">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.solverStatus.increaseStep">[docs]</a>
+    <span class="k">def</span> <span class="nf">increaseStep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Advance to the next solver step and reset iteration counter.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtime</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iiter</span> <span class="o">=</span> <span class="mi">0</span></div>
+</div>
+
+ 
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+   
+<div class="viewcode-block" id="Properties">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.Properties">[docs]</a>
+<span class="k">class</span> <span class="nc">Properties</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simple attribute container built from a dictionary.</span>
+
+<span class="sd">    Instances expose dictionary keys as attributes and support iteration over</span>
+<span class="sd">    (name, value) pairs. This is a lightweight alternative to `types.SimpleNamespace`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{})</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a multi-line representation listing public attributes.&quot;&quot;&quot;</span>
+        <span class="n">myStr</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Ignore private members and standard routines</span>
+            <span class="k">if</span> <span class="n">att</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">myStr</span> <span class="o">+=</span> <span class="s1">&#39;Attribute: &#39;</span> <span class="o">+</span> <span class="n">att</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="n">myStr</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">att</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">myStr</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over (name, value) pairs for public attributes.&quot;&quot;&quot;</span>
+        <span class="n">propsList</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Ignore private members and standard routines</span>
+            <span class="k">if</span> <span class="n">att</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">propsList</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">att</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">att</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">propsList</span><span class="p">)</span>
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="Properties.store">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.Properties.store">[docs]</a>
+    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store a property given a dotted key path or a simple key.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            store(&#39;alpha&#39;, 1)</span>
+<span class="sd">            store(&#39;parent.child.value&#39;, &#39;x&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kets</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">kets</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">props</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">kets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">cleanVariable</span><span class="p">(</span><span class="n">val</span><span class="p">))</span></div>
+</div>
+
+
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1"># GlobalData - Global data container for finite element analysis</span>
+<span class="c1">#-------------------------------------------------------------------------------   </span>
+
+<div class="viewcode-block" id="GlobalData">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData">[docs]</a>
+<span class="k">class</span> <span class="nc">GlobalData</span><span class="p">(</span><span class="n">Properties</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Global data container for finite element analysis.</span>
+<span class="sd">    </span>
+<span class="sd">    This class holds the global state vectors, forces, boundary conditions,</span>
+<span class="sd">    and manages I/O operations for nodal data. It inherits from Properties</span>
+<span class="sd">    to provide flexible attribute storage.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        nodes: Node container with coordinates and connectivity.</span>
+<span class="sd">        elements: Element container with element definitions.</span>
+<span class="sd">        dofs: Degree of freedom manager.</span>
+<span class="sd">        state: Current state vector (displacements, temperatures, etc.).</span>
+<span class="sd">        Dstate: Incremental state vector.</span>
+<span class="sd">        fint: Internal force vector.</span>
+<span class="sd">        fhat: Applied external force vector.</span>
+<span class="sd">        velo: Velocity vector (for dynamic analysis).</span>
+<span class="sd">        acce: Acceleration vector (for dynamic analysis).</span>
+<span class="sd">        solverStatus: Solver status tracker.</span>
+<span class="sd">        outputNames: List of output variable names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">elements</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">dofs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the global data container.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            nodes: Node container with nodal coordinates.</span>
+<span class="sd">            elements: Element container with element definitions.</span>
+<span class="sd">            dofs: Degree of freedom manager.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize base Properties class with nodes, elements, and dofs</span>
+        <span class="n">Properties</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">nodes</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="n">elements</span><span class="p">,</span> <span class="s1">&#39;dofs&#39;</span><span class="p">:</span> <span class="n">dofs</span><span class="p">})</span>
+
+        <span class="c1"># Initialize state vectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dstate</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fint</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fhat</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="p">))</span>
+
+        <span class="c1"># Initialize dynamic analysis vectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">velo</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acce</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="p">))</span>
+        
+        <span class="c1"># Set solver status from elements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solverStatus</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="n">solverStat</span>
+       
+        <span class="c1"># Initialize output names list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputNames</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># readFromFile - Read external forces from input file</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GlobalData.readFromFile">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData.readFromFile">[docs]</a>
+    <span class="k">def</span> <span class="nf">readFromFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read external forces from an input file.</span>
+<span class="sd">        </span>
+<span class="sd">        Parses the &lt;ExternalForces&gt; section of the input file and populates</span>
+<span class="sd">        the fhat vector with prescribed external forces.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fname: Path to the input file containing external forces.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">            </span>
+<span class="sd">        Note:</span>
+<span class="sd">            Expected format in file:</span>
+<span class="sd">            &lt;ExternalForces&gt;</span>
+<span class="sd">            dofType[nodeID] = value;</span>
+<span class="sd">            &lt;/ExternalForces&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading external forces ......&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Re-open file for parsing</span>
+        <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+      
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">inside</span> <span class="o">=</span> <span class="kc">False</span>        
+
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        
+            <span class="k">if</span> <span class="s2">&quot;&lt;ExternalForces&gt;&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">inside</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="s2">&quot;&lt;/ExternalForces&gt;&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">inside</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>   <span class="c1"># remove this if there may be multiple blocks</span>
+
+            <span class="k">if</span> <span class="n">inside</span><span class="p">:</span>     
+                <span class="c1"># Parse force specification line</span>
+                <span class="n">a</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+                    
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                    
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">c</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span>
+                            
+                        <span class="n">dofType</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">nodeID</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                            
+                        <span class="c1"># Set external force value</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fhat</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span> <span class="n">dofType</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                  
+        <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># printNodes - Print nodal data to file or screen</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GlobalData.printNodes">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData.printNodes">[docs]</a>
+    <span class="k">def</span> <span class="nf">printNodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fileName</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inodes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print nodal data to file or screen.</span>
+<span class="sd">        </span>
+<span class="sd">        Outputs a formatted table containing nodal state values, internal forces,</span>
+<span class="sd">        and any additional output variables.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fileName: Path to output file. If None, prints to screen.</span>
+<span class="sd">            inodes: List of node IDs to print. If None, prints all nodes.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Determine output destination</span>
+        <span class="k">if</span> <span class="n">fileName</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get node list if not provided</span>
+        <span class="k">if</span> <span class="n">inodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">inodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        
+        <span class="c1"># Print header row</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;     Node | &#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Print DOF type headers</span>
+        <span class="k">for</span> <span class="n">dofType</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">dofType</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+        <span class="c1"># Print internal force headers if available</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;fint&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">dofType</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; fint-</span><span class="si">{</span><span class="n">dofType</span><span class="si">:</span><span class="s2">&lt;6</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+        <span class="c1"># Print additional output variable headers</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;11</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">81</span><span class="p">),</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># Print data for each node</span>
+        <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">inodes</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    </span><span class="si">{</span><span class="n">nodeID</span><span class="si">:</span><span class="s1">4d</span><span class="si">}</span><span class="s1">  | &#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Print state values</span>
+            <span class="k">for</span> <span class="n">dofType</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="w"> </span><span class="n">dofType</span><span class="p">)]</span><span class="si">:</span><span class="s1">10.3e</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Print internal forces</span>
+            <span class="k">for</span> <span class="n">dofType</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fint</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="w"> </span><span class="n">dofType</span><span class="p">)]</span><span class="si">:</span><span class="s1">10.3e</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Print additional output data</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">nodeID</span><span class="p">)</span><span class="si">:</span><span class="s1">10.3e</span><span class="si">}</span><span class="s1"> &#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># Close file if writing to file</span>
+        <span class="k">if</span> <span class="n">fileName</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># getData - Retrieve weighted output data for nodes</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+      
+<div class="viewcode-block" id="GlobalData.getData">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData.getData">[docs]</a>
+    <span class="k">def</span> <span class="nf">getData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputName</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inodes</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve weighted output data for specified nodes.</span>
+<span class="sd">        </span>
+<span class="sd">        Computes weighted average of output data for nodes. The weights are</span>
+<span class="sd">        typically used to average data from multiple elements sharing a node.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            outputName: Name of the output variable to retrieve.</span>
+<span class="sd">            inodes: Node ID (int) or list of node IDs to retrieve data for.</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Weighted output value(s). Returns float for single node,</span>
+<span class="sd">            list of values for multiple nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get data and weight arrays</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputName</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputName</span> <span class="o">+</span> <span class="s1">&#39;Weights&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Handle single node</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inodes</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">inodes</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Handle multiple nodes</span>
+            <span class="n">outdata</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">inodes</span><span class="p">],</span> <span class="n">weights</span><span class="p">[</span><span class="n">inodes</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">w</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">outdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span> <span class="o">/</span> <span class="n">w</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">outdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">outdata</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># resetNodalOutput - Clear all nodal output data</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GlobalData.resetNodalOutput">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData.resetNodalOutput">[docs]</a>
+    <span class="k">def</span> <span class="nf">resetNodalOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all nodal output data and weights.</span>
+<span class="sd">        </span>
+<span class="sd">        Removes all output variables and their corresponding weights from</span>
+<span class="sd">        the global data structure. Called at the start of each analysis step.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Remove all output data and weights</span>
+        <span class="k">for</span> <span class="n">outputName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputName</span><span class="p">)</span>
+            <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputName</span> <span class="o">+</span> <span class="s1">&#39;Weights&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Clear output names list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputNames</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+    
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># close - Finalize analysis and print summary</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="GlobalData.close">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalize analysis and print execution summary.</span>
+<span class="sd">        </span>
+<span class="sd">        Prints the total elapsed time and a success message to the log.</span>
+<span class="sd">        Called at the end of a successful analysis.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">pyfem.util.plotUtils</span> <span class="kn">import</span> <span class="n">plotTime</span>
+        
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">separator</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  Total elapsed time.......... : &quot;</span> <span class="o">+</span> 
+                    <span class="n">plotTime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">startTime</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  PyFem analysis terminated successfully.&quot;</span><span class="p">)</span>
+        <span class="n">separator</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span></div>
+</div>
+
+            
+<span class="c1">#-------------------------------------------------------------------------------</span>
+<span class="c1"># elementData - Container for element-level data</span>
+<span class="c1">#-------------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="elementData">
+<a class="viewcode-back" href="../../../pyfem.util.dataStructures.html#pyfem.util.dataStructures.elementData">[docs]</a>
+<span class="k">class</span> <span class="nc">elementData</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for element-level state and computed quantities.</span>
+<span class="sd">    </span>
+<span class="sd">    This class stores element state vectors, element matrices (stiffness, mass),</span>
+<span class="sd">    element force vectors, and output labels for post-processing.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        state: Element state vector (displacements, etc.).</span>
+<span class="sd">        Dstate: Element incremental state vector.</span>
+<span class="sd">        stiff: Element tangent stiffness matrix.</span>
+<span class="sd">        fint: Element internal force vector.</span>
+<span class="sd">        mass: Element mass matrix.</span>
+<span class="sd">        lumped: Element lumped mass vector.</span>
+<span class="sd">        diss: Element dissipation (energy dissipated).</span>
+<span class="sd">        outlabel: List of output variable labels for this element.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elstate</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">elDstate</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize element data container.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            elstate: Element state vector.</span>
+<span class="sd">            elDstate: Element incremental state vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get number of DOFs from state vector</span>
+        <span class="n">nDof</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">elstate</span><span class="p">)</span>
+
+        <span class="c1"># Store state vectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">elstate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dstate</span> <span class="o">=</span> <span class="n">elDstate</span>
+        
+        <span class="c1"># Initialize element matrices and vectors</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stiff</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nDof</span><span class="p">,</span> <span class="n">nDof</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fint</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nDof</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nDof</span><span class="p">,</span> <span class="n">nDof</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lumped</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nDof</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diss</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Initialize output labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outlabel</span> <span class="o">=</span> <span class="p">[]</span>
+   
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of element state.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            String representation of the state vector.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">)</span></div>
+
+     
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

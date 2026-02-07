@@ -1,0 +1,7 @@
+pyfem.elements.SLS module
+=========================
+
+.. automodule:: pyfem.elements.SLS
+   :members:
+   :show-inheritance:
+   :undoc-members:

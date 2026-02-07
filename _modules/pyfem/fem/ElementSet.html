@@ -1,0 +1,561 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.fem.ElementSet &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">2. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/quickstart.html">3. Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">4. User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../develop/overview.html">5. Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">6. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.fem.ElementSet</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.fem.ElementSet</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.itemList</span> <span class="kn">import</span> <span class="n">itemList</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.logger</span> <span class="kn">import</span> <span class="n">getLogger</span><span class="p">,</span> <span class="n">logHeader</span><span class="p">,</span> <span class="n">separator</span><span class="p">,</span> <span class="n">logVariable</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.dataStructures</span> <span class="kn">import</span> <span class="n">solverStatus</span><span class="p">,</span> <span class="n">Properties</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="ElementSet">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet">[docs]</a>
+<span class="k">class</span> <span class="nc">ElementSet</span><span class="p">(</span><span class="n">itemList</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for finite elements and element groups.</span>
+<span class="sd">    </span>
+<span class="sd">    Manages a collection of finite element objects indexed by element ID.</span>
+<span class="sd">    Elements are organized into named groups based on their model type (material,</span>
+<span class="sd">    element type, etc.). Provides methods for iterating over elements, reading</span>
+<span class="sd">    from input files, and managing element groups.</span>
+<span class="sd">    </span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        nodes: NodeSet object containing the mesh nodes.</span>
+<span class="sd">        props: Properties object containing model and material properties.</span>
+<span class="sd">        solverStat: Solver status tracker for time stepping and iterations.</span>
+<span class="sd">        groups: Dictionary mapping group names to lists of element IDs.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples:</span>
+<span class="sd">        &gt;&gt;&gt; elements = ElementSet(nodes, props)</span>
+<span class="sd">        &gt;&gt;&gt; elements.readFromFile(&#39;input.pro&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; for element in elements:</span>
+<span class="sd">        ...     # Process each element</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">props</span><span class="p">:</span> <span class="n">Properties</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an empty ElementSet.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            nodes: NodeSet object containing mesh nodes.</span>
+<span class="sd">            props: Properties object with model and material definitions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">itemList</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">nodes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">props</span> <span class="o">=</span> <span class="n">props</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solverStat</span> <span class="o">=</span> <span class="n">solverStatus</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># __iter__ - Iterate over all elements</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all elements in all groups.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Iterator over all element objects in the set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">groupName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterGroupNames</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iterElementGroup</span><span class="p">(</span><span class="n">groupName</span><span class="p">):</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+           
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">elements</span><span class="p">)</span>
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># __repr__ - Return string representation</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+        
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return human-readable summary of element and group counts.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Formatted string showing total element count and group information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;  Number of elements ......... </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;    Number of  groups .......... </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;    -----------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;      name                       #elems</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">msg</span> <span class="o">+=</span> <span class="s2">&quot;      ---------------------------------</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;      </span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;16s</span><span class="si">}</span><span class="s2">           </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">name</span><span class="p">])</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        
+        <span class="k">return</span> <span class="n">msg</span>
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1">#</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.logInfo">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.logInfo">[docs]</a>
+    <span class="k">def</span> <span class="nf">logInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log element and group information using the logger.</span>
+<span class="sd">        </span>
+<span class="sd">        Outputs the same information as __repr__ but using the logger,</span>
+<span class="sd">        with properly formatted output for number of elements and groups.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logVariable</span><span class="p">(</span><span class="s2">&quot;Number of elements&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logVariable</span><span class="p">(</span><span class="s2">&quot;Number of groups&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">logHeader</span><span class="p">(</span><span class="s2">&quot;    name&quot;</span><span class="p">,</span>  <span class="s2">&quot;#elems&quot;</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">logVariable</span><span class="p">((</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="n">name</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span> </div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># getDofTypes - Get all unique DOF types from elements</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.getDofTypes">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.getDofTypes">[docs]</a>
+    <span class="k">def</span> <span class="nf">getDofTypes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all unique degree of freedom (DOF) types from all elements.</span>
+<span class="sd">        </span>
+<span class="sd">        Iterates through all elements and collects unique DOF types (e.g., &#39;u&#39;, &#39;v&#39;,</span>
+<span class="sd">        &#39;w&#39; for displacements, &#39;temp&#39; for temperature, etc.).</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of unique DOF type strings.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dofTypes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dofType</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">dofType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dofTypes</span><span class="p">:</span>
+                    <span class="n">dofTypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dofType</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dofTypes</span></div>
+
+        
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># readFromFile - Read elements from input file</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+        
+<div class="viewcode-block" id="ElementSet.readFromFile">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.readFromFile">[docs]</a>
+    <span class="k">def</span> <span class="nf">readFromFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read element definitions from an input file.</span>
+<span class="sd">        </span>
+<span class="sd">        Parses elements from a legacy .pro file format or references a Gmsh file.</span>
+<span class="sd">        Supports &lt;Elements&gt; blocks with element definitions or gmsh file references.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fname: Path to input file (.pro format or referencing Gmsh file).</span>
+<span class="sd">            </span>
+<span class="sd">        Notes:</span>
+<span class="sd">            Format for &lt;Elements&gt; block:</span>
+<span class="sd">            elemID modelName nodeID1 nodeID2 ...; </span>
+<span class="sd">            </span>
+<span class="sd">            Format for Gmsh reference:</span>
+<span class="sd">            gmsh = &quot;filename.msh&quot;;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading elements&quot;</span><span class="p">)</span>
+        <span class="n">separator</span><span class="p">()</span>
+
+        <span class="n">fin</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+      
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+          
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;Elements&gt;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">fin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;/Elements&gt;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">return</span>
+                
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s{2,}&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="n">a</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span>
+         
+                    <span class="k">for</span> <span class="n">a0</span> <span class="ow">in</span> <span class="n">a</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">b</span> <span class="o">=</span> <span class="n">a0</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+                        
+                        <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;//&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                            <span class="k">break</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">==</span> <span class="nb">int</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">eval</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="nb">eval</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span> <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">:]])</span>
+
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;gmsh&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">ln</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">ln</span> <span class="o">=</span> <span class="n">ln</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readGmshFile</span><span class="p">(</span><span class="n">ln</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">return</span>
+                
+        <span class="n">fin</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+            
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># readGmshFile - Read elements from Gmsh mesh file</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.readGmshFile">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.readGmshFile">[docs]</a>
+    <span class="k">def</span> <span class="nf">readGmshFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read elements from a Gmsh mesh file.</span>
+<span class="sd">        </span>
+<span class="sd">        Uses meshio to parse Gmsh format and extract elements. Physical groups</span>
+<span class="sd">        from Gmsh become element groups in PyFEM.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            fname: Path to the Gmsh file (.msh format).</span>
+<span class="sd">            </span>
+<span class="sd">        Requires:</span>
+<span class="sd">            meshio package for reading Gmsh files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">meshio</span>
+        
+        <span class="n">mesh</span> <span class="o">=</span> <span class="n">meshio</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;gmsh&quot;</span><span class="p">)</span>
+        
+        <span class="n">elemID</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">typ</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cell_sets_dict</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">typ</span><span class="p">]:</span>
+                    <span class="n">iNodes</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">cells_dict</span><span class="p">[</span><span class="n">typ</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">elemID</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iNodes</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+                    <span class="n">elemID</span> <span class="o">=</span> <span class="n">elemID</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+                                     
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># add - Add an element to the set</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.add">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.add">[docs]</a>
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">modelName</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">elementNodes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a finite element to the element set.</span>
+<span class="sd">        </span>
+<span class="sd">        Creates an element instance of the specified type with given nodes,</span>
+<span class="sd">        validates node IDs, and adds the element to the appropriate group.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            ID: Unique element identifier.</span>
+<span class="sd">            modelName: Name of the model/material (must exist in props).</span>
+<span class="sd">            elementNodes: List of node IDs that define the element connectivity.</span>
+<span class="sd">            </span>
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: If model is missing &#39;type&#39; attribute or node ID invalid.</span>
+<span class="sd">            ImportError: If element module or class cannot be found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check if the model exists</span>
+        
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">modelName</span><span class="p">):</span>
+        
+            <span class="n">modelProps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">,</span> <span class="n">modelName</span><span class="p">)</span>
+
+            <span class="c1"># Check if the model has a type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">modelProps</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Missing type for model &#39;</span> <span class="o">+</span> <span class="n">modelName</span><span class="p">)</span>
+            
+            <span class="n">modelType</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">modelProps</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">)</span>
+     
+            <span class="n">modelProps</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">rank</span>
+            <span class="n">modelProps</span><span class="o">.</span><span class="n">solverStat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solverStat</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pyfem.elements.</span><span class="si">{</span><span class="n">modelType</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ModuleNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Solver module &#39;pyfem.elements.</span><span class="si">{</span><span class="n">modelType</span><span class="si">}</span><span class="s2">&#39; not found. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Check the &#39;type&#39; in your input file.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">model_cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">modelType</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Class &#39;</span><span class="si">{</span><span class="n">modelType</span><span class="si">}</span><span class="s2">&#39; not found in module &#39;pyfem.elements.</span><span class="si">{</span><span class="n">modelType</span><span class="si">}</span><span class="s2">&#39;. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Ensure the class name matches the file name.&quot;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+     
+            <span class="n">elem</span> <span class="o">=</span> <span class="n">model_cls</span><span class="p">(</span><span class="n">elementNodes</span><span class="p">,</span> <span class="n">modelProps</span><span class="p">)</span>
+
+            <span class="c1"># Check if the node IDs are valid:</span>
+
+            <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">getNodes</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Node ID &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; does not exist&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Add the element to the element set:</span>
+
+            <span class="n">itemList</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ID</span><span class="p">,</span> <span class="n">elem</span><span class="p">)</span>
+
+            <span class="c1"># Add the element to the correct group:</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">addToGroup</span><span class="p">(</span><span class="n">modelName</span><span class="p">,</span> <span class="n">ID</span><span class="p">)</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># addToGroup - Add element to a named group</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.addToGroup">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.addToGroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">addToGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">modelType</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ID</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register an element ID to a named group.</span>
+<span class="sd">        </span>
+<span class="sd">        Creates the group if it doesn&#39;t exist, otherwise appends the element ID.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            modelType: Name of the element group.</span>
+<span class="sd">            ID: Element identifier to add to the group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">modelType</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">modelType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ID</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">modelType</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ID</span><span class="p">)</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># addGroup - Create a new group with specified elements</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.addGroup">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.addGroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">addGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupName</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">groupIDs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create or replace a named group with specified element IDs.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            groupName: Name for the element group.</span>
+<span class="sd">            groupIDs: List of element IDs to include in the group.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">groupName</span><span class="p">]</span> <span class="o">=</span> <span class="n">groupIDs</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># iterGroupNames - Get group names</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.iterGroupNames">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.iterGroupNames">[docs]</a>
+    <span class="k">def</span> <span class="nf">iterGroupNames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the dictionary of group names and their element IDs.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary mapping group names to lists of element IDs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># iterElementGroup - Iterate over elements in a group</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.iterElementGroup">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.iterElementGroup">[docs]</a>
+    <span class="k">def</span> <span class="nf">iterElementGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupName</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over element objects in specified group(s).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            groupName: Name of group to iterate, &#39;All&#39; for all elements,</span>
+<span class="sd">                      or list of group names to iterate multiple groups.</span>
+<span class="sd">                      </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Iterator over element objects in the specified group(s).</span>
+<span class="sd">            </span>
+<span class="sd">        Examples:</span>
+<span class="sd">            &gt;&gt;&gt; for elem in elements.iterElementGroup(&#39;Material1&#39;):</span>
+<span class="sd">            ...     # Process elements in Material1 group</span>
+<span class="sd">            &gt;&gt;&gt; for elem in elements.iterElementGroup([&#39;Mat1&#39;, &#39;Mat2&#39;]):</span>
+<span class="sd">            ...     # Process elements in both groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">groupName</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupName</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">elems</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">groupName</span><span class="p">:</span>
+                <span class="n">elems</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="n">elems</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">groupName</span><span class="p">]))</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># elementGroupCount - Get number of elements in group</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.elementGroupCount">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.elementGroupCount">[docs]</a>
+    <span class="k">def</span> <span class="nf">elementGroupCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groupName</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of elements in specified group(s).</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            groupName: Name of group, &#39;All&#39; for all elements,</span>
+<span class="sd">                      or list of group names.</span>
+<span class="sd">                      </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Total count of elements in the specified group(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">groupName</span> <span class="o">==</span> <span class="s2">&quot;All&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">groupName</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">groupName</span><span class="p">:</span>
+                <span class="n">length</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">length</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">groupName</span><span class="p">])</span></div>
+
+          
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># getFamilyIDs - Get element family indices</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.getFamilyIDs">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.getFamilyIDs">[docs]</a>
+    <span class="k">def</span> <span class="nf">getFamilyIDs</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get family type indices for all elements.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a list of integer indices representing the element family</span>
+<span class="sd">        (CONTINUUM=0, INTERFACE=1, SURFACE=2, BEAM=3, SHELL=4) for each element.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            List of family indices, one per element.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">familyIDs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">fam</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CONTINUUM&quot;</span><span class="p">,</span> <span class="s2">&quot;INTERFACE&quot;</span><span class="p">,</span> <span class="s2">&quot;SURFACE&quot;</span><span class="p">,</span> <span class="s2">&quot;BEAM&quot;</span><span class="p">,</span> <span class="s2">&quot;SHELL&quot;</span><span class="p">]</span>
+        
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            
+            <span class="n">familyIDs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fam</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">family</span><span class="p">))</span>
+            
+        <span class="k">return</span> <span class="n">familyIDs</span></div>
+
+
+    <span class="c1">#---------------------------------------------------------------------------</span>
+    <span class="c1"># commitHistory - Commit element history variables</span>
+    <span class="c1">#---------------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="ElementSet.commitHistory">
+<a class="viewcode-back" href="../../../pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet.commitHistory">[docs]</a>
+    <span class="k">def</span> <span class="nf">commitHistory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commit history variables for all elements.</span>
+<span class="sd">        </span>
+<span class="sd">        Calls commitHistory() on all element objects to update internal</span>
+<span class="sd">        state variables after a successful time/load step. Typically used</span>
+<span class="sd">        for storing plastic strains, damage variables, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="n">element</span><span class="o">.</span><span class="n">commitHistory</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

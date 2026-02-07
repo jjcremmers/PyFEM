@@ -1,0 +1,7 @@
+pyfem.materials.BaseFailure module
+==================================
+
+.. automodule:: pyfem.materials.BaseFailure
+   :members:
+   :show-inheritance:
+   :undoc-members:

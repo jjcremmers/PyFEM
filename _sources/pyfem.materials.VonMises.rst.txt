@@ -1,0 +1,7 @@
+pyfem.materials.VonMises module
+===============================
+
+.. automodule:: pyfem.materials.VonMises
+   :members:
+   :show-inheritance:
+   :undoc-members:

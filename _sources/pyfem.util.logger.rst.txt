@@ -1,0 +1,7 @@
+pyfem.util.logger module
+========================
+
+.. automodule:: pyfem.util.logger
+   :members:
+   :show-inheritance:
+   :undoc-members:

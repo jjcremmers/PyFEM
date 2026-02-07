@@ -1,0 +1,7 @@
+pyfem.elements.Composite module
+===============================
+
+.. automodule:: pyfem.elements.Composite
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.elements.KirchhoffBeam module
+===================================
+
+.. automodule:: pyfem.elements.KirchhoffBeam
+   :members:
+   :show-inheritance:
+   :undoc-members:

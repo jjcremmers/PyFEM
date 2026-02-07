@@ -1,0 +1,22 @@
+pyfem.io package
+================
+
+.. automodule:: pyfem.io
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.io.ContourWriter
+   pyfem.io.DataDump
+   pyfem.io.GraphWriter
+   pyfem.io.HDF5Writer
+   pyfem.io.InputReader
+   pyfem.io.MeshWriter
+   pyfem.io.OutputManager
+   pyfem.io.OutputWriter

@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1. Elements &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.1.3.1.1. FiniteStrainAxiSym" href="finitestrainaxisym.html" />
+    <link rel="prev" title="4. User Manual" href="../usermanual.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">2. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">3. Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">4. User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.1. Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">4.1.1. Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-in-input-files">4.1.2. Configuration in Input Files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#multiple-element-groups">4.1.2.1. Multiple Element Groups</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#element-categories">4.1.3. Element Categories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#continuum-elements">4.1.3.1. Continuum Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shell-and-plate-elements">4.1.3.2. Shell and Plate Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#beam-and-rod-elements">4.1.3.3. Beam and Rod Elements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other-elements">4.1.3.4. Other Elements</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">4.2. Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">4.3. Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">4.4. I/O Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/overview.html">4.5. Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">5. Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">6. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html"><span class="section-number">4. </span>User Manual</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.1. </span>Elements</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="elements">
+<h1><span class="section-number">4.1. </span>Elements<a class="headerlink" href="#elements" title="Link to this heading"></a></h1>
+<p>PyFEM provides a comprehensive library of finite element formulations for
+structural and solid mechanics analysis. Elements define the kinematic
+assumptions, interpolation functions, and integration schemes that transform
+continuum mechanics equations into discrete algebraic systems.</p>
+<section id="overview">
+<h2><span class="section-number">4.1.1. </span>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Element types in PyFEM include:</p>
+<ul class="simple">
+<li><p><strong>Continuum elements</strong>: 2D, 3D, and axisymmetric solids for bulk materials</p></li>
+<li><p><strong>Structural elements</strong>: Beams, trusses, plates, and shells for slender members</p></li>
+<li><p><strong>Interface elements</strong>: Cohesive zone models for fracture and delamination</p></li>
+<li><p><strong>Special elements</strong>: Springs and other connectors</p></li>
+</ul>
+<p>Each element type is implemented as a Python class that computes element
+stiffness matrices, internal forces, and output quantities. Elements are
+configured in the <code class="docutils literal notranslate"><span class="pre">.pro</span></code> input file and associated with specific element
+groups from the mesh.</p>
+</section>
+<section id="configuration-in-input-files">
+<h2><span class="section-number">4.1.2. </span>Configuration in Input Files<a class="headerlink" href="#configuration-in-input-files" title="Link to this heading"></a></h2>
+<p>Elements are defined by creating named element groups in the <code class="docutils literal notranslate"><span class="pre">.pro</span></code> file.
+Each group specifies the element type and its material properties:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>input = &quot;model.dat&quot;;
+
+ContElem =
+{
+  type = &quot;SmallStrainContinuum&quot;;
+
+  material =
+  {
+    type = &quot;PlaneStress&quot;;
+    E    = 210.0e3;
+    nu   = 0.3;
+  };
+};
+
+solver =
+{
+  type = &quot;NonlinearSolver&quot;;
+  maxCycle = 50;
+};
+</pre></div>
+</div>
+<p>In this example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ContElem</span></code> is the element group name (must match a group in <code class="docutils literal notranslate"><span class="pre">model.dat</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">type</span></code> specifies the element formulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">material</span></code> defines the constitutive behavior</p></li>
+<li><p>The mesh file <code class="docutils literal notranslate"><span class="pre">model.dat</span></code> assigns elements to groups</p></li>
+</ul>
+<section id="multiple-element-groups">
+<h3><span class="section-number">4.1.2.1. </span>Multiple Element Groups<a class="headerlink" href="#multiple-element-groups" title="Link to this heading"></a></h3>
+<p>Complex models can combine different element types:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Solid =
+{
+  type = &quot;SmallStrainContinuum&quot;;
+  material = { type = &quot;PlaneStress&quot;; E = 210.0e3; nu = 0.3; };
+};
+
+Beam =
+{
+  type = &quot;Beam&quot;;
+  material = { type = &quot;Isotropic&quot;; E = 210.0e3; nu = 0.3; };
+  A = 0.01;  # Cross-sectional area
+  I = 8.33e-6;  # Moment of inertia
+};
+
+Interface =
+{
+  type = &quot;Interface&quot;;
+  material = { type = &quot;XuNeedleman&quot;; Tult = 10.0; Gc = 1.0; };
+};
+</pre></div>
+</div>
+</section>
+</section>
+<section id="element-categories">
+<h2><span class="section-number">4.1.3. </span>Element Categories<a class="headerlink" href="#element-categories" title="Link to this heading"></a></h2>
+<section id="continuum-elements">
+<h3><span class="section-number">4.1.3.1. </span>Continuum Elements<a class="headerlink" href="#continuum-elements" title="Link to this heading"></a></h3>
+<p>Solid continuum elements for bulk materials under small or finite strains.
+These elements use displacement-based formulations with material behavior
+defined by constitutive laws. Suitable for 2D plane stress/strain, 3D solids,
+and axisymmetric problems.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="finitestrainaxisym.html">4.1.3.1.1. FiniteStrainAxiSym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="finitestraincontinuum.html">4.1.3.1.2. FiniteStrainContinuum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smallstraincontinuum.html">4.1.3.1.3. SmallStrainContinuum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smallstrainaxisym.html">4.1.3.1.4. SmallStrainAxiSym</a></li>
+</ul>
+</div>
+</section>
+<section id="shell-and-plate-elements">
+<h3><span class="section-number">4.1.3.2. </span>Shell and Plate Elements<a class="headerlink" href="#shell-and-plate-elements" title="Link to this heading"></a></h3>
+<p>Elements for thin-walled structures based on Kirchhoff or Reissner-Mindlin
+plate theory. These elements include shear-locking suppression (SLS) variants
+for improved performance with thin structures.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plate.html">4.1.3.2.1. Plate</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sls.html">4.1.3.2.2. SLS</a></li>
+</ul>
+</div>
+</section>
+<section id="beam-and-rod-elements">
+<h3><span class="section-number">4.1.3.3. </span>Beam and Rod Elements<a class="headerlink" href="#beam-and-rod-elements" title="Link to this heading"></a></h3>
+<p>One-dimensional structural elements for frames, trusses, and skeletal
+structures. Includes linear and geometrically nonlinear beam formulations
+(Timoshenko, Kirchhoff), truss elements, and spring connectors.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="beamnl.html">4.1.3.3.1. BeamNL</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kirchhoffbeam.html">4.1.3.3.2. KirchhoffBeam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="spring.html">4.1.3.3.3. Spring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timoshenkobeam.html">4.1.3.3.4. TimoshenkoBeam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="truss.html">4.1.3.3.5. Truss</a></li>
+</ul>
+</div>
+</section>
+<section id="other-elements">
+<h3><span class="section-number">4.1.3.4. </span>Other Elements<a class="headerlink" href="#other-elements" title="Link to this heading"></a></h3>
+<p>Special-purpose elements including interface elements for cohesive zone
+modeling, fracture mechanics, and delamination analysis. These elements use
+traction-separation laws to model progressive failure.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="interface.html">4.1.3.4.1. Interface</a></li>
+</ul>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../usermanual.html" class="btn btn-neutral float-left" title="4. User Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="finitestrainaxisym.html" class="btn btn-neutral float-right" title="4.1.3.1.1. FiniteStrainAxiSym" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

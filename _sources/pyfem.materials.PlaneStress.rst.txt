@@ -1,0 +1,7 @@
+pyfem.materials.PlaneStress module
+==================================
+
+.. automodule:: pyfem.materials.PlaneStress
+   :members:
+   :show-inheritance:
+   :undoc-members:

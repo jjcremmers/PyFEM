@@ -1,0 +1,7 @@
+pyfem.elements.FiniteStrainContinuum module
+===========================================
+
+.. automodule:: pyfem.elements.FiniteStrainContinuum
+   :members:
+   :show-inheritance:
+   :undoc-members:

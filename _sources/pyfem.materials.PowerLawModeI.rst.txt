@@ -1,0 +1,7 @@
+pyfem.materials.PowerLawModeI module
+====================================
+
+.. automodule:: pyfem.materials.PowerLawModeI
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.materials.BaseMaterial module
+===================================
+
+.. automodule:: pyfem.materials.BaseMaterial
+   :members:
+   :show-inheritance:
+   :undoc-members:

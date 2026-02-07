@@ -1,0 +1,7 @@
+pyfem.util.BezierShapeFunctions module
+======================================
+
+.. automodule:: pyfem.util.BezierShapeFunctions
+   :members:
+   :show-inheritance:
+   :undoc-members:
