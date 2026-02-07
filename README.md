@@ -145,34 +145,6 @@ examples/
 
 Each directory contains input files (`.pro`), mesh files (`.dat`), and generates output files for visualization.
 
-## 🛠️ Key Capabilities
-
-### Nonlinear Analysis
-
-- Geometrically nonlinear formulations
-- Material nonlinearity (plasticity, damage)
-- Path-following methods (arc-length)
-- Contact mechanics
-
-### Dynamic Analysis
-
-- Explicit time integration
-- Implicit dynamics
-- Modal analysis
-- Eigenvalue problems
-
-### Multi-Scale Modeling
-
-- Representative Volume Elements (RVE)
-- Periodic boundary conditions
-- Computational homogenization
-
-### Fracture Mechanics
-
-- Cohesive zone models
-- Interface elements
-- Crack propagation
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please see the [Developer's Guide](doc/develop/overview.rst) for:

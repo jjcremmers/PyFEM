@@ -1,9 +1,6 @@
 Introduction
 ============
 
-About PyFEM
------------
-
 PyFEM is a Python-based finite element code that accompanies the book:
 
 R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel  
