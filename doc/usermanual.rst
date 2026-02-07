@@ -4,7 +4,7 @@ User Manual
 
 This user manual provides comprehensive documentation for PyFEM's main
 components. Use the sections below to find detailed information about
-elements, materials, solvers, and input/output modules.
+elements, materials, solvers, input/output modules, and tutorials.
 
 .. toctree::
    :maxdepth: 2
@@ -17,6 +17,7 @@ elements, materials, solvers, and input/output modules.
 
    solvers/overview
    io/overview
+   tutorials/overview
 
 Each section includes parameter descriptions, usage examples, and
 cross-references to help you build and run your finite element analyses.

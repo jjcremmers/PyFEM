@@ -53,3 +53,23 @@ html_static_path = ['_static']
 html_logo = "_static/pyfem_logo_official180.png"
 html_favicon = "_static/pyfem.ico"
 html_css_files = ["custom.css"]
+
+# -- Options for LaTeX output ------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-latex-output
+
+latex_elements = {
+    'papersize': 'a4paper',
+    'pointsize': '11pt',
+    'preamble': r'''
+        \usepackage{bookmark}
+    ''',
+    'figure_align': 'htbp',
+}
+
+latex_documents = [
+    ('index', 'PyFEM.tex', 'PyFEM Documentation',
+     'Joris Remmers', 'manual'),
+]
+
+# Ensure LaTeX handles chapters properly
+latex_toplevel_sectioning = 'chapter'

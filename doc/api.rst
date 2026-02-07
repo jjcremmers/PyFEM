@@ -1,12 +1,11 @@
-PyFEM API
-=========
+===================
+API Documentation
+===================
 
-Getting started with PyFEM is easy.
+This section provides the complete API reference for PyFEM, automatically 
+generated from the source code documentation.
 
-pyfem.util.shapeFunctions
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: pyfem.util
-  :members:
-
-.. autoclass:: pyfem.util
-  :members:
+   pyfem
