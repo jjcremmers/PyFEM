@@ -144,9 +144,8 @@ Important
   keep the file-level notices intact and include an MIT license file in your
   distribution.
 
-Installation
-------------
+.. toctree::
+   :maxdepth: 2
+   :caption: Installation
 
-.. include:: installation/overview.rst
-   :start-after: PyFEM Installation Guide
-   :start-after: ========================
+   installation/overview
