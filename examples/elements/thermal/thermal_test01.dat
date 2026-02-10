@@ -1,0 +1,85 @@
+<Nodes>
+  1 0.0 0.0 ; 
+  2 1.0 0.0 ; 
+  3 2.0 0.0 ; 
+  4 3.0 0.0 ;
+  5 4.0 0.0 ; 
+  6 5.0 0.0 ; 
+  7 6.0 0.0 ; 
+  8 7.0 0.0 ;
+  9 8.0 0.0 ; 
+ 10 9.0 0.0 ; 
+ 
+ 11 0.0 1.0 ; 
+ 12 1.0 1.0 ; 
+ 13 2.0 1.0 ; 
+ 14 3.0 1.0 ;
+ 15 4.0 1.0 ; 
+ 16 5.0 1.0 ; 
+ 17 6.0 1.0 ; 
+ 18 7.0 1.0 ;
+ 19 8.0 1.0 ; 
+ 20 9.0 1.0 ; 
+
+ 21 0.0 2.0 ; 
+ 22 1.0 2.0 ; 
+ 23 2.0 2.0 ; 
+ 24 3.0 2.0 ;
+ 25 4.0 2.0 ; 
+ 26 5.0 2.0 ; 
+ 27 6.0 2.0 ; 
+ 28 7.0 2.0 ;
+ 29 8.0 2.0 ; 
+ 30 9.0 2.0 ; 
+
+</Nodes>
+
+<Elements>
+  1 "ContElem"  1  2 12 11; 
+  2 "ContElem"  2  3 13 12; 
+  3 "ContElem"  3  4 14 13; 
+  4 "ContElem"  4  5 15 14; 
+  5 "ContElem"  5  6 16 15; 
+  6 "ContElem"  6  7 17 16; 
+  7 "ContElem"  7  8 18 17; 
+  8 "ContElem"  8  9 19 18; 
+  9 "ContElem"  9 10 20 19; 
+ 11 "ContElem" 11 12 22 21; 
+ 12 "ContElem" 12 13 23 22; 
+ 13 "ContElem" 13 14 24 23; 
+ 14 "ContElem" 14 15 25 24; 
+ 15 "ContElem" 15 16 26 25; 
+ 16 "ContElem" 16 17 27 26; 
+ 17 "ContElem" 17 18 28 27; 
+ 18 "ContElem" 18 19 29 28; 
+ 19 "ContElem" 19 20 30 29; 
+
+ 21 "BoundElem"  1  2 ;
+ 22 "BoundElem"  2  3 ;
+ 23 "BoundElem"  3  4 ;
+ 24 "BoundElem"  4  5 ;
+ 25 "BoundElem"  5  6 ;
+ 26 "BoundElem"  6  7 ;
+ 27 "BoundElem"  7  8 ;
+ 28 "BoundElem"  8  9 ;
+ 29 "BoundElem"  9 10 ;
+ 31 "BoundElem" 21 22 ;
+ 32 "BoundElem" 22 23 ;
+ 33 "BoundElem" 23 24 ;
+ 34 "BoundElem" 24 25 ;
+ 35 "BoundElem" 25 26 ;
+ 36 "BoundElem" 26 27 ;
+ 37 "BoundElem" 27 28 ;
+ 38 "BoundElem" 28 29 ;
+ 39 "BoundElem" 29 30 ;
+</Elements>
+
+<NodeConstraints>
+ temp[ 1] = 100.0;
+ temp[11] = 100.0;
+ temp[21] = 100.0;
+
+ temp[10] = 0.0;
+ temp[20] = 0.0;
+ temp[30] = 0.0;     
+</NodeConstraints>

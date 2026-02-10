@@ -64,7 +64,8 @@ def storeElements(grid: vtk.vtkUnstructuredGrid, globdat: GlobalData, elementGro
 #
 #-------------------------------------------------------------------------------
 
-def storeDofField(grid: vtk.vtkUnstructuredGrid, data, globdat: GlobalData, dofTypes: Union[List[str], str], label: str) -> None:
+def storeDofField(grid: vtk.vtkUnstructuredGrid, data, globdat: GlobalData, 
+                  dofTypes: Union[List[str], str], label: str) -> None:
     """
     Store a degree-of-freedom field as point data in the VTK grid.
     
@@ -84,6 +85,10 @@ def storeDofField(grid: vtk.vtkUnstructuredGrid, data, globdat: GlobalData, dofT
     d.SetNumberOfComponents(len(dofTypes))
           
     i = 0
+
+    if isinstance(dofTypes,str):
+        dofTypes = ["temp"]
+        d.SetNumberOfComponents(1)
               
     for nodeID in list(globdat.nodes.keys()):
         j = 0
@@ -125,6 +130,7 @@ def storeDofFields(grid: vtk.vtkUnstructuredGrid, data, globdat: GlobalData) -> 
             checkDof = dofs
             
         if checkDof in globdat.dofs.dofTypes: 
+            print("check",checkDof,dofs,name)
             storeDofField( grid , data , globdat , dofs , name )
     
 #-------------------------------------------------------------------------------
