@@ -1,0 +1,7 @@
+pyfem.elements.ThermoSmallStrainAxiSym module
+=============================================
+
+.. automodule:: pyfem.elements.ThermoSmallStrainAxiSym
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.elements.SmallStrainContinuum module
+==========================================
+
+.. automodule:: pyfem.elements.SmallStrainContinuum
+   :members:
+   :show-inheritance:
+   :undoc-members:

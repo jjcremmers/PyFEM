@@ -1,0 +1,7 @@
+pyfem.materials.SOVS module
+===========================
+
+.. automodule:: pyfem.materials.SOVS
+   :members:
+   :show-inheritance:
+   :undoc-members:

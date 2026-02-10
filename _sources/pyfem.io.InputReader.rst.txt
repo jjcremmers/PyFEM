@@ -1,0 +1,7 @@
+pyfem.io.InputReader module
+===========================
+
+.. automodule:: pyfem.io.InputReader
+   :members:
+   :show-inheritance:
+   :undoc-members:

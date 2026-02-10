@@ -1,0 +1,7 @@
+pyfem.models.ModelManager module
+================================
+
+.. automodule:: pyfem.models.ModelManager
+   :members:
+   :show-inheritance:
+   :undoc-members:

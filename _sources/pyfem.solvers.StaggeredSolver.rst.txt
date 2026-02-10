@@ -1,0 +1,7 @@
+pyfem.solvers.StaggeredSolver module
+====================================
+
+.. automodule:: pyfem.solvers.StaggeredSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

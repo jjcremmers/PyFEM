@@ -1,0 +1,18 @@
+pyfem.models package
+====================
+
+.. automodule:: pyfem.models
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.models.BaseModel
+   pyfem.models.Contact
+   pyfem.models.ModelManager
+   pyfem.models.RVE

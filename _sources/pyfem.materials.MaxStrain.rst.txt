@@ -1,0 +1,7 @@
+pyfem.materials.MaxStrain module
+================================
+
+.. automodule:: pyfem.materials.MaxStrain
+   :members:
+   :show-inheritance:
+   :undoc-members:

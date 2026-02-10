@@ -1,0 +1,7 @@
+pyfem.elements.BeamLin module
+=============================
+
+.. automodule:: pyfem.elements.BeamLin
+   :members:
+   :show-inheritance:
+   :undoc-members:

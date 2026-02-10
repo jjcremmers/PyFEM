@@ -1,0 +1,16 @@
+pyfem.core package
+==================
+
+.. automodule:: pyfem.core
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.core.api
+   pyfem.core.cli

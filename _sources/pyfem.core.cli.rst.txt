@@ -1,0 +1,7 @@
+pyfem.core.cli module
+=====================
+
+.. automodule:: pyfem.core.cli
+   :members:
+   :show-inheritance:
+   :undoc-members:

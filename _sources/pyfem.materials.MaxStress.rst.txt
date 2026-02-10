@@ -1,0 +1,7 @@
+pyfem.materials.MaxStress module
+================================
+
+.. automodule:: pyfem.materials.MaxStress
+   :members:
+   :show-inheritance:
+   :undoc-members:

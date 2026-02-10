@@ -1,0 +1,7 @@
+pyfem.materials.PlaneStrain module
+==================================
+
+.. automodule:: pyfem.materials.PlaneStrain
+   :members:
+   :show-inheritance:
+   :undoc-members:
