@@ -29,7 +29,9 @@ models = ["rve"];
 rve =
 {
   type = "RVE";
-  unitStrain = [0.034,0.15,0.01];
+  boundaryType = "Prescribed";
+
+  unitStrain = [0.034,0.05,0.01];
 };
 
 solver =

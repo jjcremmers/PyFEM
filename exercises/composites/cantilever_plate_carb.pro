@@ -6,7 +6,7 @@ PlateElem =
 
   materials = [ "UD" , "woven" ];
 
-  layers = ["c0","c90","c90","c0"];
+  layers = ["c90","c0","c0","c90"];
 
   UD =
   {
