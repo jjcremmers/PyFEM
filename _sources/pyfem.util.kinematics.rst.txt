@@ -1,0 +1,7 @@
+pyfem.util.kinematics module
+============================
+
+.. automodule:: pyfem.util.kinematics
+   :members:
+   :show-inheritance:
+   :undoc-members:

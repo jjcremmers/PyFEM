@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyfem.util.kinematics &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/pyfem.ico"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../../../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/overview.html">1. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/quickstart.html">2. Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usermanual.html">3. User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">4. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyfem.util.kinematics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyfem.util.kinematics</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Joris J.C. Remmers</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<div class="viewcode-block" id="Kinematics">
+<a class="viewcode-back" href="../../../pyfem.util.kinematics.html#pyfem.util.kinematics.Kinematics">[docs]</a>
+<span class="k">class</span> <span class="nc">Kinematics</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for kinematic state variables at a material point.</span>
+
+<span class="sd">    This class stores the kinematic state of a material point in a finite element</span>
+<span class="sd">    analysis, including the deformation gradient tensor and various strain measures.</span>
+<span class="sd">    The class is typically used within constitutive models to track the deformation</span>
+<span class="sd">    and strain history of material points during nonlinear finite element analysis.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        F (np.ndarray): Deformation gradient tensor of shape (nDim, nDim).</span>
+<span class="sd">            Maps reference coordinates to spatial coordinates.</span>
+<span class="sd">        E (np.ndarray): Green-Lagrange strain tensor of shape (nDim, nDim).</span>
+<span class="sd">            Symmetric strain measure based on deformation gradient.</span>
+<span class="sd">        strain (np.ndarray): Strain vector of shape (nStr,).</span>
+<span class="sd">            Contains strain components in voigt notation (2, 3, or 6 components).</span>
+<span class="sd">        dgdstrain (np.ndarray): Derivative of some scalar with respect to strain,</span>
+<span class="sd">            shape (nStr,). Used in constitutive and material models.</span>
+<span class="sd">        g (float): A scalar variable (e.g., equivalent strain, damage parameter).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nDim (int): Number of spatial dimensions of the problem. Must be 2 or 3.</span>
+<span class="sd">        nStr (int): Number of strain components. Typically 2 (2D), 3 (axisymmetric),</span>
+<span class="sd">            or 6 (3D full tensor in Voigt notation).</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        Create a 3D kinematics object:</span>
+<span class="sd">        &gt;&gt;&gt; kin = Kinematics(nDim=3, nStr=6)</span>
+<span class="sd">        &gt;&gt;&gt; kin.F.shape</span>
+<span class="sd">        (3, 3)</span>
+<span class="sd">        &gt;&gt;&gt; kin.strain.shape</span>
+<span class="sd">        (6,)</span>
+
+<span class="sd">        Create a 2D plane strain kinematics object:</span>
+<span class="sd">        &gt;&gt;&gt; kin = Kinematics(nDim=2, nStr=3)</span>
+<span class="sd">        &gt;&gt;&gt; kin.F.shape</span>
+<span class="sd">        (2, 2)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nDim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nStr</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Kinematics object with zeros for all state variables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nDim (int): Number of spatial dimensions (2 or 3).</span>
+<span class="sd">            nStr (int): Number of strain components (2, 3, or 6).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If nDim is not 2 or 3, or if nStr is not valid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">nDim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nDim must be 2 or 3, got </span><span class="si">{</span><span class="n">nDim</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nStr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nStr must be 2, 3, or 6, got </span><span class="si">{</span><span class="n">nStr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nDim</span><span class="p">,</span> <span class="n">nDim</span><span class="p">))</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deformation gradient tensor.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">E</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nDim</span><span class="p">,</span> <span class="n">nDim</span><span class="p">))</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Green-Lagrange strain tensor.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">strain</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nStr</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Strain vector in Voigt notation.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dgdstrain</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nStr</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Derivative of scalar quantity with respect to strain.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Scalar quantity (e.g., equivalent strain or damage parameter).&quot;&quot;&quot;</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

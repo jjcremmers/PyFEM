@@ -1,0 +1,7 @@
+pyfem.solvers.DissipatedEnergySolver module
+===========================================
+
+.. automodule:: pyfem.solvers.DissipatedEnergySolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

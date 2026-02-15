@@ -1,0 +1,364 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1. pyfem package &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4.1.1.1. pyfem.core package" href="pyfem.core.html" />
+    <link rel="prev" title="4. API Documentation" href="api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">1. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/quickstart.html">2. Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">3. User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">4. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html"><span class="section-number">4. </span>API Documentation</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.1. </span>pyfem package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyfem-package">
+<h1><span class="section-number">4.1. </span>pyfem package<a class="headerlink" href="#pyfem-package" title="Link to this heading"></a></h1>
+<section id="subpackages">
+<h2><span class="section-number">4.1.1. </span>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.core.html">4.1.1.1. pyfem.core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.core.html#submodules">4.1.1.1.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.core.api.html">4.1.1.1.1.1. pyfem.core.api module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.core.cli.html">4.1.1.1.1.2. pyfem.core.cli module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.elements.html">4.1.1.2. pyfem.elements package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.elements.html#submodules">4.1.1.2.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.BeamLin.html">4.1.1.2.1.1. pyfem.elements.BeamLin module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.BeamNL.html">4.1.1.2.1.2. pyfem.elements.BeamNL module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.Composite.html">4.1.1.2.1.3. pyfem.elements.Composite module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.CondensationManager.html">4.1.1.2.1.4. pyfem.elements.CondensationManager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.DistributedLoad.html">4.1.1.2.1.5. pyfem.elements.DistributedLoad module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.Element.html">4.1.1.2.1.6. pyfem.elements.Element module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.FiniteStrainAxiSym.html">4.1.1.2.1.7. pyfem.elements.FiniteStrainAxiSym module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.FiniteStrainContinuum.html">4.1.1.2.1.8. pyfem.elements.FiniteStrainContinuum module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.Interface.html">4.1.1.2.1.9. pyfem.elements.Interface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.KirchhoffBeam.html">4.1.1.2.1.10. pyfem.elements.KirchhoffBeam module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.PhaseField.html">4.1.1.2.1.11. pyfem.elements.PhaseField module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.Plate.html">4.1.1.2.1.12. pyfem.elements.Plate module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.SLS.html">4.1.1.2.1.13. pyfem.elements.SLS module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.SLSgeomdata.html">4.1.1.2.1.14. pyfem.elements.SLSgeomdata module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.SLSkinematic.html">4.1.1.2.1.15. pyfem.elements.SLSkinematic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.SLSutils.html">4.1.1.2.1.16. pyfem.elements.SLSutils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.SmallStrainAxiSym.html">4.1.1.2.1.17. pyfem.elements.SmallStrainAxiSym module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.SmallStrainContinuum.html">4.1.1.2.1.18. pyfem.elements.SmallStrainContinuum module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.Spring.html">4.1.1.2.1.19. pyfem.elements.Spring module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.ThermalBC.html">4.1.1.2.1.20. pyfem.elements.ThermalBC module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.ThermoAxiSym.html">4.1.1.2.1.21. pyfem.elements.ThermoAxiSym module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.ThermoContinuum.html">4.1.1.2.1.22. pyfem.elements.ThermoContinuum module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.ThermoSmallStrainAxiSym.html">4.1.1.2.1.23. pyfem.elements.ThermoSmallStrainAxiSym module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.ThermoSmallStrainContinuum.html">4.1.1.2.1.24. pyfem.elements.ThermoSmallStrainContinuum module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.ThermoSurface.html">4.1.1.2.1.25. pyfem.elements.ThermoSurface module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.TimoshenkoBeam.html">4.1.1.2.1.26. pyfem.elements.TimoshenkoBeam module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.elements.Truss.html">4.1.1.2.1.27. pyfem.elements.Truss module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.fem.html">4.1.1.3. pyfem.fem package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.fem.html#submodules">4.1.1.3.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.fem.Assembly.html">4.1.1.3.1.1. pyfem.fem.Assembly module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.fem.Constrainer.html">4.1.1.3.1.2. pyfem.fem.Constrainer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.fem.DofSpace.html">4.1.1.3.1.3. pyfem.fem.DofSpace module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.fem.ElementSet.html">4.1.1.3.1.4. pyfem.fem.ElementSet module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.fem.ElementSet.html#pyfem.fem.ElementSet.ElementSet"><code class="docutils literal notranslate"><span class="pre">ElementSet</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.fem.NodeSet.html">4.1.1.3.1.5. pyfem.fem.NodeSet module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.fem.NodeSet.html#pyfem.fem.NodeSet.NodeSet"><code class="docutils literal notranslate"><span class="pre">NodeSet</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.gui.html">4.1.1.4. pyfem.gui package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.gui.html#submodules">4.1.1.4.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.gui.app.html">4.1.1.4.1.1. pyfem.gui.app module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.io.html">4.1.1.5. pyfem.io package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.io.html#submodules">4.1.1.5.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.ContourWriter.html">4.1.1.5.1.1. pyfem.io.ContourWriter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.ContourWriter.html#pyfem.io.ContourWriter.ContourWriter"><code class="docutils literal notranslate"><span class="pre">ContourWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.DataDump.html">4.1.1.5.1.2. pyfem.io.DataDump module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.DataDump.html#pyfem.io.DataDump.DataDump"><code class="docutils literal notranslate"><span class="pre">DataDump</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.GraphWriter.html">4.1.1.5.1.3. pyfem.io.GraphWriter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.GraphWriter.html#pyfem.io.GraphWriter.GraphWriter"><code class="docutils literal notranslate"><span class="pre">GraphWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.HDF5Writer.html">4.1.1.5.1.4. pyfem.io.HDF5Writer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.HDF5Writer.html#pyfem.io.HDF5Writer.HDF5Writer"><code class="docutils literal notranslate"><span class="pre">HDF5Writer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.InputReader.html">4.1.1.5.1.5. pyfem.io.InputReader module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.MeshWriter.html">4.1.1.5.1.6. pyfem.io.MeshWriter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.MeshWriter.html#pyfem.io.MeshWriter.MeshWriter"><code class="docutils literal notranslate"><span class="pre">MeshWriter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.OutputManager.html">4.1.1.5.1.7. pyfem.io.OutputManager module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.OutputManager.html#pyfem.io.OutputManager.OutputManager"><code class="docutils literal notranslate"><span class="pre">OutputManager</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.io.OutputWriter.html">4.1.1.5.1.8. pyfem.io.OutputWriter module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.io.OutputWriter.html#pyfem.io.OutputWriter.OutputWriter"><code class="docutils literal notranslate"><span class="pre">OutputWriter</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.materials.html">4.1.1.6. pyfem.materials package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.materials.html#submodules">4.1.1.6.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.BaseFailure.html">4.1.1.6.1.1. pyfem.materials.BaseFailure module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.BaseMaterial.html">4.1.1.6.1.2. pyfem.materials.BaseMaterial module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.Crystal.html">4.1.1.6.1.3. pyfem.materials.Crystal module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.Dummy.html">4.1.1.6.1.4. pyfem.materials.Dummy module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.HookesLaw.html">4.1.1.6.1.5. pyfem.materials.HookesLaw module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.Isotropic.html">4.1.1.6.1.6. pyfem.materials.Isotropic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.IsotropicHardeningPlasticity.html">4.1.1.6.1.7. pyfem.materials.IsotropicHardeningPlasticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.IsotropicKinematicHardening.html">4.1.1.6.1.8. pyfem.materials.IsotropicKinematicHardening module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.MatUtils.html">4.1.1.6.1.9. pyfem.materials.MatUtils module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.MaterialManager.html">4.1.1.6.1.10. pyfem.materials.MaterialManager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.MaxStrain.html">4.1.1.6.1.11. pyfem.materials.MaxStrain module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.MaxStress.html">4.1.1.6.1.12. pyfem.materials.MaxStress module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.MultiMaterial.html">4.1.1.6.1.13. pyfem.materials.MultiMaterial module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.PlaneStrain.html">4.1.1.6.1.14. pyfem.materials.PlaneStrain module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.PlaneStrainDamage.html">4.1.1.6.1.15. pyfem.materials.PlaneStrainDamage module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.PlaneStress.html">4.1.1.6.1.16. pyfem.materials.PlaneStress module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.PowerLawModeI.html">4.1.1.6.1.17. pyfem.materials.PowerLawModeI module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.SOVS.html">4.1.1.6.1.18. pyfem.materials.SOVS module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.SandwichCore.html">4.1.1.6.1.19. pyfem.materials.SandwichCore module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.ThoulessModeI.html">4.1.1.6.1.20. pyfem.materials.ThoulessModeI module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.TransverseIsotropic.html">4.1.1.6.1.21. pyfem.materials.TransverseIsotropic module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.TsaiWu.html">4.1.1.6.1.22. pyfem.materials.TsaiWu module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.ViscoElasticity.html">4.1.1.6.1.23. pyfem.materials.ViscoElasticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.ViscoPlasticity.html">4.1.1.6.1.24. pyfem.materials.ViscoPlasticity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.VonMises.html">4.1.1.6.1.25. pyfem.materials.VonMises module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.materials.XuNeedleman.html">4.1.1.6.1.26. pyfem.materials.XuNeedleman module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.models.html">4.1.1.7. pyfem.models package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.models.html#submodules">4.1.1.7.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.models.BaseModel.html">4.1.1.7.1.1. pyfem.models.BaseModel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.models.Contact.html">4.1.1.7.1.2. pyfem.models.Contact module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.models.ModelManager.html">4.1.1.7.1.3. pyfem.models.ModelManager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.models.RVE.html">4.1.1.7.1.4. pyfem.models.RVE module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.solvers.html">4.1.1.8. pyfem.solvers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.solvers.html#submodules">4.1.1.8.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.BuckEigSolver.html">4.1.1.8.1.1. pyfem.solvers.BuckEigSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.DissipatedEnergySolver.html">4.1.1.8.1.2. pyfem.solvers.DissipatedEnergySolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.DynEigSolver.html">4.1.1.8.1.3. pyfem.solvers.DynEigSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.ExplicitSolver.html">4.1.1.8.1.4. pyfem.solvers.ExplicitSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.LinearSolver.html">4.1.1.8.1.5. pyfem.solvers.LinearSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.ModalSolver.html">4.1.1.8.1.6. pyfem.solvers.ModalSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.MultiSolver.html">4.1.1.8.1.7. pyfem.solvers.MultiSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.NonlinearSolver.html">4.1.1.8.1.8. pyfem.solvers.NonlinearSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.RiksSolver.html">4.1.1.8.1.9. pyfem.solvers.RiksSolver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.Solver.html">4.1.1.8.1.10. pyfem.solvers.Solver module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.solvers.StaggeredSolver.html">4.1.1.8.1.11. pyfem.solvers.StaggeredSolver module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyfem.util.html">4.1.1.9. pyfem.util package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyfem.util.html#submodules">4.1.1.9.1. Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.BaseModule.html">4.1.1.9.1.1. pyfem.util.BaseModule module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.BaseModule.html#pyfem.util.BaseModule.BaseModule"><code class="docutils literal notranslate"><span class="pre">BaseModule</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.BezierShapeFunctions.html">4.1.1.9.1.2. pyfem.util.BezierShapeFunctions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.dataStructures.html">4.1.1.9.1.3. pyfem.util.dataStructures module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.cleanVariable"><code class="docutils literal notranslate"><span class="pre">cleanVariable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.solverStatus"><code class="docutils literal notranslate"><span class="pre">solverStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.Properties"><code class="docutils literal notranslate"><span class="pre">Properties</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.GlobalData"><code class="docutils literal notranslate"><span class="pre">GlobalData</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.dataStructures.html#pyfem.util.dataStructures.elementData"><code class="docutils literal notranslate"><span class="pre">elementData</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.fileParser.html">4.1.1.9.1.4. pyfem.util.fileParser module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.containsValue"><code class="docutils literal notranslate"><span class="pre">containsValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.cleanVariable"><code class="docutils literal notranslate"><span class="pre">cleanVariable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.isNodeDof"><code class="docutils literal notranslate"><span class="pre">isNodeDof()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.decodeNodeDof"><code class="docutils literal notranslate"><span class="pre">decodeNodeDof()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.getType"><code class="docutils literal notranslate"><span class="pre">getType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.storeValue"><code class="docutils literal notranslate"><span class="pre">storeValue()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.readItem"><code class="docutils literal notranslate"><span class="pre">readItem()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.readBlock"><code class="docutils literal notranslate"><span class="pre">readBlock()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.fileParser"><code class="docutils literal notranslate"><span class="pre">fileParser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.deepFileParser"><code class="docutils literal notranslate"><span class="pre">deepFileParser()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.nodeTable"><code class="docutils literal notranslate"><span class="pre">nodeTable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.fileParser.html#pyfem.util.fileParser.readNodeTable"><code class="docutils literal notranslate"><span class="pre">readNodeTable()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.itemList.html">4.1.1.9.1.5. pyfem.util.itemList module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.itemList.html#pyfem.util.itemList.itemList"><code class="docutils literal notranslate"><span class="pre">itemList</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.kinematics.html">4.1.1.9.1.6. pyfem.util.kinematics module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.kinematics.html#pyfem.util.kinematics.Kinematics"><code class="docutils literal notranslate"><span class="pre">Kinematics</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.logger.html">4.1.1.9.1.7. pyfem.util.logger module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.logger.html#pyfem.util.logger.setLogger"><code class="docutils literal notranslate"><span class="pre">setLogger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.logger.html#pyfem.util.logger.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.logger.html#pyfem.util.logger.separator"><code class="docutils literal notranslate"><span class="pre">separator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.logger.html#pyfem.util.logger.logVariable"><code class="docutils literal notranslate"><span class="pre">logVariable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.logger.html#pyfem.util.logger.logHeader"><code class="docutils literal notranslate"><span class="pre">logHeader()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.plotUtils.html">4.1.1.9.1.8. pyfem.util.plotUtils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.plotUtils.html#pyfem.util.plotUtils.plotCurve"><code class="docutils literal notranslate"><span class="pre">plotCurve()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.plotUtils.html#pyfem.util.plotUtils.plotTime"><code class="docutils literal notranslate"><span class="pre">plotTime()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.shapeFunctions.html">4.1.1.9.1.9. pyfem.util.shapeFunctions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.transformations.html">4.1.1.9.1.10. pyfem.util.transformations module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.utilFunctions.html">4.1.1.9.1.11. pyfem.util.utilFunctions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.utilFunctions.html#pyfem.util.utilFunctions.macauley"><code class="docutils literal notranslate"><span class="pre">macauley()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.utilFunctions.html#pyfem.util.utilFunctions.sign"><code class="docutils literal notranslate"><span class="pre">sign()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pyfem.util.vtkUtils.html">4.1.1.9.1.12. pyfem.util.vtkUtils module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeNodes"><code class="docutils literal notranslate"><span class="pre">storeNodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeElements"><code class="docutils literal notranslate"><span class="pre">storeElements()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeDofField"><code class="docutils literal notranslate"><span class="pre">storeDofField()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeDofFields"><code class="docutils literal notranslate"><span class="pre">storeDofFields()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeNodeField"><code class="docutils literal notranslate"><span class="pre">storeNodeField()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.storeElementField"><code class="docutils literal notranslate"><span class="pre">storeElementField()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.setCellNodes"><code class="docutils literal notranslate"><span class="pre">setCellNodes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insertElement"><code class="docutils literal notranslate"><span class="pre">insertElement()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert2Dcontinuum"><code class="docutils literal notranslate"><span class="pre">insert2Dcontinuum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert3Dcontinuum"><code class="docutils literal notranslate"><span class="pre">insert3Dcontinuum()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert2Dinterface"><code class="docutils literal notranslate"><span class="pre">insert2Dinterface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert3Dinterface"><code class="docutils literal notranslate"><span class="pre">insert3Dinterface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert2Dsurface"><code class="docutils literal notranslate"><span class="pre">insert2Dsurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insert3Dsurface"><code class="docutils literal notranslate"><span class="pre">insert3Dsurface()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insertBeam"><code class="docutils literal notranslate"><span class="pre">insertBeam()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pyfem.util.vtkUtils.html#pyfem.util.vtkUtils.insertShell"><code class="docutils literal notranslate"><span class="pre">insertShell()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api.html" class="btn btn-neutral float-left" title="4. API Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyfem.core.html" class="btn btn-neutral float-right" title="4.1.1.1. pyfem.core package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

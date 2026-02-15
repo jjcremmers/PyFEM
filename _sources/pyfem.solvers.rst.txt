@@ -1,0 +1,25 @@
+pyfem.solvers package
+=====================
+
+.. automodule:: pyfem.solvers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.solvers.BuckEigSolver
+   pyfem.solvers.DissipatedEnergySolver
+   pyfem.solvers.DynEigSolver
+   pyfem.solvers.ExplicitSolver
+   pyfem.solvers.LinearSolver
+   pyfem.solvers.ModalSolver
+   pyfem.solvers.MultiSolver
+   pyfem.solvers.NonlinearSolver
+   pyfem.solvers.RiksSolver
+   pyfem.solvers.Solver
+   pyfem.solvers.StaggeredSolver

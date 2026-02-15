@@ -1,0 +1,7 @@
+pyfem.io.DataDump module
+========================
+
+.. automodule:: pyfem.io.DataDump
+   :members:
+   :show-inheritance:
+   :undoc-members:

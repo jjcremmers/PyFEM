@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Mechanics Model &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">1. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">2. Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">3. User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">4. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Contact Mechanics Model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/models/contact.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="contact-mechanics-model">
+<h1>Contact Mechanics Model<a class="headerlink" href="#contact-mechanics-model" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The contact model in PyFEM implements a penalty-based contact algorithm for simulating mechanical interactions between deformable bodies and rigid obstacles. The model supports both 2D (disc) and 3D (sphere) contact geometries with a simple penalty method that enforces non-penetration constraints.</p>
+<p>The contact model is implemented as a special model type that can be added to any structural analysis to impose contact constraints between the mesh and a moving rigid obstacle.</p>
+</section>
+<section id="theory">
+<h2>Theory<a class="headerlink" href="#theory" title="Link to this heading"></a></h2>
+<section id="penalty-method">
+<h3>Penalty Method<a class="headerlink" href="#penalty-method" title="Link to this heading"></a></h3>
+<p>The contact algorithm uses the penalty method to enforce contact constraints. When a node penetrates a rigid obstacle, a penalty force is applied:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{f}_c = k_p \, g \, \mathbf{n}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(k_p\)</span> is the penalty stiffness parameter</p></li>
+<li><p><span class="math notranslate nohighlight">\(g\)</span> is the penetration depth (overlap)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{n}\)</span> is the outward normal direction from the obstacle surface</p></li>
+</ul>
+</section>
+<section id="contact-detection">
+<h3>Contact Detection<a class="headerlink" href="#contact-detection" title="Link to this heading"></a></h3>
+<p>For a rigid obstacle (disc in 2D or sphere in 3D) with center <span class="math notranslate nohighlight">\(\mathbf{c}\)</span> and radius <span class="math notranslate nohighlight">\(R\)</span>, contact is detected when:</p>
+<div class="math notranslate nohighlight">
+\[g = R - \|\mathbf{x} - \mathbf{c}\| &gt; 0\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf{x}\)</span> is the current position of a node. The penetration depth <span class="math notranslate nohighlight">\(g\)</span> measures how far the node has penetrated into the obstacle.</p>
+<p>The outward normal from the obstacle surface is:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{n} = \frac{\mathbf{x} - \mathbf{c}}{\|\mathbf{x} - \mathbf{c}\|}\]</div>
+</section>
+<section id="moving-obstacles">
+<h3>Moving Obstacles<a class="headerlink" href="#moving-obstacles" title="Link to this heading"></a></h3>
+<p>The obstacle center can move during the analysis according to a prescribed direction:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{c}(t) = \mathbf{c}_0 + \lambda(t) \, \mathbf{d}\]</div>
+<p>where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbf{c}_0\)</span> is the initial center position</p></li>
+<li><p><span class="math notranslate nohighlight">\(\lambda(t)\)</span> is the load factor at time <span class="math notranslate nohighlight">\(t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mathbf{d}\)</span> is the prescribed direction vector</p></li>
+</ul>
+</section>
+<section id="tangent-stiffness">
+<h3>Tangent Stiffness<a class="headerlink" href="#tangent-stiffness" title="Link to this heading"></a></h3>
+<p>The tangent stiffness contribution from contact is:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf{K}_c = k_p \, \mathbf{n} \otimes \mathbf{n}\]</div>
+<p>This ensures proper convergence in nonlinear Newton-Raphson iterations.</p>
+</section>
+</section>
+<section id="input-file-configuration">
+<h2>Input File Configuration<a class="headerlink" href="#input-file-configuration" title="Link to this heading"></a></h2>
+<section id="basic-configuration">
+<h3>Basic Configuration<a class="headerlink" href="#basic-configuration" title="Link to this heading"></a></h3>
+<p>The contact model is defined in the input file using a <code class="docutils literal notranslate"><span class="pre">contact</span></code> block:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contact</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;disc&quot;</span><span class="p">;</span>           <span class="c1"># or &quot;sphere&quot; for 3D</span>
+  <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>            <span class="c1"># obstacle radius</span>
+  <span class="n">centre</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">];</span>     <span class="c1"># initial center position</span>
+  <span class="n">direction</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">];</span> <span class="c1"># movement direction</span>
+  <span class="n">penalty</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>         <span class="c1"># penalty stiffness</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Contact geometry: <code class="docutils literal notranslate"><span class="pre">&quot;disc&quot;</span></code> (2D) or <code class="docutils literal notranslate"><span class="pre">&quot;sphere&quot;</span></code> (3D)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">radius</span></code></p></td>
+<td><p>float</p></td>
+<td><p>Radius of the rigid obstacle</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">centre</span></code></p></td>
+<td><p>array</p></td>
+<td><p>Initial center coordinates <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y]</span></code> or <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y,</span> <span class="pre">z]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">direction</span></code></p></td>
+<td><p>array</p></td>
+<td><p>Direction of obstacle motion <code class="docutils literal notranslate"><span class="pre">[dx,</span> <span class="pre">dy]</span></code> or <code class="docutils literal notranslate"><span class="pre">[dx,</span> <span class="pre">dy,</span> <span class="pre">dz]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">penalty</span></code></p></td>
+<td><p>float</p></td>
+<td><p>Penalty stiffness parameter <span class="math notranslate nohighlight">\(k_p\)</span></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="guidelines-for-penalty-parameter">
+<h3>Guidelines for Penalty Parameter<a class="headerlink" href="#guidelines-for-penalty-parameter" title="Link to this heading"></a></h3>
+<p>The penalty parameter <code class="docutils literal notranslate"><span class="pre">penalty</span></code> should be chosen carefully:</p>
+<ul class="simple">
+<li><p><strong>Too small</strong>: Excessive penetration, inaccurate contact enforcement</p></li>
+<li><p><strong>Too large</strong>: Numerical ill-conditioning, convergence difficulties</p></li>
+<li><p><strong>Recommended</strong>: <span class="math notranslate nohighlight">\(k_p \approx 10^2 - 10^4 \times E\)</span> where <span class="math notranslate nohighlight">\(E\)</span> is the material stiffness</p></li>
+</ul>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1-2d-disc-contact">
+<h3>Example 1: 2D Disc Contact<a class="headerlink" href="#example-1-2d-disc-contact" title="Link to this heading"></a></h3>
+<p>A 2D finite strain analysis with a moving disc obstacle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;contact_test.dat&quot;</span><span class="p">;</span>
+
+<span class="n">ContElem</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FiniteStrainContinuum&quot;</span><span class="p">;</span>
+  <span class="n">material</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStress&quot;</span><span class="p">;</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="n">contact</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;disc&quot;</span><span class="p">;</span>
+  <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+  <span class="n">centre</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">];</span>
+  <span class="n">direction</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">];</span>
+  <span class="n">penalty</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;NonlinearSolver&quot;</span><span class="p">;</span>
+  <span class="n">maxCycle</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+  <span class="n">dtime</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;vtk&quot;</span><span class="p">];</span>
+
+<span class="n">vtk</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MeshWriter&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This example simulates a deformable structure being pressed by a rigid disc moving downward. The disc center starts at (5.0, 2.0) and moves in direction (0.0, -0.5) scaled by the load factor.</p>
+<p><strong>Run the example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/contact
+pyfem<span class="w"> </span>contact_test.pro
+paraview<span class="w"> </span>contact_test.pvd
+</pre></div>
+</div>
+</section>
+<section id="example-2-3d-sphere-contact">
+<h3>Example 2: 3D Sphere Contact<a class="headerlink" href="#example-2-3d-sphere-contact" title="Link to this heading"></a></h3>
+<p>A 3D small strain analysis with a spherical obstacle:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;contact_test3D_01.dat&quot;</span><span class="p">;</span>
+
+<span class="n">ContElem</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;SmallStrainContinuum&quot;</span><span class="p">;</span>
+  <span class="n">material</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Isotropic&quot;</span><span class="p">;</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="n">contact</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;sphere&quot;</span><span class="p">;</span>
+  <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+  <span class="n">centre</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">];</span>
+  <span class="n">direction</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">];</span>
+  <span class="n">penalty</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;NonlinearSolver&quot;</span><span class="p">;</span>
+  <span class="n">maxCycle</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+  <span class="n">dtime</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;vtk&quot;</span><span class="p">];</span>
+
+<span class="n">vtk</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MeshWriter&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This example demonstrates 3D contact with a sphere moving in the negative z-direction.</p>
+<p><strong>Run the example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/contact
+pyfem<span class="w"> </span>contact_test3D_01.pro
+paraview<span class="w"> </span>contact_test3D_01.pvd
+</pre></div>
+</div>
+</section>
+<section id="example-3-contact-with-output-monitoring">
+<h3>Example 3: Contact with Output Monitoring<a class="headerlink" href="#example-3-contact-with-output-monitoring" title="Link to this heading"></a></h3>
+<p>Contact analysis with displacement tracking:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">input</span> <span class="o">=</span> <span class="s2">&quot;contact_test02.dat&quot;</span><span class="p">;</span>
+
+<span class="n">ContElem</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;FiniteStrainContinuum&quot;</span><span class="p">;</span>
+  <span class="n">material</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStress&quot;</span><span class="p">;</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="n">contact</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;disc&quot;</span><span class="p">;</span>
+  <span class="n">radius</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span>
+  <span class="n">centre</span> <span class="o">=</span> <span class="p">[</span><span class="mf">8.0</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">];</span>
+  <span class="n">direction</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">];</span>
+  <span class="n">penalty</span> <span class="o">=</span> <span class="mf">1.0e6</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;NonlinearSolver&quot;</span><span class="p">;</span>
+  <span class="n">maxCycle</span> <span class="o">=</span> <span class="mi">40</span><span class="p">;</span>
+  <span class="n">dtime</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;vtk&quot;</span><span class="p">,</span> <span class="s2">&quot;GraphWriter&quot;</span><span class="p">];</span>
+
+<span class="n">vtk</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MeshWriter&quot;</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="n">GraphWriter</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">onScreen</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+  <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;disp&quot;</span><span class="p">];</span>
+  <span class="n">disp</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;state&quot;</span><span class="p">;</span>
+    <span class="n">node</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+    <span class="n">dof</span>  <span class="o">=</span> <span class="s2">&quot;v&quot;</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This example tracks the vertical displacement of a specific node during contact.</p>
+</section>
+</section>
+<section id="usage-guidelines">
+<h2>Usage Guidelines<a class="headerlink" href="#usage-guidelines" title="Link to this heading"></a></h2>
+<section id="mesh-requirements">
+<h3>Mesh Requirements<a class="headerlink" href="#mesh-requirements" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Element compatibility</strong>: Works with any continuum element formulation</p></li>
+<li><p><strong>Refinement</strong>: Use adequate mesh refinement near expected contact zones</p></li>
+<li><p><strong>Node distribution</strong>: Ensure sufficient nodes in contact region for accurate penalty enforcement</p></li>
+</ul>
+</section>
+<section id="solver-configuration">
+<h3>Solver Configuration<a class="headerlink" href="#solver-configuration" title="Link to this heading"></a></h3>
+<p>Contact problems require nonlinear solvers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;NonlinearSolver&quot;</span><span class="p">;</span>
+  <span class="n">maxCycle</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>          <span class="c1"># Sufficient iterations for convergence</span>
+  <span class="n">dtime</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>            <span class="c1"># Time step size</span>
+  <span class="n">tol</span> <span class="o">=</span> <span class="mf">1.0e-3</span><span class="p">;</span>           <span class="c1"># Convergence tolerance (optional)</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+<section id="best-practices">
+<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Start with small time steps</strong>: Contact can cause sudden stiffness changes</p></li>
+<li><p><strong>Monitor convergence</strong>: Check Newton-Raphson iteration counts</p></li>
+<li><p><strong>Tune penalty parameter</strong>: Balance accuracy and conditioning</p></li>
+<li><p><strong>Gradual loading</strong>: Increase contact depth gradually through load factor</p></li>
+<li><p><strong>Check penetration</strong>: Verify that penetration depths remain small</p></li>
+</ol>
+</section>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<section id="current-implementation">
+<h3>Current Implementation<a class="headerlink" href="#current-implementation" title="Link to this heading"></a></h3>
+<p>The current contact model has the following limitations:</p>
+<ul class="simple">
+<li><p><strong>Rigid obstacles only</strong>: No deformable-deformable contact</p></li>
+<li><p><strong>Simple geometries</strong>: Only discs (2D) and spheres (3D)</p></li>
+<li><p><strong>No friction</strong>: Frictionless contact only</p></li>
+<li><p><strong>Penalty method</strong>: Small penetration occurs (not a true constraint)</p></li>
+<li><p><strong>Single obstacle</strong>: One contact object per analysis</p></li>
+</ul>
+</section>
+<section id="future-extensions">
+<h3>Future Extensions<a class="headerlink" href="#future-extensions" title="Link to this heading"></a></h3>
+<p>Potential enhancements include:</p>
+<ul class="simple">
+<li><p>Multiple contact objects</p></li>
+<li><p>Arbitrary contact surface geometries</p></li>
+<li><p>Friction models (Coulomb friction)</p></li>
+<li><p>Contact between deformable bodies</p></li>
+<li><p>Augmented Lagrangian or Lagrange multiplier methods</p></li>
+</ul>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>Problem</strong>: Excessive penetration</p>
+<ul class="simple">
+<li><p><strong>Solution</strong>: Increase <code class="docutils literal notranslate"><span class="pre">penalty</span></code> parameter</p></li>
+<li><p><strong>Check</strong>: Verify obstacle position and movement direction</p></li>
+</ul>
+<p><strong>Problem</strong>: Convergence difficulties</p>
+<ul class="simple">
+<li><p><strong>Solution</strong>: Reduce <code class="docutils literal notranslate"><span class="pre">penalty</span></code> parameter or decrease time step</p></li>
+<li><p><strong>Check</strong>: Ensure mesh quality near contact zone</p></li>
+</ul>
+<p><strong>Problem</strong>: No contact detected</p>
+<ul class="simple">
+<li><p><strong>Solution</strong>: Verify <code class="docutils literal notranslate"><span class="pre">centre</span></code>, <code class="docutils literal notranslate"><span class="pre">radius</span></code>, and mesh geometry</p></li>
+<li><p><strong>Check</strong>: Obstacle should intersect the deformed mesh</p></li>
+</ul>
+<p><strong>Problem</strong>: Solver divergence</p>
+<ul class="simple">
+<li><p><strong>Solution</strong>: Reduce <code class="docutils literal notranslate"><span class="pre">dtime</span></code> or increase <code class="docutils literal notranslate"><span class="pre">maxCycle</span></code></p></li>
+<li><p><strong>Check</strong>: Initial configuration should have minimal penetration</p></li>
+</ul>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>For theoretical background on contact mechanics and penalty methods, see:</p>
+<ul class="simple">
+<li><p><strong>Chapter 13</strong> of <em>Non-Linear Finite Element Analysis of Solids and Structures</em> (de Borst et al., 2012)</p></li>
+<li><ol class="upperalpha simple" start="16">
+<li><p>Wriggers, <em>Computational Contact Mechanics</em>, 2nd Edition, Springer, 2006</p></li>
+</ol>
+</li>
+<li><p>T.A. Laursen, <em>Computational Contact and Impact Mechanics</em>, Springer, 2002</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="overview.html"><span class="doc">Models</span></a> - Models overview</p></li>
+<li><p><a class="reference internal" href="rve.html"><span class="doc">RVE (Representative Volume Element)</span></a> - RVE model for multi-scale analysis</p></li>
+<li><p><a class="reference internal" href="../elements/overview.html"><span class="doc">Elements</span></a> - Element formulations</p></li>
+<li><p><a class="reference internal" href="../solvers/NonlinearSolver.html"><span class="doc">NonlinearSolver</span></a> - Nonlinear solution algorithms</p></li>
+<li><p><a class="reference internal" href="../io/MeshWriter.html"><span class="doc">MeshWriter</span></a> - VTK output for visualization</p></li>
+</ul>
+<p><strong>Example files:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/contact/contact_test.pro</span></code> - 2D disc contact</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/contact/contact_test02.pro</span></code> - 2D with output monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/contact/contact_test3D_01.pro</span></code> - 3D sphere contact</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

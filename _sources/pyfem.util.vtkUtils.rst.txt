@@ -1,0 +1,7 @@
+pyfem.util.vtkUtils module
+==========================
+
+.. automodule:: pyfem.util.vtkUtils
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.fem.DofSpace module
+=========================
+
+.. automodule:: pyfem.fem.DofSpace
+   :members:
+   :show-inheritance:
+   :undoc-members:

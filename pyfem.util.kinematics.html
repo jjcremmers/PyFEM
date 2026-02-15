@@ -1,0 +1,239 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4.1.1.9.1.6. pyfem.util.kinematics module &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="4.1.1.9.1.7. pyfem.util.logger module" href="pyfem.util.logger.html" />
+    <link rel="prev" title="4.1.1.9.1.5. pyfem.util.itemList module" href="pyfem.util.itemList.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">1. PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/quickstart.html">2. Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">3. User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">4. API Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html"><span class="section-number">4. </span>API Documentation</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.html"><span class="section-number">4.1. </span>pyfem package</a></li>
+          <li class="breadcrumb-item"><a href="pyfem.util.html"><span class="section-number">4.1.1.9. </span>pyfem.util package</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.1.1.9.1.6. </span>pyfem.util.kinematics module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/pyfem.util.kinematics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pyfem.util.kinematics">
+<span id="pyfem-util-kinematics-module"></span><h1><span class="section-number">4.1.1.9.1.6. </span>pyfem.util.kinematics module<a class="headerlink" href="#module-pyfem.util.kinematics" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyfem.util.kinematics.Kinematics">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Kinematics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nDim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nStr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyfem/util/kinematics.html#Kinematics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyfem.util.kinematics.Kinematics" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container for kinematic state variables at a material point.</p>
+<p>This class stores the kinematic state of a material point in a finite element
+analysis, including the deformation gradient tensor and various strain measures.
+The class is typically used within constitutive models to track the deformation
+and strain history of material points during nonlinear finite element analysis.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.kinematics.Kinematics.F">
+<span class="sig-name descname"><span class="pre">F</span></span><a class="headerlink" href="#pyfem.util.kinematics.Kinematics.F" title="Link to this definition"></a></dt>
+<dd><p>Deformation gradient tensor of shape (nDim, nDim).
+Maps reference coordinates to spatial coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.kinematics.Kinematics.E">
+<span class="sig-name descname"><span class="pre">E</span></span><a class="headerlink" href="#pyfem.util.kinematics.Kinematics.E" title="Link to this definition"></a></dt>
+<dd><p>Green-Lagrange strain tensor of shape (nDim, nDim).
+Symmetric strain measure based on deformation gradient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.kinematics.Kinematics.strain">
+<span class="sig-name descname"><span class="pre">strain</span></span><a class="headerlink" href="#pyfem.util.kinematics.Kinematics.strain" title="Link to this definition"></a></dt>
+<dd><p>Strain vector of shape (nStr,).
+Contains strain components in voigt notation (2, 3, or 6 components).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.kinematics.Kinematics.dgdstrain">
+<span class="sig-name descname"><span class="pre">dgdstrain</span></span><a class="headerlink" href="#pyfem.util.kinematics.Kinematics.dgdstrain" title="Link to this definition"></a></dt>
+<dd><p>Derivative of some scalar with respect to strain,
+shape (nStr,). Used in constitutive and material models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="pyfem.util.kinematics.Kinematics.g">
+<span class="sig-name descname"><span class="pre">g</span></span><a class="headerlink" href="#pyfem.util.kinematics.Kinematics.g" title="Link to this definition"></a></dt>
+<dd><p>A scalar variable (e.g., equivalent strain, damage parameter).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nDim</strong> (<em>int</em>) – Number of spatial dimensions of the problem. Must be 2 or 3.</p></li>
+<li><p><strong>nStr</strong> (<em>int</em>) – Number of strain components. Typically 2 (2D), 3 (axisymmetric),
+or 6 (3D full tensor in Voigt notation).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Create a 3D kinematics object:
+&gt;&gt;&gt; kin = Kinematics(nDim=3, nStr=6)
+&gt;&gt;&gt; kin.F.shape
+(3, 3)
+&gt;&gt;&gt; kin.strain.shape
+(6,)</p>
+<p>Create a 2D plane strain kinematics object:
+&gt;&gt;&gt; kin = Kinematics(nDim=2, nStr=3)
+&gt;&gt;&gt; kin.F.shape
+(2, 2)</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">F</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Deformation gradient tensor.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">E</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd><p>Green-Lagrange strain tensor.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">strain</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd><p>Strain vector in Voigt notation.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">dgdstrain</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span></span><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd><p>Derivative of scalar quantity with respect to strain.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">g</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd><p>Scalar quantity (e.g., equivalent strain or damage parameter).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pyfem.util.itemList.html" class="btn btn-neutral float-left" title="4.1.1.9.1.5. pyfem.util.itemList module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pyfem.util.logger.html" class="btn btn-neutral float-right" title="4.1.1.9.1.7. pyfem.util.logger module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

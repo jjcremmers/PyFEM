@@ -1,0 +1,7 @@
+pyfem.elements.ThermalBC module
+===============================
+
+.. automodule:: pyfem.elements.ThermalBC
+   :members:
+   :show-inheritance:
+   :undoc-members:

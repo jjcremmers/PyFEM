@@ -1,0 +1,7 @@
+pyfem.util.dataStructures module
+================================
+
+.. automodule:: pyfem.util.dataStructures
+   :members:
+   :show-inheritance:
+   :undoc-members:

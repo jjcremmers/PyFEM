@@ -1,0 +1,7 @@
+pyfem.solvers.ModalSolver module
+================================
+
+.. automodule:: pyfem.solvers.ModalSolver
+   :members:
+   :show-inheritance:
+   :undoc-members:

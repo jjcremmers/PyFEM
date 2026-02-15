@@ -1,0 +1,41 @@
+pyfem.elements package
+======================
+
+.. automodule:: pyfem.elements
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   pyfem.elements.BeamLin
+   pyfem.elements.BeamNL
+   pyfem.elements.Composite
+   pyfem.elements.CondensationManager
+   pyfem.elements.DistributedLoad
+   pyfem.elements.Element
+   pyfem.elements.FiniteStrainAxiSym
+   pyfem.elements.FiniteStrainContinuum
+   pyfem.elements.Interface
+   pyfem.elements.KirchhoffBeam
+   pyfem.elements.PhaseField
+   pyfem.elements.Plate
+   pyfem.elements.SLS
+   pyfem.elements.SLSgeomdata
+   pyfem.elements.SLSkinematic
+   pyfem.elements.SLSutils
+   pyfem.elements.SmallStrainAxiSym
+   pyfem.elements.SmallStrainContinuum
+   pyfem.elements.Spring
+   pyfem.elements.ThermalBC
+   pyfem.elements.ThermoAxiSym
+   pyfem.elements.ThermoContinuum
+   pyfem.elements.ThermoSmallStrainAxiSym
+   pyfem.elements.ThermoSmallStrainContinuum
+   pyfem.elements.ThermoSurface
+   pyfem.elements.TimoshenkoBeam
+   pyfem.elements.Truss

@@ -1,0 +1,7 @@
+pyfem.gui.app module
+====================
+
+.. automodule:: pyfem.gui.app
+   :members:
+   :show-inheritance:
+   :undoc-members:

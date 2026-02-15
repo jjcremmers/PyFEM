@@ -1,0 +1,7 @@
+pyfem.materials.Isotropic module
+================================
+
+.. automodule:: pyfem.materials.Isotropic
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+pyfem.materials.IsotropicHardeningPlasticity module
+===================================================
+
+.. automodule:: pyfem.materials.IsotropicHardeningPlasticity
+   :members:
+   :show-inheritance:
+   :undoc-members:

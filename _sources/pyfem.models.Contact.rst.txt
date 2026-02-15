@@ -1,0 +1,7 @@
+pyfem.models.Contact module
+===========================
+
+.. automodule:: pyfem.models.Contact
+   :members:
+   :show-inheritance:
+   :undoc-members:
