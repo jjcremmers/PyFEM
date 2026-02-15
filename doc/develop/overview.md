@@ -1,14 +1,11 @@
-================
-Developer's Guide
-================
+# Developer's Guide
 
 This guide provides comprehensive documentation for extending PyFEM with new
 finite element formulations, material models, solution algorithms, and I/O
 modules. Each section includes theoretical background, implementation examples,
 and best practices.
 
-Overview
---------
+## Overview
 
 PyFEM is designed to be extensible, allowing researchers and developers to
 implement new capabilities while leveraging existing infrastructure. The
@@ -22,31 +19,27 @@ modular architecture separates concerns into distinct components:
 All implementations follow object-oriented design patterns and integrate
 seamlessly with PyFEM's assembly routines, DOF management, and output system.
 
-Theoretical Foundation
-----------------------
+## Theoretical Foundation
 
 The implementations in PyFEM are based on the textbook:
 
-.. note::
-   **"Non-Linear Finite Element Analysis of Solids and Structures"**
-   
-   by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
-   
-   John Wiley & Sons, 2012, ISBN 978-0470666449
+> **"Non-Linear Finite Element Analysis of Solids and Structures"**
+> 
+> by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+> 
+> John Wiley & Sons, 2012, ISBN 978-0470666449
 
 Throughout the developer guides, specific equations and algorithms from this
 book are referenced to provide theoretical context for implementations.
 
-Development Topics
-------------------
+## Development Topics
 
-Element Development
-~~~~~~~~~~~~~~~~~~~
+### Element Development
 
 Learn how to implement new finite element formulations including shape
 functions, strain-displacement relations, and element matrix assembly.
 
-:doc:`elements_dev`
+[elements_dev.md](elements_dev.md)
 
 Key topics:
 
@@ -56,13 +49,12 @@ Key topics:
 - Mass matrices for dynamic analysis
 - Patch tests and validation
 
-Material Model Development
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Material Model Development
 
 Implement constitutive laws defining stress-strain relationships for linear
 elastic, elastoplastic, and cohesive zone models.
 
-:doc:`materials_dev`
+[materials_dev.md](materials_dev.md)
 
 Key topics:
 
@@ -73,13 +65,12 @@ Key topics:
 - State variable management
 - Consistent tangent operators
 
-Solver Development
-~~~~~~~~~~~~~~~~~~
+### Solver Development
 
 Create solution algorithms for static, dynamic, and stability analysis
 including Newton-Raphson, arc-length, and explicit time integration.
 
-:doc:`solvers_dev`
+[solvers_dev.md](solvers_dev.md)
 
 Key topics:
 
@@ -90,13 +81,12 @@ Key topics:
 - Convergence criteria and error handling
 - Load stepping strategies
 
-I/O Module Development
-~~~~~~~~~~~~~~~~~~~~~~
+### I/O Module Development
 
 Develop input/output modules for reading problem definitions, writing results
 in various formats (text, binary, VTK), and managing data flow.
 
-:doc:`io_dev`
+[io_dev.md](io_dev.md)
 
 Key topics:
 
@@ -107,11 +97,9 @@ Key topics:
 - Time history tracking
 - State saving and restoration
 
-Getting Started
----------------
+## Getting Started
 
-Prerequisites
-~~~~~~~~~~~~~
+### Prerequisites
 
 Before developing new modules, familiarize yourself with:
 
@@ -120,8 +108,7 @@ Before developing new modules, familiarize yourself with:
 3. **PyFEM structure**: Run existing examples to understand workflow
 4. **Version control**: Git basics for contributing code
 
-Development Workflow
-~~~~~~~~~~~~~~~~~~~~
+### Development Workflow
 
 1. **Study existing implementations**: Review similar elements/materials/solvers
 2. **Design your module**: Plan class structure and methods
@@ -130,63 +117,58 @@ Development Workflow
 5. **Document clearly**: Docstrings, equations, usage examples
 6. **Contribute back**: Submit pull requests to the main repository
 
-Code Style and Conventions
----------------------------
+## Code Style and Conventions
 
-Naming Conventions
-~~~~~~~~~~~~~~~~~~
+### Naming Conventions
 
-- **Classes**: ``PascalCase`` (e.g., ``SmallStrainContinuum``)
-- **Methods**: ``camelCase`` (e.g., ``getTangentStiffness``)
-- **Variables**: ``camelCase`` or ``snake_case`` consistently
-- **Constants**: ``UPPER_CASE``
+- **Classes**: `PascalCase` (e.g., `SmallStrainContinuum`)
+- **Methods**: `camelCase` (e.g., `getTangentStiffness`)
+- **Variables**: `camelCase` or `snake_case` consistently
+- **Constants**: `UPPER_CASE`
 
-Documentation
-~~~~~~~~~~~~~
+### Documentation
 
 All classes and methods should include docstrings:
 
-.. code-block:: python
+```python
+class MyElement(Element):
+    """Brief description of element.
+    
+    Detailed explanation including theoretical basis,
+    assumptions, and references to the textbook.
+    
+    Parameters:
+        param1: Description
+        param2: Description
+    """
+    
+    def myMethod(self, arg1, arg2):
+        """Brief method description.
+        
+        Args:
+            arg1: Description
+            arg2: Description
+            
+        Returns:
+            Description of return value
+        """
+        pass
+```
 
-   class MyElement(Element):
-       """Brief description of element.
-       
-       Detailed explanation including theoretical basis,
-       assumptions, and references to the textbook.
-       
-       Parameters:
-           param1: Description
-           param2: Description
-       """
-       
-       def myMethod(self, arg1, arg2):
-           """Brief method description.
-           
-           Args:
-               arg1: Description
-               arg2: Description
-               
-           Returns:
-               Description of return value
-           """
-           pass
-
-Type Hints
-~~~~~~~~~~
+### Type Hints
 
 Use type hints for clarity:
 
-.. code-block:: python
+```python
+from typing import Tuple
+import numpy as np
 
-   from typing import Tuple
-   import numpy as np
-   
-   def getStress(self, strain: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-       """Compute stress and tangent."""
-       return sigma, tangent
+def getStress(self, strain: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """Compute stress and tangent."""
+    return sigma, tangent
+```
 
-Testing Guidelines
-------------------
+## Testing Guidelines
 
 All new modules should include:
 
@@ -195,17 +177,16 @@ All new modules should include:
 3. **Validation tests**: Compare against analytical solutions
 4. **Regression tests**: Ensure changes don't break existing functionality
 
-Place tests in the ``test/`` directory:
+Place tests in the `test/` directory:
 
-.. code-block:: text
+```
+test/
+    test_my_element.py
+    test_my_material.py
+    test_my_solver.py
+```
 
-   test/
-       test_my_element.py
-       test_my_material.py
-       test_my_solver.py
-
-Contributing
-------------
+## Contributing
 
 To contribute your developments to PyFEM:
 
@@ -218,42 +199,34 @@ To contribute your developments to PyFEM:
 See the PyFEM repository for detailed contribution guidelines:
 https://github.com/jjcremmers/PyFEM
 
-Additional Resources
---------------------
+## Additional Resources
 
-Example Implementations
-~~~~~~~~~~~~~~~~~~~~~~~
+### Example Implementations
 
 Study these well-documented implementations as templates:
 
-- **Element**: ``pyfem/elements/SmallStrainContinuum.py``
-- **Material**: ``pyfem/materials/PlaneStress.py``
-- **Solver**: ``pyfem/solvers/NonlinearSolver.py``
-- **I/O Module**: ``pyfem/io/GraphWriter.py``
+- **Element**: `pyfem/elements/SmallStrainContinuum.py`
+- **Material**: `pyfem/materials/PlaneStress.py`
+- **Solver**: `pyfem/solvers/NonlinearSolver.py`
+- **I/O Module**: `pyfem/io/GraphWriter.py`
 
-Utility Modules
-~~~~~~~~~~~~~~~
+### Utility Modules
 
 Leverage existing utilities:
 
-- ``pyfem/util/shapeFunctions.py``: Shape function evaluation
-- ``pyfem/util/kinematics.py``: Kinematic transformations
-- ``pyfem/fem/Assembly.py``: Matrix assembly routines
-- ``pyfem/util/logger.py``: Logging functionality
+- `pyfem/util/shapeFunctions.py`: Shape function evaluation
+- `pyfem/util/kinematics.py`: Kinematic transformations
+- `pyfem/fem/Assembly.py`: Matrix assembly routines
+- `pyfem/util/logger.py`: Logging functionality
 
-Developer Documentation
-~~~~~~~~~~~~~~~~~~~~~~~
+### Developer Documentation
 
-.. toctree::
-   :maxdepth: 2
+- [elements_dev.md](elements_dev.md)
+- [materials_dev.md](materials_dev.md)
+- [solvers_dev.md](solvers_dev.md)
+- [io_dev.md](io_dev.md)
 
-   elements_dev
-   materials_dev
-   solvers_dev
-   io_dev
-
-References
-----------
+## References
 
 **Primary Reference**
 
@@ -269,8 +242,7 @@ John Wiley & Sons, 2012, ISBN 978-0470666449
 - Zienkiewicz, O.C., Taylor, R.L. (2000). *The Finite Element Method* (5th ed.). 
   Butterworth-Heinemann.
 
-Support and Contact
--------------------
+## Support and Contact
 
 For questions about PyFEM development:
 
