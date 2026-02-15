@@ -18,7 +18,7 @@ Documentation Contents
    :numbered:
    :caption: Table of Contents
 
-   introduction
+   introduction.md
    installation/overview
    tutorials/quickstart
    usermanual
