@@ -14,7 +14,7 @@ class HookesLaw( BaseMaterial ):
     #Create the tangent matrix
     self.H = np.zeros( (1,1) )
 
-    self.H(0,0) = self.E
+    self.H[0,0] = self.E
 
   def getStress( self, deformation ):
 

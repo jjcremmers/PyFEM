@@ -4,7 +4,7 @@
 from .Element import Element
 from pyfem.util.transformations import getRotationMatrix
 
-from numpy import zeros, dot, array, eye, outer, mat, empty,sqrt
+from numpy import zeros, dot, array, eye, outer, empty, sqrt
 from scipy.linalg import norm
 from math import atan2, sin, cos, tan
 

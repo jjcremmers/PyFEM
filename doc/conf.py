@@ -28,6 +28,9 @@ project = 'PyFEM'
 copyright = '2026, Joris Remmers'
 author = 'Joris Remmers'
 
+# Use index.md as master document (MyST)
+master_doc = 'index'
+
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
@@ -37,6 +40,7 @@ extensions = [
     'sphinx.ext.napoleon',   # Support for NumPy/Google-style docstrings
     'sphinx_rtd_theme',      # Use the Read the Docs theme
     'sphinx.ext.mathjax',
+    'myst_parser',            # Support for Markdown files
 ]
 
 templates_path = ['_templates']
