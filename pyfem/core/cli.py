@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
+
 """Command-line entry point for running a PyFEM analysis.
 
 This module provides the `main` function used by the console script to
@@ -15,6 +18,7 @@ from typing import Any
 from pyfem.io.InputReader   import InputReader
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
+from pyfem.core.help import print_help
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -34,7 +38,13 @@ def main(argv: list[str] | None = None) -> None:
         analysis and output duties respectively.
     """
 
-    props, globdat = InputReader(sys.argv) 
+    args = argv if argv is not None else sys.argv[1:]
+
+    if '--help' in args or '-h' in args:
+        print_help()
+        return
+
+    props, globdat = InputReader(args)
 
     solver = Solver(props, globdat)
     output = OutputManager(props, globdat)

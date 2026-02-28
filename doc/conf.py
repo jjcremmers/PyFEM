@@ -16,7 +16,9 @@ def run_apidoc(_):
     import os
     here = os.path.abspath(os.path.dirname(__file__))
     module = os.path.join(here, "..", "pyfem")
-    output = here
+    output = os.path.join(here, "_build")
+    if not os.path.exists(output):
+        os.makedirs(output)
     main(['-f', '-e', '-M', '-o', output, module])
 
 def setup(app):
