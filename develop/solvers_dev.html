@@ -1,0 +1,601 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developing Solver Modules &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developing Solver Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develop/solvers_dev.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="developing-solver-modules">
+<h1>Developing Solver Modules<a class="headerlink" href="#developing-solver-modules" title="Link to this heading"></a></h1>
+<p>This guide explains how to implement new solution algorithms in PyFEM. Solvers
+orchestrate the finite element analysis process, managing load steps, iteration
+procedures, and convergence criteria to solve the discrete equilibrium equations.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Solvers in PyFEM are responsible for:</p>
+<ul class="simple">
+<li><p>Managing the solution process (load steps, time integration)</p></li>
+<li><p>Implementing iteration schemes (Newton-Raphson, arc-length, explicit)</p></li>
+<li><p>Checking convergence criteria</p></li>
+<li><p>Calling assembly routines for system matrices</p></li>
+<li><p>Invoking output modules</p></li>
+<li><p>Managing solution status and history</p></li>
+</ul>
+<p>All solver classes inherit from <code class="docutils literal notranslate"><span class="pre">BaseModule</span></code> and implement a <code class="docutils literal notranslate"><span class="pre">run</span></code> method
+that performs one solution step (cycle).</p>
+</section>
+<section id="solver-class-structure">
+<h2>Solver Class Structure<a class="headerlink" href="#solver-class-structure" title="Link to this heading"></a></h2>
+<section id="base-class">
+<h3>Base Class<a class="headerlink" href="#base-class" title="Link to this heading"></a></h3>
+<p>All solvers inherit from <code class="docutils literal notranslate"><span class="pre">BaseModule</span></code> located in <code class="docutils literal notranslate"><span class="pre">pyfem/util/BaseModule.py</span></code>.
+This provides:</p>
+<ul class="simple">
+<li><p>Property management from input files</p></li>
+<li><p>Integration with the output system</p></li>
+<li><p>Logging capabilities</p></li>
+</ul>
+</section>
+<section id="required-methods">
+<h3>Required Methods<a class="headerlink" href="#required-methods" title="Link to this heading"></a></h3>
+<p>A solver must implement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MySolver</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize solver with properties and global data.&quot;&quot;&quot;</span>
+        <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="c1"># Initialize solver parameters</span>
+        
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute one solution step.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            props: Properties tree (input file configuration)</span>
+<span class="sd">            globdat: Global data container</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if analysis should continue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Implementation here</span>
+        <span class="k">return</span> <span class="n">continue_analysis</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-examples">
+<h2>Implementation Examples<a class="headerlink" href="#implementation-examples" title="Link to this heading"></a></h2>
+<section id="example-1-nonlinear-solver-newton-raphson">
+<h3>Example 1: Nonlinear Solver (Newton-Raphson)<a class="headerlink" href="#example-1-nonlinear-solver-newton-raphson" title="Link to this heading"></a></h3>
+<p>This example shows the pseudo code for a Newton-Raphson solver for nonlinear
+static analysis, following Chapter 2 of the book <em>“Non-Linear Finite Element
+Analysis of Solids and Structures”</em> by de Borst et al.</p>
+<p>The Newton-Raphson iteration solves (equation 2.21):</p>
+<p>$$
+\mathbf{K}<em>t^{(i)} \Delta \mathbf{a}^{(i)} = \mathbf{f}</em>{ext} - \mathbf{f}_{int}^{(i)}
+$$</p>
+<p><strong>Pseudo Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">NonlinearSolver</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+        <span class="c1"># Read parameters from input file</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1.0e-3</span>
+        <span class="n">iterMax</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">maxCycle</span> <span class="o">=</span> <span class="n">user_defined</span>
+        <span class="n">dtime</span> <span class="o">=</span> <span class="mf">1.0</span>
+        
+        <span class="c1"># Initialize load factor</span>
+        <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="mf">0.0</span>
+        
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute one load step using Newton-Raphson iteration.</span>
+<span class="sd">        </span>
+<span class="sd">        Algorithm from Box 2.1 (page 36):</span>
+<span class="sd">        1. Apply load increment</span>
+<span class="sd">        2. Iterate until convergence:</span>
+<span class="sd">           a. Assemble tangent stiffness and internal forces</span>
+<span class="sd">           b. Compute residual</span>
+<span class="sd">           c. Solve for displacement increment</span>
+<span class="sd">           d. Update displacement</span>
+<span class="sd">           e. Check convergence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Initialize displacement increment</span>
+        <span class="n">Da</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">dofCount</span><span class="p">)</span>
+        
+        <span class="c1"># Update load factor</span>
+        <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="n">loadFunction</span><span class="p">(</span><span class="n">cycle</span> <span class="o">*</span> <span class="n">dtime</span><span class="p">)</span>
+        
+        <span class="c1"># Assemble external force vector</span>
+        <span class="n">fext</span> <span class="o">=</span> <span class="n">assembleExternalForce</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># Newton-Raphson iteration loop</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">iiter</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="n">iiter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">iiter</span> <span class="o">&gt;</span> <span class="n">iterMax</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Not converged&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Assemble tangent stiffness and internal forces</span>
+            <span class="n">K</span><span class="p">,</span> <span class="n">fint</span> <span class="o">=</span> <span class="n">assembleTangentStiffness</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+            
+            <span class="c1"># Compute residual: r = f_ext - f_int</span>
+            <span class="n">residual</span> <span class="o">=</span> <span class="n">fext</span> <span class="o">-</span> <span class="n">fint</span>
+            
+            <span class="c1"># Apply boundary conditions</span>
+            <span class="n">K_constrained</span><span class="p">,</span> <span class="n">residual_constrained</span> <span class="o">=</span> <span class="n">applyConstraints</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>
+            
+            <span class="c1"># Solve linear system: K * da = residual</span>
+            <span class="n">da</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">K_constrained</span><span class="p">,</span> <span class="n">residual_constrained</span><span class="p">)</span>
+            
+            <span class="c1"># Update displacement</span>
+            <span class="n">Da</span> <span class="o">+=</span> <span class="n">da</span>
+            <span class="n">state</span> <span class="o">+=</span> <span class="n">da</span>
+            
+            <span class="c1"># Compute convergence error</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">fext</span><span class="p">)</span>
+        
+        <span class="c1"># Check stopping criteria</span>
+        <span class="k">if</span> <span class="n">cycle</span> <span class="o">&gt;=</span> <span class="n">maxCycle</span> <span class="ow">or</span> <span class="n">lam</span> <span class="o">&gt;=</span> <span class="n">maxLam</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Stop analysis</span>
+        
+        <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># Continue to next step</span>
+</pre></div>
+</div>
+<p><strong>Full Implementation:</strong></p>
+<p>See the complete implementation in:
+<code class="docutils literal notranslate"><span class="pre">pyfem/solvers/NonlinearSolver.py</span></code></p>
+</section>
+<section id="example-2-arc-length-solver">
+<h3>Example 2: Arc-Length Solver<a class="headerlink" href="#example-2-arc-length-solver" title="Link to this heading"></a></h3>
+<p>For problems with snap-back or snap-through behavior, implement arc-length
+control following Chapter 2.5 of the book.</p>
+<p>The Riks-Wempner arc-length method (equation 2.71):</p>
+<p>$$
+\Delta \mathbf{a}^T \Delta \mathbf{a} + \psi^2 \Delta \lambda^2 = \Delta l^2
+$$</p>
+<p><strong>Pseudo Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ArcLengthSolver</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+        <span class="c1"># Read parameters</span>
+        <span class="n">arcLength</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">1.0e-3</span>
+        <span class="n">iterMax</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">psi</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># Load-displacement ratio</span>
+        
+        <span class="c1"># Initialize load factor</span>
+        <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute one step with arc-length control.</span>
+<span class="sd">        </span>
+<span class="sd">        Algorithm from Section 2.5:</span>
+<span class="sd">        1. Predictor: compute displacement direction</span>
+<span class="sd">        2. Scale by arc-length constraint</span>
+<span class="sd">        3. Corrector iterations with constraint</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Assemble reference load vector (unscaled)</span>
+        <span class="n">fref</span> <span class="o">=</span> <span class="n">assembleExternalForce</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># PREDICTOR STEP</span>
+        <span class="n">K</span><span class="p">,</span> <span class="n">fint</span> <span class="o">=</span> <span class="n">assembleTangentStiffness</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># Solve for displacement direction</span>
+        <span class="n">da1</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">fref</span><span class="p">)</span>
+        
+        <span class="c1"># Compute initial load increment from arc-length (eq. 2.72)</span>
+        <span class="n">Dlam</span> <span class="o">=</span> <span class="n">arcLength</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">da1</span><span class="o">^</span><span class="n">T</span> <span class="o">*</span> <span class="n">da1</span> <span class="o">+</span> <span class="n">psi</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="c1"># Apply predictor</span>
+        <span class="n">Da</span> <span class="o">=</span> <span class="n">Dlam</span> <span class="o">*</span> <span class="n">da1</span>
+        <span class="n">state</span> <span class="o">+=</span> <span class="n">Da</span>
+        <span class="n">lam</span> <span class="o">+=</span> <span class="n">Dlam</span>
+        
+        <span class="c1"># CORRECTOR ITERATIONS</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">iiter</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="k">while</span> <span class="n">error</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">:</span>
+            <span class="n">iiter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">iiter</span> <span class="o">&gt;</span> <span class="n">iterMax</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Not converged&quot;</span><span class="p">)</span>
+            
+            <span class="c1"># Assemble at current state</span>
+            <span class="n">K</span><span class="p">,</span> <span class="n">fint</span> <span class="o">=</span> <span class="n">assembleTangentStiffness</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+            
+            <span class="c1"># Compute residual</span>
+            <span class="n">fext</span> <span class="o">=</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">fref</span>
+            <span class="n">residual</span> <span class="o">=</span> <span class="n">fext</span> <span class="o">-</span> <span class="n">fint</span>
+            
+            <span class="c1"># Solve for two correction vectors</span>
+            <span class="n">da_r</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">residual</span><span class="p">)</span>    <span class="c1"># Residual direction</span>
+            <span class="n">da_f</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">fref</span><span class="p">)</span>        <span class="c1"># Load direction</span>
+            
+            <span class="c1"># Arc-length constraint (equation 2.71)</span>
+            <span class="c1"># Solve quadratic equation for load multiplier</span>
+            <span class="n">A</span> <span class="o">=</span> <span class="n">da_f</span><span class="o">^</span><span class="n">T</span> <span class="o">*</span> <span class="n">da_f</span> <span class="o">+</span> <span class="n">psi</span><span class="o">^</span><span class="mi">2</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">Da</span><span class="o">^</span><span class="n">T</span> <span class="o">*</span> <span class="n">da_f</span> <span class="o">+</span> <span class="n">Da</span><span class="o">^</span><span class="n">T</span> <span class="o">*</span> <span class="n">da_r</span><span class="p">)</span>
+            <span class="n">C</span> <span class="o">=</span> <span class="n">Da</span><span class="o">^</span><span class="n">T</span> <span class="o">*</span> <span class="n">Da</span> <span class="o">-</span> <span class="n">arcLength</span><span class="o">^</span><span class="mi">2</span>
+            
+            <span class="n">dlam</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">B</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">B</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="n">C</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">A</span><span class="p">)</span>
+            
+            <span class="c1"># Compute displacement correction</span>
+            <span class="n">da</span> <span class="o">=</span> <span class="n">da_r</span> <span class="o">+</span> <span class="n">dlam</span> <span class="o">*</span> <span class="n">da_f</span>
+            
+            <span class="c1"># Update</span>
+            <span class="n">Da</span> <span class="o">+=</span> <span class="n">da</span>
+            <span class="n">state</span> <span class="o">+=</span> <span class="n">da</span>
+            <span class="n">lam</span> <span class="o">+=</span> <span class="n">dlam</span>
+            
+            <span class="c1"># Check convergence</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">residual</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">fext</span><span class="p">)</span>
+        
+        <span class="c1"># Adapt arc-length for next step based on iteration count</span>
+        <span class="k">if</span> <span class="n">iiter</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">arcLength</span> <span class="o">*=</span> <span class="mf">1.5</span>
+        <span class="k">elif</span> <span class="n">iiter</span> <span class="o">&gt;</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="n">arcLength</span> <span class="o">*=</span> <span class="mf">0.5</span>
+        
+        <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+<p><strong>Full Implementation:</strong></p>
+<p>See the complete implementation in:
+<code class="docutils literal notranslate"><span class="pre">pyfem/solvers/RiksSolver.py</span></code></p>
+</section>
+<section id="example-3-explicit-dynamics-solver">
+<h3>Example 3: Explicit Dynamics Solver<a class="headerlink" href="#example-3-explicit-dynamics-solver" title="Link to this heading"></a></h3>
+<p>For dynamic problems, implement explicit time integration following Chapter 9.</p>
+<p>The central difference method (equation 9.19) integrates:</p>
+<p>$$
+\mathbf{M} \mathbf{a}<em>{n+1} = \mathbf{f}</em>{ext} - \mathbf{f}_{int}(\mathbf{u}_n)
+$$</p>
+<p><strong>Pseudo Code:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExplicitSolver</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+        <span class="c1"># Read parameters</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">user_defined</span>  <span class="c1"># Must satisfy CFL condition</span>
+        <span class="n">endTime</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="n">material_density</span>
+        
+        <span class="c1"># Initialize state vectors</span>
+        <span class="n">globdat</span><span class="o">.</span><span class="n">velo</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">dofCount</span><span class="p">)</span>
+        <span class="n">globdat</span><span class="o">.</span><span class="n">acce</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">dofCount</span><span class="p">)</span>
+        
+        <span class="c1"># Assemble mass matrix (constant for explicit)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">assembleMassMatrix</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># Compute lumped mass (diagonal approximation)</span>
+        <span class="n">Mlumped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="n">globdat</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute one explicit time step.</span>
+<span class="sd">        </span>
+<span class="sd">        Central difference scheme (Box 9.1, page 279):</span>
+<span class="sd">        1. Compute forces at current configuration</span>
+<span class="sd">        2. Compute acceleration from equation of motion</span>
+<span class="sd">        3. Update velocity using central difference</span>
+<span class="sd">        4. Update displacement</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Get state vectors</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">state</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">velo</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">acce</span>
+        
+        <span class="c1"># Assemble forces at current configuration</span>
+        <span class="n">fint</span> <span class="o">=</span> <span class="n">assembleInternalForce</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        <span class="n">fext</span> <span class="o">=</span> <span class="n">assembleExternalForce</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># Compute acceleration: a = M^{-1} (f_ext - f_int)</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">fext</span> <span class="o">-</span> <span class="n">fint</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">residual</span> <span class="o">/</span> <span class="n">Mlumped</span>
+        
+        <span class="c1"># Apply boundary conditions</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">applyConstraints</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        
+        <span class="c1"># Update velocity (central difference)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">dt</span>
+        
+        <span class="c1"># Update displacement</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dt</span>
+        
+        <span class="c1"># Update time</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">time</span> <span class="o">+</span> <span class="n">dt</span>
+        
+        <span class="c1"># Check end time</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="o">&gt;=</span> <span class="n">endTime</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">checkStability</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check CFL condition for stability.</span>
+<span class="sd">        </span>
+<span class="sd">        Time step must satisfy:</span>
+<span class="sd">        dt &lt; dt_crit = 2/ω_max</span>
+<span class="sd">        </span>
+<span class="sd">        where ω_max is the maximum natural frequency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">omega_max</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">diag</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="o">/</span> <span class="n">Mlumped</span><span class="p">))</span>
+        <span class="n">dt_crit</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="n">omega_max</span>
+        
+        <span class="k">if</span> <span class="n">dt</span> <span class="o">&gt;</span> <span class="n">dt_crit</span><span class="p">:</span>
+            <span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Time step exceeds critical value&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Full Implementation:</strong></p>
+<p>See the complete implementation in:
+<code class="docutils literal notranslate"><span class="pre">pyfem/solvers/ExplicitSolver.py</span></code></p>
+</section>
+</section>
+<section id="integration-with-pyfem-framework">
+<h2>Integration with PyFEM Framework<a class="headerlink" href="#integration-with-pyfem-framework" title="Link to this heading"></a></h2>
+<section id="global-data-container">
+<h3>Global Data Container<a class="headerlink" href="#global-data-container" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">globdat</span></code> object contains all analysis data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># State vectors</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">state</span>       <span class="c1"># Displacement vector</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">Dstate</span>      <span class="c1"># Displacement increment</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">velo</span>        <span class="c1"># Velocity (dynamics)</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">acce</span>        <span class="c1"># Acceleration (dynamics)</span>
+
+<span class="c1"># System data</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span>       <span class="c1"># Node coordinates</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span>        <span class="c1"># DOF manager</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">elements</span>    <span class="c1"># Element groups</span>
+
+<span class="c1"># Solution control</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">lam</span>         <span class="c1"># Load factor</span>
+<span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span> <span class="c1"># Status object with cycle, time, etc.</span>
+</pre></div>
+</div>
+</section>
+<section id="assembly-routines">
+<h3>Assembly Routines<a class="headerlink" href="#assembly-routines" title="Link to this heading"></a></h3>
+<p>Use standard assembly functions from <code class="docutils literal notranslate"><span class="pre">pyfem.fem.Assembly</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.fem.Assembly</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">assembleTangentStiffness</span><span class="p">,</span>  <span class="c1"># Returns (K, fint)</span>
+    <span class="n">assembleInternalForce</span><span class="p">,</span>      <span class="c1"># Returns fint</span>
+    <span class="n">assembleExternalForce</span><span class="p">,</span>      <span class="c1"># Returns fext</span>
+    <span class="n">assembleMassMatrix</span>          <span class="c1"># Returns M</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="constraint-application">
+<h3>Constraint Application<a class="headerlink" href="#constraint-application" title="Link to this heading"></a></h3>
+<p>Apply boundary conditions through the DOF manager:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Constrain system matrix and vector</span>
+<span class="n">K_c</span><span class="p">,</span> <span class="n">f_c</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">constrain</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># Constrain vector only</span>
+<span class="n">a_c</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">constrainDofs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="output-invocation">
+<h3>Output Invocation<a class="headerlink" href="#output-invocation" title="Link to this heading"></a></h3>
+<p>Output modules are called automatically, but you can control timing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">writeOutput</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called automatically by framework when solver yields.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="registration-and-usage">
+<h2>Registration and Usage<a class="headerlink" href="#registration-and-usage" title="Link to this heading"></a></h2>
+<section id="file-location">
+<h3>File Location<a class="headerlink" href="#file-location" title="Link to this heading"></a></h3>
+<p>Place solver in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/solvers/MySolver.py</span></code></p></li>
+</ul>
+</section>
+<section id="import-in-init-py">
+<h3>Import in <strong>init</strong>.py<a class="headerlink" href="#import-in-init-py" title="Link to this heading"></a></h3>
+<p>Add to <code class="docutils literal notranslate"><span class="pre">pyfem/solvers/__init__.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.MySolver</span> <span class="kn">import</span> <span class="n">MySolver</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;MySolver&#39;</span><span class="p">,</span>
+    <span class="c1"># ... other solvers</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="using-in-input-files">
+<h3>Using in Input Files<a class="headerlink" href="#using-in-input-files" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> 
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MySolver&quot;</span><span class="p">;</span>
+  
+  <span class="c1"># Solver-specific parameters</span>
+  <span class="n">maxCycle</span> <span class="o">=</span> <span class="mi">50</span><span class="p">;</span>
+  <span class="n">tol</span>      <span class="o">=</span> <span class="mf">1.0e-4</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-and-validation">
+<h2>Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Link to this heading"></a></h2>
+<section id="analytical-tests">
+<h3>Analytical Tests<a class="headerlink" href="#analytical-tests" title="Link to this heading"></a></h3>
+<p>Verify against closed-form solutions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_linear_problem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test solver on linear elastic problem.&quot;&quot;&quot;</span>
+    <span class="c1"># Should converge in one iteration</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="convergence-studies">
+<h3>Convergence Studies<a class="headerlink" href="#convergence-studies" title="Link to this heading"></a></h3>
+<p>Test convergence rates for nonlinear problems:</p>
+<ol class="arabic simple">
+<li><p><strong>Quadratic convergence</strong> for Newton-Raphson</p></li>
+<li><p><strong>Superlinear convergence</strong> for quasi-Newton methods</p></li>
+<li><p><strong>Energy conservation</strong> for dynamic solvers</p></li>
+</ol>
+</section>
+<section id="benchmark-problems">
+<h3>Benchmark Problems<a class="headerlink" href="#benchmark-problems" title="Link to this heading"></a></h3>
+<p>Compare against standard benchmarks:</p>
+<ul class="simple">
+<li><p>Cook’s membrane (plane stress)</p></li>
+<li><p>Cantilever beam (large displacements)</p></li>
+<li><p>Snap-through cylinder (arc-length)</p></li>
+</ul>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Check convergence</strong>: Always monitor residual norms</p></li>
+<li><p><strong>Handle exceptions</strong>: Catch and report non-convergence</p></li>
+<li><p><strong>Adaptive schemes</strong>: Implement step size control when appropriate</p></li>
+<li><p><strong>Logging</strong>: Use the logger for user feedback</p></li>
+<li><p><strong>Efficiency</strong>: Reuse matrices when possible (e.g., mass matrix)</p></li>
+<li><p><strong>Robustness</strong>: Implement line search or damping for difficult problems</p></li>
+<li><p><strong>Documentation</strong>: Cite equations from the book</p></li>
+</ol>
+</section>
+<section id="common-pitfalls">
+<h2>Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Forgetting to update load factor</strong> between steps</p></li>
+<li><p><strong>Not applying constraints</strong> correctly</p></li>
+<li><p><strong>Poor convergence criteria</strong> (too loose or too tight)</p></li>
+<li><p><strong>Incorrect time step</strong> for explicit methods (CFL condition)</p></li>
+<li><p><strong>Not resetting state</strong> after non-convergence</p></li>
+</ol>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>The theoretical foundation for solution algorithms can be found in:</p>
+<p><em>“Non-Linear Finite Element Analysis of Solids and Structures”</em>
+by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+John Wiley &amp; Sons, 2012, ISBN 978-0470666449</p>
+<p>Key chapters:</p>
+<ul class="simple">
+<li><p>Chapter 2: Nonlinear Finite Element Analysis</p></li>
+<li><p>Chapter 2.5: Path-Following Techniques (Arc-Length)</p></li>
+<li><p>Chapter 9: Dynamics and Time-Dependent Problems</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="elements_dev.html"><span class="std std-doc">elements_dev.md</span></a> - Implementing element formulations</p></li>
+<li><p><a class="reference internal" href="materials_dev.html"><span class="std std-doc">materials_dev.md</span></a> - Implementing material models</p></li>
+<li><p><a class="reference internal" href="io_dev.html"><span class="std std-doc">io_dev.md</span></a> - Implementing I/O modules</p></li>
+<li><p>Available solver types documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

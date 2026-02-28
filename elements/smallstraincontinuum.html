@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmallStrainContinuum &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">SmallStrainContinuum</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/smallstraincontinuum.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="smallstraincontinuum">
+<h1>SmallStrainContinuum<a class="headerlink" href="#smallstraincontinuum" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">SmallStrainContinuum</span></code> element is a standard displacement-based finite
+element for 2D and 3D small strain continuum analysis. This element formulation
+is suitable for linear and non-linear material behavior under the assumption of
+small strains and small displacements. It supports various material models
+including elastic, plastic, and damage constitutive laws.</p>
+<p>The element automatically adapts to 2D or 3D analysis based on the problem
+dimension (<code class="docutils literal notranslate"><span class="pre">rank</span></code>). In 2D, it provides displacement degrees of freedom <code class="docutils literal notranslate"><span class="pre">u</span></code>
+and <code class="docutils literal notranslate"><span class="pre">v</span></code> for the x and y directions. In 3D, it includes an additional degree
+of freedom <code class="docutils literal notranslate"><span class="pre">w</span></code> for the z direction.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Element type: <code class="docutils literal notranslate"><span class="pre">SmallStrainContinuum</span></code></p>
+<p>The element implements:</p>
+<ul class="simple">
+<li><p><strong>2D formulation</strong>: Plane stress or plane strain analysis with triangular
+(3-node, 6-node) or quadrilateral (4-node, 8-node, 9-node) elements</p></li>
+<li><p><strong>3D formulation</strong>: Full 3D analysis with tetrahedral or hexahedral elements</p></li>
+<li><p><strong>Material nonlinearity</strong>: Compatible with elastic, plastic, damage, and
+other constitutive models</p></li>
+<li><p><strong>Numerical integration</strong>: Gauss quadrature based on element type</p></li>
+</ul>
+<p>The element computes the tangent stiffness matrix, internal force vector,
+mass matrix (for dynamic analysis), and dissipation (for inelastic materials).</p>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="mandatory-parameters">
+<h3>Mandatory parameters<a class="headerlink" href="#mandatory-parameters" title="Link to this heading"></a></h3>
+<p><strong><code class="docutils literal notranslate"><span class="pre">type</span></code></strong></p>
+<p>Must be set to <code class="docutils literal notranslate"><span class="pre">&quot;SmallStrainContinuum&quot;</span></code></p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">material</span></code></strong></p>
+<p>A material block defining the constitutive behavior. The material block must
+include a <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter specifying the material model.</p>
+<p>Common material types include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;PlaneStress&quot;</span></code>: For 2D plane stress analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;PlaneStrain&quot;</span></code>: For 2D plane strain analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;Isotropic&quot;</span></code>: For 3D isotropic elasticity</p></li>
+<li><p>Other material models (e.g., plasticity, damage) as available</p></li>
+</ul>
+<p>Within the material block, material-specific parameters must be provided,
+such as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>: Young’s modulus</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nu</span></code>: Poisson’s ratio</p></li>
+<li><p>Additional parameters depending on the material type (e.g., yield stress,
+hardening parameters)</p></li>
+</ul>
+</section>
+<section id="optional-parameters">
+<h3>Optional parameters<a class="headerlink" href="#optional-parameters" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">SmallStrainContinuum</span></code> element itself does not require additional optional
+parameters beyond the mandatory material definition. However, specific material
+models may have optional parameters (refer to the material documentation).</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1-2d-plane-stress-analysis">
+<h3>Example 1: 2D Plane Stress Analysis<a class="headerlink" href="#example-1-2d-plane-stress-analysis" title="Link to this heading"></a></h3>
+<p>A 2D continuum element with plane stress material:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ContElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;SmallStrainContinuum&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStress&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration is used in the patch test example:
+<code class="docutils literal notranslate"><span class="pre">examples/ch02/PatchTest4.pro</span></code></p>
+</section>
+<section id="example-2-3d-isotropic-elasticity">
+<h3>Example 2: 3D Isotropic Elasticity<a class="headerlink" href="#example-2-3d-isotropic-elasticity" title="Link to this heading"></a></h3>
+<p>A 3D continuum element with isotropic material:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ContElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;SmallStrainContinuum&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;Isotropic&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">1.e6</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.25</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration is used in the 3D patch test example:
+<code class="docutils literal notranslate"><span class="pre">examples/ch02/PatchTest8_3D.pro</span></code></p>
+</section>
+<section id="example-3-nonlinear-material-behavior">
+<h3>Example 3: Nonlinear Material Behavior<a class="headerlink" href="#example-3-nonlinear-material-behavior" title="Link to this heading"></a></h3>
+<p>The element can be combined with more advanced material models for nonlinear
+analysis. For damage mechanics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ContElem</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;SmallStrainContinuum&quot;</span><span class="p">;</span>
+
+  <span class="n">material</span> <span class="o">=</span>
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;ContinuumDamage&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">30000.</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span>
+    <span class="n">fc</span>   <span class="o">=</span> <span class="mf">20.</span><span class="p">;</span>
+    <span class="n">Gf</span>   <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>This configuration is used in: <code class="docutils literal notranslate"><span class="pre">examples/ch06/ContDamExample.pro</span></code></p>
+</section>
+</section>
+<section id="additional-examples">
+<h2>Additional Examples<a class="headerlink" href="#additional-examples" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">SmallStrainContinuum</span></code> element is used extensively throughout the
+examples directory:</p>
+<ul class="simple">
+<li><p><strong>Patch tests</strong>: <code class="docutils literal notranslate"><span class="pre">examples/ch02/PatchTest*.pro</span></code></p></li>
+<li><p><strong>Interface elements</strong>: <code class="docutils literal notranslate"><span class="pre">examples/ch13/PeelTest*.pro</span></code></p></li>
+<li><p><strong>Material models</strong>: <code class="docutils literal notranslate"><span class="pre">examples/ch06/ContDamExample.pro</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/materials/plasticity/dogbone.pro</span></code></p></li>
+<li><p><strong>Gmsh integration</strong>: <code class="docutils literal notranslate"><span class="pre">examples/gmsh/twist.pro</span></code>,
+<code class="docutils literal notranslate"><span class="pre">examples/gmsh/two_fibres.pro</span></code></p></li>
+<li><p><strong>Contact mechanics</strong>: <code class="docutils literal notranslate"><span class="pre">examples/contact/contact_test3D_01.pro</span></code></p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#materials.md"><span class="xref myst">materials documentation</span></a> - Available material models</p></li>
+<li><p><a class="reference internal" href="#tutorial1.md"><span class="xref myst">tutorial1 documentation</span></a> - Introduction to PyFEM input files</p></li>
+<li><p><a class="reference internal" href="#elements.md"><span class="xref myst">elements documentation</span></a> - Overview of all element types</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

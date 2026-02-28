@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developing Element Classes &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developing Element Classes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develop/elements_dev.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="developing-element-classes">
+<h1>Developing Element Classes<a class="headerlink" href="#developing-element-classes" title="Link to this heading"></a></h1>
+<p>This guide explains how to implement new finite element formulations in PyFEM.
+Element classes define the computational core of finite element analysis,
+including shape functions, strain-displacement relations, and element-level
+matrix assembly.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Elements in PyFEM inherit from the <code class="docutils literal notranslate"><span class="pre">Element</span></code> base class and implement methods
+for computing:</p>
+<ul class="simple">
+<li><p>Tangent stiffness matrices</p></li>
+<li><p>Internal force vectors</p></li>
+<li><p>Mass matrices (for dynamic analysis)</p></li>
+<li><p>Output quantities at integration points</p></li>
+</ul>
+<p>Each element type is responsible for:</p>
+<ol class="arabic simple">
+<li><p>Defining its degrees of freedom (<code class="docutils literal notranslate"><span class="pre">dofTypes</span></code>)</p></li>
+<li><p>Computing strain-displacement matrices (B-matrices)</p></li>
+<li><p>Calling material models to obtain stresses and tangent moduli</p></li>
+<li><p>Integrating element matrices using numerical quadrature</p></li>
+<li><p>Providing output data for post-processing</p></li>
+</ol>
+</section>
+<section id="element-class-structure">
+<h2>Element Class Structure<a class="headerlink" href="#element-class-structure" title="Link to this heading"></a></h2>
+<p>All element classes must inherit from the <code class="docutils literal notranslate"><span class="pre">Element</span></code> base class located in
+<code class="docutils literal notranslate"><span class="pre">pyfem/elements/Element.py</span></code>. The base class provides common functionality
+for managing element data, material models, and output.</p>
+<section id="required-methods">
+<h3>Required Methods<a class="headerlink" href="#required-methods" title="Link to this heading"></a></h3>
+<p>An element class must implement at minimum:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elnodes</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize element with node IDs and properties.&quot;&quot;&quot;</span>
+        <span class="n">Element</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elnodes</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="c1"># Define DOF types and dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dofTypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>  <span class="c1"># For 2D problems</span>
+        
+    <span class="k">def</span> <span class="nf">getTangentStiffness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute element stiffness matrix and internal forces.&quot;&quot;&quot;</span>
+        <span class="c1"># Implementation here</span>
+        
+    <span class="k">def</span> <span class="nf">getInternalForce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute internal force vector only.&quot;&quot;&quot;</span>
+        <span class="c1"># Implementation here</span>
+</pre></div>
+</div>
+</section>
+<section id="optional-methods">
+<h3>Optional Methods<a class="headerlink" href="#optional-methods" title="Link to this heading"></a></h3>
+<p>For specialized functionality:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">getMassMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute element mass matrix for dynamic analysis.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+    
+<span class="k">def</span> <span class="nf">getDissipation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute dissipated energy for arc-length methods.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-example">
+<h2>Implementation Example<a class="headerlink" href="#implementation-example" title="Link to this heading"></a></h2>
+<p>Here’s a complete example implementing a 2D small-strain continuum element,
+following the formulation presented in Chapter 4 of the book <em>“Non-Linear
+Finite Element Analysis of Solids and Structures”</em> by de Borst et al.</p>
+<section id="basic-structure">
+<h3>Basic Structure<a class="headerlink" href="#basic-structure" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Your Name</span>
+
+<span class="kn">from</span> <span class="nn">.Element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.shapeFunctions</span> <span class="kn">import</span> <span class="n">getElemShapeData</span>
+<span class="kn">from</span> <span class="nn">pyfem.util.kinematics</span> <span class="kn">import</span> <span class="n">Kinematics</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">MySmallStrainElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elnodes</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the element.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            elnodes: List of node IDs for this element</span>
+<span class="sd">            props: Properties dictionary containing element parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Element</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elnodes</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Define problem dimension from properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">rank</span>  <span class="c1"># 2 for 2D, 3 for 3D</span>
+        
+        <span class="c1"># Define degree of freedom types</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dofTypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nstr</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Number of stress/strain components</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dofTypes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nstr</span> <span class="o">=</span> <span class="mi">6</span>
+            
+        <span class="c1"># Initialize kinematics utility</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kin</span> <span class="o">=</span> <span class="n">Kinematics</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rank</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nstr</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="tangent-stiffness-method">
+<h3>Tangent Stiffness Method<a class="headerlink" href="#tangent-stiffness-method" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">getTangentStiffness</span></code> method computes the element stiffness matrix and
+internal force vector. Following equation (4.42) in the book:</p>
+<p>$$
+\mathbf{K}^e = \int_{\Omega^e} \mathbf{B}^T \mathbf{D} \mathbf{B} , d\Omega
+$$</p>
+<p>$$
+\mathbf{f}<em>{int}^e = \int</em>{\Omega^e} \mathbf{B}^T \boldsymbol{\sigma} , d\Omega
+$$</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">getTangentStiffness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute element stiffness and internal forces.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        elemdat: Element data container with:</span>
+<span class="sd">            - coords: Nodal coordinates</span>
+<span class="sd">            - state: Current displacement vector</span>
+<span class="sd">            - Dstate: Displacement increment</span>
+<span class="sd">            - stiff: Element stiffness matrix (output)</span>
+<span class="sd">            - fint: Internal force vector (output)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get shape function data and integration points</span>
+    <span class="n">sData</span> <span class="o">=</span> <span class="n">getElemShapeData</span><span class="p">(</span><span class="n">elemdat</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+    
+    <span class="c1"># Loop over integration points</span>
+    <span class="k">for</span> <span class="n">iData</span> <span class="ow">in</span> <span class="n">sData</span><span class="p">:</span>
+        <span class="c1"># Compute strain-displacement matrix (B-matrix)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBmatrix</span><span class="p">(</span><span class="n">iData</span><span class="o">.</span><span class="n">dhdx</span><span class="p">)</span>
+        
+        <span class="c1"># Compute strains from displacements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="o">.</span><span class="n">strain</span> <span class="o">=</span> <span class="n">b</span> <span class="o">@</span> <span class="n">elemdat</span><span class="o">.</span><span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="o">.</span><span class="n">dstrain</span> <span class="o">=</span> <span class="n">b</span> <span class="o">@</span> <span class="n">elemdat</span><span class="o">.</span><span class="n">Dstate</span>
+        
+        <span class="c1"># Call material model to get stress and tangent</span>
+        <span class="n">sigma</span><span class="p">,</span> <span class="n">tang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">getStress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="p">)</span>
+        
+        <span class="c1"># Assemble element matrices (numerical integration)</span>
+        <span class="n">elemdat</span><span class="o">.</span><span class="n">stiff</span> <span class="o">+=</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="p">(</span><span class="n">tang</span> <span class="o">@</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">iData</span><span class="o">.</span><span class="n">weight</span>
+        <span class="n">elemdat</span><span class="o">.</span><span class="n">fint</span> <span class="o">+=</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">iData</span><span class="o">.</span><span class="n">weight</span>
+        
+        <span class="c1"># Store output data (stress, strain, etc.)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendNodalOutput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">outLabels</span><span class="p">(),</span> 
+                               <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">outData</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="internal-force-method">
+<h3>Internal Force Method<a class="headerlink" href="#internal-force-method" title="Link to this heading"></a></h3>
+<p>For explicit dynamics or when only forces are needed:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">getInternalForce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute internal force vector only (no stiffness).</span>
+<span class="sd">    </span>
+<span class="sd">    This method is more efficient when tangent stiffness is not needed,</span>
+<span class="sd">    such as in explicit time integration schemes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sData</span> <span class="o">=</span> <span class="n">getElemShapeData</span><span class="p">(</span><span class="n">elemdat</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">iData</span> <span class="ow">in</span> <span class="n">sData</span><span class="p">:</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getBmatrix</span><span class="p">(</span><span class="n">iData</span><span class="o">.</span><span class="n">dhdx</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="o">.</span><span class="n">strain</span> <span class="o">=</span> <span class="n">b</span> <span class="o">@</span> <span class="n">elemdat</span><span class="o">.</span><span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="o">.</span><span class="n">dstrain</span> <span class="o">=</span> <span class="n">b</span> <span class="o">@</span> <span class="n">elemdat</span><span class="o">.</span><span class="n">Dstate</span>
+        
+        <span class="n">sigma</span><span class="p">,</span> <span class="n">tang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">getStress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="p">)</span>
+        <span class="n">elemdat</span><span class="o">.</span><span class="n">fint</span> <span class="o">+=</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">iData</span><span class="o">.</span><span class="n">weight</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">appendNodalOutput</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">outLabels</span><span class="p">(),</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">outData</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="b-matrix-computation">
+<h3>B-Matrix Computation<a class="headerlink" href="#b-matrix-computation" title="Link to this heading"></a></h3>
+<p>The strain-displacement matrix (B-matrix) relates nodal displacements to
+strains. For 2D small strains (from Section 4.3 of the book):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">getBmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dhdx</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute strain-displacement matrix.</span>
+<span class="sd">    </span>
+<span class="sd">    For 2D problems with strains [εxx, εyy, γxy]^T:</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        dhdx: Shape function derivatives [∂N/∂x, ∂N/∂y]</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        b: Strain-displacement matrix (nstr × ndof)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">nstr</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">)</span> <span class="o">*</span> <span class="n">dhdx</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dN</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dhdx</span><span class="p">):</span>
+            <span class="c1"># εxx = ∂u/∂x</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># εyy = ∂v/∂y  </span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># γxy = ∂u/∂y + ∂v/∂x</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="c1"># Similar for 3D case</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dN</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dhdx</span><span class="p">):</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>     <span class="c1"># εxx</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># εyy</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># εzz</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="c1"># γyz</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>     <span class="c1"># γxz</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>     <span class="c1"># γxy</span>
+            <span class="n">b</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dN</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+    <span class="k">return</span> <span class="n">b</span>
+</pre></div>
+</div>
+</section>
+<section id="mass-matrix-optional">
+<h3>Mass Matrix (Optional)<a class="headerlink" href="#mass-matrix-optional" title="Link to this heading"></a></h3>
+<p>For dynamic analysis, implement mass matrix computation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">getMassMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elemdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute consistent element mass matrix.</span>
+<span class="sd">    </span>
+<span class="sd">    Following equation (9.1) in the book:</span>
+<span class="sd">    M^e = ∫ ρ N^T N dΩ</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sData</span> <span class="o">=</span> <span class="n">getElemShapeData</span><span class="p">(</span><span class="n">elemdat</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+    <span class="n">rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho</span>  <span class="c1"># Material density</span>
+    
+    <span class="k">for</span> <span class="n">iData</span> <span class="ow">in</span> <span class="n">sData</span><span class="p">:</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNmatrix</span><span class="p">(</span><span class="n">iData</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">elemdat</span><span class="o">.</span><span class="n">mass</span> <span class="o">+=</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">N</span><span class="p">)</span> <span class="o">*</span> <span class="n">iData</span><span class="o">.</span><span class="n">weight</span>
+        
+<span class="k">def</span> <span class="nf">getNmatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Shape function matrix for mass computation.&quot;&quot;&quot;</span>
+    <span class="n">ndof</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dofTypes</span><span class="p">)</span>
+    <span class="n">nnodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndof</span><span class="p">,</span> <span class="n">ndof</span> <span class="o">*</span> <span class="n">nnodes</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndof</span><span class="p">):</span>
+            <span class="n">N</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">*</span> <span class="n">ndof</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">hi</span>
+            
+    <span class="k">return</span> <span class="n">N</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="registration-and-usage">
+<h2>Registration and Usage<a class="headerlink" href="#registration-and-usage" title="Link to this heading"></a></h2>
+<section id="file-location">
+<h3>File Location<a class="headerlink" href="#file-location" title="Link to this heading"></a></h3>
+<p>Place your new element class in the appropriate directory:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/elements/</span></code> for general elements</p></li>
+<li><p>Choose a descriptive filename, e.g., <code class="docutils literal notranslate"><span class="pre">MySmallStrainElement.py</span></code></p></li>
+</ul>
+</section>
+<section id="import-in-init-py">
+<h3>Import in <strong>init</strong>.py<a class="headerlink" href="#import-in-init-py" title="Link to this heading"></a></h3>
+<p>Add your element to <code class="docutils literal notranslate"><span class="pre">pyfem/elements/__init__.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.MySmallStrainElement</span> <span class="kn">import</span> <span class="n">MySmallStrainElement</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;MySmallStrainElement&#39;</span><span class="p">,</span>
+    <span class="c1"># ... other elements</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="using-in-input-files">
+<h3>Using in Input Files<a class="headerlink" href="#using-in-input-files" title="Link to this heading"></a></h3>
+<p>Users can now reference your element in <code class="docutils literal notranslate"><span class="pre">.pro</span></code> files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MyElemGroup</span> <span class="o">=</span>
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MySmallStrainElement&quot;</span><span class="p">;</span>
+  
+  <span class="n">material</span> <span class="o">=</span> 
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStress&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">210.0e3</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-and-validation">
+<h2>Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Link to this heading"></a></h2>
+<section id="patch-tests">
+<h3>Patch Tests<a class="headerlink" href="#patch-tests" title="Link to this heading"></a></h3>
+<p>Always verify your element implementation with standard patch tests:</p>
+<ol class="arabic simple">
+<li><p><strong>Constant stress patch test</strong> - Element should reproduce uniform stress</p></li>
+<li><p><strong>Pure bending test</strong> - For beam/plate elements</p></li>
+<li><p><strong>Convergence studies</strong> - Verify optimal convergence rates</p></li>
+</ol>
+<p>Example test structure:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In test/testMyElement.py</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">pyfem.io.InputReader</span> <span class="kn">import</span> <span class="n">InputRead</span>
+
+<span class="k">class</span> <span class="nc">TestMyElement</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_patch_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify element passes patch test.&quot;&quot;&quot;</span>
+        <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span> <span class="o">=</span> <span class="n">InputRead</span><span class="p">(</span><span class="s2">&quot;test/patch_test.pro&quot;</span><span class="p">)</span>
+        <span class="c1"># Run analysis</span>
+        <span class="c1"># Check if computed displacement matches theory</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integration-with-existing-code">
+<h2>Integration with Existing Code<a class="headerlink" href="#integration-with-existing-code" title="Link to this heading"></a></h2>
+<section id="material-interface">
+<h3>Material Interface<a class="headerlink" href="#material-interface" title="Link to this heading"></a></h3>
+<p>Your element should call material models through the standard interface:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Material returns stress and tangent modulus</span>
+<span class="n">sigma</span><span class="p">,</span> <span class="n">tang</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">getStress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kin</span><span class="p">)</span>
+
+<span class="c1"># Material provides output labels and data</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">outLabels</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">outData</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="shape-functions">
+<h3>Shape Functions<a class="headerlink" href="#shape-functions" title="Link to this heading"></a></h3>
+<p>Use the utility functions in <code class="docutils literal notranslate"><span class="pre">pyfem/util/shapeFunctions.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.util.shapeFunctions</span> <span class="kn">import</span> <span class="n">getElemShapeData</span>
+
+<span class="c1"># Automatically selects quadrature based on element topology</span>
+<span class="n">sData</span> <span class="o">=</span> <span class="n">getElemShapeData</span><span class="p">(</span><span class="n">elemdat</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+
+<span class="c1"># Returns integration point data with:</span>
+<span class="c1"># - h: shape functions</span>
+<span class="c1"># - dhdx: shape function derivatives</span>
+<span class="c1"># - weight: integration weight</span>
+</pre></div>
+</div>
+</section>
+<section id="output-data">
+<h3>Output Data<a class="headerlink" href="#output-data" title="Link to this heading"></a></h3>
+<p>Provide element output for visualization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Store nodal output (averaged to nodes)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">appendNodalOutput</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+<span class="c1"># Store element output (per element)</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">appendElementOutput</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Follow naming conventions</strong>: Use descriptive class names</p></li>
+<li><p><strong>Document thoroughly</strong>: Include docstrings for all methods</p></li>
+<li><p><strong>Reference the book</strong>: Cite equation numbers from de Borst et al.</p></li>
+<li><p><strong>Test rigorously</strong>: Implement patch tests and benchmark problems</p></li>
+<li><p><strong>Handle edge cases</strong>: Check for singular matrices, invalid input</p></li>
+<li><p><strong>Optimize carefully</strong>: Profile before optimizing</p></li>
+<li><p><strong>Use utilities</strong>: Leverage existing shape function and assembly routines</p></li>
+</ol>
+</section>
+<section id="common-pitfalls">
+<h2>Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Inconsistent coordinate systems</strong>: Always use global coordinates</p></li>
+<li><p><strong>Integration order</strong>: Ensure sufficient quadrature points</p></li>
+<li><p><strong>Locking phenomena</strong>: Use selective integration or enhanced modes if needed</p></li>
+<li><p><strong>Sign conventions</strong>: Follow the book’s sign conventions consistently</p></li>
+<li><p><strong>Units</strong>: Be consistent with units in material properties</p></li>
+</ol>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>The theoretical foundation for element implementation can be found in:</p>
+<p><em>“Non-Linear Finite Element Analysis of Solids and Structures”</em>
+by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+John Wiley &amp; Sons, 2012, ISBN 978-0470666449</p>
+<p>Key chapters:</p>
+<ul class="simple">
+<li><p>Chapter 4: Isoparametric Elements</p></li>
+<li><p>Chapter 5: Element Technology</p></li>
+<li><p>Chapter 9: Dynamics and Time-Dependent Problems</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="materials_dev.html"><span class="std std-doc">materials_dev.md</span></a> - Implementing material models</p></li>
+<li><p><a class="reference internal" href="solvers_dev.html"><span class="std std-doc">solvers_dev.md</span></a> - Implementing solution algorithms</p></li>
+<li><p><a class="reference internal" href="io_dev.html"><span class="std std-doc">io_dev.md</span></a> - Implementing I/O modules</p></li>
+<li><p>Available element types documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

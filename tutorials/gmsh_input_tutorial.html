@@ -1,0 +1,192 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial: Using GMSH Input Files in PyFEM &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial: Using GMSH Input Files in PyFEM</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/gmsh_input_tutorial.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-using-gmsh-input-files-in-pyfem">
+<h1>Tutorial: Using GMSH Input Files in PyFEM<a class="headerlink" href="#tutorial-using-gmsh-input-files-in-pyfem" title="Link to this heading"></a></h1>
+<p>This tutorial explains how to use GMSH-generated meshes as input for PyFEM, based on the examples in the <a class="reference internal" href="#../../examples/gmsh"><span class="xref myst">examples/gmsh</span></a> directory. We will walk through the structure of the input files and how to set up a simulation using GMSH meshes.</p>
+<section id="overview-of-files">
+<h2>1. Overview of Files<a class="headerlink" href="#overview-of-files" title="Link to this heading"></a></h2>
+<p>A typical GMSH-based example in PyFEM consists of:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.geo</span></code> file: GMSH geometry definition</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.msh</span></code> file: GMSH mesh file (exported from GMSH)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.dat</span></code> file: PyFEM input file referencing the mesh and specifying boundary conditions, loads, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.pro</span></code> file: PyFEM project file (optional, for advanced setups)</p></li>
+</ul>
+</section>
+<section id="creating-the-mesh-with-gmsh">
+<h2>2. Creating the Mesh with GMSH<a class="headerlink" href="#creating-the-mesh-with-gmsh" title="Link to this heading"></a></h2>
+<p>Write a geometry file (e.g., <a class="reference download internal" download="" href="../_downloads/2b0ac873cf5609c14d67401743c375b3/two_fibres.geo"><span class="xref download myst">two_fibres.geo</span></a>):</p>
+<div class="highlight-geo notranslate"><div class="highlight"><pre><span></span>lc = 0.25;
+Point(1)  = { 0.0, 0.0, 0.0, lc };
+Point(2)  = { 10.0, 0.0, 0.0, lc };
+// ... more points ...
+Line(1) = {1,2};
+// ... more lines, circles, surfaces ...
+Physical Surface(&quot;Epoxy&quot;)  = {1};
+Physical Surface(&quot;Fibre&quot;)  = {2};
+Physical Surface(&quot;Fibre2&quot;) = {3};
+</pre></div>
+</div>
+<p>Generate the mesh in GMSH:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gmsh<span class="w"> </span>two_fibres.geo<span class="w"> </span>-2<span class="w"> </span>-format<span class="w"> </span>msh4<span class="w"> </span>-o<span class="w"> </span>two_fibres.msh
+</pre></div>
+</div>
+</section>
+<section id="pyfem-input-file-structure">
+<h2>3. PyFEM Input File Structure<a class="headerlink" href="#pyfem-input-file-structure" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">.dat</span></code> file links the mesh and defines boundary conditions:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">gmsh</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;two_fibres.msh&quot;</span>
+
+<span class="na">&lt;NodeConstraints&gt;</span>
+<span class="w">  </span><span class="na">u[Right]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">2.5</span><span class="c1">;</span>
+<span class="w">  </span><span class="na">v[Right]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.0</span><span class="c1">;</span>
+<span class="w">  </span><span class="na">u[Left]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">0.0</span><span class="c1">;</span>
+<span class="w">  </span><span class="na">v[Left]</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s">0.0</span><span class="c1">;</span>
+<span class="na">&lt;/NodeConstraints&gt;</span>
+
+<span class="na">&lt;ExternalForces&gt;</span>
+<span class="na">&lt;/ExternalForces&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gmsh</span> <span class="pre">=</span> <span class="pre">&quot;two_fibres.msh&quot;</span></code> tells PyFEM to use the GMSH mesh (see <a class="reference download internal" download="" href="../_downloads/3265cf5ceeb9cebd406a7a46234b3a6f/two_fibres.msh"><span class="xref download myst">two_fibres.msh</span></a>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;NodeConstraints&gt;</span></code> block applies Dirichlet boundary conditions to nodes in the physical groups <code class="docutils literal notranslate"><span class="pre">Right</span></code> and <code class="docutils literal notranslate"><span class="pre">Left</span></code> (as defined in the <code class="docutils literal notranslate"><span class="pre">.geo</span></code> file).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;ExternalForces&gt;</span></code> block can be used to apply loads (empty in this example).</p></li>
+</ul>
+</section>
+<section id="running-the-simulation">
+<h2>4. Running the Simulation<a class="headerlink" href="#running-the-simulation" title="Link to this heading"></a></h2>
+<p>From the PyFEM root directory, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>two_fibres.dat
+</pre></div>
+</div>
+</section>
+<section id="visualizing-results">
+<h2>5. Visualizing Results<a class="headerlink" href="#visualizing-results" title="Link to this heading"></a></h2>
+<p>PyFEM writes output files (e.g., <code class="docutils literal notranslate"><span class="pre">.pvd</span></code>, <code class="docutils literal notranslate"><span class="pre">.vtu</span></code>) for visualization in ParaView:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>paraview<span class="w"> </span>two_fibres.pvd
+</pre></div>
+</div>
+</section>
+<section id="more-examples">
+<h2>6. More Examples<a class="headerlink" href="#more-examples" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../_downloads/ddf175db05fecea4a1a924b7ad1c9d10/twist.geo"><span class="xref download myst">twist.geo</span></a>, <a class="reference download internal" download="" href="../_downloads/bcfd11ff4cc5ce44d172623938ec9276/twist.msh"><span class="xref download myst">twist.msh</span></a>, <a class="reference download internal" download="" href="../_downloads/010872362ecbc444d95086fc9fc27f02/twist.dat"><span class="xref download myst">twist.dat</span></a> show a 3D example with extrusion and different boundary conditions.</p></li>
+<li><p>The process is the same: define geometry in <code class="docutils literal notranslate"><span class="pre">.geo</span></code>, mesh with GMSH, reference the mesh in the <code class="docutils literal notranslate"><span class="pre">.dat</span></code> file, and specify boundary conditions using physical group names.</p></li>
+</ul>
+</section>
+<section id="tips">
+<h2>7. Tips<a class="headerlink" href="#tips" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Always define physical groups in your <code class="docutils literal notranslate"><span class="pre">.geo</span></code> file for all regions where you want to apply boundary conditions or loads.</p></li>
+<li><p>Use GMSH’s GUI to inspect and assign physical groups interactively.</p></li>
+<li><p>For advanced setups, see the <code class="docutils literal notranslate"><span class="pre">.pro</span></code> files (e.g., <a class="reference download internal" download="" href="../_downloads/b8a4895a94b4327f8f1211bfd6ad6b09/twist.pro"><span class="xref download myst">twist.pro</span></a> or <a class="reference download internal" download="" href="../_downloads/95f6a9971f28843a57374e1cac371c27/two_fibres.pro"><span class="xref download myst">two_fibres.pro</span></a>) or the <span class="xref myst">PyFEM documentation</span>.</p></li>
+</ul>
+<hr class="docutils" />
+<p>For more details, see the <a class="reference internal" href="#../../examples/gmsh"><span class="xref myst">examples/gmsh</span></a> directory and the PyFEM documentation.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

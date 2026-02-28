@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer’s Guide &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="User Manual" href="../usermanual.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developer’s Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develop/overview.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="developer-s-guide">
+<h1>Developer’s Guide<a class="headerlink" href="#developer-s-guide" title="Link to this heading"></a></h1>
+<p>This guide provides comprehensive documentation for extending PyFEM with new
+finite element formulations, material models, solution algorithms, and I/O
+modules. Each section includes theoretical background, implementation examples,
+and best practices.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>PyFEM is designed to be extensible, allowing researchers and developers to
+implement new capabilities while leveraging existing infrastructure. The
+modular architecture separates concerns into distinct components:</p>
+<ul class="simple">
+<li><p><strong>Elements</strong>: Define finite element formulations and local computations</p></li>
+<li><p><strong>Materials</strong>: Implement constitutive laws relating stress to strain</p></li>
+<li><p><strong>Solvers</strong>: Orchestrate the solution process and convergence</p></li>
+<li><p><strong>I/O Modules</strong>: Handle input/output and data management</p></li>
+</ul>
+<p>All implementations follow object-oriented design patterns and integrate
+seamlessly with PyFEM’s assembly routines, DOF management, and output system.</p>
+</section>
+<section id="theoretical-foundation">
+<h2>Theoretical Foundation<a class="headerlink" href="#theoretical-foundation" title="Link to this heading"></a></h2>
+<p>The implementations in PyFEM are based on the textbook:</p>
+<blockquote>
+<div><p><strong>“Non-Linear Finite Element Analysis of Solids and Structures”</strong></p>
+<p>by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel</p>
+<p>John Wiley &amp; Sons, 2012, ISBN 978-0470666449</p>
+</div></blockquote>
+<p>Throughout the developer guides, specific equations and algorithms from this
+book are referenced to provide theoretical context for implementations.</p>
+</section>
+<section id="development-topics">
+<h2>Development Topics<a class="headerlink" href="#development-topics" title="Link to this heading"></a></h2>
+<section id="element-development">
+<h3>Element Development<a class="headerlink" href="#element-development" title="Link to this heading"></a></h3>
+<p>Learn how to implement new finite element formulations including shape
+functions, strain-displacement relations, and element matrix assembly.</p>
+<p><a class="reference internal" href="elements_dev.html"><span class="std std-doc">elements_dev.md</span></a></p>
+<p>Key topics:</p>
+<ul class="simple">
+<li><p>Element class structure and inheritance</p></li>
+<li><p>B-matrix computation for various element types</p></li>
+<li><p>Integration with material models</p></li>
+<li><p>Mass matrices for dynamic analysis</p></li>
+<li><p>Patch tests and validation</p></li>
+</ul>
+</section>
+<section id="material-model-development">
+<h3>Material Model Development<a class="headerlink" href="#material-model-development" title="Link to this heading"></a></h3>
+<p>Implement constitutive laws defining stress-strain relationships for linear
+elastic, elastoplastic, and cohesive zone models.</p>
+<p><a class="reference internal" href="materials_dev.html"><span class="std std-doc">materials_dev.md</span></a></p>
+<p>Key topics:</p>
+<ul class="simple">
+<li><p>Material class structure</p></li>
+<li><p>Elastic materials (plane stress, plane strain)</p></li>
+<li><p>Plasticity with hardening (von Mises, Drucker-Prager)</p></li>
+<li><p>Cohesive zone models for fracture</p></li>
+<li><p>State variable management</p></li>
+<li><p>Consistent tangent operators</p></li>
+</ul>
+</section>
+<section id="solver-development">
+<h3>Solver Development<a class="headerlink" href="#solver-development" title="Link to this heading"></a></h3>
+<p>Create solution algorithms for static, dynamic, and stability analysis
+including Newton-Raphson, arc-length, and explicit time integration.</p>
+<p><a class="reference internal" href="solvers_dev.html"><span class="std std-doc">solvers_dev.md</span></a></p>
+<p>Key topics:</p>
+<ul class="simple">
+<li><p>Solver class structure and flow control</p></li>
+<li><p>Newton-Raphson iteration</p></li>
+<li><p>Arc-length methods for snap-back problems</p></li>
+<li><p>Explicit dynamics solvers</p></li>
+<li><p>Convergence criteria and error handling</p></li>
+<li><p>Load stepping strategies</p></li>
+</ul>
+</section>
+<section id="i-o-module-development">
+<h3>I/O Module Development<a class="headerlink" href="#i-o-module-development" title="Link to this heading"></a></h3>
+<p>Develop input/output modules for reading problem definitions, writing results
+in various formats (text, binary, VTK), and managing data flow.</p>
+<p><a class="reference internal" href="io_dev.html"><span class="std std-doc">io_dev.md</span></a></p>
+<p>Key topics:</p>
+<ul class="simple">
+<li><p>I/O module structure and integration</p></li>
+<li><p>Text-based output writers</p></li>
+<li><p>Binary formats (HDF5)</p></li>
+<li><p>VTK files for visualization</p></li>
+<li><p>Time history tracking</p></li>
+<li><p>State saving and restoration</p></li>
+</ul>
+</section>
+</section>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<p>Before developing new modules, familiarize yourself with:</p>
+<ol class="arabic simple">
+<li><p><strong>Python programming</strong>: Object-oriented design, NumPy arrays</p></li>
+<li><p><strong>Finite element theory</strong>: Chapters 1-4 of the textbook</p></li>
+<li><p><strong>PyFEM structure</strong>: Run existing examples to understand workflow</p></li>
+<li><p><strong>Version control</strong>: Git basics for contributing code</p></li>
+</ol>
+</section>
+<section id="development-workflow">
+<h3>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Study existing implementations</strong>: Review similar elements/materials/solvers</p></li>
+<li><p><strong>Design your module</strong>: Plan class structure and methods</p></li>
+<li><p><strong>Implement incrementally</strong>: Start with simple cases, add complexity</p></li>
+<li><p><strong>Test thoroughly</strong>: Unit tests, patch tests, benchmark problems</p></li>
+<li><p><strong>Document clearly</strong>: Docstrings, equations, usage examples</p></li>
+<li><p><strong>Contribute back</strong>: Submit pull requests to the main repository</p></li>
+</ol>
+</section>
+</section>
+<section id="code-style-and-conventions">
+<h2>Code Style and Conventions<a class="headerlink" href="#code-style-and-conventions" title="Link to this heading"></a></h2>
+<section id="naming-conventions">
+<h3>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Classes</strong>: <code class="docutils literal notranslate"><span class="pre">PascalCase</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">SmallStrainContinuum</span></code>)</p></li>
+<li><p><strong>Methods</strong>: <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">getTangentStiffness</span></code>)</p></li>
+<li><p><strong>Variables</strong>: <code class="docutils literal notranslate"><span class="pre">camelCase</span></code> or <code class="docutils literal notranslate"><span class="pre">snake_case</span></code> consistently</p></li>
+<li><p><strong>Constants</strong>: <code class="docutils literal notranslate"><span class="pre">UPPER_CASE</span></code></p></li>
+</ul>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h3>
+<p>All classes and methods should include docstrings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Brief description of element.</span>
+<span class="sd">    </span>
+<span class="sd">    Detailed explanation including theoretical basis,</span>
+<span class="sd">    assumptions, and references to the textbook.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        param1: Description</span>
+<span class="sd">        param2: Description</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">myMethod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Brief method description.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            arg1: Description</span>
+<span class="sd">            arg2: Description</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Description of return value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="type-hints">
+<h3>Type Hints<a class="headerlink" href="#type-hints" title="Link to this heading"></a></h3>
+<p>Use type hints for clarity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strain</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute stress and tangent.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tangent</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-guidelines">
+<h2>Testing Guidelines<a class="headerlink" href="#testing-guidelines" title="Link to this heading"></a></h2>
+<p>All new modules should include:</p>
+<ol class="arabic simple">
+<li><p><strong>Unit tests</strong>: Test individual methods in isolation</p></li>
+<li><p><strong>Integration tests</strong>: Test with complete analyses</p></li>
+<li><p><strong>Validation tests</strong>: Compare against analytical solutions</p></li>
+<li><p><strong>Regression tests</strong>: Ensure changes don’t break existing functionality</p></li>
+</ol>
+<p>Place tests in the <code class="docutils literal notranslate"><span class="pre">test/</span></code> directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test</span><span class="o">/</span>
+    <span class="n">test_my_element</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">test_my_material</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">test_my_solver</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading"></a></h2>
+<p>To contribute your developments to PyFEM:</p>
+<ol class="arabic simple">
+<li><p>Fork the repository on GitHub</p></li>
+<li><p>Create a feature branch</p></li>
+<li><p>Implement and test your module</p></li>
+<li><p>Document thoroughly</p></li>
+<li><p>Submit a pull request</p></li>
+</ol>
+<p>See the PyFEM repository for detailed contribution guidelines:
+https://github.com/jjcremmers/PyFEM</p>
+</section>
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading"></a></h2>
+<section id="example-implementations">
+<h3>Example Implementations<a class="headerlink" href="#example-implementations" title="Link to this heading"></a></h3>
+<p>Study these well-documented implementations as templates:</p>
+<ul class="simple">
+<li><p><strong>Element</strong>: <code class="docutils literal notranslate"><span class="pre">pyfem/elements/SmallStrainContinuum.py</span></code></p></li>
+<li><p><strong>Material</strong>: <code class="docutils literal notranslate"><span class="pre">pyfem/materials/PlaneStress.py</span></code></p></li>
+<li><p><strong>Solver</strong>: <code class="docutils literal notranslate"><span class="pre">pyfem/solvers/NonlinearSolver.py</span></code></p></li>
+<li><p><strong>I/O Module</strong>: <code class="docutils literal notranslate"><span class="pre">pyfem/io/GraphWriter.py</span></code></p></li>
+</ul>
+</section>
+<section id="utility-modules">
+<h3>Utility Modules<a class="headerlink" href="#utility-modules" title="Link to this heading"></a></h3>
+<p>Leverage existing utilities:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/util/shapeFunctions.py</span></code>: Shape function evaluation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/util/kinematics.py</span></code>: Kinematic transformations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/fem/Assembly.py</span></code>: Matrix assembly routines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/util/logger.py</span></code>: Logging functionality</p></li>
+</ul>
+</section>
+<section id="developer-documentation">
+<h3>Developer Documentation<a class="headerlink" href="#developer-documentation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="elements_dev.html"><span class="std std-doc">elements_dev.md</span></a></p></li>
+<li><p><a class="reference internal" href="materials_dev.html"><span class="std std-doc">materials_dev.md</span></a></p></li>
+<li><p><a class="reference internal" href="solvers_dev.html"><span class="std std-doc">solvers_dev.md</span></a></p></li>
+<li><p><a class="reference internal" href="io_dev.html"><span class="std std-doc">io_dev.md</span></a></p></li>
+</ul>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p><strong>Primary Reference</strong></p>
+<p><em>“Non-Linear Finite Element Analysis of Solids and Structures”</em>
+by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+John Wiley &amp; Sons, 2012, ISBN 978-0470666449</p>
+<p><strong>Additional References</strong></p>
+<ul class="simple">
+<li><p>Hughes, T.J.R. (2000). <em>The Finite Element Method</em>. Dover Publications.</p></li>
+<li><p>Belytschko, T., Liu, W.K., Moran, B. (2000). <em>Nonlinear Finite Elements for
+Continua and Structures</em>. Wiley.</p></li>
+<li><p>Zienkiewicz, O.C., Taylor, R.L. (2000). <em>The Finite Element Method</em> (5th ed.).
+Butterworth-Heinemann.</p></li>
+</ul>
+</section>
+<section id="support-and-contact">
+<h2>Support and Contact<a class="headerlink" href="#support-and-contact" title="Link to this heading"></a></h2>
+<p>For questions about PyFEM development:</p>
+<ul class="simple">
+<li><p>GitHub Issues: https://github.com/jjcremmers/PyFEM/issues</p></li>
+<li><p>Email: Contact the PyFEM developers through the GitHub repository</p></li>
+</ul>
+<p>When asking questions, please:</p>
+<ol class="arabic simple">
+<li><p>Provide a minimal example demonstrating the issue</p></li>
+<li><p>Include PyFEM version and Python environment details</p></li>
+<li><p>Reference specific sections of the developer guides</p></li>
+<li><p>Show what you’ve already tried</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../usermanual.html" class="btn btn-neutral float-left" title="User Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

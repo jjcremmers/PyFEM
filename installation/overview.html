@@ -1,0 +1,395 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyFEM Installation Guide &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quickstart" href="../tutorials/quickstart.html" />
+    <link rel="prev" title="PyFEM: A Python Finite Element Code" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyFEM Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyFEM Installation Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/installation/overview.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pyfem-installation-guide">
+<h1>PyFEM Installation Guide<a class="headerlink" href="#pyfem-installation-guide" title="Link to this heading"></a></h1>
+<p>PyFEM can be installed directly from the <a class="reference external" href="https://github.com/jjcremmers/PyFEM">GitHub source</a>.
+Both the <strong>Python API</strong> and the <strong>command-line interface (CLI)</strong> are included.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h2>
+<p><strong>System Requirements:</strong></p>
+<ul class="simple">
+<li><p>Python 3.9 or newer</p></li>
+<li><p>pip (Python package manager)</p></li>
+<li><p>Git (for cloning the repository)</p></li>
+</ul>
+<p><strong>Python Dependencies</strong> (installed automatically):</p>
+<ul class="simple">
+<li><p>numpy</p></li>
+<li><p>scipy</p></li>
+<li><p>matplotlib</p></li>
+<li><p>meshio</p></li>
+<li><p>h5py</p></li>
+<li><p>PySide6</p></li>
+<li><p>vtk</p></li>
+</ul>
+<p><strong>Recommended: Virtual Environment</strong>
+It’s recommended to install PyFEM in a virtual environment to avoid conflicts with other Python packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create virtual environment</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>pyfem-env
+<span class="c1"># Activate on Linux / macOS</span>
+<span class="nb">source</span><span class="w"> </span>pyfem-env/bin/activate
+<span class="c1"># Activate on Windows PowerShell</span>
+pyfem-env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+<span class="c1"># Activate on Windows Command Prompt</span>
+pyfem-env<span class="se">\S</span>cripts<span class="se">\a</span>ctivate.bat
+</pre></div>
+</div>
+</section>
+<section id="installation-steps">
+<h2>Installation Steps<a class="headerlink" href="#installation-steps" title="Link to this heading"></a></h2>
+<section id="method-1-standard-installation-recommended">
+<h3>Method 1: Standard Installation (Recommended)<a class="headerlink" href="#method-1-standard-installation-recommended" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jjcremmers/PyFEM.git
+<span class="nb">cd</span><span class="w"> </span>PyFEM
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p>This installs PyFEM and all dependencies, and creates the <code class="docutils literal notranslate"><span class="pre">pyfem</span></code> and <code class="docutils literal notranslate"><span class="pre">pyfem-gui</span></code> command-line executables.</p>
+</section>
+<section id="method-2-development-installation">
+<h3>Method 2: Development Installation<a class="headerlink" href="#method-2-development-installation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jjcremmers/PyFEM.git
+<span class="nb">cd</span><span class="w"> </span>PyFEM
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">-e</span></code> flag installs in “editable” mode, so changes to the source code are immediately reflected without reinstalling.</p>
+</section>
+<section id="method-3-direct-from-github-advanced">
+<h3>Method 3: Direct from GitHub (Advanced)<a class="headerlink" href="#method-3-direct-from-github-advanced" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/jjcremmers/PyFEM.git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="verifying-the-installation">
+<h2>Verifying the Installation<a class="headerlink" href="#verifying-the-installation" title="Link to this heading"></a></h2>
+<p>After installation, verify that both the CLI and API work correctly.</p>
+<section id="checking-the-cli">
+<h3>Checking the CLI<a class="headerlink" href="#checking-the-cli" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>--help
+<span class="nb">cd</span><span class="w"> </span>examples/ch02
+pyfem<span class="w"> </span>PatchTest.pro
+</pre></div>
+</div>
+<p>Expected output includes solver iterations, convergence information, and generated output files.</p>
+</section>
+<section id="checking-the-api">
+<h3>Checking the API<a class="headerlink" href="#checking-the-api" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&quot;examples/ch02/PatchTest.pro&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;globdat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>  <span class="c1"># Displacement vector</span>
+</pre></div>
+</div>
+<p>If both tests complete without errors, the installation is successful.</p>
+</section>
+</section>
+<section id="using-pyfem">
+<h2>Using PyFEM<a class="headerlink" href="#using-pyfem" title="Link to this heading"></a></h2>
+<section id="command-line-interface-cli">
+<h3>Command-Line Interface (CLI)<a class="headerlink" href="#command-line-interface-cli" title="Link to this heading"></a></h3>
+<p><strong>Basic Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>input_file.pro
+</pre></div>
+</div>
+<p><strong>Command-Line Options:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>--help<span class="w">                    </span><span class="c1"># Show help</span>
+pyfem<span class="w"> </span>-i<span class="w"> </span>input.pro<span class="w">              </span><span class="c1"># Specify input file</span>
+pyfem<span class="w"> </span>-d<span class="w"> </span>state.dump<span class="w">             </span><span class="c1"># Restart from dump file</span>
+pyfem<span class="w"> </span>-p<span class="w"> </span><span class="nv">param</span><span class="o">=</span>value<span class="w">            </span><span class="c1"># Override parameter</span>
+</pre></div>
+</div>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>examples/ch03/cantilever8.pro
+pyfem<span class="w"> </span>-d<span class="w"> </span>results_cycle100.dump
+pyfem<span class="w"> </span>-i<span class="w"> </span>model.pro<span class="w"> </span>-p<span class="w"> </span><span class="nv">E</span><span class="o">=</span><span class="m">210000</span>
+</pre></div>
+</div>
+</section>
+<section id="python-api">
+<h3>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
+<p><strong>Simple Usage - Run to Completion:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem</span> <span class="kn">import</span> <span class="n">run</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&quot;input.pro&quot;</span><span class="p">)</span>
+<span class="n">globdat</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;globdat&#39;</span><span class="p">]</span>
+<span class="n">displacements</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">state</span>
+<span class="n">props</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;props&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Advanced Usage - Step-by-Step Control:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.core.api</span> <span class="kn">import</span> <span class="n">PyFEMAPI</span>
+<span class="n">api</span> <span class="o">=</span> <span class="n">PyFEMAPI</span><span class="p">(</span><span class="s2">&quot;input.pro&quot;</span><span class="p">)</span>
+<span class="k">while</span> <span class="n">api</span><span class="o">.</span><span class="n">isActive</span><span class="p">:</span>
+    <span class="n">api</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="n">current_disp</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">globdat</span><span class="o">.</span><span class="n">state</span>
+    <span class="n">load_factor</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">globdat</span><span class="o">.</span><span class="n">lam</span>
+    <span class="k">if</span> <span class="n">load_factor</span> <span class="o">&gt;</span> <span class="mf">5.0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Load factor reached </span><span class="si">{</span><span class="n">load_factor</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getResults</span><span class="p">()</span>
+<span class="n">api</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Loading from Pre-parsed Input:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.io.InputReader</span> <span class="kn">import</span> <span class="n">InputRead</span>
+<span class="kn">from</span> <span class="nn">pyfem.core.api</span> <span class="kn">import</span> <span class="n">PyFEMAPI</span>
+<span class="n">props</span><span class="p">,</span> <span class="n">globdat</span> <span class="o">=</span> <span class="n">InputRead</span><span class="p">(</span><span class="s2">&quot;input.pro&quot;</span><span class="p">)</span>
+<span class="n">props</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">api</span> <span class="o">=</span> <span class="n">PyFEMAPI</span><span class="p">((</span><span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">))</span>
+<span class="n">api</span><span class="o">.</span><span class="n">runAll</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Accessing Results:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">globdat</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">globdat</span>
+<span class="n">displacements</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">state</span>
+<span class="n">node_coords</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">node_list</span><span class="p">)</span>
+<span class="n">load_factor</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span>
+<span class="n">cycle</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span>
+<span class="n">converged</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">converged</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="updating-pyfem">
+<h2>Updating PyFEM<a class="headerlink" href="#updating-pyfem" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>PyFEM
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>.
+<span class="c1"># Or if installed directly from GitHub</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>git+https://github.com/jjcremmers/PyFEM.git
+</pre></div>
+</div>
+</section>
+<section id="uninstalling">
+<h2>Uninstalling<a class="headerlink" href="#uninstalling" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>uninstall<span class="w"> </span>pyfem
+</pre></div>
+</div>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<p><strong>1. “pyfem: command not found”</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>pyfem<span class="w">  </span><span class="c1"># Linux/macOS</span>
+where<span class="w"> </span>pyfem<span class="w">  </span><span class="c1"># Windows</span>
+~/.local/bin/pyfem<span class="w"> </span>input.pro
+</pre></div>
+</div>
+<p><strong>2. Import errors</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>pyfem
+</pre></div>
+</div>
+<p><strong>3. VTK or GUI issues</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libgl1-mesa-glx<span class="w"> </span>libxkbcommon-x11-0<span class="w">  </span><span class="c1"># Linux</span>
+<span class="c1"># On macOS, install XQuartz</span>
+brew<span class="w"> </span>install<span class="w"> </span>--cask<span class="w"> </span>xquartz
+</pre></div>
+</div>
+<p><strong>4. Permission errors during installation</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="platform-specific-notes">
+<h2>Platform-Specific Notes<a class="headerlink" href="#platform-specific-notes" title="Link to this heading"></a></h2>
+<p><strong>Linux:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3-venv<span class="w"> </span>python3-pip<span class="w">  </span><span class="c1"># Debian/Ubuntu</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>python3-virtualenv<span class="w"> </span>python3-pip<span class="w">  </span><span class="c1"># Fedora/RHEL</span>
+</pre></div>
+</div>
+<p><strong>macOS:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>python@3.11
+brew<span class="w"> </span>install<span class="w"> </span>--cask<span class="w"> </span>xquartz
+</pre></div>
+</div>
+<p><strong>Windows:</strong></p>
+<ol class="arabic simple">
+<li><p>Install Python 3.9+ from <a class="reference external" href="https://www.python.org/downloads/">python.org</a></p></li>
+<li><p>Ensure “Add Python to PATH” is checked</p></li>
+<li><p>Use PowerShell or Command Prompt</p></li>
+<li><p>Install Git for Windows: <a class="reference external" href="https://git-scm.com/">git-scm.com</a></p></li>
+</ol>
+</section>
+<section id="running-examples">
+<h2>Running Examples<a class="headerlink" href="#running-examples" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples
+<span class="nb">cd</span><span class="w"> </span>ch02
+pyfem<span class="w"> </span>PatchTest.pro
+<span class="nb">cd</span><span class="w"> </span>ch03
+pyfem<span class="w"> </span>cantilever8.pro
+paraview<span class="w"> </span>cantilever8.pvd
+</pre></div>
+</div>
+<p>Each example directory contains:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.pro</span></code> files: Input files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.dat</span></code> files: Mesh files</p></li>
+<li><p>Output files: VTK, text, plots</p></li>
+</ul>
+</section>
+<section id="development-setup">
+<h2>Development Setup<a class="headerlink" href="#development-setup" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jjcremmers/PyFEM.git
+<span class="nb">cd</span><span class="w"> </span>PyFEM
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>test/
+python<span class="w"> </span>-m<span class="w"> </span>black<span class="w"> </span>pyfem/
+python<span class="w"> </span>-m<span class="w"> </span>mypy<span class="w"> </span>pyfem/
+</pre></div>
+</div>
+</section>
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Documentation</strong>: https://pyfem.readthedocs.io/</p></li>
+<li><p><strong>GitHub Issues</strong>: https://github.com/jjcremmers/PyFEM/issues</p></li>
+<li><p><strong>Examples</strong>: See the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory</p></li>
+<li><p><strong>Book</strong>: “Non-Linear Finite Element Analysis of Solids and Structures” by de Borst et al., John Wiley &amp; Sons, 2012</p></li>
+</ul>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Read the <a class="reference internal" href="../tutorials/quickstart.html"><span class="std std-doc">Quickstart tutorial</span></a></p></li>
+<li><p>Explore examples in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> directory</p></li>
+<li><p>Review the <a class="reference internal" href="#../pyfem.md"><span class="xref myst">module documentation</span></a></p></li>
+<li><p>For development, see the <a class="reference internal" href="../develop/overview.html"><span class="std std-doc">developer overview</span></a></p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="PyFEM: A Python Finite Element Code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../tutorials/quickstart.html" class="btn btn-neutral float-right" title="Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

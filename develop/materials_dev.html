@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developing Material Models &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developing Material Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develop/materials_dev.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="developing-material-models">
+<h1>Developing Material Models<a class="headerlink" href="#developing-material-models" title="Link to this heading"></a></h1>
+<p>This guide explains how to implement new material models in PyFEM. Material
+models (constitutive laws) define the relationship between stress and strain,
+forming the core of finite element analysis for solid mechanics problems.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Material models in PyFEM are responsible for:</p>
+<ul class="simple">
+<li><p>Computing stress tensors from strain tensors</p></li>
+<li><p>Providing tangent moduli (material stiffness) for Newton-Raphson iteration</p></li>
+<li><p>Managing internal variables for history-dependent materials (plasticity, damage)</p></li>
+<li><p>Providing output quantities for post-processing</p></li>
+</ul>
+<p>All material models inherit from the <code class="docutils literal notranslate"><span class="pre">BaseMaterial</span></code> class and implement
+methods that are called by element formulations during assembly.</p>
+</section>
+<section id="material-class-structure">
+<h2>Material Class Structure<a class="headerlink" href="#material-class-structure" title="Link to this heading"></a></h2>
+<section id="base-class">
+<h3>Base Class<a class="headerlink" href="#base-class" title="Link to this heading"></a></h3>
+<p>All material models must inherit from <code class="docutils literal notranslate"><span class="pre">BaseMaterial</span></code> located in
+<code class="docutils literal notranslate"><span class="pre">pyfem/materials/BaseMaterial.py</span></code>. The base class handles:</p>
+<ul class="simple">
+<li><p>Property management (E, nu, etc.)</p></li>
+<li><p>Output data storage</p></li>
+<li><p>Common utility functions</p></li>
+</ul>
+</section>
+<section id="required-methods">
+<h3>Required Methods<a class="headerlink" href="#required-methods" title="Link to this heading"></a></h3>
+<p>A material model must implement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyMaterial</span><span class="p">(</span><span class="n">BaseMaterial</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize material with properties.&quot;&quot;&quot;</span>
+        <span class="n">BaseMaterial</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="c1"># Initialize material parameters and state</span>
+        
+    <span class="k">def</span> <span class="nf">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deformation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute stress and tangent modulus.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            deformation: Kinematics object with strain data</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (sigma, tangent) - stress vector and tangent matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Implementation here</span>
+        <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tangent</span>
+</pre></div>
+</div>
+</section>
+<section id="optional-methods">
+<h3>Optional Methods<a class="headerlink" href="#optional-methods" title="Link to this heading"></a></h3>
+<p>For advanced features:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reset internal variables for new load step.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+    
+<span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Commit current state after convergence.&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-examples">
+<h2>Implementation Examples<a class="headerlink" href="#implementation-examples" title="Link to this heading"></a></h2>
+<section id="example-1-elastic-material-plane-stress">
+<h3>Example 1: Elastic Material (Plane Stress)<a class="headerlink" href="#example-1-elastic-material-plane-stress" title="Link to this heading"></a></h3>
+<p>This example implements a plane stress elastic material following Chapter 3
+of the book <em>“Non-Linear Finite Element Analysis of Solids and Structures”</em>
+by de Borst et al.</p>
+<p>The plane stress constitutive relation (equation 3.26) is:</p>
+<p>$$
+\begin{bmatrix} \sigma_{11} \ \sigma_{22} \ \sigma_{12} \end{bmatrix}
+= \frac{E}{1-\nu^2}
+\begin{bmatrix}
+1 &amp; \nu &amp; 0 \
+\nu &amp; 1 &amp; 0 \
+0 &amp; 0 &amp; \frac{1-\nu}{2}
+\end{bmatrix}
+\begin{bmatrix} \varepsilon_{11} \ \varepsilon_{22} \ \gamma_{12} \end{bmatrix}
+$$</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Your Name</span>
+
+<span class="kn">from</span> <span class="nn">pyfem.materials.BaseMaterial</span> <span class="kn">import</span> <span class="n">BaseMaterial</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">PlaneStress</span><span class="p">(</span><span class="n">BaseMaterial</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plane stress elastic material model.</span>
+<span class="sd">    </span>
+<span class="sd">    Implements the plane stress assumption where σ_33 = 0.</span>
+<span class="sd">    Based on equation (3.26) in de Borst et al.</span>
+<span class="sd">    </span>
+<span class="sd">    Properties:</span>
+<span class="sd">        E: Young&#39;s modulus</span>
+<span class="sd">        nu: Poisson&#39;s ratio</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize plane stress material.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            props: Properties object containing E and nu</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">BaseMaterial</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Build elasticity matrix H (equation 3.26)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        
+        <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>
+        
+        <span class="c1"># Define output labels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outLabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;S11&quot;</span><span class="p">,</span> <span class="s2">&quot;S22&quot;</span><span class="p">,</span> <span class="s2">&quot;S12&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deformation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute stress from strain.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            deformation: Kinematics object with strain vector</span>
+<span class="sd">                        [ε_11, ε_22, γ_12]</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (sigma, H) where</span>
+<span class="sd">                sigma: Stress vector [σ_11, σ_22, σ_12]</span>
+<span class="sd">                H: Tangent elasticity matrix (constant)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Linear elastic: σ = H ε</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span> <span class="o">@</span> <span class="n">deformation</span><span class="o">.</span><span class="n">strain</span>
+        
+        <span class="c1"># Store output data for post-processing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outData</span> <span class="o">=</span> <span class="n">sigma</span>
+        
+        <span class="c1"># Return stress and tangent (same as H for elastic)</span>
+        <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span>
+
+    <span class="k">def</span> <span class="nf">getTangent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return tangent modulus matrix.</span>
+<span class="sd">        </span>
+<span class="sd">        For elastic materials, this is constant.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-von-mises-plasticity">
+<h3>Example 2: Von Mises Plasticity<a class="headerlink" href="#example-2-von-mises-plasticity" title="Link to this heading"></a></h3>
+<p>This example implements J2 plasticity with isotropic hardening, following
+Chapter 6 of the book. The implementation uses a return mapping algorithm
+(Box 6.1).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.materials.BaseMaterial</span> <span class="kn">import</span> <span class="n">BaseMaterial</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">norm</span>
+
+<span class="k">class</span> <span class="nc">VonMises</span><span class="p">(</span><span class="n">BaseMaterial</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Von Mises plasticity with isotropic hardening.</span>
+<span class="sd">    </span>
+<span class="sd">    Implements J2 plasticity following Chapter 6 of de Borst et al.</span>
+<span class="sd">    Uses return mapping algorithm (Box 6.1, page 185).</span>
+<span class="sd">    </span>
+<span class="sd">    Properties:</span>
+<span class="sd">        E: Young&#39;s modulus</span>
+<span class="sd">        nu: Poisson&#39;s ratio</span>
+<span class="sd">        sY: Initial yield stress</span>
+<span class="sd">        hard: Hardening modulus</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize von Mises material.&quot;&quot;&quot;</span>
+        <span class="n">BaseMaterial</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Elastic properties</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>  <span class="c1"># Bulk modulus</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nu</span><span class="p">))</span>        <span class="c1"># Shear modulus</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+        
+        <span class="c1"># Plasticity properties</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sY</span>      <span class="c1"># Yield stress (from props)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hard</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard</span>  <span class="c1"># Hardening modulus (from props)</span>
+        
+        <span class="c1"># Internal variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epse</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># Equivalent plastic strain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epse_old</span> <span class="o">=</span> <span class="mf">0.0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">outLabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;S11&quot;</span><span class="p">,</span> <span class="s2">&quot;S22&quot;</span><span class="p">,</span> <span class="s2">&quot;S33&quot;</span><span class="p">,</span> <span class="s2">&quot;S23&quot;</span><span class="p">,</span> <span class="s2">&quot;S13&quot;</span><span class="p">,</span> <span class="s2">&quot;S12&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;eqps&quot;</span><span class="p">]</span>  <span class="c1"># Equivalent plastic strain</span>
+
+    <span class="k">def</span> <span class="nf">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deformation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute stress using return mapping algorithm.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            deformation: Kinematics with strain vector</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (sigma, tangent)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">strain</span> <span class="o">=</span> <span class="n">deformation</span><span class="o">.</span><span class="n">strain</span>
+        
+        <span class="c1"># Split strain into volumetric and deviatoric parts</span>
+        <span class="n">eps_v</span> <span class="o">=</span> <span class="n">strain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">strain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">strain</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># Volumetric strain</span>
+        <span class="n">eps_dev</span> <span class="o">=</span> <span class="n">strain</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">eps_dev</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="n">eps_v</span> <span class="o">/</span> <span class="mf">3.0</span>
+        <span class="n">eps_dev</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">eps_v</span> <span class="o">/</span> <span class="mf">3.0</span>
+        <span class="n">eps_dev</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="n">eps_v</span> <span class="o">/</span> <span class="mf">3.0</span>
+        
+        <span class="c1"># Elastic predictor (equation 6.10)</span>
+        <span class="n">p_trial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">*</span> <span class="n">eps_v</span>  <span class="c1"># Pressure</span>
+        <span class="n">s_trial</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">eps_dev</span>  <span class="c1"># Deviatoric stress</span>
+        
+        <span class="c1"># Compute von Mises equivalent stress (equation 6.6)</span>
+        <span class="n">q_trial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">s_trial</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">s_trial</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> 
+                                  <span class="n">s_trial</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">s_trial</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                  <span class="mf">2.0</span><span class="o">*</span><span class="n">s_trial</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">s_trial</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        
+        <span class="c1"># Check yield condition (equation 6.7)</span>
+        <span class="n">f_trial</span> <span class="o">=</span> <span class="n">q_trial</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sY</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epse_old</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">f_trial</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Elastic step</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">s_trial</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p_trial</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">s_trial</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p_trial</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">s_trial</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">p_trial</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">s_trial</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">epse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epse_old</span>
+            <span class="n">tangent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getElasticTangent</span><span class="p">()</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Plastic step - return mapping (Box 6.1)</span>
+            <span class="n">Dgamma</span> <span class="o">=</span> <span class="n">f_trial</span> <span class="o">/</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard</span><span class="p">)</span>
+            
+            <span class="c1"># Update equivalent plastic strain</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">epse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epse_old</span> <span class="o">+</span> <span class="n">Dgamma</span>
+            
+            <span class="c1"># Return mapping: project to yield surface</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">Dgamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">q_trial</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">s_trial</span>
+            
+            <span class="c1"># Reconstruct stress tensor</span>
+            <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">p_trial</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">p_trial</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">p_trial</span>
+            <span class="n">sigma</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+            
+            <span class="c1"># Compute elastoplastic tangent (equation 6.32)</span>
+            <span class="n">tangent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getPlasticTangent</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">q_trial</span><span class="p">,</span> <span class="n">Dgamma</span><span class="p">)</span>
+        
+        <span class="c1"># Store output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epse</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">tangent</span>
+
+    <span class="k">def</span> <span class="nf">getElasticTangent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build elastic tangent matrix.&quot;&quot;&quot;</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        
+        <span class="c1"># Bulk and shear contributions</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">/</span> <span class="mf">3.0</span>
+        
+        <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam</span>
+        <span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
+        <span class="n">D</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
+        
+        <span class="k">return</span> <span class="n">D</span>
+
+    <span class="k">def</span> <span class="nf">getPlasticTangent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">Dgamma</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build consistent elastoplastic tangent (equation 6.32).&quot;&quot;&quot;</span>
+        <span class="n">D_ep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getElasticTangent</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">q</span> <span class="o">&gt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+            <span class="c1"># Compute direction tensor n</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="n">s</span> <span class="o">/</span> <span class="n">q</span>
+            
+            <span class="c1"># Consistency parameter</span>
+            <span class="n">theta</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">Dgamma</span><span class="p">)</span> <span class="o">/</span> <span class="n">q</span>
+            
+            <span class="c1"># Modification for plastic loading</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">6.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">3.0</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">hard</span><span class="p">)</span>
+            <span class="n">factor</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">q</span> <span class="o">-</span> <span class="n">theta</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+            
+            <span class="c1"># Rank-one update (equation 6.32)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+                    <span class="n">D_ep</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">-=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        
+        <span class="k">return</span> <span class="n">D_ep</span>
+
+    <span class="k">def</span> <span class="nf">commit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Commit converged state.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epse_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epse</span>
+
+    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset to last converged state.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">epse_old</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-cohesive-zone-model">
+<h3>Example 3: Cohesive Zone Model<a class="headerlink" href="#example-3-cohesive-zone-model" title="Link to this heading"></a></h3>
+<p>Interface elements require traction-separation laws. Here’s an example
+implementing the Xu-Needleman model (Chapter 10):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.materials.BaseMaterial</span> <span class="kn">import</span> <span class="n">BaseMaterial</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">XuNeedleman</span><span class="p">(</span><span class="n">BaseMaterial</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Xu-Needleman cohesive zone model.</span>
+<span class="sd">    </span>
+<span class="sd">    Implements exponential traction-separation law for mode I fracture.</span>
+<span class="sd">    Based on Chapter 10 of de Borst et al.</span>
+<span class="sd">    </span>
+<span class="sd">    Properties:</span>
+<span class="sd">        Tult: Maximum traction</span>
+<span class="sd">        Gc: Fracture energy (area under T-δ curve)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize cohesive material.&quot;&quot;&quot;</span>
+        <span class="n">BaseMaterial</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Characteristic opening displacement</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gc</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tult</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">outLabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tn&quot;</span><span class="p">,</span> <span class="s2">&quot;Tt&quot;</span><span class="p">,</span> <span class="s2">&quot;un&quot;</span><span class="p">,</span> <span class="s2">&quot;ut&quot;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">getStress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deformation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute traction from displacement jump.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            deformation: Contains displacement jump [Δn, Δt]</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (traction, tangent)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Displacement jump</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="n">deformation</span><span class="o">.</span><span class="n">strain</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># Normal opening</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">deformation</span><span class="o">.</span><span class="n">strain</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># Tangential slip</span>
+        
+        <span class="c1"># Effective opening (mixed mode)</span>
+        <span class="n">delta_eff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dn</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">dt</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">delta_eff</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+            <span class="c1"># No opening: elastic interface</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInitialStiffness</span><span class="p">()</span>
+        
+        <span class="c1"># Traction law: T = T_ult * (δ/δ_c) * exp(1 - δ/δ_c)</span>
+        <span class="n">ratio</span> <span class="o">=</span> <span class="n">delta_eff</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span>
+        <span class="n">T_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tult</span> <span class="o">*</span> <span class="n">ratio</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ratio</span><span class="p">)</span>
+        
+        <span class="c1"># Decompose into normal and tangential</span>
+        <span class="n">Tn</span> <span class="o">=</span> <span class="n">T_eff</span> <span class="o">*</span> <span class="n">dn</span> <span class="o">/</span> <span class="n">delta_eff</span>
+        <span class="n">Tt</span> <span class="o">=</span> <span class="n">T_eff</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">/</span> <span class="n">delta_eff</span>
+        
+        <span class="n">traction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Tn</span><span class="p">,</span> <span class="n">Tt</span><span class="p">])</span>
+        
+        <span class="c1"># Compute tangent (derivative of T with respect to δ)</span>
+        <span class="n">tangent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">computeTangent</span><span class="p">(</span><span class="n">dn</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">delta_eff</span><span class="p">,</span> <span class="n">ratio</span><span class="p">)</span>
+        
+        <span class="c1"># Store output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outData</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Tn</span><span class="p">,</span> <span class="n">Tt</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">dt</span><span class="p">])</span>
+        
+        <span class="k">return</span> <span class="n">traction</span><span class="p">,</span> <span class="n">tangent</span>
+
+    <span class="k">def</span> <span class="nf">computeTangent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">delta_eff</span><span class="p">,</span> <span class="n">ratio</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute tangent stiffness for cohesive interface.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">delta_eff</span> <span class="o">&lt;</span> <span class="mf">1e-10</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInitialStiffness</span><span class="p">()</span>
+        
+        <span class="c1"># Derivative of effective traction</span>
+        <span class="n">dT_ddelta</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Tult</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ratio</span><span class="p">)</span> <span class="o">*</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ratio</span><span class="p">)</span>
+        
+        <span class="c1"># Build tangent matrix</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        
+        <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">dT_ddelta</span> <span class="o">*</span> <span class="p">(</span><span class="n">dn</span> <span class="o">/</span> <span class="n">delta_eff</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dT_ddelta</span> <span class="o">*</span> <span class="n">dn</span> <span class="o">*</span> <span class="n">dt</span> <span class="o">/</span> <span class="p">(</span><span class="n">delta_eff</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">K</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">K</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">dT_ddelta</span> <span class="o">*</span> <span class="p">(</span><span class="n">dt</span> <span class="o">/</span> <span class="n">delta_eff</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        
+        <span class="k">return</span> <span class="n">K</span>
+
+    <span class="k">def</span> <span class="nf">getInitialStiffness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Penalty stiffness for small openings.&quot;&quot;&quot;</span>
+        <span class="n">K_penalty</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tult</span> <span class="o">/</span> <span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_c</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">K_penalty</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="state-models-vs-constitutive-models">
+<h2>State Models vs. Constitutive Models<a class="headerlink" href="#state-models-vs-constitutive-models" title="Link to this heading"></a></h2>
+<p>PyFEM uses a hierarchical material system:</p>
+<section id="state-models">
+<h3>State Models<a class="headerlink" href="#state-models" title="Link to this heading"></a></h3>
+<p>State models (like PlaneStress, PlaneStrain) adapt 3D constitutive laws to
+specific stress states. They wrap underlying constitutive models.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">PlaneStrain</span><span class="p">(</span><span class="n">BaseMaterial</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper for plane strain condition.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">):</span>
+        <span class="n">BaseMaterial</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Create underlying 3D model if specified</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">props</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_material</span><span class="p">(</span><span class="n">props</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Use linear elastic by default</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="nested-usage">
+<h3>Nested Usage<a class="headerlink" href="#nested-usage" title="Link to this heading"></a></h3>
+<p>In input files, users can nest constitutive models:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">material</span> <span class="o">=</span> 
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;PlaneStrain&quot;</span><span class="p">;</span>
+  <span class="n">E</span>    <span class="o">=</span> <span class="mf">210.0e3</span><span class="p">;</span>
+  <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+  
+  <span class="n">model</span> <span class="o">=</span> 
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;VonMises&quot;</span><span class="p">;</span>
+    <span class="n">sY</span>   <span class="o">=</span> <span class="mf">250.0</span><span class="p">;</span>
+    <span class="n">hard</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="registration-and-usage">
+<h2>Registration and Usage<a class="headerlink" href="#registration-and-usage" title="Link to this heading"></a></h2>
+<section id="file-location">
+<h3>File Location<a class="headerlink" href="#file-location" title="Link to this heading"></a></h3>
+<p>Place your material class in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/materials/MyMaterial.py</span></code></p></li>
+</ul>
+</section>
+<section id="import-in-init-py">
+<h3>Import in <strong>init</strong>.py<a class="headerlink" href="#import-in-init-py" title="Link to this heading"></a></h3>
+<p>Add to <code class="docutils literal notranslate"><span class="pre">pyfem/materials/__init__.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.MyMaterial</span> <span class="kn">import</span> <span class="n">MyMaterial</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;MyMaterial&#39;</span><span class="p">,</span>
+    <span class="c1"># ... other materials</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="using-in-input-files">
+<h3>Using in Input Files<a class="headerlink" href="#using-in-input-files" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ElementGroup</span> <span class="o">=</span> 
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;SmallStrainContinuum&quot;</span><span class="p">;</span>
+  
+  <span class="n">material</span> <span class="o">=</span> 
+  <span class="p">{</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MyMaterial&quot;</span><span class="p">;</span>
+    <span class="n">E</span>    <span class="o">=</span> <span class="mf">210.0e3</span><span class="p">;</span>
+    <span class="n">nu</span>   <span class="o">=</span> <span class="mf">0.3</span><span class="p">;</span>
+    <span class="c1"># ... custom properties</span>
+  <span class="p">};</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-and-validation">
+<h2>Testing and Validation<a class="headerlink" href="#testing-and-validation" title="Link to this heading"></a></h2>
+<section id="unit-tests">
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading"></a></h3>
+<p>Test individual material responses:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">pyfem.materials.MyMaterial</span> <span class="kn">import</span> <span class="n">MyMaterial</span>
+
+<span class="k">class</span> <span class="nc">TestMyMaterial</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_uniaxial_tension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test uniaxial stress state.&quot;&quot;&quot;</span>
+        <span class="c1"># Create material</span>
+        <span class="c1"># Apply strain</span>
+        <span class="c1"># Check stress matches theory</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="analytical-benchmarks">
+<h3>Analytical Benchmarks<a class="headerlink" href="#analytical-benchmarks" title="Link to this heading"></a></h3>
+<p>Compare against closed-form solutions:</p>
+<ol class="arabic simple">
+<li><p><strong>Uniaxial tension/compression</strong></p></li>
+<li><p><strong>Pure shear</strong></p></li>
+<li><p><strong>Hydrostatic compression</strong></p></li>
+<li><p><strong>Cyclic loading</strong> (for plasticity)</p></li>
+</ol>
+</section>
+<section id="patch-tests">
+<h3>Patch Tests<a class="headerlink" href="#patch-tests" title="Link to this heading"></a></h3>
+<p>Integrate with element tests to verify consistency.</p>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Symmetric tangent</strong>: Ensure tangent matrix is symmetric</p></li>
+<li><p><strong>Positive definiteness</strong>: Check for negative eigenvalues</p></li>
+<li><p><strong>Consistent units</strong>: Document expected units</p></li>
+<li><p><strong>Handle singularities</strong>: Check for zero denominators</p></li>
+<li><p><strong>State management</strong>: Properly commit/reset internal variables</p></li>
+<li><p><strong>Output data</strong>: Provide useful post-processing quantities</p></li>
+<li><p><strong>Documentation</strong>: Reference equations from the book</p></li>
+</ol>
+</section>
+<section id="common-pitfalls">
+<h2>Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Forgetting to update internal variables</strong> in commit()</p></li>
+<li><p><strong>Incorrect tangent modulus</strong> leading to convergence issues</p></li>
+<li><p><strong>Sign conventions</strong> for stress/strain</p></li>
+<li><p><strong>Voigt notation</strong> ordering [σ11, σ22, σ33, σ23, σ13, σ12]</p></li>
+<li><p><strong>Engineering vs. tensorial shear strain</strong> (factor of 2)</p></li>
+</ol>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>The theoretical foundation for material models can be found in:</p>
+<p><em>“Non-Linear Finite Element Analysis of Solids and Structures”</em>
+by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+John Wiley &amp; Sons, 2012, ISBN 978-0470666449</p>
+<p>Key chapters:</p>
+<ul class="simple">
+<li><p>Chapter 3: Constitutive Models</p></li>
+<li><p>Chapter 6: Plasticity</p></li>
+<li><p>Chapter 7: Damage Mechanics</p></li>
+<li><p>Chapter 10: Discontinuities and Localization</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="elements_dev.html"><span class="std std-doc">elements_dev.md</span></a> - Implementing element formulations</p></li>
+<li><p><a class="reference internal" href="solvers_dev.html"><span class="std std-doc">solvers_dev.md</span></a> - Implementing solution algorithms</p></li>
+<li><p><a class="reference internal" href="io_dev.html"><span class="std std-doc">io_dev.md</span></a> - Implementing I/O modules</p></li>
+<li><p>Available material models documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

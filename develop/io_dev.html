@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developing I/O Modules &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developing I/O Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/develop/io_dev.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="developing-i-o-modules">
+<h1>Developing I/O Modules<a class="headerlink" href="#developing-i-o-modules" title="Link to this heading"></a></h1>
+<p>This guide explains how to implement new input/output modules in PyFEM. I/O
+modules handle reading input files, writing results to various formats, and
+managing data flow during finite element analysis.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>I/O modules in PyFEM are responsible for:</p>
+<ul class="simple">
+<li><p>Reading problem definitions from input files</p></li>
+<li><p>Writing simulation results (VTK, HDF5, text)</p></li>
+<li><p>Logging time histories and specific quantities</p></li>
+<li><p>Saving and restoring analysis state</p></li>
+<li><p>Generating visualizations and plots</p></li>
+</ul>
+<p>All output modules inherit from <code class="docutils literal notranslate"><span class="pre">BaseModule</span></code> and implement a <code class="docutils literal notranslate"><span class="pre">run</span></code> method
+that is called at specified intervals during the analysis.</p>
+</section>
+<section id="i-o-module-class-structure">
+<h2>I/O Module Class Structure<a class="headerlink" href="#i-o-module-class-structure" title="Link to this heading"></a></h2>
+<section id="base-class">
+<h3>Base Class<a class="headerlink" href="#base-class" title="Link to this heading"></a></h3>
+<p>All I/O modules inherit from <code class="docutils literal notranslate"><span class="pre">BaseModule</span></code> located in
+<code class="docutils literal notranslate"><span class="pre">pyfem/util/BaseModule.py</span></code>. This provides:</p>
+<ul class="simple">
+<li><p>Automatic property parsing from input files</p></li>
+<li><p>Integration with the output manager</p></li>
+<li><p>Logging capabilities</p></li>
+<li><p>Common utilities</p></li>
+</ul>
+</section>
+<section id="required-methods">
+<h3>Required Methods<a class="headerlink" href="#required-methods" title="Link to this heading"></a></h3>
+<p>An output module must implement:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyOutputModule</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize output module.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            props: Properties dictionary from input file</span>
+<span class="sd">            globdat: Global data container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        <span class="c1"># Initialize module-specific data</span>
+        
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write output for current solution step.</span>
+<span class="sd">        </span>
+<span class="sd">        Called automatically by the framework at each output interval.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            props: Properties tree</span>
+<span class="sd">            globdat: Global data with current solution state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Implementation here</span>
+</pre></div>
+</div>
+</section>
+<section id="optional-methods">
+<h3>Optional Methods<a class="headerlink" href="#optional-methods" title="Link to this heading"></a></h3>
+<p>For advanced functionality:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">writeHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write file header (called once at initialization).&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+    
+<span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finalize output (called at end of analysis).&quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-examples">
+<h2>Implementation Examples<a class="headerlink" href="#implementation-examples" title="Link to this heading"></a></h2>
+<section id="example-1-text-based-output-writer">
+<h3>Example 1: Text-Based Output Writer<a class="headerlink" href="#example-1-text-based-output-writer" title="Link to this heading"></a></h3>
+<p>This example implements a simple writer that outputs nodal data to a text file:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># SPDX-License-Identifier: MIT</span>
+<span class="c1"># Copyright (c) 2011–2026 Your Name</span>
+
+<span class="kn">from</span> <span class="nn">pyfem.util.BaseModule</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">SimpleOutputWriter</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write nodal displacements to a text file.</span>
+<span class="sd">    </span>
+<span class="sd">    Outputs node ID, coordinates, and displacement components</span>
+<span class="sd">    in a human-readable format.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        filename: Output file name (default: &lt;prefix&gt;_output.txt)</span>
+<span class="sd">        interval: Output interval in cycles (default: 1)</span>
+<span class="sd">        precision: Number of decimal places (default: 6)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize output writer.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            props: Properties containing configuration</span>
+<span class="sd">            globdat: Global data for accessing prefix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Default parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">globdat</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_output.txt&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="mi">6</span>
+        
+        <span class="c1"># Read parameters from input file</span>
+        <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Open output file and write header</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeHeader</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">writeHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write file header with column descriptions.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# PyFEM Output File</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# Columns: Node | x | y | u | v</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">60</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write current nodal data.</span>
+<span class="sd">        </span>
+<span class="sd">        Outputs data only if current cycle matches the interval.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            props: Properties tree (not used)</span>
+<span class="sd">            globdat: Global data with current state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check if we should output this cycle</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="c1"># Write cycle header</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span>
+        <span class="n">lam</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">globdat</span><span class="p">,</span> <span class="s1">&#39;lam&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="mf">0.0</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># Cycle: </span><span class="si">{</span><span class="n">cycle</span><span class="si">}</span><span class="s2">, Load factor: </span><span class="si">{</span><span class="n">lam</span><span class="si">:</span><span class="s2">.6e</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Get nodes and DOFs</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span>
+        <span class="n">dofs</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">state</span>
+        
+        <span class="c1"># Loop over all nodes</span>
+        <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">nodes</span><span class="o">.</span><span class="n">getNodeIDs</span><span class="p">():</span>
+            <span class="c1"># Get coordinates</span>
+            <span class="n">coords</span> <span class="o">=</span> <span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span>
+            
+            <span class="c1"># Get displacements</span>
+            <span class="n">dofIDs</span> <span class="o">=</span> <span class="n">dofs</span><span class="o">.</span><span class="n">getForNode</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span>
+            <span class="n">disps</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="n">dofIDs</span><span class="p">]</span>
+            
+            <span class="c1"># Format output</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nodeID</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">&quot;</span>
+            
+            <span class="c1"># Coordinates</span>
+            <span class="k">for</span> <span class="n">coord</span> <span class="ow">in</span> <span class="n">coords</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">coord</span><span class="si">:</span><span class="s2">12.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="si">}</span><span class="s2">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            
+            <span class="c1"># Displacements</span>
+            <span class="k">for</span> <span class="n">disp</span> <span class="ow">in</span> <span class="n">disps</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">disp</span><span class="si">:</span><span class="s2">12.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">precision</span><span class="si">}</span><span class="s2">e</span><span class="si">}</span><span class="s2">&quot;</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># Flush to ensure data is written</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close output file.</span>
+<span class="sd">        </span>
+<span class="sd">        Called automatically at end of analysis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"># End of output</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="example-2-graph-writer-for-time-histories">
+<h3>Example 2: Graph Writer for Time Histories<a class="headerlink" href="#example-2-graph-writer-for-time-histories" title="Link to this heading"></a></h3>
+<p>This example implements a writer that tracks specific quantities over time:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.util.BaseModule</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>  <span class="c1"># Non-interactive backend</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="k">class</span> <span class="nc">TimeHistoryWriter</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write and plot time history data.</span>
+<span class="sd">    </span>
+<span class="sd">    Tracks user-specified quantities (displacements, forces, etc.)</span>
+<span class="sd">    during the analysis and optionally generates plots.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        filename: Output data file (default: &lt;prefix&gt;_history.dat)</span>
+<span class="sd">        onScreen: Generate PNG plots (default: False)</span>
+<span class="sd">        columns: List of column names to track</span>
+<span class="sd">        </span>
+<span class="sd">        For each column, specify:</span>
+<span class="sd">            type: Data type (&#39;state&#39;, &#39;fint&#39;, &#39;lam&#39;, etc.)</span>
+<span class="sd">            node: Node ID (for nodal quantities)</span>
+<span class="sd">            dof: DOF type (&#39;u&#39;, &#39;v&#39;, &#39;w&#39;, etc.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize time history writer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">globdat</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_history.dat&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onScreen</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Storage for time history data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="n">col</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycles</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="c1"># Open output file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeFileHeader</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">writeFileHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write column headers to data file.&quot;&quot;&quot;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;# Cycle&quot;</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">col</span><span class="si">:</span><span class="s2">&gt;15s</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Record data for current cycle.&quot;&quot;&quot;</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cycle</span><span class="p">)</span>
+        
+        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cycle</span><span class="si">:</span><span class="s2">6d</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="c1"># Extract each column&#39;s data</span>
+        <span class="k">for</span> <span class="n">colName</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="c1"># Get column configuration from props</span>
+            <span class="n">colProps</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colName</span><span class="p">)</span>
+            
+            <span class="c1"># Extract value based on type</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extractValue</span><span class="p">(</span><span class="n">colProps</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+            
+            <span class="c1"># Store and write</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">colName</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s2">15.6e</span><span class="si">}</span><span class="s2">&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        
+        <span class="c1"># Update plot if requested</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">onScreen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updatePlot</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">extractValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colProps</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract a value based on column configuration.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            colProps: Column properties (type, node, dof)</span>
+<span class="sd">            globdat: Global data</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Extracted value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dataType</span> <span class="o">=</span> <span class="n">colProps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;state&#39;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">dataType</span> <span class="o">==</span> <span class="s1">&#39;state&#39;</span><span class="p">:</span>
+            <span class="c1"># Nodal displacement</span>
+            <span class="n">nodeID</span> <span class="o">=</span> <span class="n">colProps</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">]</span>
+            <span class="n">dofType</span> <span class="o">=</span> <span class="n">colProps</span><span class="p">[</span><span class="s1">&#39;dof&#39;</span><span class="p">]</span>
+            <span class="n">dofID</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span> <span class="n">dofType</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">globdat</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">dofID</span><span class="p">]</span>
+            
+        <span class="k">elif</span> <span class="n">dataType</span> <span class="o">==</span> <span class="s1">&#39;fint&#39;</span><span class="p">:</span>
+            <span class="c1"># Internal force</span>
+            <span class="n">nodeID</span> <span class="o">=</span> <span class="n">colProps</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">]</span>
+            <span class="n">dofType</span> <span class="o">=</span> <span class="n">colProps</span><span class="p">[</span><span class="s1">&#39;dof&#39;</span><span class="p">]</span>
+            <span class="n">dofID</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForType</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span> <span class="n">dofType</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">globdat</span><span class="o">.</span><span class="n">fint</span><span class="p">[</span><span class="n">dofID</span><span class="p">]</span>
+            
+        <span class="k">elif</span> <span class="n">dataType</span> <span class="o">==</span> <span class="s1">&#39;lam&#39;</span><span class="p">:</span>
+            <span class="c1"># Load factor</span>
+            <span class="k">return</span> <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span>
+            
+        <span class="k">elif</span> <span class="n">dataType</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>
+            <span class="c1"># Custom output from elements</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">dataType</span><span class="p">,</span> <span class="p">[</span><span class="n">colProps</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">]])</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">colProps</span><span class="p">[</span><span class="s1">&#39;node&#39;</span><span class="p">]]</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown data type: </span><span class="si">{</span><span class="n">dataType</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">updatePlot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate live plot of first two columns.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+        
+        <span class="n">xdata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="s1">&#39;b-o&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+        
+        <span class="c1"># Save plot</span>
+        <span class="n">plotname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.dat&#39;</span><span class="p">,</span> <span class="s1">&#39;.png&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">plotname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close file and generate final plot.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">onScreen</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updatePlot</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="example-3-binary-data-writer-hdf5">
+<h3>Example 3: Binary Data Writer (HDF5)<a class="headerlink" href="#example-3-binary-data-writer-hdf5" title="Link to this heading"></a></h3>
+<p>For large-scale simulations, implement binary output using HDF5:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.util.BaseModule</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">HDF5Writer</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write simulation data to HDF5 format.</span>
+<span class="sd">    </span>
+<span class="sd">    HDF5 provides efficient binary storage for large datasets</span>
+<span class="sd">    and supports hierarchical data organization.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        interval: Output interval (default: 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize HDF5 writer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="c1"># Create HDF5 file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">globdat</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">.h5&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Write mesh data (written once)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeMeshData</span><span class="p">(</span><span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># Counter for time steps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">writeMeshData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write mesh topology (written once at initialization).&quot;&quot;&quot;</span>
+        <span class="n">mesh_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h5file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;mesh&#39;</span><span class="p">)</span>
+        
+        <span class="c1"># Node coordinates</span>
+        <span class="n">nodeIDs</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeIDs</span><span class="p">()</span>
+        <span class="n">nNodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodeIDs</span><span class="p">)</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nNodes</span><span class="p">,</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">rank</span><span class="p">))</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodeIDs</span><span class="p">):</span>
+            <span class="n">coords</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeCoords</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span>
+        
+        <span class="n">mesh_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;coordinates&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">coords</span><span class="p">)</span>
+        <span class="n">mesh_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;nodeIDs&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">nodeIDs</span><span class="p">))</span>
+        
+        <span class="c1"># Element connectivity</span>
+        <span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">elemGroup</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">elemGroup</span><span class="p">:</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">getNodes</span><span class="p">())</span>
+        
+        <span class="c1"># Store as variable-length data (different element types)</span>
+        <span class="n">mesh_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;connectivity&#39;</span><span class="p">,</span> 
+                                 <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write solution data for current step.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="c1"># Create group for this time step</span>
+        <span class="n">step_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;step_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">step_count</span><span class="si">:</span><span class="s2">06d</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">step_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h5file</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">step_name</span><span class="p">)</span>
+        
+        <span class="c1"># Write metadata</span>
+        <span class="n">step_group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;cycle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">globdat</span><span class="p">,</span> <span class="s1">&#39;lam&#39;</span><span class="p">):</span>
+            <span class="n">step_group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;load_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">lam</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">):</span>
+            <span class="n">step_group</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">time</span>
+        
+        <span class="c1"># Write displacement field</span>
+        <span class="n">step_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;displacements&#39;</span><span class="p">,</span> 
+                                 <span class="n">data</span><span class="o">=</span><span class="n">globdat</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        
+        <span class="c1"># Write velocity (if available)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">globdat</span><span class="p">,</span> <span class="s1">&#39;velo&#39;</span><span class="p">):</span>
+            <span class="n">step_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span>
+                                     <span class="n">data</span><span class="o">=</span><span class="n">globdat</span><span class="o">.</span><span class="n">velo</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+        
+        <span class="c1"># Write custom output fields</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">outputNames</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeIDs</span><span class="p">())</span>
+            <span class="n">step_group</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="c1"># Flush to disk periodically</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_count</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">h5file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close HDF5 file.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h5file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="example-4-vtk-writer-for-visualization">
+<h3>Example 4: VTK Writer for Visualization<a class="headerlink" href="#example-4-vtk-writer-for-visualization" title="Link to this heading"></a></h3>
+<p>For visualization in ParaView or similar tools:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem.util.BaseModule</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="k">class</span> <span class="nc">VTKWriter</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write VTK files for visualization in ParaView.</span>
+<span class="sd">    </span>
+<span class="sd">    Outputs unstructured grid in VTK XML format (.vtu)</span>
+<span class="sd">    with nodal and element data.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        interval: Output interval (default: 1)</span>
+<span class="sd">        format: &#39;binary&#39; or &#39;ascii&#39; (default: &#39;binary&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize VTK writer.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
+        <span class="n">BaseModule</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="c1"># Create PVD collection file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">.pvd&quot;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writePVDHeader</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">writePVDHeader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write ParaView Data (PVD) file header.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;VTKFile type=&quot;Collection&quot; version=&quot;0.1&quot;&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  &lt;Collection&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write VTU file for current step.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="o">.</span><span class="n">cycle</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="c1"># Generate filename</span>
+        <span class="n">vtu_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="si">}</span><span class="s2">_t</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span><span class="si">:</span><span class="s2">06d</span><span class="si">}</span><span class="s2">.vtu&quot;</span>
+        
+        <span class="c1"># Write VTU file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeVTU</span><span class="p">(</span><span class="n">vtu_name</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+        
+        <span class="c1"># Add entry to PVD collection</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">solverStatus</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;    &lt;DataSet timestep=&quot;</span><span class="si">{</span><span class="n">time</span><span class="si">}</span><span class="s1">&quot; file=&quot;</span><span class="si">{</span><span class="n">vtu_name</span><span class="si">}</span><span class="s1">&quot;/&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cycle_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">writeVTU</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write VTK unstructured grid file.</span>
+<span class="sd">        </span>
+<span class="sd">        This is a simplified version. Full implementation would</span>
+<span class="sd">        include proper XML formatting and binary encoding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># VTK XML header</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;?xml version=&quot;1.0&quot;?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;VTKFile type=&quot;UnstructuredGrid&quot; version=&quot;0.1&quot;&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  &lt;UnstructuredGrid&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Get mesh data</span>
+            <span class="n">nodeIDs</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeIDs</span><span class="p">()</span>
+            <span class="n">nNodes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodeIDs</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    &lt;Piece NumberOfPoints=&quot;</span><span class="si">{</span><span class="n">nNodes</span><span class="si">}</span><span class="s1">&quot; &#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;NumberOfCells=&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">globdat</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Point data (nodal fields)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;      &lt;PointData&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeNodalData</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;      &lt;/PointData&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Points (node coordinates)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;      &lt;Points&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeNodeCoordinates</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;      &lt;/Points&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="c1"># Cells (element connectivity)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;      &lt;Cells&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">writeElementConnectivity</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">globdat</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;      &lt;/Cells&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    &lt;/Piece&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  &lt;/UnstructuredGrid&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/VTKFile&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">writeNodalData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write nodal field data (displacements, etc.).&quot;&quot;&quot;</span>
+        <span class="c1"># Displacement field</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;        &lt;DataArray type=&quot;Float64&quot; &#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Name=&quot;Displacement&quot; NumberOfComponents=&quot;3&quot; &#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;format=&quot;ascii&quot;&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">nodeID</span> <span class="ow">in</span> <span class="n">globdat</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">getNodeIDs</span><span class="p">():</span>
+            <span class="n">dofIDs</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">dofs</span><span class="o">.</span><span class="n">getForNode</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span>
+            <span class="n">disps</span> <span class="o">=</span> <span class="n">globdat</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">dofIDs</span><span class="p">]</span>
+            
+            <span class="c1"># Pad to 3D for VTK</span>
+            <span class="n">disp_3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">disp_3d</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">disps</span><span class="p">)]</span> <span class="o">=</span> <span class="n">disps</span>
+            
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;          </span><span class="si">{</span><span class="n">disp_3d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.6e</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">disp_3d</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.6e</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">disp_3d</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.6e</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;        &lt;/DataArray&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close PVD collection file.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;  &lt;/Collection&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&lt;/VTKFile&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pvd_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="registration-and-usage">
+<h2>Registration and Usage<a class="headerlink" href="#registration-and-usage" title="Link to this heading"></a></h2>
+<section id="file-location">
+<h3>File Location<a class="headerlink" href="#file-location" title="Link to this heading"></a></h3>
+<p>Place your I/O module in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pyfem/io/MyIOModule.py</span></code></p></li>
+</ul>
+</section>
+<section id="import-in-init-py">
+<h3>Import in <strong>init</strong>.py<a class="headerlink" href="#import-in-init-py" title="Link to this heading"></a></h3>
+<p>Add to <code class="docutils literal notranslate"><span class="pre">pyfem/io/__init__.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">.MyIOModule</span> <span class="kn">import</span> <span class="n">MyIOModule</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;MyIOModule&#39;</span><span class="p">,</span>
+    <span class="c1"># ... other modules</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="using-in-input-files">
+<h3>Using in Input Files<a class="headerlink" href="#using-in-input-files" title="Link to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">outputModules</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;myOutput&quot;</span><span class="p">];</span>
+
+<span class="n">myOutput</span> <span class="o">=</span> 
+<span class="p">{</span>
+  <span class="nb">type</span> <span class="o">=</span> <span class="s2">&quot;MyIOModule&quot;</span><span class="p">;</span>
+  
+  <span class="c1"># Module-specific parameters</span>
+  <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;results.txt&quot;</span><span class="p">;</span>
+  <span class="n">interval</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="integration-with-output-manager">
+<h2>Integration with Output Manager<a class="headerlink" href="#integration-with-output-manager" title="Link to this heading"></a></h2>
+<p>The output manager automatically:</p>
+<ul class="simple">
+<li><p>Creates instances of all output modules</p></li>
+<li><p>Calls <code class="docutils literal notranslate"><span class="pre">run()</span></code> at appropriate times</p></li>
+<li><p>Handles exceptions</p></li>
+<li><p>Calls <code class="docutils literal notranslate"><span class="pre">finalize()</span></code> at end of analysis</p></li>
+</ul>
+<p>You don’t need to manually register modules with the output manager.</p>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="file-management">
+<h3>File Management<a class="headerlink" href="#file-management" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Open files in <strong>init</strong></strong>: Initialize file handles early</p></li>
+<li><p><strong>Flush regularly</strong>: Use <code class="docutils literal notranslate"><span class="pre">file.flush()</span></code> to ensure data is written</p></li>
+<li><p><strong>Close in finalize</strong>: Always close files properly</p></li>
+<li><p><strong>Handle paths</strong>: Use absolute paths or prefix from globdat</p></li>
+</ol>
+</section>
+<section id="data-formats">
+<h3>Data Formats<a class="headerlink" href="#data-formats" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Choose appropriate format</strong>:</p>
+<ul class="simple">
+<li><p>Text: Human-readable, small datasets</p></li>
+<li><p>Binary (HDF5): Large datasets, efficient</p></li>
+<li><p>VTK: Visualization</p></li>
+</ul>
+</li>
+<li><p><strong>Include metadata</strong>: Cycle number, time, load factor</p></li>
+<li><p><strong>Document format</strong>: Provide header with column descriptions</p></li>
+</ol>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">props</span><span class="p">,</span> <span class="n">globdat</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Write data</span>
+        <span class="k">pass</span>
+    <span class="k">except</span> <span class="ne">IOError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to write output: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+</pre></div>
+</div>
+</section>
+<section id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Buffer writes</strong>: Don’t write every iteration if not needed</p></li>
+<li><p><strong>Use binary formats</strong>: For large data</p></li>
+<li><p><strong>Compress data</strong>: HDF5 supports compression</p></li>
+<li><p><strong>Profile I/O</strong>: Identify bottlenecks</p></li>
+</ol>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h2>
+<section id="unit-tests">
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="k">class</span> <span class="nc">TestMyIOModule</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">test_file_creation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test that output file is created.&quot;&quot;&quot;</span>
+        <span class="c1"># Run analysis with module</span>
+        <span class="c1"># Check file exists</span>
+        <span class="c1"># Verify content</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-tests">
+<h3>Integration Tests<a class="headerlink" href="#integration-tests" title="Link to this heading"></a></h3>
+<p>Test with complete analyses to ensure:</p>
+<ul class="simple">
+<li><p>Files are created correctly</p></li>
+<li><p>Data is accurate</p></li>
+<li><p>Format is valid</p></li>
+<li><p>Visualization works (for VTK)</p></li>
+</ul>
+</section>
+</section>
+<section id="common-pitfalls">
+<h2>Common Pitfalls<a class="headerlink" href="#common-pitfalls" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Not checking interval</strong>: Always check cycle % interval</p></li>
+<li><p><strong>File handle leaks</strong>: Close files in finalize()</p></li>
+<li><p><strong>Hardcoded paths</strong>: Use globdat.prefix</p></li>
+<li><p><strong>Incorrect data types</strong>: Match HDF5/VTK type requirements</p></li>
+<li><p><strong>Missing error handling</strong>: Catch I/O exceptions</p></li>
+</ol>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<p>For background on finite element output and post-processing:</p>
+<p><em>“Non-Linear Finite Element Analysis of Solids and Structures”</em>
+by R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel
+John Wiley &amp; Sons, 2012, ISBN 978-0470666449</p>
+<p>External Resources:</p>
+<ul class="simple">
+<li><p>VTK File Formats: https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf</p></li>
+<li><p>HDF5 Documentation: https://docs.h5py.org/</p></li>
+<li><p>ParaView Guide: https://www.paraview.org/paraview-guide/</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="elements_dev.html"><span class="std std-doc">elements_dev.md</span></a> - Implementing element formulations</p></li>
+<li><p><a class="reference internal" href="materials_dev.html"><span class="std std-doc">materials_dev.md</span></a> - Implementing material models</p></li>
+<li><p><a class="reference internal" href="solvers_dev.html"><span class="std std-doc">solvers_dev.md</span></a> - Implementing solution algorithms</p></li>
+<li><p>Available I/O modules documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
