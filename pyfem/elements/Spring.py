@@ -13,6 +13,7 @@ class Spring ( Element ):
 
   def __init__ ( self, elnodes , props ):
     Element.__init__( self, elnodes , props )
+    self.family = "BEAM"
 
   def getTangentStiffness ( self, elemdat ):
     

@@ -10,6 +10,8 @@ class DistributedLoad( Element ):
   
   def __init__ ( self, elnodes , props ):
     
+    self.family = "SURFACE"
+
     Element.__init__( self, elnodes , props )
 
     if self.rank == 2:

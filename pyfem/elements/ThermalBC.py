@@ -19,6 +19,7 @@ class ThermalBC( Element ):
         Element.__init__( self, elnodes , props )
 
         self.dofTypes = [ 'temp' ]
+        self.family = "SURFACE"
       
 #-------------------------------------------------------------------------------
 #
