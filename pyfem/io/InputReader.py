@@ -95,25 +95,30 @@ def getArguments( argv ):
 
   slist = 'd:i:hvp:'
   llist = ['dump=','input=','help','version']
-  
-  options, remainder = getopt.getopt( argv[1:] , slist , llist )
 
   proFileName  = None
   dumpFileName = None
   parameters   = []
-  
-  if len(options) == 0:
-    proFileName  = argv[1]
-    options, remainder = getopt.getopt( argv[2:] , slist, llist )
-    
-  for opt, arg in options:      
+
+  # If only one argument is passed (input file), handle gracefully
+  if len(argv) == 1:
+    proFileName = argv[0]
+    return proFileName, dumpFileName, parameters
+
+  options, remainder = getopt.getopt(argv[1:], slist, llist)
+
+  if len(options) == 0 and len(argv) > 1:
+    proFileName = argv[1]
+    options, remainder = getopt.getopt(argv[2:], slist, llist)
+
+  for opt, arg in options:
     if opt in ('-i', '--input'):
-      proFileName  = arg
+      proFileName = arg
     elif opt in ('-d', '--dump'):
-      dumpFileName  = arg
+      dumpFileName = arg
     elif opt in ('-h', '--help'):
       print("Help")
-    elif opt in ('-p' , '--param'):
+    elif opt in ('-p', '--param'):
       parameters.append(arg)
-      
-  return proFileName,dumpFileName,parameters      
+
+  return proFileName, dumpFileName, parameters
