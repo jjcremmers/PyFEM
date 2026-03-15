@@ -98,13 +98,13 @@ class GraphWriter(BaseModule):
                                 data += b[globdat.dofs.getForType(int(nod), col.dof)]
                         else:
                             data = b[globdat.dofs.getForType(col.node, col.dof)]
-                    if hasattr(col,"comp"):
+                    
+                    elif hasattr(col,"comp"):
                         data = b[col.comp]
-                    else:
-                        data =b
+
                 else:
                     data = b
-                    
+
             elif col.type in globdat.outputNames:
                 data = globdat.getData(col.type, col.node)
                 

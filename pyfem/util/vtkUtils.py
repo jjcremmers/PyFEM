@@ -130,7 +130,6 @@ def storeDofFields(grid: vtk.vtkUnstructuredGrid, data, globdat: GlobalData) -> 
             checkDof = dofs
             
         if checkDof in globdat.dofs.dofTypes: 
-            print("check",checkDof,dofs,name)
             storeDofField( grid , data , globdat , dofs , name )
     
 #-------------------------------------------------------------------------------

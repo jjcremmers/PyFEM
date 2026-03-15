@@ -7,7 +7,6 @@ import numpy as np
 
 from pyfem.util.BaseModule import BaseModule
 
-
 class HDF5Writer(BaseModule):
     """Module for writing simulation data to HDF5 format.
     
@@ -113,7 +112,7 @@ class HDF5Writer(BaseModule):
         elemCount = np.array(elemCount, dtype=int)
         elemIDs = np.array(globdat.elements.getIndices(), dtype=int)
         familyIDs = np.array(globdat.elements.getFamilyIDs(), dtype=int)
-        
+                
         cdat["elements"].create_dataset("offsets", elemCount.shape,
                                         dtype='i', data=elemCount)
         cdat["elements"].create_dataset("connectivity", connectivity.shape,
