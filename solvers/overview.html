@@ -1,0 +1,200 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Solvers &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#goals-and-scope">Goals and Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#how-to-cite">How to Cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/introduction.html#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#verifying-the-installation">Verifying the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#running-a-pyfem-example">Running a PyFEM Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Solvers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/solvers/overview.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="solvers">
+<h1>Solvers<a class="headerlink" href="#solvers" title="Link to this heading"></a></h1>
+<p>PyFEM provides nonlinear and other solver drivers to advance analyses. Use the pages below for parameters, usage notes, and examples.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="BuckEigSolver.html">BuckEigSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DynEigSolver.html">DynEigSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ExplicitSolver.html">ExplicitSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LinearSolver.html">LinearSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ModalSolver.html">ModalSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="MultiSolver.html">MultiSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NonlinearSolver.html">NonlinearSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ROMBasisBuilder.html">ROMBasisBuilder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ReducedOrderSolver.html">ReducedOrderSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="RiksSolver.html">RiksSolver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="StaggeredSolver.html">StaggeredSolver</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

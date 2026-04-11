@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crystal &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#goals-and-scope">Goals and Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#how-to-cite">How to Cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/introduction.html#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#verifying-the-installation">Verifying the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#running-a-pyfem-example">Running a PyFEM Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Crystal</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/materials/crystal.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="crystal">
+<h1>Crystal<a class="headerlink" href="#crystal" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">Crystal</span></code> material model implements a small-strain, rate-dependent crystal
+plasticity formulation for single crystals. Plastic flow occurs through slip on
+user-defined crystallographic systems, with optional crystal orientation,
+power-law slip kinetics, and self/latent hardening.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Material type:</strong> <code class="docutils literal notranslate"><span class="pre">Crystal</span></code></p></li>
+<li><p><strong>Typical use:</strong> single-crystal or strongly textured material response with slip-system-based plasticity</p></li>
+<li><p><strong>Kinematics:</strong> small strain</p></li>
+</ul>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<section id="elastic-data">
+<h3>Elastic data<a class="headerlink" href="#elastic-data" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">c11</span></code>, <code class="docutils literal notranslate"><span class="pre">c12</span></code>, <code class="docutils literal notranslate"><span class="pre">c44</span></code>: cubic-crystal elastic constants</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>: isotropic elastic fallback when cubic constants are not provided</p></li>
+</ul>
+</section>
+<section id="slip-system-definition">
+<h3>Slip-system definition<a class="headerlink" href="#slip-system-definition" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">nsets</span></code>: number of slip-system sets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plane1</span></code>, <code class="docutils literal notranslate"><span class="pre">plane2</span></code>, <code class="docutils literal notranslate"><span class="pre">plane3</span></code>: slip plane normals</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dir1</span></code>, <code class="docutils literal notranslate"><span class="pre">dir2</span></code>, <code class="docutils literal notranslate"><span class="pre">dir3</span></code>: slip directions associated with each set</p></li>
+</ul>
+</section>
+<section id="crystal-orientation">
+<h3>Crystal orientation<a class="headerlink" href="#crystal-orientation" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">orient1_local</span></code>, <code class="docutils literal notranslate"><span class="pre">orient1_global</span></code>: first reference vector in crystal and global coordinates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orient2_local</span></code>, <code class="docutils literal notranslate"><span class="pre">orient2_global</span></code>: second reference vector in crystal and global coordinates</p></li>
+</ul>
+</section>
+<section id="slip-kinetics-and-hardening">
+<h3>Slip kinetics and hardening<a class="headerlink" href="#slip-kinetics-and-hardening" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">gamma0</span></code>: reference slip rate</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">m</span></code>: rate sensitivity exponent</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tau0</span></code>: initial critical resolved shear stress</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">h0</span></code>: initial hardening modulus</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">taus</span></code>: saturation strength</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">a</span></code>: hardening exponent</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">qab</span></code>: latent-hardening ratio</p></li>
+</ul>
+</section>
+<section id="integration-controls">
+<h3>Integration controls<a class="headerlink" href="#integration-controls" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">theta</span></code>: implicit integration parameter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">maxiter</span></code>: local Newton iteration limit</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tol</span></code>: local convergence tolerance</p></li>
+</ul>
+</section>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>material =
+{
+  type = &quot;Crystal&quot;;
+
+  c11 = 108.0e3;
+  c12 = 62.0e3;
+  c44 = 28.0e3;
+
+  nsets  = 1;
+  plane1 = [1.0, 1.0, 0.0];
+  dir1   = [1.0, 1.0, 1.0];
+
+  orient1_local  = [1.0, 0.0, 0.0];
+  orient1_global = [1.0, 0.0, 0.0];
+  orient2_local  = [0.0, 1.0, 0.0];
+  orient2_global = [0.0, 1.0, 0.0];
+
+  gamma0 = 0.001;
+  m      = 20.0;
+  tau0   = 16.0;
+  h0     = 180.0;
+  taus   = 148.0;
+  a      = 2.25;
+  qab    = 1.4;
+
+  theta   = 0.5;
+  maxiter = 20;
+  tol     = 1.0e-6;
+};
+</pre></div>
+</div>
+</section>
+<section id="example-files">
+<h2>Example Files<a class="headerlink" href="#example-files" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/materials/crystal/minimal_single_slip.pro</span></code>: minimal one-element smoke test</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/materials/crystal/simple_tension.pro</span></code>: tensile loading example</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/materials/crystal/oriented_shear.pro</span></code>: rotated-crystal shear example</p></li>
+</ul>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The implementation works internally in 3D Voigt notation and maps back to 2D when used with 2D continuum elements.</p></li>
+<li><p>Output fields include stress components, accumulated slip, and slip-system shear variables for the first few systems.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

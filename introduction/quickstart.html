@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="User Manual" href="../usermanual.html" />
+    <link rel="prev" title="PyFEM Installation Guide" href="../installation/overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#goals-and-scope">Goals and Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#how-to-cite">How to Cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="introduction.html#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verifying-the-installation">Verifying the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-a-pyfem-example">Running a PyFEM Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/introduction/quickstart.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
+<p>Getting started with PyFEM is straightforward. Follow these steps to install
+and run your first simulation.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Clone the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jjcremmers/PyFEM.git
+<span class="nb">cd</span><span class="w"> </span>PyFEM
+</pre></div>
+</div>
+</li>
+<li><p>Install PyFEM and its dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p>This installs the <code class="docutils literal notranslate"><span class="pre">pyfem</span></code> command-line tool and all required packages.</p>
+</li>
+</ol>
+</section>
+<section id="verifying-the-installation">
+<h2>Verifying the Installation<a class="headerlink" href="#verifying-the-installation" title="Link to this heading"></a></h2>
+<p>To verify that the Python environment is working, you can first run a small
+standalone example script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/ch02
+python<span class="w"> </span>PatchTest.py
+</pre></div>
+</div>
+<p>You can then run a full PyFEM model from a <code class="docutils literal notranslate"><span class="pre">.pro</span></code> input file.</p>
+</section>
+<section id="running-a-pyfem-example">
+<h2>Running a PyFEM Example<a class="headerlink" href="#running-a-pyfem-example" title="Link to this heading"></a></h2>
+<p>After installation, run a basic example to verify everything works:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/ch02
+pyfem<span class="w"> </span>PatchTest8.pro
+</pre></div>
+</div>
+<p>This runs a simple patch test. You should see solver output showing convergence
+information and generated result files.</p>
+<p>PyFEM includes numerous examples organized by chapter:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Navigate to examples</span>
+<span class="nb">cd</span><span class="w"> </span>examples
+
+<span class="c1"># Run a nonlinear truss analysis</span>
+<span class="nb">cd</span><span class="w"> </span>ch04
+pyfem<span class="w"> </span>ShallowtrussRiks.pro
+
+<span class="c1"># Run a cantilever beam example</span>
+<span class="nb">cd</span><span class="w"> </span>../ch03
+pyfem<span class="w"> </span>cantilever8.pro
+</pre></div>
+</div>
+<p>Each example produces output files (VTK format for visualization, graphs, etc.)
+that can be viewed in ParaView or other post-processing tools.</p>
+</section>
+<section id="understanding-a-pyfem-input-file">
+<h2>Understanding a PyFEM Input File<a class="headerlink" href="#understanding-a-pyfem-input-file" title="Link to this heading"></a></h2>
+<p>PyFEM input files conventionally end with <code class="docutils literal notranslate"><span class="pre">.pro</span></code>. A typical input file points
+to the mesh or data file and defines the active elements and solver settings:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>input = &quot;ShallowTrussRiks.dat&quot;;
+TrussElem  = {
+   ...
+}
+SpringElem = {
+   ...
+}
+solver = {
+   ...
+}
+</pre></div>
+</div>
+<p>See the user manual and example files for the complete syntax and available
+options.</p>
+<p>For more detailed installation instructions including virtual environments,
+platform-specific notes, and advanced CLI usage, please refer to the
+<a class="reference internal" href="../installation/overview.html"><span class="std std-doc">installation guide</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../installation/overview.html" class="btn btn-neutral float-left" title="PyFEM Installation Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../usermanual.html" class="btn btn-neutral float-right" title="User Manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
