@@ -9,5 +9,7 @@ PyFEM provides nonlinear and other solver drivers to advance analyses. Use the p
 - [ModalSolver](ModalSolver.md)
 - [MultiSolver](MultiSolver.md)
 - [NonlinearSolver](NonlinearSolver.md)
+- [ROMBasisBuilder](ROMBasisBuilder.md)
+- [ReducedOrderSolver](ReducedOrderSolver.md)
 - [RiksSolver](RiksSolver.md)
 - [StaggeredSolver](StaggeredSolver.md)

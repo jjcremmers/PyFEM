@@ -20,6 +20,7 @@ ElementGroup = {
 The `type` parameter specifies which material model to use, and subsequent parameters define the material properties (e.g., Young's modulus `E`, Poisson's ratio `nu`).
 
 ## Available Material Pages
+- [Crystal](crystal.md)
 - [HookesLaw](hookeslaw.md)
 - [Isotropic](isotropic.md)
 - [IsotropicHardeningPlasticity](isotropichardeningplasticity.md)

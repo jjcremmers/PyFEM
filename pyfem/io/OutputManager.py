@@ -9,6 +9,9 @@ class OutputManager:
 
         self.outman = []
 
+        if not hasattr( props , "outputModules" ):
+            return
+
         outputModules = props.outputModules
 
         for name in outputModules:
