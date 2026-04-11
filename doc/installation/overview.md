@@ -224,7 +224,7 @@ python -m mypy pyfem/
 - **Book**: "Non-Linear Finite Element Analysis of Solids and Structures" by de Borst et al., John Wiley & Sons, 2012
 
 ## Next Steps
-1. Read the [Quickstart tutorial](../tutorials/quickstart.md)
+1. Read the [Quickstart guide](../introduction/quickstart.md)
 2. Explore examples in the `examples/` directory
 3. Review the [module documentation](../pyfem.md)
 4. For development, see the [developer overview](../develop/overview.md)

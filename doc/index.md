@@ -9,7 +9,7 @@ Welcome to the PyFEM documentation. This manual provides comprehensive documenta
 
 introduction/introduction.md
 installation/overview.md
-tutorials/quickstart.md
+introduction/quickstart.md
 usermanual.md
 develop/overview.md
 api.md
