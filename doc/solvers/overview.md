@@ -2,14 +2,18 @@
 
 PyFEM provides nonlinear and other solver drivers to advance analyses. Use the pages below for parameters, usage notes, and examples.
 
-- [BuckEigSolver](BuckEigSolver.md)
-- [DynEigSolver](DynEigSolver.md)
-- [ExplicitSolver](ExplicitSolver.md)
-- [LinearSolver](LinearSolver.md)
-- [ModalSolver](ModalSolver.md)
-- [MultiSolver](MultiSolver.md)
-- [NonlinearSolver](NonlinearSolver.md)
-- [ROMBasisBuilder](ROMBasisBuilder.md)
-- [ReducedOrderSolver](ReducedOrderSolver.md)
-- [RiksSolver](RiksSolver.md)
-- [StaggeredSolver](StaggeredSolver.md)
+```{toctree}
+:maxdepth: 1
+
+BuckEigSolver.md
+DynEigSolver.md
+ExplicitSolver.md
+LinearSolver.md
+ModalSolver.md
+MultiSolver.md
+NonlinearSolver.md
+ROMBasisBuilder.md
+ReducedOrderSolver.md
+RiksSolver.md
+StaggeredSolver.md
+```

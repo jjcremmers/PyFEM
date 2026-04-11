@@ -5,7 +5,7 @@ Welcome to the PyFEM documentation. This manual provides comprehensive documenta
 ## Documentation Contents
 
 ```{toctree}
-:maxdepth: 1
+:maxdepth: 3
 
 introduction/introduction.md
 installation/overview.md

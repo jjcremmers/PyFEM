@@ -2,5 +2,10 @@
 
 A few tutorials. The list will be expanded soon.
 
-- [Tutorial 1](tutorial1.md)
-- [Dissipated Energy Tutorial](dissnrg_tutorial.md)
+```{toctree}
+:maxdepth: 1
+
+dissnrg_tutorial.md
+gmsh_input_tutorial.md
+quickstart.md
+```

@@ -20,17 +20,24 @@ ElementGroup = {
 The `type` parameter specifies which material model to use, and subsequent parameters define the material properties (e.g., Young's modulus `E`, Poisson's ratio `nu`).
 
 ## Available Material Pages
-- [Crystal](crystal.md)
-- [HookesLaw](hookeslaw.md)
-- [Isotropic](isotropic.md)
-- [IsotropicHardeningPlasticity](isotropichardeningplasticity.md)
-- [Larc03](larc03.md)
-- [MultiMaterial](multimaterial.md)
-- [PlaneStrain](planestrain.md)
-- [PlaneStress](planestress.md)
-- [PowerLawModeI](powerlawmodei.md)
-- [SandwichCore](sandwichcore.md)
-- [ThoulessModeI](thoulessmodei.md)
-- [TransverseIsotropic](transverseisotropic.md)
-- [VonMises](vonmises.md)
-- [XuNeedleman](xuneedleman.md)
+
+```{toctree}
+:maxdepth: 1
+
+crystal.md
+dummy.md
+hookeslaw.md
+isokinematichardening.md
+isotropic.md
+isotropichardeningplasticity.md
+larc03.md
+multimaterial.md
+planestrain.md
+planestress.md
+powerlawmodei.md
+sandwichcore.md
+thoulessmodei.md
+transverseisotropic.md
+vonmises.md
+xuneedleman.md
+```

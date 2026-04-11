@@ -60,6 +60,7 @@ html_logo = "_static/pyfem_logo_official180.png"
 html_favicon = "_static/pyfem.ico"
 html_css_files = ["custom.css"]
 html_theme_options = {
+    'collapse_navigation': False,
     'navigation_depth': 3,
 }
 

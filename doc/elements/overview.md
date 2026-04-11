@@ -11,4 +11,23 @@ PyFEM provides a comprehensive library of finite element formulations for struct
 ## Configuration
 Elements are defined by creating named element groups in the `.pro` file. Each group specifies the element type and its material properties.
 
+## Available Element Pages
+
+```{toctree}
+:maxdepth: 1
+
+beamnl.md
+finitestrainaxisym.md
+finitestraincontinuum.md
+interface.md
+kirchhoffbeam.md
+plate.md
+sls.md
+smallstrainaxisym.md
+smallstraincontinuum.md
+spring.md
+timoshenkobeam.md
+truss.md
+```
+
 See documentation for configuration examples and details.
