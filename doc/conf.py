@@ -59,6 +59,9 @@ html_static_path = ['_static']
 html_logo = "_static/pyfem_logo_official180.png"
 html_favicon = "_static/pyfem.ico"
 html_css_files = ["custom.css"]
+html_theme_options = {
+    'navigation_depth': 3,
+}
 
 # -- Options for LaTeX output ------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-latex-output
@@ -68,6 +71,8 @@ latex_elements = {
     'pointsize': '11pt',
     'preamble': r'''
         \usepackage{bookmark}
+        \setcounter{secnumdepth}{2}
+        \setcounter{tocdepth}{3}
     ''',
     'figure_align': 'htbp',
 }
