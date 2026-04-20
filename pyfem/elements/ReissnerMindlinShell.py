@@ -3,13 +3,13 @@
 
 """Reissner-Mindlin shell element implementation."""
 
-from math import cos, sin
-
-from numpy import array, cross, dot, eye, sum, zeros
+from numpy import array, cross, eye, sum, zeros
 from numpy.linalg import norm
 
 from pyfem.elements.Composite import Laminate
+from pyfem.util.matrixUtils import skew
 from pyfem.util.shapeFunctions import getElemShapeData, getShapeQuad4
+from pyfem.util.utilFunctions import one_minus_cos_over_x2, sin_over_x
 
 from .Element import Element
 
@@ -92,13 +92,15 @@ class ReissnerMindlinShell(Element):
                         zeta,
                     )
                     strain = self.getStrainFromBasis(cur)
-                    stress = dot(c_mat, strain)
+                    stress = c_mat @ strain
 
                     elemdat.fint += (
-                        dot(op.B.transpose(), stress) * shape_data.weight * weight
+                        op.B.transpose() @ stress
+                        * shape_data.weight
+                        * weight
                     )
                     elemdat.stiff += (
-                        dot(op.B.transpose(), dot(c_mat, op.B))
+                        op.B.transpose() @ (c_mat @ op.B)
                         + self.getGeometricStiffness(op, stress, n_dof)
                     ) * shape_data.weight * weight
 
@@ -176,9 +178,9 @@ class ReissnerMindlinShell(Element):
                         zeta,
                     )
                     strain = self.getStrainFromBasis(cur)
-                    stress = dot(c_mat, strain)
+                    stress = c_mat @ strain
 
-                    fint += dot(op.B.transpose(), stress) * shape_data.weight * weight
+                    fint += op.B.transpose() @ stress * shape_data.weight * weight
 
                     if storeOutput and hasattr(self, "globdat"):
                         self.storeLayerOutput(
@@ -208,11 +210,11 @@ class ReissnerMindlinShell(Element):
         """Build the generalized shell strain vector from basis vectors."""
         strain = zeros(5)
 
-        strain[0] = 0.5 * (dot(cur.a1, cur.a1) - 1.0)
-        strain[1] = 0.5 * (dot(cur.a2, cur.a2) - 1.0)
-        strain[2] = dot(cur.a1, cur.a2)
-        strain[3] = dot(cur.a1, cur.d)
-        strain[4] = dot(cur.a2, cur.d)
+        strain[0] = 0.5 * ((cur.a1 @ cur.a1) - 1.0)
+        strain[1] = 0.5 * ((cur.a2 @ cur.a2) - 1.0)
+        strain[2] = cur.a1 @ cur.a2
+        strain[3] = cur.a1 @ cur.d
+        strain[4] = cur.a2 @ cur.d
 
         return strain
 
@@ -301,11 +303,11 @@ class ReissnerMindlinShell(Element):
             op.A2.append(a2_mat)
             op.D.append(d_mat)
 
-            op.B[0, base : base + 6] = dot(cur.a1, a1_mat)
-            op.B[1, base : base + 6] = dot(cur.a2, a2_mat)
-            op.B[2, base : base + 6] = dot(cur.a2, a1_mat) + dot(cur.a1, a2_mat)
-            op.B[3, base : base + 6] = dot(cur.d, a1_mat) + dot(cur.a1, d_mat)
-            op.B[4, base : base + 6] = dot(cur.d, a2_mat) + dot(cur.a2, d_mat)
+            op.B[0, base : base + 6] = cur.a1 @ a1_mat
+            op.B[1, base : base + 6] = cur.a2 @ a2_mat
+            op.B[2, base : base + 6] = (cur.a2 @ a1_mat) + (cur.a1 @ a2_mat)
+            op.B[3, base : base + 6] = (cur.d @ a1_mat) + (cur.a1 @ d_mat)
+            op.B[4, base : base + 6] = (cur.d @ a2_mat) + (cur.a2 @ d_mat)
 
         return op
 
@@ -318,19 +320,19 @@ class ReissnerMindlinShell(Element):
             for j_nod in range(len(op.A1)):
                 j_base = 6 * j_nod
 
-                block = stress[0] * dot(op.A1[i_nod].transpose(), op.A1[j_nod])
-                block += stress[1] * dot(op.A2[i_nod].transpose(), op.A2[j_nod])
+                block = stress[0] * (op.A1[i_nod].transpose() @ op.A1[j_nod])
+                block += stress[1] * (op.A2[i_nod].transpose() @ op.A2[j_nod])
                 block += stress[2] * (
-                    dot(op.A1[i_nod].transpose(), op.A2[j_nod])
-                    + dot(op.A2[i_nod].transpose(), op.A1[j_nod])
+                    (op.A1[i_nod].transpose() @ op.A2[j_nod])
+                    + (op.A2[i_nod].transpose() @ op.A1[j_nod])
                 )
                 block += stress[3] * (
-                    dot(op.A1[i_nod].transpose(), op.D[j_nod])
-                    + dot(op.D[i_nod].transpose(), op.A1[j_nod])
+                    (op.A1[i_nod].transpose() @ op.D[j_nod])
+                    + (op.D[i_nod].transpose() @ op.A1[j_nod])
                 )
                 block += stress[4] * (
-                    dot(op.A2[i_nod].transpose(), op.D[j_nod])
-                    + dot(op.D[i_nod].transpose(), op.A2[j_nod])
+                    (op.A2[i_nod].transpose() @ op.D[j_nod])
+                    + (op.D[i_nod].transpose() @ op.A2[j_nod])
                 )
 
                 stiff[i_base : i_base + 6, j_base : j_base + 6] += block
@@ -388,13 +390,13 @@ class ReissnerMindlinShell(Element):
             return d0.copy()
 
         axis = rot / theta
-        ax = self.skew(axis)
+        ax = skew(axis)
 
         rotation = eye(3)
         rotation += sin_over_x(theta) * theta * ax
-        rotation += one_minus_cos_over_x2(theta) * theta * theta * dot(ax, ax)
+        rotation += one_minus_cos_over_x2(theta) * theta * theta * (ax @ ax)
 
-        return dot(rotation, d0)
+        return rotation @ d0
 
     def getDirectorJacobian(self, rot, d0):
         """Compute the director derivative with respect to the rotation vector."""
@@ -439,8 +441,8 @@ class ReissnerMindlinShell(Element):
 
         for i_nod, xi_vec in enumerate(node_xi):
             sdat = getShapeQuad4(xi_vec)
-            g1_vec = dot(coords.transpose(), sdat.dhdxi[:, 0])
-            g2_vec = dot(coords.transpose(), sdat.dhdxi[:, 1])
+            g1_vec = coords.transpose() @ sdat.dhdxi[:, 0]
+            g2_vec = coords.transpose() @ sdat.dhdxi[:, 1]
             dirs[i_nod, :] = self.unit(cross(g1_vec, g2_vec))
 
         return dirs
@@ -449,14 +451,14 @@ class ReissnerMindlinShell(Element):
         """Construct the reference basis and local in-plane mapping tensors."""
         ref = ReferenceBasisData()
 
-        g1_vec = dot(coords.transpose(), shapeData.dhdxi[:, 0])
-        g2_vec = dot(coords.transpose(), shapeData.dhdxi[:, 1])
+        g1_vec = coords.transpose() @ shapeData.dhdxi[:, 0]
+        g2_vec = coords.transpose() @ shapeData.dhdxi[:, 1]
 
         g_cov = zeros(shape=(2, 2))
-        g_cov[0, 0] = dot(g1_vec, g1_vec)
-        g_cov[0, 1] = dot(g1_vec, g2_vec)
+        g_cov[0, 0] = g1_vec @ g1_vec
+        g_cov[0, 1] = g1_vec @ g2_vec
         g_cov[1, 0] = g_cov[0, 1]
-        g_cov[1, 1] = dot(g2_vec, g2_vec)
+        g_cov[1, 1] = g2_vec @ g2_vec
 
         det_g = g_cov[0, 0] * g_cov[1, 1] - g_cov[0, 1] * g_cov[1, 0]
         if abs(det_g) < 1.0e-14:
@@ -471,18 +473,18 @@ class ReissnerMindlinShell(Element):
         g_sup1 = g_inv[0, 0] * g1_vec + g_inv[0, 1] * g2_vec
         g_sup2 = g_inv[1, 0] * g1_vec + g_inv[1, 1] * g2_vec
 
-        ref.e3 = self.unit(dot(nodeDirectors.transpose(), shapeData.h))
+        ref.e3 = self.unit(nodeDirectors.transpose() @ shapeData.h)
 
-        tmp = g1_vec - dot(g1_vec, ref.e3) * ref.e3
+        tmp = g1_vec - (g1_vec @ ref.e3) * ref.e3
         if norm(tmp) < 1.0e-14:
-            tmp = g2_vec - dot(g2_vec, ref.e3) * ref.e3
+            tmp = g2_vec - (g2_vec @ ref.e3) * ref.e3
 
         ref.e1 = self.unit(tmp)
         ref.e2 = self.unit(cross(ref.e3, ref.e1))
         ref.e1 = self.unit(cross(ref.e2, ref.e3))
 
-        ref.c1 = array([dot(ref.e1, g_sup1), dot(ref.e1, g_sup2)])
-        ref.c2 = array([dot(ref.e2, g_sup1), dot(ref.e2, g_sup2)])
+        ref.c1 = array([ref.e1 @ g_sup1, ref.e1 @ g_sup2])
+        ref.c2 = array([ref.e2 @ g_sup1, ref.e2 @ g_sup2])
 
         return ref
 
@@ -499,19 +501,6 @@ class ReissnerMindlinShell(Element):
             raise RuntimeError("Zero-length vector encountered in shell basis construction.")
 
         return a_vec / a_len
-
-    def skew(self, a_vec):
-        """Return the skew-symmetric matrix associated with a vector."""
-        mat = zeros(shape=(3, 3))
-
-        mat[0, 1] = -a_vec[2]
-        mat[0, 2] = a_vec[1]
-        mat[1, 0] = a_vec[2]
-        mat[1, 2] = -a_vec[0]
-        mat[2, 0] = -a_vec[1]
-        mat[2, 1] = a_vec[0]
-
-        return mat
 
     def storeLayerOutput(self, stress, iLay, zeta, weight):
         """Store selected through-thickness stress outputs for post-processing."""
@@ -543,19 +532,3 @@ class ReissnerMindlinShell(Element):
         point.z = 0.5 * self.material.thick
         point.labels = ["s11top", "s22top", "s12top"]
         self.postProcess.append(point)
-
-
-def sin_over_x(x_val):
-    """Return sin(x) / x using a series expansion near zero."""
-    if abs(x_val) < 1.0e-12:
-        return 1.0 - x_val * x_val / 6.0
-
-    return sin(x_val) / x_val
-
-
-def one_minus_cos_over_x2(x_val):
-    """Return (1 - cos(x)) / x^2 using a series expansion near zero."""
-    if abs(x_val) < 1.0e-12:
-        return 0.5 - x_val * x_val / 24.0
-
-    return (1.0 - cos(x_val)) / (x_val * x_val)

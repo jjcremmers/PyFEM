@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 # Copyright (c) 2011–2026 Joris J.C. Remmers
 
+from math import cos, sin
 from typing import Union
 
 
@@ -57,3 +58,37 @@ def sign(x: Union[int, float]) -> float:
         return -1.0
     else: 
         return 1.0
+
+
+def sin_over_x(x_val: Union[int, float]) -> float:
+    """
+    Return sin(x) / x using a series expansion near zero.
+
+    Args:
+        x_val: Input value.
+
+    Returns:
+        The value of sin(x) / x.
+    """
+
+    if abs(x_val) < 1.0e-12:
+        return 1.0 - x_val * x_val / 6.0
+
+    return sin(x_val) / x_val
+
+
+def one_minus_cos_over_x2(x_val: Union[int, float]) -> float:
+    """
+    Return (1 - cos(x)) / x^2 using a series expansion near zero.
+
+    Args:
+        x_val: Input value.
+
+    Returns:
+        The value of (1 - cos(x)) / x^2.
+    """
+
+    if abs(x_val) < 1.0e-12:
+        return 0.5 - x_val * x_val / 24.0
+
+    return (1.0 - cos(x_val)) / (x_val * x_val)
