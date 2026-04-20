@@ -16,6 +16,7 @@ Elements are defined by creating named element groups in the `.pro` file. Each g
 ```{toctree}
 :maxdepth: 1
 
+beam3d.md
 beamnl.md
 finitestrainaxisym.md
 finitestraincontinuum.md
