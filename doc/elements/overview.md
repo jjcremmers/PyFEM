@@ -22,6 +22,7 @@ finitestraincontinuum.md
 interface.md
 kirchhoffbeam.md
 plate.md
+reissnermindlinshell.md
 sls.md
 smallstrainaxisym.md
 smallstraincontinuum.md

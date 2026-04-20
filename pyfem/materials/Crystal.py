@@ -23,6 +23,7 @@ from numpy import array, outer, sqrt, abs
 from numpy.linalg import norm, solve
 from typing import Tuple, List, Any
 from pyfem.materials.BaseMaterial import BaseMaterial
+from pyfem.materials.MatUtils import transform2To3, transform3To2
 
 
 class Crystal(BaseMaterial):
@@ -433,12 +434,17 @@ class Crystal(BaseMaterial):
         gamma_cum = self.getHistoryParameter('gamma_cum')
         gamma_total = self.getHistoryParameter('gamma_total')
         stress = self.getHistoryParameter('stress')
+
+        # Internally the crystal model operates in 3D Voigt notation.
+        if len(kinematics.dstrain) == 6:
+            dstrain = kinematics.dstrain
+            is_2d = False
+        else:
+            dstrain = transform2To3(kinematics.dstrain)
+            is_2d = True
         
-        # Strain increment
-        dstrain = kinematics.dstrain
-        
-        # Time increment (assume unit time if not available)
-        dt = self.solverStat.dtime
+        # Time increment.
+        dt = getattr(self.solverStat, 'dtime', 1.0)
         
         # Trial elastic stress increment
         dstress_trial = self.D @ dstrain
@@ -481,6 +487,9 @@ class Crystal(BaseMaterial):
         # Store output data
         self._storeOutput(stress, tau, gamma, gamma_total)
         
+        if is_2d:
+            return transform3To2(stress, tang)
+
         return stress, tang
 
 #-------------------------------------------------------------------
