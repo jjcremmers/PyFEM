@@ -29,6 +29,7 @@ class MaterialManager ( list ):
                     f"Ensure the class name matches the file name."
                 ) from e
 
+            self.material_cls = material_cls
             self.material = material_cls(matProps)
             
             self.matlist     = []
@@ -84,7 +85,9 @@ class MaterialManager ( list ):
             self.iSam = iSam
             
         while self.iSam >= len(self.matlist):
-            self.matlist.append(self.material)
+            mat = self.material_cls(self.matProps)
+            mat.sampleID = len(self.matlist)
+            self.matlist.append(mat)
         
         self.mat = self.matlist[self.iSam]
     
@@ -130,7 +133,9 @@ class MaterialManager ( list ):
             self.iSam = iSam
             
         while self.iSam >= len(self.matlist):
-            self.matlist.append(self.material( self.matProps ))
+            mat = self.material_cls( self.matProps )
+            mat.sampleID = len(self.matlist)
+            self.matlist.append(mat)
         
         self.mat = self.matlist[self.iSam]
      

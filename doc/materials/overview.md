@@ -31,6 +31,7 @@ isokinematichardening.md
 isotropic.md
 isotropichardeningplasticity.md
 larc03.md
+micromodel.md
 multimaterial.md
 planestrain.md
 planestress.md

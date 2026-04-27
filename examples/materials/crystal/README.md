@@ -2,6 +2,28 @@
 
 This directory contains example input files for testing the `Crystal` material model in PyFEM.
 
+## Use Cases
+
+Use the examples in this directory according to the level of complexity you need:
+
+| Use case | Recommended example | Why |
+| --- | --- | --- |
+| Smoke test after editing the `Crystal` material | `minimal_single_slip.pro` | Smallest possible setup, fastest to inspect and debug |
+| Check basic tensile response and onset of slip | `simple_tension.pro` | Straightforward loading path with a single slip-system set |
+| Study orientation effects and interacting slip systems | `oriented_shear.pro` | Rotated crystal plus multiple slip sets under shear |
+| Tune solver settings for rate-dependent crystal plasticity | `minimal_single_slip.pro` first, then `simple_tension.pro` | Lets you separate constitutive issues from model-size effects |
+| Validate post-processing of accumulated slip variables | `oriented_shear.pro` | Includes `GammaTotal` tracking through `GraphWriter` |
+
+## Quick Start
+
+If you are new to the model, use the examples in this order:
+
+1. Run `pyfem minimal_single_slip.pro` to verify the constitutive update and solver setup.
+2. Run `pyfem simple_tension.pro` to inspect tensile hardening and slip activation.
+3. Run `pyfem oriented_shear.pro` to study orientation sensitivity and multi-system slip.
+
+This progression keeps debugging practical: first confirm the material works in the smallest mesh, then move to more representative loading paths.
+
 ## Model Overview
 
 The `Crystal` material model implements rate-dependent crystal plasticity based on:
@@ -12,6 +34,33 @@ The `Crystal` material model implements rate-dependent crystal plasticity based 
 - Crystal orientation effects
 
 ## Examples
+
+### 0. minimal_single_slip.pro
+
+**Description:** Minimal single-element crystal plasticity example for quick validation
+
+**Features:**
+- Single quad element
+- One slip-system set
+- Identity crystal orientation
+- Uses isotropic elastic constants for a compact input deck
+
+**Usage:**
+```bash
+pyfem minimal_single_slip.pro
+```
+
+**Expected Behavior:**
+- Elastic response at low load
+- Slip activation once the resolved shear stress exceeds the initial CRSS
+- Useful as a smoke test when modifying the `Crystal` material model
+
+**Best suited for:**
+- Verifying that the material model loads and converges
+- Checking 2D element compatibility of the crystal update
+- Testing changes to hardening, slip-rate, or tangent logic with minimal runtime
+
+---
 
 ### 1. simple_tension.pro
 
@@ -38,6 +87,11 @@ pyfem simple_tension.pro
 - Elastic response followed by plastic deformation
 - Slip system activation depending on Schmid factors
 - Rate-dependent stress-strain curve
+
+**Best suited for:**
+- Comparing elastic-to-plastic transition behavior
+- Calibrating `tau0`, `h0`, and `taus` under monotonic loading
+- Checking whether a chosen slip family activates under tensile loading
 
 ---
 
@@ -69,6 +123,11 @@ pyfem oriented_shear.pro
 - Crystal orientation affects which systems slip first
 - Interaction between slip systems through latent hardening
 - Higher rate sensitivity leads to smoother response
+
+**Best suited for:**
+- Exploring texture or orientation sensitivity
+- Validating latent-hardening effects through `qab`
+- Inspecting accumulated slip output such as `GammaTotal`, `Gamma1`, and `Tau1`
 
 ---
 
@@ -171,6 +230,12 @@ The model provides the following output quantities:
 3. **Tune dtime:** If convergence fails, try smaller time increments
 4. **Monitor slip activity:** Use GraphWriter to track Gamma1, Tau1, etc.
 5. **Validate elasticity:** Check elastic behavior matches c11, c12, c44 before adding plasticity
+
+## Choosing an Example
+
+Choose `minimal_single_slip.pro` when you want the shortest path to a converged run.
+Choose `simple_tension.pro` when you want a clean calibration-style benchmark.
+Choose `oriented_shear.pro` when you want to exercise orientation mapping, multiple slip sets, and richer output.
 
 ---
 

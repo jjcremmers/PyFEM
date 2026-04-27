@@ -34,8 +34,8 @@ class HDF5Writer(BaseModule):
             self.interval = 1
         
         if self.singleFile:
-            f = h5py.File(self.prefix + self.extension, "w")
-            f.attrs["cycleCount"] = 0
+            with h5py.File(self.prefix + self.extension, "w") as f:
+                f.attrs["cycleCount"] = 0
 
     def run(self, props: Any, globdat: Any) -> None:
         """Write simulation data to HDF5 file.

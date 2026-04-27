@@ -40,6 +40,7 @@ class LinearSolver ( BaseModule ):
      
     globdat.Dstate = globdat.state - state0
 
+    globdat.K = K
     globdat.fint = assembleInternalForce( props, globdat )
 
     commit ( props, globdat )    

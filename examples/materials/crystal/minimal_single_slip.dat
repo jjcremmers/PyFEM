@@ -1,0 +1,22 @@
+<Nodes>
+  1  0.0  0.0 ;
+  2  1.0  0.0 ;
+  3  1.0  1.0 ;
+  4  0.0  1.0 ;
+</Nodes>
+
+<Elements>
+  1 'ContElem' 1 2 3 4 ;
+</Elements>
+
+<NodeConstraints>
+  u[1] = 0.0;
+  v[1] = 0.0;
+  v[2] = 0.0;
+  u[4] = 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+  u[2] = 0.0 1.0;
+  u[3] = 0.0 1.0;
+</ExternalForces>

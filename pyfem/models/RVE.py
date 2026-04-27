@@ -2,6 +2,7 @@
 # Copyright (c) 2011–2026 Joris J.C. Remmers
 
 import sys
+from copy import deepcopy
 from venv import logger
 from pyfem.models.BaseModel import BaseModel
 import numpy as np
@@ -57,6 +58,7 @@ class RVE( BaseModel ):
         
         self.unitStrain = np.array( self.unitStrain )
         self.stress = np.zeros(3)
+        self.tangent = np.zeros((3,3))
 
         self.getBoundaries( props , globdat )
 
@@ -121,6 +123,7 @@ class RVE( BaseModel ):
         """
 
         self._calculateResultant(globdat)
+        self._calculateTangent(globdat)
         self._report(globdat)
 
 #-----------------
@@ -139,18 +142,80 @@ class RVE( BaseModel ):
         globdat : object
             Global data structure containing nodal forces and DOF mappings.
         """
+        self.stress = self._stressFromForceVector(globdat.fint, globdat)
+
+#-----------------
+#
+#-----------------
+
+    def _stressFromForceVector(self, forceVector, globdat):
+
+        stress = np.zeros(3)
+
         force = np.zeros(2)
         for nodeRight in self.nodesRight:
             dofIDs = globdat.dofs.get(nodeRight)
-            force += globdat.fint[dofIDs]
-        self.stress[0] = force[0] / self.dy
+            force += forceVector[dofIDs]
+        stress[0] = force[0] / self.dy
 
         force = np.zeros(2)
         for nodeTop in self.nodesTop:
             dofIDs = globdat.dofs.get(nodeTop)
-            force += globdat.fint[dofIDs]
-        self.stress[1] = force[1] / self.dx
-        self.stress[2] = force[0] / self.dy
+            force += forceVector[dofIDs]
+        stress[1] = force[1] / self.dx
+        stress[2] = force[0] / self.dy
+
+        return stress
+
+#-----------------
+#
+#-----------------
+
+    def _buildMicroConstrainer(self, globdat, strain):
+
+        oldCons = deepcopy(globdat.dofs.cons)
+        oldStrain = self.strain.copy()
+
+        globdat.dofs.createConstrainer()
+        self.strain = np.array(strain, dtype=float)
+
+        if self.boundaryType == "Prescribed":
+            self.applyPrescribedBC(globdat)
+        elif self.boundaryType == "Periodic":
+            self.applyPeriodicBC(globdat)
+        else:
+            sys.exit("Error: boundaryType must be 'Periodic' or 'Prescribed'")
+
+        cons = deepcopy(globdat.dofs.cons)
+
+        globdat.dofs.cons = oldCons
+        self.strain = oldStrain
+
+        return cons
+
+#-----------------
+#
+#-----------------
+
+    def _calculateTangent(self, globdat):
+
+        self.tangent = np.zeros((3,3))
+
+        if not hasattr(globdat, "K"):
+            return
+
+        K = globdat.K.tocsr()
+        rhs = np.zeros(len(globdat.dofs))
+
+        for iCol in range(3):
+            strain = np.zeros(3)
+            strain[iCol] = 1.0
+
+            cons = self._buildMicroConstrainer(globdat, strain)
+            state = globdat.dofs.solve(K, rhs, constrainer=cons)
+            fint = np.asarray(K @ state).ravel()
+
+            self.tangent[:, iCol] = self._stressFromForceVector(fint, globdat)
 
 #----------------
 # 
@@ -160,6 +225,7 @@ class RVE( BaseModel ):
 
         globdat.equivStress = self.stress
         globdat.equivStrain = self.strain
+        globdat.equivTangent = self.tangent
         
         logger.info("RVE")
         logger.info(f" Stress....: {self.stress[0]:6.3e}, {self.stress[1]:6.3e}, {self.stress[2]:6.3e}")

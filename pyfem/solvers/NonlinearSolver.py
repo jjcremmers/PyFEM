@@ -119,6 +119,7 @@ class NonlinearSolver( BaseModule ):
 
     Da[:]  = zeros( len(globdat.dofs) )
 
+    globdat.K = K
     globdat.fint = fint
 
     commit ( props , globdat )
