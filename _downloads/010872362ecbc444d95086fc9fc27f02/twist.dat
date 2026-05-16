@@ -1,0 +1,13 @@
+gmsh = "twist.msh"
+
+<NodeConstraints>
+  u[Bottom] = 0.0;
+  v[Bottom] = 0.0;
+  w[Bottom] = 0.0;
+  u[Top]    = 0.0;
+  v[Top]    = 0.0;
+  w[Top]    = 0.1;
+</NodeConstraints>
+
+<ExternalForces>
+</ExternalForces>

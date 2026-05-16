@@ -1,0 +1,418 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beam3D &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="BeamNL" href="beamnl.html" />
+    <link rel="prev" title="Elements Overview" href="overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo_official180.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#goals-and-scope">Goals and Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#how-to-cite">How to Cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/introduction.html#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#verifying-the-installation">Verifying the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#running-a-pyfem-example">Running a PyFEM Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Elements Overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#element-types">Element Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="overview.html#configuration">Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#available-element-pages">Available Element Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../materials/overview.html#configuration-in-input-files">Configuration in Input Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../materials/overview.html#available-material-pages">Available Material Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/BuckEigSolver.html">BuckEigSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/DynEigSolver.html">DynEigSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ExplicitSolver.html">ExplicitSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/LinearSolver.html">LinearSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ModalSolver.html">ModalSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/MultiSolver.html">MultiSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/NonlinearSolver.html">NonlinearSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ROMBasisBuilder.html">ROMBasisBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ReducedOrderSolver.html">ReducedOrderSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/RiksSolver.html">RiksSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/StaggeredSolver.html">StaggeredSolver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../io/overview.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../io/overview.html#available-i-o-pages">Available I/O Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../io/overview.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/dissnrg_tutorial.html">Tutorial: The dissipated energy pathfollowing solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/gmsh_input_tutorial.html">Tutorial: Using GMSH Input Files in PyFEM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorials/quickstart.html">Quickstart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Elements Overview</a></li>
+      <li class="breadcrumb-item active">Beam3D</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/beam3d.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="beam3d">
+<h1>Beam3D<a class="headerlink" href="#beam3d" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">Beam3D</span></code> element is a two-node, three-dimensional beam element for
+large-displacement and large-rotation structural analysis.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Element type:</strong> <code class="docutils literal notranslate"><span class="pre">Beam3D</span></code></p></li>
+<li><p><strong>Degrees of freedom per node:</strong> <code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code>, <code class="docutils literal notranslate"><span class="pre">w</span></code>, <code class="docutils literal notranslate"><span class="pre">rx</span></code>, <code class="docutils literal notranslate"><span class="pre">ry</span></code>, <code class="docutils literal notranslate"><span class="pre">rz</span></code></p></li>
+<li><p><strong>Supports:</strong></p>
+<ul>
+<li><p>axial deformation</p></li>
+<li><p>bending about two local axes</p></li>
+<li><p>torsion</p></li>
+<li><p>transverse shear deformation</p></li>
+<li><p>large rotations with nonlinear solution procedures</p></li>
+</ul>
+</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Beam3D</span></code> is currently implemented as a straight two-node beam with a frozen
+reference geometry and a corotational-style local frame. The element supports
+large rotations, but it should not be interpreted as a fully general
+geometrically exact beam with arbitrary section coupling.</p>
+</section>
+<section id="local-axes">
+<h2>Local Axes<a class="headerlink" href="#local-axes" title="Link to this heading"></a></h2>
+<p>The local beam <code class="docutils literal notranslate"><span class="pre">z</span></code> axis is aligned with the element axis from node 1 to node 2.
+The local <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> axes define the section orientation.</p>
+<p>The preferred way to prescribe the section orientation is through:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>orientation = [ x1, x2, x3 ];
+</pre></div>
+</div>
+<p>This vector defines the preferred local <code class="docutils literal notranslate"><span class="pre">x</span></code> direction. It must:</p>
+<ul class="simple">
+<li><p>contain three components</p></li>
+<li><p>be non-zero</p></li>
+<li><p>not be parallel to the beam axis</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">orientation</span></code> is not given, <code class="docutils literal notranslate"><span class="pre">Beam3D</span></code> falls back to an internally constructed
+seed direction:</p>
+<ul class="simple">
+<li><p>global <code class="docutils literal notranslate"><span class="pre">z</span></code> by default</p></li>
+<li><p>global <code class="docutils literal notranslate"><span class="pre">x</span></code> when the beam axis is nearly parallel to global <code class="docutils literal notranslate"><span class="pre">z</span></code></p></li>
+</ul>
+</section>
+<section id="material-and-section-properties">
+<h2>Material And Section Properties<a class="headerlink" href="#material-and-section-properties" title="Link to this heading"></a></h2>
+<section id="standard-scalar-input">
+<h3>Standard scalar input<a class="headerlink" href="#standard-scalar-input" title="Link to this heading"></a></h3>
+<p>The legacy scalar input path uses:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>E, G, A, Ix, Iy, J, rho
+</pre></div>
+</div>
+<p>These are interpreted as:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>: Young’s modulus</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">G</span></code>: shear modulus</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">A</span></code>: cross-sectional area</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Ix</span></code>: second moment used for local <code class="docutils literal notranslate"><span class="pre">z</span></code>-direction bending stiffness</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Iy</span></code>: second moment used for local <code class="docutils literal notranslate"><span class="pre">y</span></code>-direction bending stiffness</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">J</span></code>: torsional constant</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rho</span></code>: mass density</p></li>
+</ul>
+</section>
+<section id="explicit-scalar-stiffness-input">
+<h3>Explicit scalar stiffness input<a class="headerlink" href="#explicit-scalar-stiffness-input" title="Link to this heading"></a></h3>
+<p>The element also accepts direct section stiffness entries:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>EA, GAy, GAz, EIy, EIz, GJ
+</pre></div>
+</div>
+<p>This is the recommended scalar interface when the section properties are already
+available in stiffness form.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">GAy</span></code> or <code class="docutils literal notranslate"><span class="pre">GAz</span></code> is not provided, the element uses:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ky</span> <span class="pre">*</span> <span class="pre">G</span> <span class="pre">*</span> <span class="pre">A</span></code> when <code class="docutils literal notranslate"><span class="pre">ky</span></code> is given</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kz</span> <span class="pre">*</span> <span class="pre">G</span> <span class="pre">*</span> <span class="pre">A</span></code> when <code class="docutils literal notranslate"><span class="pre">kz</span></code> is given</p></li>
+<li><p>otherwise <code class="docutils literal notranslate"><span class="pre">5/6</span> <span class="pre">*</span> <span class="pre">G</span> <span class="pre">*</span> <span class="pre">A</span></code></p></li>
+</ul>
+</section>
+<section id="section-stiffness-matrix">
+<h3>Section stiffness matrix<a class="headerlink" href="#section-stiffness-matrix" title="Link to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">Beam3D</span></code> also supports a direct section stiffness matrix:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>sectionStiffness = [ ... 36 values ... ];
+</pre></div>
+</div>
+<p>The values are read as a row-major <code class="docutils literal notranslate"><span class="pre">6</span> <span class="pre">x</span> <span class="pre">6</span></code> matrix.</p>
+<p>The internal ordering is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[ shear-x, shear-y, axial, bend-x, bend-y, torsion ]
+</pre></div>
+</div>
+<p>Current limitation:</p>
+<ul class="simple">
+<li><p>coupling inside the first <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">x</span> <span class="pre">3</span></code> block is supported</p></li>
+<li><p>coupling inside the second <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">x</span> <span class="pre">3</span></code> block is supported</p></li>
+<li><p>coupling between these two blocks is not supported by the current
+reduced/full integration scheme</p></li>
+</ul>
+<p>If off-diagonal coupling is present between the strain and curvature blocks, the
+element raises a runtime error.</p>
+</section>
+</section>
+<section id="mass-and-rotary-inertia">
+<h2>Mass And Rotary Inertia<a class="headerlink" href="#mass-and-rotary-inertia" title="Link to this heading"></a></h2>
+<p>The legacy inertial input path uses:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rho, A, Ix, Iy, J
+</pre></div>
+</div>
+<p>from which the element constructs:</p>
+<ul class="simple">
+<li><p>mass per unit length: <code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">*</span> <span class="pre">A</span></code></p></li>
+<li><p>rotary inertia terms: <code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">*</span> <span class="pre">Ix</span></code>, <code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">*</span> <span class="pre">Iy</span></code>, <code class="docutils literal notranslate"><span class="pre">rho</span> <span class="pre">*</span> <span class="pre">J</span></code></p></li>
+</ul>
+<p>These values can also be supplied explicitly:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>massPerLength
+rotaryInertia1
+rotaryInertia2
+polarRotaryInertia
+</pre></div>
+</div>
+<p>The aliases below are accepted as well:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>rhoA, rhoIx, rhoIy, rhoJ
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">massPerLength</span></code> must be positive. Rotary inertia values must be non-negative.</p>
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>BeamElem =
+{
+  type = &quot;Beam3D&quot;;
+
+  E           = 2.10e5;
+  G           = 8.00e4;
+  A           = 1.00e-2;
+  Ix          = 1.00e-4;
+  Iy          = 1.00e-4;
+  J           = 2.00e-4;
+  rho         = 7.85e-9;
+  orientation = [ 0.0, 0.0, 1.0 ];
+};
+</pre></div>
+</div>
+<p>For direct section input:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>BeamElem =
+{
+  type = &quot;Beam3D&quot;;
+
+  orientation      = [ 0.0, 0.0, 1.0 ];
+  sectionStiffness = [
+    GAy, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, GAz, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, EA,  0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, EIy, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, EIz, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, GJ
+  ];
+};
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>Beam3D example problems are available in:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>examples/elements/beam/beam3D/
+</pre></div>
+</div>
+<p>The current example set includes:</p>
+<ul class="simple">
+<li><p>axial cantilever response</p></li>
+<li><p>transverse cantilever bending</p></li>
+<li><p>cantilever torsion</p></li>
+<li><p>vertical-member verification</p></li>
+<li><p>a deployable-ring demonstrator inspired by Goto et al. (1992)</p></li>
+</ul>
+</section>
+<section id="current-scope-and-limitations">
+<h2>Current Scope And Limitations<a class="headerlink" href="#current-scope-and-limitations" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The element uses a two-node straight beam geometry.</p></li>
+<li><p>The reference geometry and reference triad are fixed after initialization.</p></li>
+<li><p>A prescribed section orientation is supported through <code class="docutils literal notranslate"><span class="pre">orientation</span></code>.</p></li>
+<li><p>A general uncoupled <code class="docutils literal notranslate"><span class="pre">6</span> <span class="pre">x</span> <span class="pre">6</span></code> section stiffness description is supported.</p></li>
+<li><p>Full coupling between translational strain resultants and curvature resultants
+is not supported.</p></li>
+</ul>
+<p>For problems that depend strongly on general section coupling or more general
+geometrically exact beam kinematics, this implementation should be treated as a
+practical nonlinear 3D beam element rather than a complete general beam theory
+framework.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="overview.html" class="btn btn-neutral float-left" title="Elements Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="beamnl.html" class="btn btn-neutral float-right" title="BeamNL" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
