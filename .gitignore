@@ -142,3 +142,10 @@ dmypy.json
 
 pyfem.sh
 pyfem.exe
+
+# 
+.agents
+.github
+.pytest_cache
+.vscode
+.codex

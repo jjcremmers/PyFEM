@@ -22,9 +22,12 @@ The `ReissnerMindlinShell` element implements a 4-node shell formulation with tr
 - `layers`: Laminate layer list
 - `materials`: Laminate material list
 - `shearCorrection`: Shear correction factor
+- `reducedShearIntegration`: Enables selective reduced integration of the transverse shear terms
 - `tangentPerturbation`: Finite-difference perturbation used for the numerical tangent
 - `drillingScale`: Scaling factor for the drilling stabilization
 
 ## Notes
 - The current implementation supports curved Quad4 midsurfaces, but it is still restricted to that interpolation.
+- The element is assembled in a local shell frame, matching the `dawn` shell implementation.
+- By default the shell uses selective reduced integration for the transverse shear terms.
 - The tangent stiffness is assembled from material and geometric contributions using the current shell kinematics, with the director Jacobian evaluated locally.

@@ -60,6 +60,32 @@ class TestReissnerMindlinShellLaminate(unittest.TestCase):
 
         self.shell = ReissnerMindlinShell([0, 1, 2, 3], self.props)
 
+    def rotate_coords(self, coords: np.ndarray, rotation: np.ndarray) -> np.ndarray:
+        """Rotate nodal coordinates with an active 3D rotation."""
+        return coords @ rotation.transpose()
+
+    def rotate_state(self, state: np.ndarray, rotation: np.ndarray) -> np.ndarray:
+        """Rotate translational and rotational DOFs with the same 3D rotation."""
+        rotated = state.copy()
+
+        for i_nod in range(4):
+            base = 6 * i_nod
+            rotated[base : base + 3] = state[base : base + 3] @ rotation.transpose()
+            rotated[base + 3 : base + 6] = state[base + 3 : base + 6] @ rotation.transpose()
+
+        return rotated
+
+    def get_dof_rotation(self, rotation: np.ndarray) -> np.ndarray:
+        """Return the block rotation acting on shell DOFs."""
+        transform = np.zeros((24, 24))
+
+        for i_nod in range(4):
+            base = 6 * i_nod
+            transform[base : base + 3, base : base + 3] = rotation
+            transform[base + 3 : base + 6, base + 3 : base + 6] = rotation
+
+        return transform
+
     def get_element_data(self) -> elementData:
         """Create zero-state element data for the shell patch."""
         data = elementData(np.zeros(24), np.zeros(24))
@@ -70,6 +96,7 @@ class TestReissnerMindlinShellLaminate(unittest.TestCase):
         """Test that a laminate stack-up is stored correctly."""
         self.assertEqual(self.shell.material.layerCount(), 4)
         self.assertAlmostEqual(self.shell.material.thick, 0.5)
+        self.assertTrue(self.shell.reducedShearIntegration)
 
         zeta_points = list(self.shell.iterateLayers())
         self.assertEqual(len(zeta_points), 4)
@@ -104,6 +131,72 @@ class TestReissnerMindlinShellLaminate(unittest.TestCase):
         np.testing.assert_allclose(data.mass, data.mass.transpose())
         self.assertGreater(np.trace(data.mass), 0.0)
         self.assertGreater(data.lumped, 0.0)
+
+    def test_tangent_stiffness_covaries_under_rigid_rotation(self) -> None:
+        """Test that the local-frame shell formulation is objective under rotation."""
+        data = self.get_element_data()
+        data.state = np.array(
+            [
+                1.0e-3,
+                -2.0e-3,
+                5.0e-4,
+                3.0e-2,
+                -1.0e-2,
+                2.0e-2,
+                -1.5e-3,
+                7.0e-4,
+                -8.0e-4,
+                -1.0e-2,
+                1.5e-2,
+                -2.5e-2,
+                8.0e-4,
+                1.2e-3,
+                -6.0e-4,
+                1.2e-2,
+                1.0e-2,
+                -1.0e-2,
+                -9.0e-4,
+                -1.1e-3,
+                1.4e-3,
+                -2.0e-2,
+                5.0e-3,
+                1.8e-2,
+            ]
+        )
+
+        self.shell.getTangentStiffness(data)
+
+        axis = np.array([1.0, -2.0, 0.5])
+        axis /= np.linalg.norm(axis)
+        angle = 0.37
+        skew = np.array(
+            [
+                [0.0, -axis[2], axis[1]],
+                [axis[2], 0.0, -axis[0]],
+                [-axis[1], axis[0], 0.0],
+            ]
+        )
+        rotation = (
+            np.eye(3)
+            + np.sin(angle) * skew
+            + (1.0 - np.cos(angle)) * (skew @ skew)
+        )
+        transform = self.get_dof_rotation(rotation)
+
+        rotated_data = self.get_element_data()
+        rotated_data.coords = self.rotate_coords(self.coords, rotation)
+        rotated_data.state = self.rotate_state(data.state, rotation)
+
+        rotated_shell = ReissnerMindlinShell([0, 1, 2, 3], self.props)
+        rotated_shell.getTangentStiffness(rotated_data)
+
+        np.testing.assert_allclose(rotated_data.fint, transform @ data.fint, rtol=1.0e-8, atol=1.0e-8)
+        np.testing.assert_allclose(
+            rotated_data.stiff,
+            transform @ data.stiff @ transform.transpose(),
+            rtol=1.0e-8,
+            atol=1.0e-8,
+        )
 
 
 if __name__ == "__main__":

@@ -9,6 +9,8 @@ This example drives a curved cylindrical shell strip with the `ReissnerMindlinSh
 - `curved_cantilever_composite.pro`: same curved cantilever using a layered composite laminate
 - `pinched_hemisphere.dat`: quarter pinched hemisphere with an 18 degree hole
 - `pinched_hemisphere.pro`: solver and output settings for the hemisphere benchmark
+- `pinched_hemisphere_fine.dat`: finer quarter hemisphere mesh ported from the `dawn` shell benchmark
+- `pinched_hemisphere_fine.pro`: solver and output settings for the fine hemisphere benchmark
 
 ## Model
 
@@ -23,10 +25,13 @@ This example drives a curved cylindrical shell strip with the `ReissnerMindlinSh
 pyfem curved_cantilever.pro
 pyfem curved_cantilever_composite.pro
 pyfem pinched_hemisphere.pro
+pyfem pinched_hemisphere_fine.pro
 ```
 
 The graph output reports the prescribed displacement at node `5` and the corresponding internal reaction in `w`.
 For the hemisphere case, the graph output reports the loaded-point displacement and reaction in `u` at node `72`.
+For the fine hemisphere port, the graph output reports the two symmetry-edge pinch displacements
+at nodes `1` and `17` together with the load factor `lam`.
 
 ## Composite Laminate Input
 

@@ -8,7 +8,7 @@ from numpy.linalg import norm
 
 from pyfem.elements.Composite import Laminate
 from pyfem.util.matrixUtils import skew
-from pyfem.util.shapeFunctions import getElemShapeData, getShapeQuad4
+from pyfem.util.shapeFunctions import getShapeData, getShapeQuad4
 from pyfem.util.utilFunctions import one_minus_cos_over_x2, sin_over_x
 
 from .Element import Element
@@ -53,79 +53,50 @@ class ReissnerMindlinShell(Element):
         if hasattr(props, "drillingScale"):
             self.drillingScale = props.drillingScale
 
+        self.reducedShearIntegration = True
+        if hasattr(props, "reducedShearIntegration"):
+            self.reducedShearIntegration = props.reducedShearIntegration
+
         self.inertia = self.material.getMassInertia()
 
         self.initPostProcessing()
 
     def getTangentStiffness(self, elemdat):
         """Assemble the element internal force vector and tangent stiffness."""
-        elemdat.fint[:] = 0.0
-        elemdat.stiff[:, :] = 0.0
+        rot = self.getElementRotation(elemdat.coords)
+        transform = self.getElementTransformation(rot)
+        local_coords = self.getLocalCoordinates(elemdat.coords, rot)
+        local_state = self.toElementCoordinates(elemdat.state, transform)
 
-        s_data = self.getShapeData(elemdat.coords)
-        node_directors = self.getReferenceDirectors(elemdat.coords)
+        local_fint = zeros(elemdat.fint.shape)
+        local_stiff = zeros(shape=elemdat.stiff.shape)
 
-        n_nel = elemdat.coords.shape[0]
-        n_dof = len(self.dofTypes) * n_nel
-
-        for shape_data in s_data:
-            ref = self.getReferenceBasis(elemdat.coords, node_directors, shape_data)
-
-            for i_lay, (layer, zeta_data) in enumerate(self.iterateLayers()):
-                c_mat = self.getLayerMatrix(layer)
-
-                for zeta, weight in zeta_data:
-                    cur = self.getCurrentBasis(
-                        elemdat.coords,
-                        node_directors,
-                        ref,
-                        shape_data,
-                        elemdat.state,
-                        zeta,
-                    )
-                    op = self.getKinematicOperators(
-                        shape_data,
-                        ref,
-                        cur,
-                        elemdat.state,
-                        node_directors,
-                        zeta,
-                    )
-                    strain = self.getStrainFromBasis(cur)
-                    stress = c_mat @ strain
-
-                    elemdat.fint += (
-                        op.B.transpose() @ stress
-                        * shape_data.weight
-                        * weight
-                    )
-                    elemdat.stiff += (
-                        op.B.transpose() @ (c_mat @ op.B)
-                        + self.getGeometricStiffness(op, stress, n_dof)
-                    ) * shape_data.weight * weight
-
-                    if hasattr(self, "globdat"):
-                        self.storeLayerOutput(stress, i_lay, zeta, shape_data.weight * weight)
-
-        self.addDrillingContribution(
-            elemdat.stiff,
-            elemdat.fint,
-            elemdat.coords,
-            elemdat.state,
+        self.assembleElement(
+            local_coords,
+            local_state,
+            local_fint,
+            local_stiff,
+            store_output=hasattr(self, "globdat"),
         )
-        elemdat.stiff = 0.5 * (elemdat.stiff + elemdat.stiff.transpose())
+        self.addDrillingContribution(local_stiff, local_fint, local_coords, local_state)
+
+        elemdat.fint[:] = self.toGlobalCoordinates(local_fint, transform)
+        elemdat.stiff[:, :] = self.toGlobalCoordinates(local_stiff, transform)
+        elemdat.stiff[:, :] = 0.5 * (elemdat.stiff + elemdat.stiff.transpose())
 
     def getInternalForce(self, elemdat):
         """Compute the element internal force vector."""
-        elemdat.fint = self.getLocalInternalForce(
-            elemdat.coords,
-            elemdat.state,
-            True,
-        )
+        rot = self.getElementRotation(elemdat.coords)
+        transform = self.getElementTransformation(rot)
+        local_coords = self.getLocalCoordinates(elemdat.coords, rot)
+        local_state = self.toElementCoordinates(elemdat.state, transform)
+        local_fint = self.getLocalInternalForce(local_coords, local_state, True)
+
+        elemdat.fint = self.toGlobalCoordinates(local_fint, transform)
 
     def getMassMatrix(self, elemdat):
         """Assemble the consistent and lumped element mass matrices."""
-        s_data = self.getShapeData(elemdat.coords)
+        s_data = self.getShapeData()
 
         n_nel = elemdat.coords.shape[0]
         n_dof = len(self.dofTypes) * n_nel
@@ -133,9 +104,10 @@ class ReissnerMindlinShell(Element):
         mass = zeros(shape=(n_dof, n_dof))
 
         for shape_data in s_data:
+            weight = self.getShapeWeight(elemdat.coords, shape_data)
             for i_nod in range(n_nel):
                 for j_nod in range(n_nel):
-                    shp = shape_data.h[i_nod] * shape_data.h[j_nod] * shape_data.weight
+                    shp = shape_data.h[i_nod] * shape_data.h[j_nod] * weight
 
                     for k in range(3):
                         mass[6 * i_nod + k, 6 * j_nod + k] += self.inertia[0] * shp
@@ -148,19 +120,36 @@ class ReissnerMindlinShell(Element):
 
     def getLocalInternalForce(self, coords, state, storeOutput):
         """Return the local internal force vector for the given state."""
-        s_data = self.getShapeData(coords)
-        node_directors = self.getReferenceDirectors(coords)
-
         n_nel = coords.shape[0]
         fint = zeros(len(self.dofTypes) * n_nel)
 
-        for shape_data in s_data:
-            ref = self.getReferenceBasis(coords, node_directors, shape_data)
+        self.assembleElement(coords, state, fint, None, store_output=storeOutput)
+        self.addDrillingContribution(None, fint, coords, state)
 
-            for i_lay, (layer, zeta_data) in enumerate(self.iterateLayers()):
-                c_mat = self.getLayerMatrix(layer)
+        return fint
 
-                for zeta, weight in zeta_data:
+    def assembleElement(self, coords, state, fint, stiff, store_output=False):
+        """Assemble local element vectors and matrices following the Dawn formulation."""
+        s_data = self.getShapeData()
+        shear_point = self.getReducedShearPoint()
+        node_directors = self.getReferenceDirectors(coords)
+
+        n_dof = len(self.dofTypes) * coords.shape[0]
+
+        if stiff is not None:
+            stiff[:, :] = 0.0
+
+        fint[:] = 0.0
+
+        for i_lay, (layer, zeta_data) in enumerate(self.iterateLayers()):
+            c_mat = self.getLayerMatrix(layer)
+
+            for shape_data in s_data:
+                surf_weight = self.getShapeWeight(coords, shape_data)
+                ref = self.getReferenceBasis(coords, node_directors, shape_data)
+
+                for zeta, thick_weight in zeta_data:
+                    weight = surf_weight * thick_weight
                     cur = self.getCurrentBasis(
                         coords,
                         node_directors,
@@ -178,21 +167,63 @@ class ReissnerMindlinShell(Element):
                         zeta,
                     )
                     strain = self.getStrainFromBasis(cur)
-                    stress = c_mat @ strain
+                    stress = zeros(5)
 
-                    fint += op.B.transpose() @ stress * shape_data.weight * weight
+                    if self.reducedShearIntegration:
+                        stress[:3] = c_mat[:3, :3] @ strain[:3]
+                    else:
+                        stress[:] = c_mat @ strain
 
-                    if storeOutput and hasattr(self, "globdat"):
-                        self.storeLayerOutput(
-                            stress,
-                            i_lay,
-                            zeta,
-                            shape_data.weight * weight,
-                        )
+                    fint += op.B.transpose() @ stress * weight
 
-        self.addDrillingContribution(None, fint, coords, state)
+                    if stiff is not None:
+                        if self.reducedShearIntegration:
+                            stiff += (
+                                op.B[:3, :].transpose() @ (c_mat[:3, :3] @ op.B[:3, :])
+                                + self.getGeometricStiffness(op, stress, n_dof)
+                            ) * weight
+                        else:
+                            stiff += (
+                                op.B.transpose() @ (c_mat @ op.B)
+                                + self.getGeometricStiffness(op, stress, n_dof)
+                            ) * weight
 
-        return fint
+                    if store_output and hasattr(self, "globdat"):
+                        self.storeLayerOutput(stress, i_lay, zeta, weight)
+
+            if self.reducedShearIntegration:
+                shear_zeta = 0.5 * (layer.z0 + layer.z1)
+                shear_weight = self.getShapeWeight(coords, shear_point) * 0.5 * (
+                    layer.z1 - layer.z0
+                )
+                shear_ref = self.getReferenceBasis(coords, node_directors, shear_point)
+                shear_cur = self.getCurrentBasis(
+                    coords,
+                    node_directors,
+                    shear_ref,
+                    shear_point,
+                    state,
+                    shear_zeta,
+                )
+                shear_op = self.getKinematicOperators(
+                    shear_point,
+                    shear_ref,
+                    shear_cur,
+                    state,
+                    node_directors,
+                    shear_zeta,
+                )
+                shear_strain = self.getStrainFromBasis(shear_cur)
+                shear_stress = zeros(5)
+                shear_stress[3:] = c_mat[3:, 3:] @ shear_strain[3:]
+
+                fint += shear_op.B.transpose() @ shear_stress * shear_weight
+
+                if stiff is not None:
+                    stiff += (
+                        shear_op.B[3:, :].transpose() @ (c_mat[3:, 3:] @ shear_op.B[3:, :])
+                        + self.getGeometricStiffness(shear_op, shear_stress, n_dof)
+                    ) * shear_weight
 
     def getStrainVector(self, coords, nodeDirectors, ref, shapeData, state, zeta):
         """Compute the generalized strain vector at a thickness coordinate."""
@@ -360,6 +391,8 @@ class ReissnerMindlinShell(Element):
         for i_lay, layer in enumerate(self.material.layers):
             z0 = self.material.h[i_lay]
             z1 = self.material.h[i_lay + 1]
+            layer.z0 = z0
+            layer.z1 = z1
             zdat = []
 
             for xi, weight in zip(self.zetaSample, self.zetaWeight):
@@ -414,14 +447,28 @@ class ReissnerMindlinShell(Element):
 
         return jac
 
-    def getShapeData(self, coords):
-        """Return quadrature and shape-function data for the element."""
+    def getShapeData(self):
+        """Return parent-domain quadrature and shape-function data for Quad4 shells."""
+        return getShapeData(elemType="Quad4")
+
+    def getReducedShearPoint(self):
+        """Return the central integration point used for selective shear integration."""
+        shape_data = getShapeQuad4(array([0.0, 0.0]))
+        shape_data.weight = 4.0
+        return shape_data
+
+    def getShapeWeight(self, coords, shapeData):
+        """Return the weighted midsurface Jacobian at a parent-domain integration point."""
+        g1_vec = coords.transpose() @ shapeData.dhdxi[:, 0]
+        g2_vec = coords.transpose() @ shapeData.dhdxi[:, 1]
+        return norm(cross(g1_vec, g2_vec)) * shapeData.weight
+
+    def checkElementShape(self, coords):
+        """Validate the currently supported shell interpolation."""
         if coords.shape[0] != 4:
             raise NotImplementedError(
                 "ReissnerMindlinShell currently only supports Quad4 elements."
             )
-
-        return getElemShapeData(coords, elemType="Quad4")
 
     def getPerturbation(self, value):
         """Return a finite-difference perturbation scaled to the local magnitude."""
@@ -430,6 +477,7 @@ class ReissnerMindlinShell(Element):
 
     def getReferenceDirectors(self, coords):
         """Construct reference directors at the shell nodes."""
+        self.checkElementShape(coords)
         node_xi = [
             array([-1.0, -1.0]),
             array([1.0, -1.0]),
@@ -493,6 +541,51 @@ class ReissnerMindlinShell(Element):
         return 0.5 * norm(cross(coords[1] - coords[0], coords[3] - coords[0])) + 0.5 * norm(
             cross(coords[2] - coords[1], coords[3] - coords[1])
         )
+
+    def getElementRotation(self, coords):
+        """Build the local shell triad used by the Dawn implementation."""
+        self.checkElementShape(coords)
+        shear_point = self.getReducedShearPoint()
+        node_directors = self.getReferenceDirectors(coords)
+        ref = self.getReferenceBasis(coords, node_directors, shear_point)
+
+        rot = zeros(shape=(3, 3))
+        rot[0, :] = ref.e1
+        rot[1, :] = ref.e2
+        rot[2, :] = ref.e3
+
+        return rot
+
+    def getElementTransformation(self, rot):
+        """Return the block transformation from global to element coordinates."""
+        transform = zeros(shape=(24, 24))
+
+        for i_nod in range(4):
+            base = 6 * i_nod
+            transform[base : base + 3, base : base + 3] = rot
+            transform[base + 3 : base + 6, base + 3 : base + 6] = rot
+
+        return transform
+
+    def getLocalCoordinates(self, coords, rot):
+        """Transform nodal coordinates to the local shell frame."""
+        return coords @ rot.transpose()
+
+    def toElementCoordinates(self, data, transform):
+        """Transform a vector or matrix from global to local element coordinates."""
+        if len(data.shape) == 1:
+            return transform @ data
+        if len(data.shape) == 2:
+            return transform @ data @ transform.transpose()
+        raise NotImplementedError("Unsupported data rank for shell transformation.")
+
+    def toGlobalCoordinates(self, data, transform):
+        """Transform a vector or matrix from local to global element coordinates."""
+        if len(data.shape) == 1:
+            return transform.transpose() @ data
+        if len(data.shape) == 2:
+            return transform.transpose() @ data @ transform
+        raise NotImplementedError("Unsupported data rank for shell transformation.")
 
     def unit(self, a_vec):
         """Return a unit vector in the direction of the input vector."""
