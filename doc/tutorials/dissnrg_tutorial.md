@@ -16,6 +16,4 @@ These input files can be executed by typing:
 pyfem delam_buckling200.pro
 ```
 
-The result load displacement curve will look as follows:
-
-![Delamination Buckling Result](img/delam_buckling200.png)
+The result load–displacement curve shows snap-back behavior typical of delamination buckling. Run the example and inspect the solver output or plot files written to the working directory.

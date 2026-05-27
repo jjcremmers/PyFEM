@@ -221,10 +221,14 @@ Leverage existing utilities:
 
 ### Developer Documentation
 
-- [elements_dev.md](elements_dev.md)
-- [materials_dev.md](materials_dev.md)
-- [solvers_dev.md](solvers_dev.md)
-- [io_dev.md](io_dev.md)
+```{toctree}
+:maxdepth: 1
+
+elements_dev.md
+materials_dev.md
+solvers_dev.md
+io_dev.md
+```
 
 ## References
 

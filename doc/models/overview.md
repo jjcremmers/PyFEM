@@ -20,3 +20,12 @@ model_name = {
 };
 ```
 Multiple models can be active simultaneously, each handling different aspects of the analysis.
+
+## Available model pages
+
+```{toctree}
+:maxdepth: 1
+
+rve.md
+contact.md
+```

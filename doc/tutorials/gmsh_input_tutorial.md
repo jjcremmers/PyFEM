@@ -1,6 +1,6 @@
 # Tutorial: Using GMSH Input Files in PyFEM
 
-This tutorial explains how to use GMSH-generated meshes as input for PyFEM, based on the examples in the [examples/gmsh](../../examples/gmsh) directory. We will walk through the structure of the input files and how to set up a simulation using GMSH meshes.
+This tutorial explains how to use GMSH-generated meshes as input for PyFEM, based on the examples in the `examples/gmsh/` directory. We will walk through the structure of the input files and how to set up a simulation using GMSH meshes.
 
 ## 1. Overview of Files
 
@@ -15,7 +15,7 @@ A typical GMSH-based example in PyFEM consists of:
 
 Write a geometry file (e.g., [two_fibres.geo](../../examples/gmsh/two_fibres.geo)):
 
-```geo
+```text
 lc = 0.25;
 Point(1)  = { 0.0, 0.0, 0.0, lc };
 Point(2)  = { 10.0, 0.0, 0.0, lc };
@@ -80,8 +80,8 @@ paraview two_fibres.pvd
 
 - Always define physical groups in your `.geo` file for all regions where you want to apply boundary conditions or loads.
 - Use GMSH's GUI to inspect and assign physical groups interactively.
-- For advanced setups, see the `.pro` files (e.g., [twist.pro](../../examples/gmsh/twist.pro) or [two_fibres.pro](../../examples/gmsh/two_fibres.pro)) or the [PyFEM documentation](../../README.md).
+- For advanced setups, see the `.pro` files (e.g., [twist.pro](../../examples/gmsh/twist.pro) or [two_fibres.pro](../../examples/gmsh/two_fibres.pro)) or the [PyFEM documentation](../index.md).
 
 ---
 
-For more details, see the [examples/gmsh](../../examples/gmsh) directory and the PyFEM documentation.
+For more examples, see the `examples/gmsh/` directory in the repository.

@@ -12,13 +12,13 @@ and run your first simulation.
    cd PyFEM
    ```
 
-2. Install PyFEM and its dependencies:
+2. Install PyFEM and its dependencies with [uv](https://docs.astral.sh/uv/):
 
    ```bash
-   pip install .
+   uv sync
    ```
 
-   This installs the `pyfem` command-line tool and all required packages.
+   This installs the `pyfem` command-line tool and all required packages into `.venv`.
 
 ## Verifying the Installation
 

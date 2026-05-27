@@ -1,87 +1,82 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+"""Sphinx configuration for PyFEM."""
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+from importlib.metadata import PackageNotFoundError, version as package_version
 
-import os
-import sys
-sys.path.insert(0, os.path.abspath('../'))
+project = "PyFEM"
+copyright = "2026, Joris Remmers"
 
-# Auto-generate API documentation
-def run_apidoc(_):
-    from sphinx.ext.apidoc import main
-    import os
-    here = os.path.abspath(os.path.dirname(__file__))
-    module = os.path.join(here, "..", "pyfem")
-    output = os.path.join(here, "_build")
-    if not os.path.exists(output):
-        os.makedirs(output)
-    main(['-f', '-e', '-M', '-o', output, module])
+try:
+    release = package_version("pyfem")
+except PackageNotFoundError:
+    release = "dev"
+version = release
 
-def setup(app):
-    app.connect('builder-inited', run_apidoc)
+root_doc = "index"
 
-project = 'PyFEM'
-copyright = '2026, Joris Remmers'
-author = 'Joris Remmers'
-
-# Use index.md as master document (MyST)
-master_doc = 'index'
-
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
-extensions = [
-    'sphinx.ext.autodoc',    # Automatically include docstrings
-    'sphinx.ext.viewcode',   # Add links to source code
-    'sphinx.ext.napoleon',   # Support for NumPy/Google-style docstrings
-    'sphinx_rtd_theme',      # Use the Read the Docs theme
-    'sphinx.ext.mathjax',
-    'myst_parser',            # Support for Markdown files
-]
-
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
-autodoc_default_flags = ['members', 'undoc-members', 'private-members']
-add_module_names = False
-autodoc_member_order = 'bysource'
-
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
-
-html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
-html_logo = "_static/pyfem_logo_official180.png"
-html_favicon = "_static/pyfem.ico"
-html_css_files = ["custom.css"]
-html_theme_options = {
-    'collapse_navigation': False,
-    'navigation_depth': 3,
+source_suffix = {
+    ".md": "markdown",
+    ".rst": "restructuredtext",
 }
 
-# -- Options for LaTeX output ------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-latex-output
+extensions = [
+    "myst_parser",
+    "autoapi.extension",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinx_copybutton",
+]
+
+exclude_patterns = [
+    "_build",
+    "_api",
+    "README.md",
+    "img/README.md",
+    "Thumbs.db",
+    ".DS_Store",
+]
+
+autoapi_dirs = ["../pyfem"]
+autoapi_root = "api"
+autoapi_add_toctree_entry = True
+autoapi_keep_files = False
+autoapi_ignore = ["*/gui/*"]
+
+autodoc_mock_imports = ["PySide6", "vtk"]
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+}
+
+myst_heading_anchors = 3
+
+html_theme = "furo"
+html_static_path = ["_static"]
+html_favicon = "pyfem.ico"
+html_theme_options = {
+    "light_logo": "pyfem_logo_official180.png",
+    "dark_logo": "pyfem_logo_official180.png",
+    "source_repository": "https://github.com/jjcremmers/PyFEM",
+    "source_branch": "main",
+    "source_directory": "doc/",
+}
 
 latex_elements = {
-    'papersize': 'a4paper',
-    'pointsize': '11pt',
-    'preamble': r'''
+    "papersize": "a4paper",
+    "pointsize": "11pt",
+    "preamble": r"""
         \usepackage{bookmark}
         \setcounter{secnumdepth}{2}
         \setcounter{tocdepth}{3}
-    ''',
-    'figure_align': 'htbp',
+    """,
+    "figure_align": "htbp",
 }
+latex_toplevel_sectioning = "chapter"
 
 latex_documents = [
-    ('index', 'PyFEM.tex', 'PyFEM Documentation',
-     'Joris Remmers', 'manual'),
+    ("index", "PyFEM.tex", "PyFEM Documentation", "Joris Remmers", "manual"),
 ]
-
-# Ensure LaTeX handles chapters properly
-latex_toplevel_sectioning = 'chapter'

@@ -1,0 +1,77 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pyfem"
+version = "3.0.0"
+description = "A Python finite element code (educational)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "J.J.C. Remmers" }]
+keywords = ["finite-element", "computational-mechanics", "nonlinear-analysis"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+    "h5py",
+    "matplotlib",
+    "meshio",
+    "numpy",
+    "PySide6",
+    "scipy",
+    "vtk",
+]
+
+[project.urls]
+Changelog = "https://github.com/jjcremmers/PyFEM/releases"
+Documentation = "https://pyfem.readthedocs.io/"
+Homepage = "https://github.com/jjcremmers/PyFEM"
+Issues = "https://github.com/jjcremmers/PyFEM/issues"
+Repository = "https://github.com/jjcremmers/PyFEM"
+
+[project.scripts]
+pyfem = "pyfem.core.cli:main"
+pyfem-gui = "pyfem.gui.app:main"
+
+[project.optional-dependencies]
+docs = [
+    "furo>=2024.8.6",
+    "myst-parser>=4.0.0",
+    "sphinx>=9.0.0",
+    "sphinx-autoapi>=3.0.0",
+    "sphinx-copybutton>=0.5.0",
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7",
+    "pytest>=8",
+    "ruff>=0.9",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["pyfem"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.uv]
+default-groups = ["dev"]
