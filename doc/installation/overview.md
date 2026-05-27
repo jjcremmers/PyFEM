@@ -52,8 +52,9 @@ pyfem --help
 
 ```bash
 uv sync
-uv run pytest test/
-uv run coverage run -m pytest -q && uv run coverage report
+uv run pytest
+uv run coverage run -m pytest -q
+uv run coverage report
 uv run ruff check pyfem test
 uv run ruff format --check pyfem test
 uv build

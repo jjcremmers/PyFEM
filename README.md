@@ -69,6 +69,7 @@ For contributors, `uv sync` installs PyFEM in editable mode together with dev to
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
 uv sync
+uv run pytest
 uv run coverage run -m pytest -q
 uv run coverage report
 uv run ruff check pyfem test
@@ -115,7 +116,7 @@ Run a PyFEM analysis from the command line:
 cd examples/ch02
 
 # Run an example
-pyfem PatchTest.pro
+uv run pyfem PatchTest.pro
 ```
 
 View results in [ParaView](https://www.paraview.org/download/):
