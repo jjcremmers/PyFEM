@@ -1,0 +1,41 @@
+<Nodes>
+  0    0.0      0.0      0.0    ;
+  1   50.0      0.0      0.0    ;
+  2  100.0      0.0      0.0    ;
+  3  150.0      0.0      0.0    ;
+  4  200.0      0.0      0.0    ;
+  5    0.0     50.0      0.0    ;
+  6   50.0     50.0      0.0    ;
+  7  100.0     50.0      0.0    ;
+  8  150.0     50.0      0.0    ;
+  9  200.0     50.0      0.0    ; 
+</Nodes>
+
+<Elements>
+  1 "Shell"  0  1  6  5 ;
+  2 "Shell"  1  2  7  6 ;
+  3 "Shell"  2  3  8  7 ;
+  4 "Shell"  3  4  9  8 ;
+</Elements>
+
+<NodeGroup name = "root" >
+  0 5                                                                        
+</NodeGroup>
+
+<NodeGroup name = "tip" >
+  0 5                                                                        
+</NodeGroup>
+
+<NodeConstraints>
+  u[root]     = 0.0;
+  v[root]     = 0.0;
+  w[root]     = 0.0;
+  rx[root]    = 0.0;
+  ry[root]    = 0.0;
+  rz[root]    = 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+  w[4]  = -5.0;
+  w[9]  = -5.0;
+</ExternalForces>

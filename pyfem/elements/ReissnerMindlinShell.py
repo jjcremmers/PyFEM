@@ -14,10 +14,6 @@ from pyfem.util.utilFunctions import one_minus_cos_over_x2, sin_over_x
 from .Element import Element
 
 
-class PostProcessPoint:
-    """Container describing a through-thickness output location."""
-
-
 class CurrentBasisData:
     """Container for the current shell basis vectors."""
 
@@ -34,6 +30,18 @@ class ReissnerMindlinShell(Element):
     """Four-node Reissner-Mindlin shell element with layered laminate support."""
 
     dofTypes = ["u", "v", "w", "rx", "ry", "rz"]
+    outputLabels = [
+        "S11_top",
+        "S22_top",
+        "S12_top",
+        "S13_top",
+        "S23_top",
+        "S11_bot",
+        "S22_bot",
+        "S12_bot",
+        "S13_bot",
+        "S23_bot",
+    ]
 
     def __init__(self, elnodes, props):
         """Initialize the shell element and its laminate properties."""
@@ -59,8 +67,6 @@ class ReissnerMindlinShell(Element):
 
         self.inertia = self.material.getMassInertia()
 
-        self.initPostProcessing()
-
     def getTangentStiffness(self, elemdat):
         """Assemble the element internal force vector and tangent stiffness."""
         rot = self.getElementRotation(elemdat.coords)
@@ -76,13 +82,14 @@ class ReissnerMindlinShell(Element):
             local_state,
             local_fint,
             local_stiff,
-            store_output=hasattr(self, "globdat"),
         )
         self.addDrillingContribution(local_stiff, local_fint, local_coords, local_state)
+        if hasattr(self, "globdat"):
+            self.appendShellOutput(local_coords, local_state)
 
         elemdat.fint[:] = self.toGlobalCoordinates(local_fint, transform)
         elemdat.stiff[:, :] = self.toGlobalCoordinates(local_stiff, transform)
-        elemdat.stiff[:, :] = 0.5 * (elemdat.stiff + elemdat.stiff.transpose())
+        elemdat.stiff[:, :] = 0.5 * (elemdat.stiff + elemdat.stiff.T)
 
     def getInternalForce(self, elemdat):
         """Compute the element internal force vector."""
@@ -90,7 +97,9 @@ class ReissnerMindlinShell(Element):
         transform = self.getElementTransformation(rot)
         local_coords = self.getLocalCoordinates(elemdat.coords, rot)
         local_state = self.toElementCoordinates(elemdat.state, transform)
-        local_fint = self.getLocalInternalForce(local_coords, local_state, True)
+        local_fint = self.getLocalInternalForce(local_coords, local_state)
+        if hasattr(self, "globdat"):
+            self.appendShellOutput(local_coords, local_state)
 
         elemdat.fint = self.toGlobalCoordinates(local_fint, transform)
 
@@ -118,17 +127,17 @@ class ReissnerMindlinShell(Element):
         elemdat.mass = mass
         elemdat.lumped = sum(mass)
 
-    def getLocalInternalForce(self, coords, state, storeOutput):
+    def getLocalInternalForce(self, coords, state):
         """Return the local internal force vector for the given state."""
         n_nel = coords.shape[0]
         fint = zeros(len(self.dofTypes) * n_nel)
 
-        self.assembleElement(coords, state, fint, None, store_output=storeOutput)
+        self.assembleElement(coords, state, fint, None)
         self.addDrillingContribution(None, fint, coords, state)
 
         return fint
 
-    def assembleElement(self, coords, state, fint, stiff, store_output=False):
+    def assembleElement(self, coords, state, fint, stiff):
         """Assemble local element vectors and matrices following the Dawn formulation."""
         s_data = self.getShapeData()
         shear_point = self.getReducedShearPoint()
@@ -174,22 +183,19 @@ class ReissnerMindlinShell(Element):
                     else:
                         stress[:] = c_mat @ strain
 
-                    fint += op.B.transpose() @ stress * weight
+                    fint += op.B.T @ stress * weight
 
                     if stiff is not None:
                         if self.reducedShearIntegration:
                             stiff += (
-                                op.B[:3, :].transpose() @ (c_mat[:3, :3] @ op.B[:3, :])
+                                op.B[:3, :].T @ (c_mat[:3, :3] @ op.B[:3, :])
                                 + self.getGeometricStiffness(op, stress, n_dof)
                             ) * weight
                         else:
                             stiff += (
-                                op.B.transpose() @ (c_mat @ op.B)
+                                op.B.T @ (c_mat @ op.B)
                                 + self.getGeometricStiffness(op, stress, n_dof)
                             ) * weight
-
-                    if store_output and hasattr(self, "globdat"):
-                        self.storeLayerOutput(stress, i_lay, zeta, weight)
 
             if self.reducedShearIntegration:
                 shear_zeta = 0.5 * (layer.z0 + layer.z1)
@@ -217,11 +223,11 @@ class ReissnerMindlinShell(Element):
                 shear_stress = zeros(5)
                 shear_stress[3:] = c_mat[3:, 3:] @ shear_strain[3:]
 
-                fint += shear_op.B.transpose() @ shear_stress * shear_weight
+                fint += shear_op.B.T @ shear_stress * shear_weight
 
                 if stiff is not None:
                     stiff += (
-                        shear_op.B[3:, :].transpose() @ (c_mat[3:, 3:] @ shear_op.B[3:, :])
+                        shear_op.B[3:, :].T @ (c_mat[3:, 3:] @ shear_op.B[3:, :])
                         + self.getGeometricStiffness(shear_op, shear_stress, n_dof)
                     ) * shear_weight
 
@@ -351,19 +357,19 @@ class ReissnerMindlinShell(Element):
             for j_nod in range(len(op.A1)):
                 j_base = 6 * j_nod
 
-                block = stress[0] * (op.A1[i_nod].transpose() @ op.A1[j_nod])
-                block += stress[1] * (op.A2[i_nod].transpose() @ op.A2[j_nod])
+                block = stress[0] * (op.A1[i_nod].T @ op.A1[j_nod])
+                block += stress[1] * (op.A2[i_nod].T @ op.A2[j_nod])
                 block += stress[2] * (
-                    (op.A1[i_nod].transpose() @ op.A2[j_nod])
-                    + (op.A2[i_nod].transpose() @ op.A1[j_nod])
+                    (op.A1[i_nod].T @ op.A2[j_nod])
+                    + (op.A2[i_nod].T @ op.A1[j_nod])
                 )
                 block += stress[3] * (
-                    (op.A1[i_nod].transpose() @ op.D[j_nod])
-                    + (op.D[i_nod].transpose() @ op.A1[j_nod])
+                    (op.A1[i_nod].T @ op.D[j_nod])
+                    + (op.D[i_nod].T @ op.A1[j_nod])
                 )
                 block += stress[4] * (
-                    (op.A2[i_nod].transpose() @ op.D[j_nod])
-                    + (op.D[i_nod].transpose() @ op.A2[j_nod])
+                    (op.A2[i_nod].T @ op.D[j_nod])
+                    + (op.D[i_nod].T @ op.A2[j_nod])
                 )
 
                 stiff[i_base : i_base + 6, j_base : j_base + 6] += block
@@ -383,8 +389,13 @@ class ReissnerMindlinShell(Element):
 
     def getMembraneStiffnessScale(self):
         """Return a scalar measure of the membrane stiffness level."""
-        amat = self.material.getA()
-        return abs(amat[0, 0]) + abs(amat[1, 1]) + 2.0 * abs(amat[2, 2])
+        scale = 0.0
+        for layer in self.material.layers:
+            c_mat = self.getLayerMatrix(layer)
+            scale += layer.thick * (
+                abs(c_mat[0, 0]) + abs(c_mat[1, 1]) + 2.0 * abs(c_mat[2, 2])
+            )
+        return max(1.0, scale)
 
     def iterateLayers(self):
         """Yield layer data together with through-thickness integration points."""
@@ -459,8 +470,8 @@ class ReissnerMindlinShell(Element):
 
     def getShapeWeight(self, coords, shapeData):
         """Return the weighted midsurface Jacobian at a parent-domain integration point."""
-        g1_vec = coords.transpose() @ shapeData.dhdxi[:, 0]
-        g2_vec = coords.transpose() @ shapeData.dhdxi[:, 1]
+        g1_vec = coords.T @ shapeData.dhdxi[:, 0]
+        g2_vec = coords.T @ shapeData.dhdxi[:, 1]
         return norm(cross(g1_vec, g2_vec)) * shapeData.weight
 
     def checkElementShape(self, coords):
@@ -489,8 +500,8 @@ class ReissnerMindlinShell(Element):
 
         for i_nod, xi_vec in enumerate(node_xi):
             sdat = getShapeQuad4(xi_vec)
-            g1_vec = coords.transpose() @ sdat.dhdxi[:, 0]
-            g2_vec = coords.transpose() @ sdat.dhdxi[:, 1]
+            g1_vec = coords.T @ sdat.dhdxi[:, 0]
+            g2_vec = coords.T @ sdat.dhdxi[:, 1]
             dirs[i_nod, :] = self.unit(cross(g1_vec, g2_vec))
 
         return dirs
@@ -499,8 +510,8 @@ class ReissnerMindlinShell(Element):
         """Construct the reference basis and local in-plane mapping tensors."""
         ref = ReferenceBasisData()
 
-        g1_vec = coords.transpose() @ shapeData.dhdxi[:, 0]
-        g2_vec = coords.transpose() @ shapeData.dhdxi[:, 1]
+        g1_vec = coords.T @ shapeData.dhdxi[:, 0]
+        g2_vec = coords.T @ shapeData.dhdxi[:, 1]
 
         g_cov = zeros(shape=(2, 2))
         g_cov[0, 0] = g1_vec @ g1_vec
@@ -521,7 +532,7 @@ class ReissnerMindlinShell(Element):
         g_sup1 = g_inv[0, 0] * g1_vec + g_inv[0, 1] * g2_vec
         g_sup2 = g_inv[1, 0] * g1_vec + g_inv[1, 1] * g2_vec
 
-        ref.e3 = self.unit(nodeDirectors.transpose() @ shapeData.h)
+        ref.e3 = self.unit(nodeDirectors.T @ shapeData.h)
 
         tmp = g1_vec - (g1_vec @ ref.e3) * ref.e3
         if norm(tmp) < 1.0e-14:
@@ -569,22 +580,22 @@ class ReissnerMindlinShell(Element):
 
     def getLocalCoordinates(self, coords, rot):
         """Transform nodal coordinates to the local shell frame."""
-        return coords @ rot.transpose()
+        return coords @ rot.T
 
     def toElementCoordinates(self, data, transform):
         """Transform a vector or matrix from global to local element coordinates."""
         if len(data.shape) == 1:
             return transform @ data
         if len(data.shape) == 2:
-            return transform @ data @ transform.transpose()
+            return transform @ data @ transform.T
         raise NotImplementedError("Unsupported data rank for shell transformation.")
 
     def toGlobalCoordinates(self, data, transform):
         """Transform a vector or matrix from local to global element coordinates."""
         if len(data.shape) == 1:
-            return transform.transpose() @ data
+            return transform.T @ data
         if len(data.shape) == 2:
-            return transform.transpose() @ data @ transform
+            return transform.T @ data @ transform
         raise NotImplementedError("Unsupported data rank for shell transformation.")
 
     def unit(self, a_vec):
@@ -595,33 +606,48 @@ class ReissnerMindlinShell(Element):
 
         return a_vec / a_len
 
-    def storeLayerOutput(self, stress, iLay, zeta, weight):
-        """Store selected through-thickness stress outputs for post-processing."""
-        for post_process_point in self.postProcess:
-            if abs(zeta - post_process_point.z) < 0.51 * self.material.layers[iLay].thick:
-                self.appendNodalOutput(post_process_point.labels, stress[:3], weight)
+    def getStress(self, coords, state, shapeData, zeta):
+        """Evaluate the shell stress vector at an exact through-thickness location."""
+        node_directors = self.getReferenceDirectors(coords)
+        ref = self.getReferenceBasis(coords, node_directors, shapeData)
+        cur = self.getCurrentBasis(coords, node_directors, ref, shapeData, state, zeta)
+        strain = self.getStrainFromBasis(cur)
+        stress = zeros(5)
 
-        self.appendNodalOutput(["q13", "q23"], stress[3:], weight)
+        if len(self.material.layers) == 0:
+            return stress
 
-    def initPostProcessing(self):
-        """Initialize through-thickness post-processing output locations."""
-        layer_count = self.material.layerCount()
+        i_lay = 0
+        while i_lay < len(self.material.layers):
+            if zeta <= self.material.layers[i_lay].z1 + 1.0e-12:
+                break
+            i_lay += 1
 
-        self.postProcess = []
+        if i_lay >= len(self.material.layers):
+            i_lay = len(self.material.layers) - 1
 
-        point = PostProcessPoint()
-        point.z = -0.5 * self.material.thick
-        point.labels = ["s11bot", "s22bot", "s12bot"]
-        self.postProcess.append(point)
+        c_mat = self.getLayerMatrix(self.material.layers[i_lay])
+        stress[:] = c_mat @ strain
+        return stress
 
-        if layer_count > 1:
-            i_mid = int(0.5 * layer_count)
-            point = PostProcessPoint()
-            point.z = 0.5 * (self.material.h[i_mid] + self.material.h[i_mid + 1])
-            point.labels = ["s11mid", "s22mid", "s12mid"]
-            self.postProcess.append(point)
+    def appendShellOutput(self, coords, state):
+        """Store Dawn-style top and bottom surface stresses at the shell nodes."""
+        sample_points = (
+            getShapeQuad4(array([-1.0, -1.0])),
+            getShapeQuad4(array([1.0, -1.0])),
+            getShapeQuad4(array([1.0, 1.0])),
+            getShapeQuad4(array([-1.0, 1.0])),
+        )
 
-        point = PostProcessPoint()
-        point.z = 0.5 * self.material.thick
-        point.labels = ["s11top", "s22top", "s12top"]
-        self.postProcess.append(point)
+        z_top = 0.5 * self.material.thick
+        z_bot = -0.5 * self.material.thick
+        data = zeros((4, 10))
+
+        for i_sam, shape_data in enumerate(sample_points):
+            top_stress = self.getStress(coords, state, shape_data, z_top)
+            bot_stress = self.getStress(coords, state, shape_data, z_bot)
+
+            data[i_sam, 0:5] = top_stress
+            data[i_sam, 5:10] = bot_stress
+
+        self.appendNodalOutput(self.outputLabels, data)
