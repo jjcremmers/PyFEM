@@ -82,9 +82,9 @@ graph =
 {
   type = "GraphWriter";
 
-  onScreen = True;
+  onScreen = False;
 
-  columns = ["disp","load"];
+  columns = ["disp","load","stress","lam","cycle","iiter"];
 
   disp =
   {
@@ -99,4 +99,10 @@ graph =
     node = 246;
     dof  = "v";
   };
+
+  stress =
+  {
+    type = "S22";
+    node = 159;
+  }
 };

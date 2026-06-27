@@ -1,0 +1,24 @@
+<Nodes>
+  0 0.0 0.0 0.0 ;
+  1 0.0 0.0 1.0 ;
+  2 0.0 0.0 2.0 ;
+</Nodes>
+
+<Elements>
+  1 "BeamElem" 0 1 ;
+  2 "BeamElem" 1 2 ;
+</Elements>
+
+<NodeConstraints>
+  u[0]  = 0.0;
+  v[0]  = 0.0;
+  w[0]  = 0.0;
+  rx[0] = 0.0;
+  ry[0] = 0.0;
+  rz[0] = 0.0;
+
+  w[2] = -0.02;
+</NodeConstraints>
+
+<ExternalForces>
+</ExternalForces>

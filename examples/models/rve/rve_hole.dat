@@ -1,0 +1,45 @@
+<Nodes>
+  0 0.00  0.00 ;   
+  1 0.20  0.00 ;
+  2 0.40  0.00 ; 
+  3 0.60  0.00 ;
+ 10 0.00  0.20 ;   
+ 11 0.30  0.30 ;
+ 12 0.45  0.30 ; 
+ 13 0.60  0.20 ;
+ 20 0.00  0.40 ;   
+ 21 0.30  0.45 ;
+ 22 0.45  0.45 ; 
+ 23 0.60  0.40 ;
+ 30 0.00  0.60 ;   
+ 31 0.20  0.60 ;
+ 32 0.40  0.60 ; 
+ 33 0.60  0.60 ;      
+</Nodes>
+
+<Elements>
+  1 "ContElem"   0  1 11 10;
+  2 "ContElem"   1  2 12 11;
+  3 "ContElem"   2  3 13 12;
+  4 "ContElem"  10 11 21 20;
+  6 "ContElem"  12 13 23 22;
+  7 "ContElem"  20 21 31 30;
+  8 "ContElem"  21 22 32 31;
+  9 "ContElem"  22 23 33 32;
+</Elements>
+
+<NodeGroup name="Left">
+ { 0 10 20 30 }
+</NodeGroup>
+
+<NodeGroup name="Right">
+ { 3 13 23 33 }
+</NodeGroup>
+
+<NodeGroup name="Top">
+ { 30 31 32 33 }
+</NodeGroup>
+
+<NodeGroup name="Bottom">
+ { 0 1 2 3 }
+</NodeGroup>

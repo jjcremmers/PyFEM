@@ -62,12 +62,10 @@ solver =
   maxCycle   = 20;
 };
 
-outputModules = [ "MeshWriter" , "OutputWriter" , "GraphWriter" ];
+outputModules = [ "GraphWriter" ];
 
 GraphWriter = 
 {
-  onScreen = true;
-
   columns = [ "disp" , "load" ];
 
   disp = 

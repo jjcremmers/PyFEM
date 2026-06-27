@@ -1,34 +1,8 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from pyfem.util.dataStructures import Properties
+from pathlib import Path
 import re
 
 def containsValue( db , val ):
@@ -198,23 +172,26 @@ def readBlock( ln , db ):
 #
 #-------------------------------------------------------------------------------
 
-def fileParser( fileName ):
+def fileParser(fileName):
+  
+  filePath = Path(fileName)
+
+  if not filePath.is_file():
+    raise FileNotFoundError(f"Input file not found: {fileName}")
 
   db = Properties()
 
-  f = open(fileName)
-  
-  f2 = ''
- 
-  for line in f:
-    if not line.startswith('#'):
-      f2 = f2+line
-    
-  ln = open(fileName).read().replace('\n','').replace('\t','').replace(' ','').replace('\r','')
-  ln = f2.replace('\n','').replace('\t','').replace(' ','').replace('\r','')
+  with filePath.open("r", encoding="utf-8") as f:
+    # Keep lines that are not comments
+    lines = [
+      line for line in f
+      if not line.lstrip().startswith("#")
+    ]
 
-  readBlock( ln , db )
+  # Remove whitespace characters
+  ln = "".join(lines).translate(str.maketrans("", "", " \t\r\n"))
 
+  readBlock(ln, db)
   return db
 
 #-------------------------------------------------------------------------------
@@ -226,6 +203,8 @@ def deepFileParser( fileName , db ):
   ln = open(fileName).read().replace('\n','').replace('\t','').replace(' ','').replace('\r','')
 
   readBlock( ln , db )
+  
+  ln.close()
 
   return db
 
@@ -314,6 +293,8 @@ def readNodeTable( fileName , label , nodes = None ):
                   for nodeID in nodeIDs:
                     dt = [ dofType,int(nodeID),rhs,slaveDofType,slaveNodeID,factor ]
                     nt.data.append(dt)
+  
+  fin.close()
                                                     
   return output
 

@@ -1,40 +1,17 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
+from pyfem.util import logger
 from pyfem.util.BaseModule import BaseModule
 
-from numpy import zeros, array
+import numpy as np
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness, commit
 from pyfem.fem.Assembly import assembleExternalForce
-from pyfem.util.logger import getLogger
+from pyfem.util.logger import getLogger,separator
 import sys
+
+logger = getLogger()
+
 
 #------------------------------------------------------------------------------
 #
@@ -55,7 +32,7 @@ class StaggeredSolver ( BaseModule ):
     
     BaseModule.__init__( self , props )
 
-    self.fext  = zeros( len(globdat.dofs) )  
+    self.fext  = np.zeros( len(globdat.dofs) )  
     
     self.solvers = []
         
@@ -99,7 +76,7 @@ class StaggeredSolver ( BaseModule ):
       
       globdat.state += da  
       
-      logger.info('    Solver           : %s' %solver.name )
+      logger.info(f'    Solver.................... : {solver.name}')
           
       if solver.type == "Nonlinear":
       
@@ -108,7 +85,7 @@ class StaggeredSolver ( BaseModule ):
         else:
           norm = globdat.dofs.norm( fext - fint, solver.cons )
         
-        logger.info('    Newton-Raphson   : L2-norm residual')
+        logger.info('      Newton-Raphson........... : L2-norm residual')
       
         while error > self.tol:
         
@@ -129,7 +106,7 @@ class StaggeredSolver ( BaseModule ):
           else:
             error = globdat.dofs.norm( fext-fint ) / norm
             
-          logger.info('    Iteration %4i   : %6.4e'%(stat.iiter,error) )            
+          logger.info(f'      Iteration {stat.iiter:4d} ........... : {error:6.4e}')
       
           if stat.iiter == self.iterMax:
             raise RuntimeError('Newton-Raphson iterations did not converge!')
@@ -145,14 +122,16 @@ class StaggeredSolver ( BaseModule ):
     if stat.cycle == self.maxCycle: # or globdat.lam > self.maxLam:
       globdat.active = False 
 
+    separator()
+    self.writeFooter( globdat )      
+      
+
 #---------------------------------------------------------------------------
 #
 #  -------------------------------------------------------------------------
 
 
   def setLoadAndConstraints( self , cons ):
-
-    #logger.info("    Load step %i"%self.stat.cycle)
  
     time  = self.stat.time
     time0 = time - self.stat.dtime
@@ -164,10 +143,6 @@ class StaggeredSolver ( BaseModule ):
     
     cons.setConstrainFactor( dlam )
 
-    #logger.info('  ---- main load --------------------\n-----')
-    #logger.info('    loadFactor       : %4.2f'%lam)
-    #logger.info('    incr. loadFactor : %4.2f'%dlam)
-
     for loadCase in self.loadCases:
       loadProps = getattr( self.myProps, loadCase )
       
@@ -176,7 +151,3 @@ class StaggeredSolver ( BaseModule ):
       lam0 = loadfunc( time0 )
       dlam = lam - lam0
       cons.setConstrainFactor( dlam , loadProps.nodeTable )
-
-      #print('  ---- ',loadCase,' ---------------------')
-      #print('    loadFactor       : %4.2f'%lam)
-      #logger.info('    incr. loadFactor : %4.2f'%dlam)   

@@ -41,13 +41,13 @@ SLSElem =
     type = "Isotropic";
     E    = 1.e6;
     nu   = 0.0;
-    rho  = 1.0e3;
+    rho  = 1.11e3;
   };
 };
 
 solver =
 {
-  type = "LinearSolver";
+  type = "NonlinearSolver";
 };
 
 outputModules = ["vtk","output"];

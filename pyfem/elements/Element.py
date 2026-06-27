@@ -1,36 +1,13 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from numpy import outer, ones, zeros
 from pyfem.materials.MaterialManager import MaterialManager
 
+class elementData:
+  
+  outputNames = []
+  
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------
@@ -108,6 +85,31 @@ class Element ( list ):
           outMat[ idx ]     += data[j,i]
           outWeights[ idx ] += weight
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
+
+  def appendElementOutput( self , labels , data , weight = 1.0 ):
+      
+    if not hasattr( self.globdat , "elementData" ):
+      setattr( self.globdat, "elementData" , elementData() )
+      
+    elemData = getattr( self.globdat , "elementData" )
+    
+    for i,name in enumerate(labels):
+      if not hasattr( elemData , name ):
+        elemData.outputNames.append( name )
+
+        setattr( elemData, name             , zeros( len(self.globdat.elements) ) )
+        setattr( elemData, name + 'Weights' , zeros( len(self.globdat.elements) ) )
+
+      outMat     = getattr( elemData , name )
+      outWeights = getattr( elemData , name + 'Weights' )
+
+      if data.ndim == 1:
+        outMat[ self.iElm ]     += data[i]
+        outWeights[ self.iElm ] += weight
+                   
 #------------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------------

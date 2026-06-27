@@ -1,0 +1,20 @@
+# Sphinx documentation requirements for Read the Docs
+
+# Core Sphinx
+sphinx>=5.0.0,<8.0.0
+
+# Theme
+sphinx-rtd-theme>=1.2.0
+
+# Extensions
+sphinx-autoapi>=2.0.0
+
+# Math rendering
+docutils>=0.18
+
+# Python dependencies needed for autodoc
+numpy>=1.20.0
+scipy>=1.7.0
+matplotlib>=3.3.0
+h5py>=3.0.0
+meshio>=5.0.0

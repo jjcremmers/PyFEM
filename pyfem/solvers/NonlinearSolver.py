@@ -1,38 +1,11 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from pyfem.util.BaseModule import BaseModule
 
 from numpy import zeros, array
 from pyfem.fem.Assembly import assembleInternalForce, assembleTangentStiffness
-from pyfem.fem.Assembly import assembleExternalForce
+from pyfem.fem.Assembly import assembleExternalForce, prepare, commit
 from math import sin,cos,exp
 
 import sys
@@ -94,6 +67,8 @@ class NonlinearSolver( BaseModule ):
     fint  = zeros( dofCount ) 
         
     self.setLoadAndConstraints( globdat )
+
+    prepare( props , globdat )
     
     K,fint = assembleTangentStiffness( props, globdat )
 
@@ -129,7 +104,7 @@ class NonlinearSolver( BaseModule ):
       else:
         error = globdat.dofs.norm( fext-fint ) / norm
 
-      logger.info('    Iteration %4i ........... : %6.4e'%(stat.iiter,error) )
+      logger.info(f'    Iteration {stat.iiter:4d} ........... : {error:6.4e}')
 
       globdat.dofs.setConstrainFactor( 0.0 )
 
@@ -144,7 +119,10 @@ class NonlinearSolver( BaseModule ):
 
     Da[:]  = zeros( len(globdat.dofs) )
 
+    globdat.K = K
     globdat.fint = fint
+
+    commit ( props , globdat )
     
     if stat.cycle == self.maxCycle or globdat.lam > self.maxLam:
       globdat.active = False 
@@ -176,8 +154,8 @@ class NonlinearSolver( BaseModule ):
       globdat.solverStatus.lam = globdat.lam
 
       logger.debug('  ---- main load -------------------------')
-      logger.debug('    loadFactor       : %4.2f'%globdat.lam)
-      logger.debug('    incr. loadFactor : %4.2f'%globdat.dlam)
+      logger.debug(f'    loadFactor       : {globdat.lam:4.2f}')
+      logger.debug(f'    incr. loadFactor : {globdat.dlam:4.2f}')
 
       for loadCase in self.loadCases:
         loadProps = getattr( self.myProps, loadCase )
@@ -186,9 +164,10 @@ class NonlinearSolver( BaseModule ):
         lam0 = loadfunc( globdat.solverStatus.time - globdat.solverStatus.dtime )
         dlam = lam - lam0
         globdat.dofs.setConstrainFactor( dlam , loadProps.nodeTable )
-        
-        logger.debug('  ---- %s ---------------------' %loadCase)
-        logger.debug('    loadFactor       : %4.2f'%lam)
-        logger.debug('    incr. loadFactor : %4.2f'%dlam)
+           
+        logger.debug(f'  ---- {loadCase} ---------------------')
+        logger.debug(f'    loadFactor       : {lam:4.2f}')
+        logger.debug(f'    incr. loadFactor : {dlam:4.2f}')
+
 
       

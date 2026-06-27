@@ -18,7 +18,7 @@ solver =
   eigenCount = 5;
 };
 
-outputModules = ["vtk"];
+outputModules = ["vtk","h5"];
 
 vtk =
 {
@@ -27,9 +27,7 @@ vtk =
   interval = 1;
 };
 
-output =
+h5     =
 {
-  type = "OutputWriter";
-
-  onScreen = true;
+  type = "HDF5Writer";
 };

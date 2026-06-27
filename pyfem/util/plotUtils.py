@@ -1,66 +1,56 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
+
+import numpy as np
+from typing import Sequence, Tuple
 
 
-#-------------------------------------------------------------------------------
-#
-#-------------------------------------------------------------------------------
+def plotCurve(output: Sequence[Tuple[float, float]]) -> None:
+    """Plot a 2D curve using pylab.
+
+    The function accepts any sequence of (x, y) pairs and plots them
+    with red circle markers connected by lines. Import of plotting
+    functions is local to the function to avoid enforcing a global
+    dependency on matplotlib when the module is imported.
+
+    Args:
+        output: Sequence of (x, y) coordinate pairs to plot.
+
+    Returns:
+        None
+    """
+
+    from pylab import plot, show, xlabel, ylabel
+
+    plot([x[0] for x in output], [x[1] for x in output], "r-o")
+    show()
 
 
-def plotCurve( output ):
+def plotTime(t: float) -> str:
+    """Format a time duration into a human-readable string.
 
-  from pylab import plot, show, xlabel, ylabel
+    Small durations are shown in scientific or fixed-point seconds,
+    larger durations use minutes and hours as appropriate.
 
-  plot( [x[0] for x in output], [x[1] for x in output], 'r-o' )
+    Args:
+        t: Time duration in seconds.
 
-  show()
-  
-  
-#-
-#
-#----------------
-
-
-def plotTime( t ):
+    Returns:
+        A formatted string representing the elapsed time.
+    """
 
     if t < 0.1:
         return f"{t:.1e} sec."
-    elif t < 60.0:
+    if t < 60.0:
         return f"{t:.3f} sec."
-    elif t < 3600.0:
-        minutes = int(t // 60 )
+    if t < 3600.0:
+        minutes = int(t // 60)
         seconds = t % 60
         return f"{minutes} min. {seconds:.2f} sec."
-    else:
-        hours   = int(t // 3600 )
-        minutes = int((t % 3600 ) // 60 )
-        seconds = t % 60
-        return f"{hours} hrs. {minutes} min. {seconds:.2f} sec."    
+
+    hours = int(t // 3600)
+    minutes = int((t % 3600) // 60)
+    seconds = t % 60
+    return f"{hours} hrs. {minutes} min. {seconds:.2f} sec."
+
 

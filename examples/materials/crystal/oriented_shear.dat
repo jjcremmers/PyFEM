@@ -1,0 +1,43 @@
+<Nodes>
+  1   0.0  0.0 ;
+  2   2.5  0.0 ;
+  3   5.0  0.0 ;
+  4   0.0  2.5 ;
+  5   2.5  2.5 ;
+  6   5.0  2.5 ;
+  7   0.0  5.0 ;
+  8   2.5  5.0 ;
+  9   5.0  5.0 ;
+  10  7.5  0.0 ;
+  11  7.5  2.5 ;
+  12  7.5  5.0 ;
+</Nodes>
+
+<Elements>
+  1 'ContElem' 1 2 5 4 ;
+  2 'ContElem' 2 3 6 5 ;
+  3 'ContElem' 4 5 8 7 ;
+  4 'ContElem' 5 6 9 8 ;
+  5 'ContElem' 3 10 11 6 ;
+  6 'ContElem' 6 11 12 9 ;
+</Elements>
+
+<NodeConstraints>
+  u[1] = 0.0;
+  v[1] = 0.0;
+  u[4] = 0.0;
+  u[7] = 0.0;
+</NodeConstraints>
+
+<ExternalForces>
+  # Apply shear by constraining bottom and pushing top horizontally
+  v[1] = 0.0;
+  v[2] = 0.0;
+  v[3] = 0.0;
+  v[10] = 0.0;
+  
+  u[7] = 0.0 20.0;
+  u[8] = 0.0 20.0;
+  u[9] = 0.0 20.0;
+  u[12] = 0.0 20.0;
+</ExternalForces>

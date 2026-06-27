@@ -1,32 +1,5 @@
-################################################################################
-#  This Python file is part of PyFEM, the code that accompanies the book:      #
-#                                                                              #
-#    'Non-Linear Finite Element Analysis of Solids and Structures'             #
-#    R. de Borst, M.A. Crisfield, J.J.C. Remmers and C.V. Verhoosel            #
-#    John Wiley and Sons, 2012, ISBN 978-0470666449                            #
-#                                                                              #
-#  Copyright (C) 2011-2024. The code is written in 2011-2012 by                #
-#  Joris J.C. Remmers, Clemens V. Verhoosel and Rene de Borst and since        #
-#  then augmented and maintained by Joris J.C. Remmers.                        #
-#  All rights reserved.                                                        #
-#                                                                              #
-#  A github repository, with the most up to date version of the code,          #
-#  can be found here:                                                          #
-#     https://github.com/jjcremmers/PyFEM/                                     #
-#     https://pyfem.readthedocs.io/                                            #	
-#                                                                              #
-#  The original code can be downloaded from the web-site:                      #
-#     http://www.wiley.com/go/deborst                                          #
-#                                                                              #
-#  The code is open source and intended for educational and scientific         #
-#  purposes only. If you use PyFEM in your research, the developers would      #
-#  be grateful if you could cite the book.                                     #    
-#                                                                              #
-#  Disclaimer:                                                                 #
-#  The authors reserve all rights but do not guarantee that the code is        #
-#  free from errors. Furthermore, the authors shall not be liable in any       #
-#  event caused by the use of the program.                                     #
-################################################################################
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from .Element import Element
 from pyfem.util.kinematics              import Kinematics
@@ -34,6 +7,7 @@ from pyfem.elements.SLSgeomdata         import SLSgeomdata
 from pyfem.elements.SLSkinematic        import SLSkinematic
 from pyfem.elements.SLSutils            import LayerData,SLSparameters,StressContainer
 from pyfem.elements.CondensationManager import CondensationManager
+from pyfem.util.shapeFunctions  import getElemShapeData
 
 from numpy import zeros, dot, outer, ones
  
@@ -58,9 +32,6 @@ class SLS( Element ):
 
     self.condman    = CondensationManager( self.param.condDOF , self.param.totDOF )
     self.kin        = Kinematics(3,6)
-        
-  def __type__ ( self ):
-    return name
     
 #------------------------------------------------------------------------------
 #
@@ -120,3 +91,36 @@ class SLS( Element ):
   def commit ( self, elemdat ):
 
     self.condman.commit()
+    
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+    
+  def getMassMatrix ( self, elemdat ):
+
+    elemGeomData = SLSgeomdata( elemdat , self.layers )
+             
+    for sdat in elemGeomData:
+      for ldat in sdat.layerData:              
+        rho = ldat.rho
+        for zdat in ldat.zetaData:
+        
+          H = self.kinematic.getHmat( sdat , zdat.zeta )            
+          elemdat.mass += dot ( H.T, H ) * rho * zdat.weight
+     
+    elemdat.lumped = sum(elemdat.mass)
+   
+#-------------------------------------------------------------------------------
+#
+#-------------------------------------------------------------------------------
+
+  def getNmatrix( self , h ):
+
+    N = zeros( shape=( self.rank , self.rank*len(h) ) )
+
+    for i,a in enumerate( h ):
+      for j in list(range(self.rank)):
+        N[j,self.rank*i+j] = a
+    
+    return N  
+    

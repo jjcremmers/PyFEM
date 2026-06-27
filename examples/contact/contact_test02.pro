@@ -11,13 +11,17 @@ ContElem =
   };
 };
 
-contact =
+models = ["c1"];
+
+c1 =
 {
-  type = "disc";
+  type = "Contact";
+
+  object    = "disc";
   
   radius    = 1.0;
   centre    = [ 8.0 , 1.4 ];
-  direction = [0.,-0.5];
+  direction = [0.,-0.1];
   penalty   = 1.0e6;
 };
 

@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2011–2026 Joris J.C. Remmers
+
 from numpy import dot,zeros,insert,array,ones
 from math import sqrt
 
@@ -17,7 +20,7 @@ def vonMisesStress( s ):
 
 def hydrostaticStress( s ):
 
-  return 0.333333333333333*sum( s[:3] );
+  return 0.333333333333333*sum( s[:3] )
 
 class Hardening:
 
@@ -54,8 +57,6 @@ class Hardening:
         self.EqPlasStrains[i+1] = (i+1)*epsInc
         self.Stresses[i+1] = self.K * pow(self.EqPlasStrains[i+1]+eps0,self.q)
 
-    print("RR",self.Stresses,self.EqPlasStrains)
- 
   def getHardening( self , eqplas ):
 
 #    if self.n == 0:

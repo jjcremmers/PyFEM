@@ -2,4 +2,6 @@
 *.out
 *.pvd
 *.h5
+*.gnu
+*.png
 
