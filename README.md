@@ -1,11 +1,12 @@
 # PyFEM: A Python Finite Element Code
 
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/jjcremmers/PyFEM/actions/workflows/ci.yml/badge.svg)](https://github.com/jjcremmers/PyFEM/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://github.com/jjcremmers/PyFEM/tree/main/doc)
+[![Documentation](https://img.shields.io/badge/docs-readthedocs-brightgreen.svg)](https://pyfem.readthedocs.io/)
 [![GitHub Stars](https://img.shields.io/github/stars/jjcremmers/PyFEM?style=social)](https://github.com/jjcremmers/PyFEM/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/jjcremmers/PyFEM)](https://github.com/jjcremmers/PyFEM/issues)
-[![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](doc/index.rst#how-to-cite)
+[![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](doc/introduction/introduction.md#how-to-cite)
 
 PyFEM is a Python-based finite element code designed for educational and research purposes in computational solid mechanics. The code emphasizes clarity and readability, making it ideal for learning, teaching, and prototyping finite element methods for nonlinear analysis.
 
@@ -35,45 +36,74 @@ The code is open source and intended for educational and scientific purposes. If
 
 ### Requirements
 
-- Python 3.9 or higher
-- pip package manager
+- Python 3.11 or newer
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
 - Git (for cloning the repository)
 
-### Quick Installation
+### Quick Installation (recommended)
+
+[uv](https://docs.astral.sh/uv/) manages Python, the virtual environment, and dependencies in one step:
 
 ```bash
 # Clone the repository
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
 
-# Install with pip
-pip install .
+# Install Python 3.13 (if needed), create .venv, and install PyFEM
+uv sync
+```
+
+Run PyFEM without activating the environment:
+
+```bash
+uv run pyfem --help
+cd examples/ch02
+uv run pyfem PatchTest.pro
 ```
 
 ### Development Installation
 
-For developers who want to make changes and test immediately:
+For contributors, `uv sync` installs PyFEM in editable mode together with dev tools (pytest, coverage, ruff):
 
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
-pip install -e .
+uv sync
+uv run pytest
+uv run coverage run -m pytest -q
+uv run coverage report
+uv run ruff check pyfem test
 ```
 
-### Virtual Environment (Recommended)
+Build and verify the wheel (same as CI):
 
 ```bash
-# Create and activate virtual environment
-python3 -m venv pyfem-env
-source pyfem-env/bin/activate  # Linux/macOS
-# or
-pyfem-env\Scripts\activate  # Windows
+uv build
+```
 
-# Install PyFEM
+### Building documentation
+
+CI and Read the Docs use `--no-dev` so only the `docs` extra is installed. Locally, omit `--no-dev` if you want dev tools in the same environment.
+
+```bash
+uv sync --extra docs --no-dev
+uv run sphinx-build -M html doc doc/_build
+```
+
+On Linux, if the doc build fails loading VTK/OpenGL, install `libgl1` (see the [Installation Guide](doc/installation/overview.md)).
+
+### Alternative: pip
+
+If you prefer pip, use a virtual environment and install from the repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# or: .venv\Scripts\activate  # Windows
 pip install .
 ```
 
-For detailed installation instructions including platform-specific notes, see the [Installation Guide](doc/installation/overview.rst).
+For detailed installation instructions including platform-specific notes, see the [Installation Guide](doc/installation/overview.md).
 
 ## 🚀 Quick Start
 
@@ -86,7 +116,7 @@ Run a PyFEM analysis from the command line:
 cd examples/ch02
 
 # Run an example
-pyfem PatchTest.pro
+uv run pyfem PatchTest.pro
 ```
 
 View results in [ParaView](https://www.paraview.org/download/):
@@ -99,29 +129,28 @@ paraview PatchTest.pvd
 
 ### User Guide
 
-- **[Installation Guide](doc/installation/overview.rst)** - Complete installation instructions
-- **[Quick Start Tutorial](doc/tutorials/quickstart.rst)** - Get started with PyFEM
-- **[Elements](doc/elements/overview.rst)** - Available element formulations
-- **[Materials](doc/materials/overview.rst)** - Material model documentation
-- **[Solvers](doc/solvers/overview.rst)** - Solution algorithms
-- **[I/O Modules](doc/io/overview.rst)** - Input/output capabilities
-- **[Models](doc/models/overview.rst)** - Special models (RVE, contact)
+- **[Installation Guide](doc/installation/overview.md)** - Complete installation instructions
+- **[Quick Start Tutorial](doc/introduction/quickstart.md)** - Get started with PyFEM
+- **[Elements](doc/elements/overview.md)** - Available element formulations
+- **[Materials](doc/materials/overview.md)** - Material model documentation
+- **[Solvers](doc/solvers/overview.md)** - Solution algorithms
+- **[I/O Modules](doc/io/overview.md)** - Input/output capabilities
+- **[Models](doc/models/overview.md)** - Special models (RVE, contact)
 - **[Examples](examples/)** - Collection of example analyses
 
 ### Developer Guide
 
 For contributors and those extending PyFEM:
 
-- **[Developer's Overview](doc/develop/overview.rst)** - Getting started with development
-- **[Implementing Elements](doc/develop/elements_dev.rst)** - Creating new element formulations
-- **[Implementing Materials](doc/develop/materials_dev.rst)** - Developing material models
-- **[Implementing Solvers](doc/develop/solvers_dev.rst)** - Creating solution algorithms
-- **[Implementing I/O Modules](doc/develop/io_dev.rst)** - Adding input/output capabilities
+- **[Developer's Overview](doc/develop/overview.md)** - Getting started with development
+- **[Implementing Elements](doc/develop/elements_dev.md)** - Creating new element formulations
+- **[Implementing Materials](doc/develop/materials_dev.md)** - Developing material models
+- **[Implementing Solvers](doc/develop/solvers_dev.md)** - Creating solution algorithms
+- **[Implementing I/O Modules](doc/develop/io_dev.md)** - Adding input/output capabilities
 
 ### API Reference
 
-- **[API Documentation](doc/api.rst)** - Python API reference
-- **[Module Documentation](doc/modules.rst)** - Complete module documentation
+- **[API Documentation](https://pyfem.readthedocs.io/en/latest/api/pyfem/index.html)** - Python API reference (generated from source)
 
 ## 🎯 Example Gallery
 
@@ -147,7 +176,7 @@ Each directory contains input files (`.pro`), mesh files (`.dat`), and generates
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please see the [Developer's Guide](doc/develop/overview.rst) for:
+Contributions are welcome! Please see the [Developer's Guide](doc/develop/overview.md) for:
 
 - Code style and conventions
 - Testing guidelines

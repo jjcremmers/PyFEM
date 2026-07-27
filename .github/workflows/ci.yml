@@ -1,0 +1,116 @@
+name: CI
+
+# Triggers:
+#   push (any branch): test, build, docs on every branch push (fork or upstream)
+#   pull_request → main: same checks when a PR is opened/updated
+#   push → main only: upload Pages artifact + deploy-docs (see job if: filters)
+#   workflow_dispatch: manual run on the selected ref
+on:
+  push:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEFAULT_PYTHON: "3.13"
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-suffix: test-${{ matrix.python-version }}
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgl1 libxkbcommon-x11-0
+      - run: uv sync
+      - run: uv run coverage run -m pytest -q
+      - run: uv run coverage report
+      - run: uv run pyfem --help
+
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          enable-cache: true
+          cache-suffix: build
+      - run: uv build
+      - name: Verify wheel installs
+        run: |
+          uv venv .wheel-check
+          uv pip install --python .wheel-check dist/*.whl
+          .wheel-check/bin/python -c "import pyfem; print(pyfem.__version__)"
+          .wheel-check/bin/pyfem --help
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ env.DEFAULT_PYTHON }}
+          enable-cache: true
+          cache-suffix: docs
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgl1
+      - run: uv sync --extra docs --no-dev
+      - run: uv run sphinx-build -M html doc doc/_build
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: doc/_build/html
+
+  deploy-docs:
+    name: Deploy documentation
+    needs: docs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: pages-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

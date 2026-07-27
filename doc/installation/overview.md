@@ -6,8 +6,8 @@ Both the **Python API** and the **command-line interface (CLI)** are included.
 ## Requirements
 
 **System Requirements:**
-- Python 3.9 or newer
-- pip (Python package manager)
+- Python 3.11 or newer
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
 - Git (for cloning the repository)
 
 **Python Dependencies** (installed automatically):
@@ -19,39 +19,67 @@ Both the **Python API** and the **command-line interface (CLI)** are included.
 - PySide6
 - vtk
 
-**Recommended: Virtual Environment**
-It's recommended to install PyFEM in a virtual environment to avoid conflicts with other Python packages:
+## Installation with uv (Recommended)
 
-```bash
-# Create virtual environment
-python3 -m venv pyfem-env
-# Activate on Linux / macOS
-source pyfem-env/bin/activate
-# Activate on Windows PowerShell
-pyfem-env\Scripts\activate
-# Activate on Windows Command Prompt
-pyfem-env\Scripts\activate.bat
-```
+[uv](https://docs.astral.sh/uv/) installs a compatible Python version, creates a virtual
+environment, and installs PyFEM and its dependencies.
 
-## Installation Steps
-
-### Method 1: Standard Installation (Recommended)
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
+uv sync
+```
+
+This creates a `.venv` directory and installs the `pyfem` and `pyfem-gui` commands.
+Run them via `uv run`:
+
+```bash
+uv run pyfem --help
+uv run pyfem-gui
+```
+
+To activate the environment manually:
+
+```bash
+source .venv/bin/activate  # Linux / macOS
+.venv\Scripts\activate     # Windows
+pyfem --help
+```
+
+### Development setup
+
+`uv sync` also installs dev tools (pytest, coverage, ruff):
+
+```bash
+uv sync
+uv run pytest
+uv run coverage run -m pytest -q
+uv run coverage report
+uv run ruff check pyfem test
+uv run ruff format --check pyfem test
+uv build
+```
+
+## Installation with pip
+
+If you prefer pip, create a virtual environment first:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # Linux / macOS
+# .venv\Scripts\activate   # Windows
 pip install .
 ```
-This installs PyFEM and all dependencies, and creates the `pyfem` and `pyfem-gui` command-line executables.
 
-### Method 2: Development Installation
+For editable development installs:
+
 ```bash
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
 pip install -e .
+pip install pytest ruff
 ```
-The `-e` flag installs in "editable" mode, so changes to the source code are immediately reflected without reinstalling.
 
-### Method 3: Direct from GitHub (Advanced)
+### Direct from GitHub
+
 ```bash
 pip install git+https://github.com/jjcremmers/PyFEM.git
 ```
@@ -144,6 +172,8 @@ converged = globdat.solverStatus.converged
 ```bash
 cd PyFEM
 git pull origin main
+uv sync
+# Or with pip:
 pip install --upgrade .
 # Or if installed directly from GitHub
 pip install --upgrade git+https://github.com/jjcremmers/PyFEM.git
@@ -152,6 +182,8 @@ pip install --upgrade git+https://github.com/jjcremmers/PyFEM.git
 ## Uninstalling
 ```bash
 pip uninstall pyfem
+# Or remove the uv-managed environment:
+rm -rf .venv
 ```
 
 ## Troubleshooting
@@ -160,38 +192,40 @@ pip uninstall pyfem
 which pyfem  # Linux/macOS
 where pyfem  # Windows
 ~/.local/bin/pyfem input.pro
+# With uv, use:
+uv run pyfem input.pro
 ```
 **2. Import errors**
 ```bash
+uv sync --reinstall
+# Or with pip:
 pip install --force-reinstall pyfem
 ```
-**3. VTK or GUI issues**
+**3. VTK, GUI, or documentation build issues**
+
 ```bash
-sudo apt-get install libgl1-mesa-glx libxkbcommon-x11-0  # Linux
+sudo apt-get install -y libgl1 libxkbcommon-x11-0  # Linux (tests/GUI; libgl1 also needed for doc builds)
 # On macOS, install XQuartz
 brew install --cask xquartz
 ```
 **4. Permission errors during installation**
-```bash
-pip install --user .
-```
+Use a virtual environment (`uv sync` or `python -m venv .venv`) rather than installing system-wide.
 
 ## Platform-Specific Notes
 **Linux:**
 ```bash
-sudo apt-get install python3-venv python3-pip  # Debian/Ubuntu
-sudo dnf install python3-virtualenv python3-pip  # Fedora/RHEL
+# uv installs its own Python; no system packages required for the venv
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 **macOS:**
 ```bash
-brew install python@3.11
-brew install --cask xquartz
+brew install uv
+brew install --cask xquartz  # for GUI / VTK
 ```
 **Windows:**
-1. Install Python 3.9+ from [python.org](https://www.python.org/downloads/)
-2. Ensure "Add Python to PATH" is checked
-3. Use PowerShell or Command Prompt
-4. Install Git for Windows: [git-scm.com](https://git-scm.com/)
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+2. Use PowerShell or Command Prompt
+3. Install Git for Windows: [git-scm.com](https://git-scm.com/)
 
 ## Running Examples
 ```bash
@@ -207,24 +241,27 @@ Each example directory contains:
 - `.dat` files: Mesh files
 - Output files: VTK, text, plots
 
-## Development Setup
-```bash
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
-pip install -e .
-python -m pytest test/
-python -m black pyfem/
-python -m mypy pyfem/
-```
-
 ## Getting Help
 - **Documentation**: https://pyfem.readthedocs.io/
 - **GitHub Issues**: https://github.com/jjcremmers/PyFEM/issues
 - **Examples**: See the `examples/` directory
 - **Book**: "Non-Linear Finite Element Analysis of Solids and Structures" by de Borst et al., John Wiley & Sons, 2012
 
+## Building documentation
+
+Same install path as CI and Read the Docs:
+
+```bash
+uv sync --extra docs --no-dev
+uv run sphinx-build -M html doc doc/_build
+```
+
+Open `doc/_build/html/index.html`. API reference is generated by `sphinx-autoapi` at build time (under `doc/api/`, gitignored).
+
+On Linux, install `libgl1` if the build fails when loading VTK modules for viewcode.
+
 ## Next Steps
 1. Read the [Quickstart guide](../introduction/quickstart.md)
 2. Explore examples in the `examples/` directory
-3. Review the [module documentation](../pyfem.md)
+3. Review the [API reference](https://pyfem.readthedocs.io/en/latest/api/pyfem/index.html)
 4. For development, see the [developer overview](../develop/overview.md)

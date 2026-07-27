@@ -1,6 +1,6 @@
 # PyFEM: A Python Finite Element Code
 
-Welcome to the PyFEM documentation. This manual provides comprehensive documentation for PyFEM, a Python-based finite element code for nonlinear finite element analysis. T
+Welcome to the PyFEM documentation. This manual provides comprehensive documentation for PyFEM, a Python-based finite element code for nonlinear finite element analysis.
 
 ## Documentation Contents
 
@@ -12,11 +12,10 @@ installation/overview.md
 introduction/quickstart.md
 usermanual.md
 develop/overview.md
-api.md
 ```
 
-## Indices and Tables
+## Indices and search
 
-- [General Index](genindex.md)
-- [Module Index](modules.md)
-- [Search](search.md)
+* [Index](genindex)
+* [Module Index](py-modindex)
+* [Search Page](search)

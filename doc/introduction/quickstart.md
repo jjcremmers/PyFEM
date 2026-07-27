@@ -12,13 +12,13 @@ and run your first simulation.
    cd PyFEM
    ```
 
-2. Install PyFEM and its dependencies:
+2. Install PyFEM and its dependencies with [uv](https://docs.astral.sh/uv/):
 
    ```bash
-   pip install .
+   uv sync
    ```
 
-   This installs the `pyfem` command-line tool and all required packages.
+   This installs the `pyfem` command-line tool and all required packages into `.venv`.
 
 ## Verifying the Installation
 
@@ -27,7 +27,7 @@ standalone example script:
 
 ```bash
 cd examples/ch02
-python PatchTest.py
+uv run python PatchTest.py
 ```
 
 You can then run a full PyFEM model from a `.pro` input file.
@@ -38,7 +38,7 @@ After installation, run a basic example to verify everything works:
 
 ```bash
 cd examples/ch02
-pyfem PatchTest8.pro
+uv run pyfem PatchTest8.pro
 ```
 
 This runs a simple patch test. You should see solver output showing convergence
@@ -52,11 +52,11 @@ cd examples
 
 # Run a nonlinear truss analysis
 cd ch04
-pyfem ShallowtrussRiks.pro
+uv run pyfem ShallowtrussRiks.pro
 
 # Run a cantilever beam example
 cd ../ch03
-pyfem cantilever8.pro
+uv run pyfem cantilever8.pro
 ```
 
 Each example produces output files (VTK format for visualization, graphs, etc.)

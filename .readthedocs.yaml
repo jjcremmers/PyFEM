@@ -1,35 +1,24 @@
 # Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# https://docs.readthedocs.com/platform/stable/config-file/v2.html
 
 version: 2
 
-# Build documentation in the doc/ directory with Sphinx
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3.13"
+  apt_packages:
+    - libgl1
+
 sphinx:
   configuration: doc/conf.py
   fail_on_warning: false
 
-# Build environment
-build:
-  os: ubuntu-22.04
-  tools:
-    python: "3.11"
-  jobs:
-    post_checkout:
-      # Generate API documentation
-      - echo "Generating API documentation..."
-
-# Python dependencies
 python:
   install:
-    # Install documentation requirements
-    - requirements: doc/requirements.txt
-    # Install the package itself
-    - method: pip
-      path: .
-      extra_requirements:
-        - docs
+    - method: uv
+      command: sync --extra docs --no-dev
 
-# Formats to build (PDF, EPUB, etc.)
 formats:
   - pdf
   - epub
