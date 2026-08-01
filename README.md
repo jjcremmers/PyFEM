@@ -147,21 +147,9 @@ Each directory contains input files (`.pro`), mesh files (`.dat`), and generates
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please see the [Developer's Guide](doc/develop/overview.rst) for:
-
-- Code style and conventions
-- Testing guidelines
-- Documentation requirements
-- Pull request process
-
-To contribute:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes and add tests
-4. Commit your changes (`git commit -m 'Add amazing feature'`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
+Contributions are welcome. Please read
+[CONTRIBUTING.md](CONTRIBUTING.md) before reporting a bug, proposing a
+feature, or submitting a pull request.
 
 ## 📝 License
 
