@@ -1,12 +1,20 @@
+# PyFEM generated analysis output
 *.vtu
-*.out
 *.pvd
-*.pyc
+*_glob.out
+*.out
+*.h5
+
+# Local launcher/build artifacts
 pyfem.sh
+pyfem.exe
+pyfem.bat
 pyfem_gui.sh
 pyfem_gui.x
 pyfem_gui.bat
-pyfem.bat
+
+# Editor/manual backup files
+*.py1
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -41,7 +49,7 @@ MANIFEST
 doc/_build
 doc/html
 doc/_api
-doc/pyfem.*.rst  
+doc/pyfem.*.rst
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -140,12 +148,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-pyfem.sh
-pyfem.exe
-
-# 
+# Local workspace/tooling state
 .agents
-.github
-.pytest_cache
-.vscode
 .codex
