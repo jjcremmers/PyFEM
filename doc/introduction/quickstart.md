@@ -18,7 +18,9 @@ and run your first simulation.
    pip install .
    ```
 
-   This installs the `pyfem` command-line tool and all required packages.
+   This installs the `pyfem` command-line tool, VTK output support, and all
+   required core packages. To install the optional GUI dependency, use
+   `pip install ".[gui]"`.
 
 ## Verifying the Installation
 

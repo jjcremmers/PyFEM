@@ -4,7 +4,13 @@
 import numpy as np
 from pyfem.util.BaseModule import BaseModule
 from pyfem.util.dataStructures import GlobalData
-import vtk
+try:
+    import vtk
+except ModuleNotFoundError as exc:
+    raise ImportError(
+        "VTK utilities require the 'vtk' package. Install or repair the PyFEM "
+        "environment with `pip install .`."
+    ) from exc
 from typing import List, Union
 
 def storeNodes(grid: vtk.vtkUnstructuredGrid, globdat: GlobalData) -> None:
@@ -523,6 +529,4 @@ def insertShell(grid: vtk.vtkUnstructuredGrid, elemNodes: List[int]) -> None:
         grid.InsertNextCell( cell.GetCellType(),cell.GetPointIds() )                     
     else:
         raise NotImplementedError('Only 3 and 4 node shell elements.')
-
-
 

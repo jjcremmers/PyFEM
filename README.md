@@ -5,7 +5,7 @@
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://github.com/jjcremmers/PyFEM/tree/main/doc)
 [![GitHub Stars](https://img.shields.io/github/stars/jjcremmers/PyFEM?style=social)](https://github.com/jjcremmers/PyFEM/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/jjcremmers/PyFEM)](https://github.com/jjcremmers/PyFEM/issues)
-[![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](doc/index.rst#how-to-cite)
+[![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](CITATION.cff)
 
 PyFEM is a Python-based finite element code designed for educational and research purposes in computational solid mechanics. The code emphasizes clarity and readability, making it ideal for learning, teaching, and prototyping finite element methods for nonlinear analysis.
 
@@ -50,6 +50,21 @@ cd PyFEM
 pip install .
 ```
 
+The base installation includes VTK output support for ParaView. The graphical
+user interface dependency is optional.
+
+For the GUI, install:
+
+```bash
+pip install ".[gui]"
+```
+
+To install all optional dependencies:
+
+```bash
+pip install ".[all]"
+```
+
 ### Development Installation
 
 For developers who want to make changes and test immediately:
@@ -57,8 +72,10 @@ For developers who want to make changes and test immediately:
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
-pip install -e .
+pip install -e ".[dev]"
 ```
+
+For development with the GUI as well, use `pip install -e ".[dev,all]"`.
 
 ### Virtual Environment (Recommended)
 
@@ -73,7 +90,7 @@ pyfem-env\Scripts\activate  # Windows
 pip install .
 ```
 
-For detailed installation instructions including platform-specific notes, see the [Installation Guide](doc/installation/overview.rst).
+For detailed installation instructions including platform-specific notes, see the [Installation Guide](doc/installation/overview.md).
 
 ## 🚀 Quick Start
 
@@ -86,42 +103,52 @@ Run a PyFEM analysis from the command line:
 cd examples/ch02
 
 # Run an example
-pyfem PatchTest.pro
+pyfem PatchTest8.pro
+```
+
+Useful command-line options:
+
+```bash
+pyfem --help                    # Show help
+pyfem --version                 # Show installed PyFEM version
+pyfem -i input.pro              # Specify input file
+pyfem -d state.dump             # Restart from dump file
+pyfem -p param=value            # Override parameter
 ```
 
 View results in [ParaView](https://www.paraview.org/download/):
 
 ```bash
-paraview PatchTest.pvd
+paraview PatchTest8.pvd
 ```
 
 ## 📖 Documentation
 
 ### User Guide
 
-- **[Installation Guide](doc/installation/overview.rst)** - Complete installation instructions
-- **[Quick Start Tutorial](doc/tutorials/quickstart.rst)** - Get started with PyFEM
-- **[Elements](doc/elements/overview.rst)** - Available element formulations
-- **[Materials](doc/materials/overview.rst)** - Material model documentation
-- **[Solvers](doc/solvers/overview.rst)** - Solution algorithms
-- **[I/O Modules](doc/io/overview.rst)** - Input/output capabilities
-- **[Models](doc/models/overview.rst)** - Special models (RVE, contact)
+- **[Installation Guide](doc/installation/overview.md)** - Complete installation instructions
+- **[Quick Start Tutorial](doc/tutorials/quickstart.md)** - Get started with PyFEM
+- **[Elements](doc/elements/overview.md)** - Available element formulations
+- **[Materials](doc/materials/overview.md)** - Material model documentation
+- **[Solvers](doc/solvers/overview.md)** - Solution algorithms
+- **[I/O Modules](doc/io/overview.md)** - Input/output capabilities
+- **[Models](doc/models/overview.md)** - Special models (RVE, contact)
 - **[Examples](examples/)** - Collection of example analyses
 
 ### Developer Guide
 
 For contributors and those extending PyFEM:
 
-- **[Developer's Overview](doc/develop/overview.rst)** - Getting started with development
-- **[Implementing Elements](doc/develop/elements_dev.rst)** - Creating new element formulations
-- **[Implementing Materials](doc/develop/materials_dev.rst)** - Developing material models
-- **[Implementing Solvers](doc/develop/solvers_dev.rst)** - Creating solution algorithms
-- **[Implementing I/O Modules](doc/develop/io_dev.rst)** - Adding input/output capabilities
+- **[Developer's Overview](doc/develop/overview.md)** - Getting started with development
+- **[Implementing Elements](doc/develop/elements_dev.md)** - Creating new element formulations
+- **[Implementing Materials](doc/develop/materials_dev.md)** - Developing material models
+- **[Implementing Solvers](doc/develop/solvers_dev.md)** - Creating solution algorithms
+- **[Implementing I/O Modules](doc/develop/io_dev.md)** - Adding input/output capabilities
 
 ### API Reference
 
-- **[API Documentation](doc/api.rst)** - Python API reference
-- **[Module Documentation](doc/modules.rst)** - Complete module documentation
+- **[API Documentation](doc/introduction/api.md)** - Python API reference
+- **[Documentation Index](doc/index.md)** - Full documentation table of contents
 
 ## 🎯 Example Gallery
 

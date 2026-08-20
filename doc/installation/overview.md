@@ -16,8 +16,10 @@ Both the **Python API** and the **command-line interface (CLI)** are included.
 - matplotlib
 - meshio
 - h5py
-- PySide6
 - vtk
+
+**Optional Dependencies:**
+- `PySide6`: graphical user interface support
 
 **Recommended: Virtual Environment**
 It's recommended to install PyFEM in a virtual environment to avoid conflicts with other Python packages:
@@ -41,15 +43,29 @@ git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
 pip install .
 ```
-This installs PyFEM and all dependencies, and creates the `pyfem` and `pyfem-gui` command-line executables.
+This installs PyFEM with its core dependencies, including VTK output support for
+ParaView, and creates the `pyfem` command-line executable.
+
+To install the GUI dependencies:
+
+```bash
+pip install ".[gui]"
+```
+
+To install all optional dependencies:
+
+```bash
+pip install ".[all]"
+```
 
 ### Method 2: Development Installation
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
-pip install -e .
+pip install -e ".[dev]"
 ```
 The `-e` flag installs in "editable" mode, so changes to the source code are immediately reflected without reinstalling.
+For development with the GUI as well, use `pip install -e ".[dev,all]"`.
 
 ### Method 3: Direct from GitHub (Advanced)
 ```bash
@@ -64,14 +80,14 @@ After installation, verify that both the CLI and API work correctly.
 ```bash
 pyfem --help
 cd examples/ch02
-pyfem PatchTest.pro
+pyfem PatchTest8.pro
 ```
 Expected output includes solver iterations, convergence information, and generated output files.
 
 ### Checking the API
 ```python
 from pyfem import run
-results = run("examples/ch02/PatchTest.pro")
+results = run("examples/ch02/PatchTest8.pro")
 print(results['globdat'].state)  # Displacement vector
 ```
 If both tests complete without errors, the installation is successful.
@@ -86,6 +102,7 @@ pyfem input_file.pro
 **Command-Line Options:**
 ```bash
 pyfem --help                    # Show help
+pyfem --version                 # Show installed PyFEM version
 pyfem -i input.pro              # Specify input file
 pyfem -d state.dump             # Restart from dump file
 pyfem -p param=value            # Override parameter
@@ -110,13 +127,13 @@ props = results['props']
 ```python
 from pyfem.core.api import PyFEMAPI
 api = PyFEMAPI("input.pro")
-while api.isActive:
+while api.is_active:
     api.step()
     current_disp = api.globdat.state
     load_factor = api.globdat.lam
     if load_factor > 5.0:
         print(f"Load factor reached {load_factor}")
-results = api.getResults()
+results = api.get_results()
 api.close()
 ```
 **Loading from Pre-parsed Input:**
@@ -126,7 +143,7 @@ from pyfem.core.api import PyFEMAPI
 props, globdat = InputRead("input.pro")
 props.solver.tol = 1e-6
 api = PyFEMAPI((props, globdat))
-api.runAll()
+api.run_all()
 ```
 **Accessing Results:**
 ```python
@@ -197,7 +214,7 @@ brew install --cask xquartz
 ```bash
 cd examples
 cd ch02
-pyfem PatchTest.pro
+pyfem PatchTest8.pro
 cd ch03
 pyfem cantilever8.pro
 paraview cantilever8.pvd
@@ -211,7 +228,7 @@ Each example directory contains:
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
-pip install -e .
+pip install -e ".[dev]"
 python -m pytest test/
 python -m black pyfem/
 python -m mypy pyfem/

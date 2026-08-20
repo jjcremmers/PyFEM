@@ -2,7 +2,13 @@
 # Copyright (c) 2011–2026 Joris J.C. Remmers
 
 from pyfem.util.BaseModule import BaseModule
-import vtk
+try:
+    import vtk
+except ModuleNotFoundError as exc:
+    raise ImportError(
+        "The MeshWriter output module requires the 'vtk' package. Install or "
+        "repair the PyFEM environment with `pip install .`."
+    ) from exc
 
 from pyfem.util.vtkUtils import ( insertElement,storeNodes,storeElements,
                                   storeDofFields,storeDofField,storeNodeField,

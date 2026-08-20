@@ -9,17 +9,9 @@ def print_help():
   available options, a brief description, and a link to the official documentation.
   """
 
-  print("""
-PyFEM Command Line Usage:
+  from pyfem.core.cli import parse_arguments
 
-  pyfem <inputfile>
-
-Options:
-  --help, -h        Show this help message and exit
-
-Description:
-  Run a PyFEM analysis using the specified input file.
-
-For more information and documentation, visit:
-  https://jorisremmers.com/PyFEM
-""")
+  try:
+    parse_arguments(["--help"])
+  except SystemExit:
+    pass

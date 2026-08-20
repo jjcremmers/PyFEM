@@ -13,7 +13,7 @@ from pyfem.models.ModelManager import ModelManager
 from pyfem.util.fileParser     import fileParser
 from pyfem.util.logger         import setLogger, separator
 
-import getopt,os.path,pickle,time
+import os.path,pickle,time
 
 #-------------------------------------------------------------------------------
 #
@@ -44,8 +44,6 @@ def InputRead( fname , dname = None , parameters = None ):
     else:
       props        = fileParser( fname+'.pro')
     
-  pathName, _ = os.path.split(fname)
-  
   if parameters is not None:  
     for p in parameters:
       x = p.split("=")
@@ -53,6 +51,8 @@ def InputRead( fname , dname = None , parameters = None ):
       
   if dname is not None:
     return props,data["globdat"]
+
+  pathName, _ = os.path.split(fname)
 
   dataFileName = props.input
   
@@ -92,33 +92,7 @@ def InputRead( fname , dname = None , parameters = None ):
 #-------------------------------------------------------------------------------
 
 def getArguments( argv ):
+  from pyfem.core.cli import parse_arguments
 
-  slist = 'd:i:hvp:'
-  llist = ['dump=','input=','help','version']
-
-  proFileName  = None
-  dumpFileName = None
-  parameters   = []
-
-  # If only one argument is passed (input file), handle gracefully
-  if len(argv) == 1:
-    proFileName = argv[0]
-    return proFileName, dumpFileName, parameters
-
-  options, remainder = getopt.getopt(argv[1:], slist, llist)
-
-  if len(options) == 0 and len(argv) > 1:
-    proFileName = argv[1]
-    options, remainder = getopt.getopt(argv[2:], slist, llist)
-
-  for opt, arg in options:
-    if opt in ('-i', '--input'):
-      proFileName = arg
-    elif opt in ('-d', '--dump'):
-      dumpFileName = arg
-    elif opt in ('-h', '--help'):
-      print("Help")
-    elif opt in ('-p', '--param'):
-      parameters.append(arg)
-
-  return proFileName, dumpFileName, parameters
+  args = parse_arguments(argv)
+  return args.input_file, args.dump_file, args.parameters

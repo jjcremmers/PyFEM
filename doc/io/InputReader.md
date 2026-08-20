@@ -9,10 +9,12 @@
 - Optionally reads a dump file (pickle) to restore state instead of parsing.
 
 ## Command-Line Arguments
+- positional `input_file`: Path to the `.pro` file
 - `-i`, `--input`: Path to the `.pro` file
 - `-d`, `--dump`: Path to a pickle dump (created by `DataDump`) to restore state
 - `-p`, `--param`: Override parameters as `name=value` (can be repeated)
 - `-h`, `--help`: Show help
+- `--version`: Show the installed PyFEM version
 
 ## Programmatic Use
 (See documentation for details)

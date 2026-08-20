@@ -14,10 +14,9 @@ Usage:
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Any, Optional, Tuple, Union
+from typing import Any, Tuple, Union
 
 from pyfem.io.InputReader import InputRead
-from pyfem.io.InputReader import InputReader
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver import Solver
 
@@ -57,7 +56,7 @@ class PyFEMAPI:
         self.output = OutputManager(self.props, self.globdat)
 
     @property
-    def isActive(self) -> bool:
+    def is_active(self) -> bool:
         return bool(getattr(self.globdat, 'active', False))
 
     def step(self , nCyc: int = 1 ) -> None:
@@ -69,12 +68,12 @@ class PyFEMAPI:
             self.solver.run(self.props, self.globdat)
             self.output.run(self.props, self.globdat)
 
-    def runAll(self) -> None:
+    def run_all(self) -> None:
         """Run steps until the analysis completes."""
         while self.is_active:
             self.step()
 
-    def getResults(self) -> Any:
+    def get_results(self) -> Any:
         """Return a lightweight results container.
 
         This is a small convenience wrapper; consumers can directly inspect
@@ -85,6 +84,19 @@ class PyFEMAPI:
             'globdat': self.globdat,
             'props': self.props,
         }
+
+    @property
+    def isActive(self) -> bool:
+        """Backward-compatible alias for `is_active`."""
+        return self.is_active
+
+    def runAll(self) -> None:
+        """Backward-compatible alias for `run_all`."""
+        self.run_all()
+
+    def getResults(self) -> Any:
+        """Backward-compatible alias for `get_results`."""
+        return self.get_results()
 
     def close(self) -> None:
         """Finalize the analysis and close global data resources."""
@@ -104,4 +116,3 @@ def run(props: Union[str, Path, Tuple[Any, Any]]) -> Any:
     api = PyFEMAPI(props)
     api.run_all()
     return api.get_results()
-

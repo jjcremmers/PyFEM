@@ -13,12 +13,63 @@ and object factories are delegated to `InputReader`, `Solver` and
 """
 
 import sys
-from typing import Any
+from argparse import ArgumentParser, Namespace
 
-from pyfem.io.InputReader   import InputReader
+from pyfem import __version__
+from pyfem.io.InputReader   import InputRead
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
-from pyfem.core.help import print_help
+
+
+def parse_arguments(argv: list[str] | None = None) -> Namespace:
+    """Parse command-line arguments for the PyFEM executable."""
+    parser = ArgumentParser(
+        prog="pyfem",
+        description="Run a PyFEM analysis using the specified input file.",
+    )
+    parser.add_argument(
+        "input_file",
+        nargs="?",
+        help="Path to the PyFEM .pro input file.",
+    )
+    parser.add_argument(
+        "-i",
+        "--input",
+        dest="input_option",
+        help="Path to the PyFEM .pro input file.",
+    )
+    parser.add_argument(
+        "-d",
+        "--dump",
+        dest="dump_file",
+        help="Restart from a PyFEM dump file.",
+    )
+    parser.add_argument(
+        "-p",
+        "--param",
+        dest="parameters",
+        action="append",
+        default=[],
+        metavar="NAME=VALUE",
+        help="Override an input parameter. May be supplied multiple times.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"PyFEM {__version__}",
+    )
+
+    args = parser.parse_args(argv)
+
+    if args.input_file and args.input_option:
+        parser.error("provide the input file either positionally or with -i/--input, not both")
+
+    args.input_file = args.input_option or args.input_file
+
+    if not args.input_file and not args.dump_file:
+        parser.error("an input file or dump file is required")
+
+    return args
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -27,9 +78,7 @@ def main(argv: list[str] | None = None) -> None:
 
     Args:
         argv: Optional list of command-line arguments. If `None`, the program
-            will use `sys.argv`. The actual parsing and interpretation of the
-            arguments is performed by `InputReader` so `main` simply forwards
-            the arguments to that component.
+            will use `sys.argv`.
 
     Notes:
         This function is an orchestration entry point; it does not perform any
@@ -38,13 +87,8 @@ def main(argv: list[str] | None = None) -> None:
         analysis and output duties respectively.
     """
 
-    args = argv if argv is not None else sys.argv[1:]
-
-    if '--help' in args or '-h' in args:
-        print_help()
-        return
-
-    props, globdat = InputReader(args)
+    args = parse_arguments(argv)
+    props, globdat = InputRead(args.input_file, args.dump_file, args.parameters)
 
     solver = Solver(props, globdat)
     output = OutputManager(props, globdat)

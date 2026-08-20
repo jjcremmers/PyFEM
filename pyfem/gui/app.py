@@ -3,9 +3,15 @@
 
 import sys
 #import subprocess
-from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QFileDialog, QVBoxLayout, QWidget, QToolBar, QMessageBox, QStyle, QSplitter, QHBoxLayout, QTabWidget, QLabel, QComboBox
-from PySide6.QtCore import QProcess, Qt, QThread, Signal, QObject
-from PySide6.QtGui import QIcon, QAction, QKeySequence
+try:
+    from PySide6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QFileDialog, QVBoxLayout, QWidget, QToolBar, QMessageBox, QStyle, QSplitter, QHBoxLayout, QTabWidget, QLabel, QComboBox
+    from PySide6.QtCore import QProcess, Qt, QThread, Signal, QObject
+    from PySide6.QtGui import QIcon, QAction, QKeySequence
+except ModuleNotFoundError as exc:
+    raise ImportError(
+        "The PyFEM GUI requires the optional 'gui' dependency. Install it with "
+        "`pip install \".[gui]\"` or `pip install \".[all]\"`."
+    ) from exc
 
 from pyfem.io.InputReader   import InputRead
 from pyfem.io.OutputManager import OutputManager
@@ -285,4 +291,3 @@ def main():
     window.show()
 
     sys.exit(app.exec())
-

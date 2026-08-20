@@ -156,6 +156,18 @@ Depending on the contribution, this may include:
 Run the available tests before submitting a pull request. If a test cannot be
 added, explain in the pull request how the change was verified.
 
+The canonical local test command is:
+
+```bash
+python -m pytest test
+```
+
+The test suite also supports the standard-library unittest runner:
+
+```bash
+python -m unittest discover -s test -p "*.py"
+```
+
 ## Examples and Documentation
 
 New user-facing functionality should include documentation and, where
@@ -176,6 +188,11 @@ public API, element, material model, solver, or output module.
 ## Commit Guidelines
 
 Keep commits focused and use clear commit messages.
+
+## Contribution License
+
+By submitting a contribution to PyFEM, you agree that your contribution is
+licensed under the MIT License used by this project.
 
 Examples:
 
