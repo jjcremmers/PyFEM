@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finite Element Tutorials &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=3c516863" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#goals-and-scope">Goals and Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#how-to-cite">How to Cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/introduction.html#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../introduction/introduction.html#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">PyFEM Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../installation/overview.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#verifying-the-installation">Verifying the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#running-a-pyfem-example">Running a PyFEM Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../introduction/quickstart.html#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../elements/overview.html">Elements Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../elements/overview.html#element-types">Element Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elements/overview.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../elements/overview.html#available-element-pages">Available Element Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../materials/overview.html#configuration-in-input-files">Configuration in Input Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../materials/overview.html#available-material-pages">Available Material Pages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/BuckEigSolver.html">BuckEigSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/DynEigSolver.html">DynEigSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ExplicitSolver.html">ExplicitSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/LinearSolver.html">LinearSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ModalSolver.html">ModalSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/MultiSolver.html">MultiSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/NonlinearSolver.html">NonlinearSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ROMBasisBuilder.html">ROMBasisBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/ReducedOrderSolver.html">ReducedOrderSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/RiksSolver.html">RiksSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../solvers/StaggeredSolver.html">StaggeredSolver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../io/overview.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../io/overview.html#available-i-o-pages">Available I/O Pages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../io/overview.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dissnrg_tutorial.html">Tutorial: The dissipated energy pathfollowing solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gmsh_input_tutorial.html">Tutorial: Using GMSH Input Files in PyFEM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../develop/overview.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../develop/overview.html#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Finite Element Tutorials</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/index.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="finite-element-tutorials">
+<h1>Finite Element Tutorials<a class="headerlink" href="#finite-element-tutorials" title="Link to this heading"></a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
+<p>Most finite element textbooks focus on the mathematical derivation of the finite element method. Commercial software manuals, on the other hand, explain which buttons to press to perform an analysis.</p>
+<p>These tutorials fill the gap between both worlds.</p>
+<p>Using the Python finite element code accompanying this book, you will not only learn <strong>how</strong> to perform an analysis, but also <strong>how a finite element program actually works internally</strong>. Throughout the tutorials, you will inspect the source code, perform small modifications, and investigate the numerical algorithms behind commercial finite element software.</p>
+<p>Each tutorial takes approximately <strong>one hour</strong> and consists of a combination of background theory, code exploration and practical exercises.</p>
+<p>The tutorials assume that you have already studied the theoretical material presented in the book.</p>
+</section>
+<hr class="docutils" />
+<section id="learning-objectives">
+<h2>Learning objectives<a class="headerlink" href="#learning-objectives" title="Link to this heading"></a></h2>
+<p>After completing the tutorial series you should be able to</p>
+<ul class="simple">
+<li><p>understand the complete workflow of a finite element program;</p></li>
+<li><p>interpret meshes, boundary conditions and solution vectors;</p></li>
+<li><p>perform reliable convergence studies;</p></li>
+<li><p>understand how finite element results are stored and visualised;</p></li>
+<li><p>understand the algorithms behind nonlinear analyses;</p></li>
+<li><p>understand the differences between implicit and explicit solvers;</p></li>
+<li><p>critically assess the quality and reliability of simulation results.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="tutorial-overview">
+<h1>Tutorial overview<a class="headerlink" href="#tutorial-overview" title="Link to this heading"></a></h1>
+<section id="your-first-finite-element-analysis">
+<h2>1. Your First Finite Element Analysis<a class="headerlink" href="#your-first-finite-element-analysis" title="Link to this heading"></a></h2>
+<blockquote>
+<div><p>Building and solving your first finite element model.</p>
+</div></blockquote>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Mesh generation</p></li>
+<li><p>Node numbering</p></li>
+<li><p>Element connectivity</p></li>
+<li><p>Assembly</p></li>
+<li><p>Solving the linear system</p></li>
+</ul>
+<p><a class="reference internal" href="tutorial01.html"><span class="std std-doc">Go to Tutorial 1</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="boundary-conditions-and-loads">
+<h2>2. Boundary Conditions and Loads<a class="headerlink" href="#boundary-conditions-and-loads" title="Link to this heading"></a></h2>
+<p>Learn how loads and constraints are actually implemented inside a finite element code.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Essential and natural boundary conditions</p></li>
+<li><p>Concentrated and distributed loads</p></li>
+<li><p>Reaction forces</p></li>
+<li><p>Singular stiffness matrices</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial02.md"><span class="xref myst">Go to Tutorial 2</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="mesh-quality-and-convergence">
+<h2>3. Mesh Quality and Convergence<a class="headerlink" href="#mesh-quality-and-convergence" title="Link to this heading"></a></h2>
+<p>A simulation is only as good as its mesh.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Mesh refinement</p></li>
+<li><p>Convergence studies</p></li>
+<li><p>Element quality</p></li>
+<li><p>Stress singularities</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial03.md"><span class="xref myst">Go to Tutorial 3</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="post-processing-where-do-the-results-come-from">
+<h2>4. Post-processing: Where Do the Results Come From?<a class="headerlink" href="#post-processing-where-do-the-results-come-from" title="Link to this heading"></a></h2>
+<p>Understand what commercial FE software is actually plotting.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Nodal quantities</p></li>
+<li><p>Element quantities</p></li>
+<li><p>Integration points</p></li>
+<li><p>Stress recovery</p></li>
+<li><p>Averaging</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial04.md"><span class="xref myst">Go to Tutorial 4</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="geometrically-nonlinear-analysis">
+<h2>5. Geometrically Nonlinear Analysis<a class="headerlink" href="#geometrically-nonlinear-analysis" title="Link to this heading"></a></h2>
+<p>Learn how Newton-Raphson iterations solve nonlinear equilibrium.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Residual forces</p></li>
+<li><p>Tangent stiffness</p></li>
+<li><p>Load stepping</p></li>
+<li><p>Convergence</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial05.md"><span class="xref myst">Go to Tutorial 5</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="material-nonlinearities">
+<h2>6. Material Nonlinearities<a class="headerlink" href="#material-nonlinearities" title="Link to this heading"></a></h2>
+<p>Introduce constitutive models and history-dependent materials.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Plasticity</p></li>
+<li><p>History variables</p></li>
+<li><p>Return mapping</p></li>
+<li><p>Internal variables</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial06.md"><span class="xref myst">Go to Tutorial 6</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="contact-and-constraints">
+<h2>7. Contact and Constraints<a class="headerlink" href="#contact-and-constraints" title="Link to this heading"></a></h2>
+<p>How finite element programs detect and enforce contact.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Contact detection</p></li>
+<li><p>Penalty methods</p></li>
+<li><p>Constraint equations</p></li>
+<li><p>Tied interfaces</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial07.md"><span class="xref myst">Go to Tutorial 7</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="dynamics-and-explicit-analysis">
+<h2>8. Dynamics and Explicit Analysis<a class="headerlink" href="#dynamics-and-explicit-analysis" title="Link to this heading"></a></h2>
+<p>Extend the solver to transient problems.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Mass matrices</p></li>
+<li><p>Time integration</p></li>
+<li><p>Explicit solvers</p></li>
+<li><p>Stability</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial08.md"><span class="xref myst">Go to Tutorial 8</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="advanced-element-technology">
+<h2>9. Advanced Element Technology<a class="headerlink" href="#advanced-element-technology" title="Link to this heading"></a></h2>
+<p>Discover why different elements produce different answers.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Reduced integration</p></li>
+<li><p>Locking</p></li>
+<li><p>Hourglassing</p></li>
+<li><p>Mixed formulations</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial09.md"><span class="xref myst">Go to Tutorial 9</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="verification-validation-and-debugging">
+<h2>10. Verification, Validation and Debugging<a class="headerlink" href="#verification-validation-and-debugging" title="Link to this heading"></a></h2>
+<p>How experienced analysts know whether they can trust a simulation.</p>
+<p>Topics</p>
+<ul class="simple">
+<li><p>Patch tests</p></li>
+<li><p>Equilibrium</p></li>
+<li><p>Energy balance</p></li>
+<li><p>Error diagnosis</p></li>
+</ul>
+<p><a class="reference internal" href="#tutorial10.md"><span class="xref myst">Go to Tutorial 10</span></a></p>
+</section>
+<hr class="docutils" />
+<section id="suggested-workflow">
+<h2>Suggested workflow<a class="headerlink" href="#suggested-workflow" title="Link to this heading"></a></h2>
+<p>The tutorials are intended to be completed in order.</p>
+<p>Each tutorial builds upon concepts introduced previously and extends the finite element code with new functionality.</p>
+<p>Approximate time per tutorial:</p>
+<p><strong>45–60 minutes</strong></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
