@@ -16,9 +16,15 @@ import sys
 from argparse import ArgumentParser, Namespace
 
 from pyfem import __version__
+from pyfem.core.metaData import (
+    get_wall_clock_time,
+    print_analysis_metadata,
+    store_analysis_metadata,
+)
 from pyfem.io.InputReader   import InputRead
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
+from pyfem.util.logger import setLogger
 
 
 def parse_arguments(argv: list[str] | None = None) -> Namespace:
@@ -88,7 +94,11 @@ def main(argv: list[str] | None = None) -> None:
     """
 
     args = parse_arguments(argv)
+    wall_clock_time = get_wall_clock_time()
     props, globdat = InputRead(args.input_file, args.dump_file, args.parameters)
+    setLogger(props)
+    store_analysis_metadata(globdat, wall_clock_time)
+    print_analysis_metadata(globdat)
 
     solver = Solver(props, globdat)
     output = OutputManager(props, globdat)

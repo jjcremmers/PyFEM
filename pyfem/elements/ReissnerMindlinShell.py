@@ -14,18 +14,30 @@ from pyfem.util.utilFunctions import one_minus_cos_over_x2, sin_over_x
 from .Element import Element
 
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 class CurrentBasisData:
     """Container for the current shell basis vectors."""
 
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 class KinematicOperatorData:
     """Container for the kinematic operators used in linearization."""
 
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 class ReferenceBasisData:
     """Container for the reference shell basis vectors and mappings."""
 
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
 class ReissnerMindlinShell(Element):
     """Four-node Reissner-Mindlin shell element with layered laminate support."""
 
@@ -43,8 +55,15 @@ class ReissnerMindlinShell(Element):
         "S23_bot",
     ]
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def __init__(self, elnodes, props):
-        """Initialize the shell element and its laminate properties."""
+        """Initialize the shell element and its laminate properties.
+
+        :param elnodes: Element node numbers.
+        :param props: Element property container with laminate and shell options.
+        """
         super().__init__(elnodes, props)
 
         self.material = Laminate(props)
@@ -67,8 +86,15 @@ class ReissnerMindlinShell(Element):
 
         self.inertia = self.material.getMassInertia()
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getTangentStiffness(self, elemdat):
-        """Assemble the element internal force vector and tangent stiffness."""
+        """Assemble the element internal force vector and tangent stiffness.
+
+        :param elemdat: Element data object containing coordinates, state,
+            internal force vector, and stiffness matrix.
+        """
         rot = self.getElementRotation(elemdat.coords)
         transform = self.getElementTransformation(rot)
         local_coords = self.getLocalCoordinates(elemdat.coords, rot)
@@ -91,8 +117,15 @@ class ReissnerMindlinShell(Element):
         elemdat.stiff[:, :] = self.toGlobalCoordinates(local_stiff, transform)
         elemdat.stiff[:, :] = 0.5 * (elemdat.stiff + elemdat.stiff.T)
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getInternalForce(self, elemdat):
-        """Compute the element internal force vector."""
+        """Compute the element internal force vector.
+
+        :param elemdat: Element data object containing coordinates, state, and
+            the internal force vector to update.
+        """
         rot = self.getElementRotation(elemdat.coords)
         transform = self.getElementTransformation(rot)
         local_coords = self.getLocalCoordinates(elemdat.coords, rot)
@@ -103,8 +136,15 @@ class ReissnerMindlinShell(Element):
 
         elemdat.fint = self.toGlobalCoordinates(local_fint, transform)
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getMassMatrix(self, elemdat):
-        """Assemble the consistent and lumped element mass matrices."""
+        """Assemble the consistent and lumped element mass matrices.
+
+        :param elemdat: Element data object containing coordinates and receiving
+            the mass and lumped mass entries.
+        """
         s_data = self.getShapeData()
 
         n_nel = elemdat.coords.shape[0]
@@ -127,8 +167,16 @@ class ReissnerMindlinShell(Element):
         elemdat.mass = mass
         elemdat.lumped = sum(mass)
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getLocalInternalForce(self, coords, state):
-        """Return the local internal force vector for the given state."""
+        """Return the local internal force vector for the given state.
+
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param state: Element state vector in the local shell frame.
+        :returns: Local internal force vector.
+        """
         n_nel = coords.shape[0]
         fint = zeros(len(self.dofTypes) * n_nel)
 
@@ -137,8 +185,18 @@ class ReissnerMindlinShell(Element):
 
         return fint
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def assembleElement(self, coords, state, fint, stiff):
-        """Assemble local element vectors and matrices following the Dawn formulation."""
+        """Assemble local element vectors and matrices following the Dawn formulation.
+
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param state: Element state vector in the local shell frame.
+        :param fint: Local internal force vector to assemble into.
+        :param stiff: Local stiffness matrix to assemble into, or ``None`` when
+            only the internal force is required.
+        """
         s_data = self.getShapeData()
         shear_point = self.getReducedShearPoint()
         node_directors = self.getReferenceDirectors(coords)
@@ -231,8 +289,20 @@ class ReissnerMindlinShell(Element):
                         + self.getGeometricStiffness(shear_op, shear_stress, n_dof)
                     ) * shear_weight
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getStrainVector(self, coords, nodeDirectors, ref, shapeData, state, zeta):
-        """Compute the generalized strain vector at a thickness coordinate."""
+        """Compute the generalized strain vector at a thickness coordinate.
+
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param nodeDirectors: Reference director vector at each node.
+        :param ref: Reference shell basis data at the integration point.
+        :param shapeData: Shape-function data at the integration point.
+        :param state: Element state vector in the local shell frame.
+        :param zeta: Through-thickness coordinate.
+        :returns: Generalized shell strain vector.
+        """
         cur = self.getCurrentBasis(
             coords,
             nodeDirectors,
@@ -243,8 +313,15 @@ class ReissnerMindlinShell(Element):
         )
         return self.getStrainFromBasis(cur)
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getStrainFromBasis(self, cur):
-        """Build the generalized shell strain vector from basis vectors."""
+        """Build the generalized shell strain vector from basis vectors.
+
+        :param cur: Current shell basis data.
+        :returns: Generalized shell strain vector.
+        """
         strain = zeros(5)
 
         strain[0] = 0.5 * ((cur.a1 @ cur.a1) - 1.0)
@@ -255,8 +332,20 @@ class ReissnerMindlinShell(Element):
 
         return strain
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getCurrentBasis(self, coords, nodeDirectors, ref, shapeData, state, zeta):
-        """Construct the current covariant basis vectors and director."""
+        """Construct the current covariant basis vectors and director.
+
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param nodeDirectors: Reference director vector at each node.
+        :param ref: Reference shell basis data at the integration point.
+        :param shapeData: Shape-function data at the integration point.
+        :param state: Element state vector in the local shell frame.
+        :param zeta: Through-thickness coordinate.
+        :returns: Current shell basis data.
+        """
         cur = CurrentBasisData()
 
         g1 = zeros(3)
@@ -289,6 +378,9 @@ class ReissnerMindlinShell(Element):
 
         return cur
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getKinematicOperators(
         self,
         shapeData,
@@ -298,7 +390,17 @@ class ReissnerMindlinShell(Element):
         nodeDirectors,
         zeta,
     ):
-        """Build the linearized kinematic operators for the shell element."""
+        """Build the linearized kinematic operators for the shell element.
+
+        :param shapeData: Shape-function data at the integration point.
+        :param ref: Reference shell basis data at the integration point.
+        :param cur: Current shell basis data at the integration point.
+        :param state: Element state vector in the local shell frame.
+        :param nodeDirectors: Reference director vector at each node.
+        :param zeta: Through-thickness coordinate.
+        :returns: Kinematic operator data containing strain-displacement and
+            geometric linearization matrices.
+        """
         n_nel = len(shapeData.h)
         n_dof = 6 * n_nel
 
@@ -348,8 +450,17 @@ class ReissnerMindlinShell(Element):
 
         return op
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getGeometricStiffness(self, op, stress, nDof):
-        """Assemble the stress-dependent geometric stiffness contribution."""
+        """Assemble the stress-dependent geometric stiffness contribution.
+
+        :param op: Kinematic operator data.
+        :param stress: Generalized shell stress vector.
+        :param nDof: Number of element degrees of freedom.
+        :returns: Geometric stiffness matrix.
+        """
         stiff = zeros(shape=(nDof, nDof))
 
         for i_nod in range(len(op.A1)):
@@ -376,8 +487,18 @@ class ReissnerMindlinShell(Element):
 
         return stiff
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def addDrillingContribution(self, stiff, fint, coords, state):
-        """Add the artificial drilling stiffness and corresponding forces."""
+        """Add the artificial drilling stiffness and corresponding forces.
+
+        :param stiff: Local stiffness matrix to update, or ``None`` when only
+            forces are assembled.
+        :param fint: Local internal force vector to update.
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param state: Element state vector in the local shell frame.
+        """
         area = self.getArea(coords)
         c_mem = max(1.0, self.getMembraneStiffnessScale())
         k_drill = self.drillingScale * area * c_mem
@@ -387,8 +508,14 @@ class ReissnerMindlinShell(Element):
             if stiff is not None:
                 stiff[6 * i_nod + 5, 6 * i_nod + 5] += k_drill
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getMembraneStiffnessScale(self):
-        """Return a scalar measure of the membrane stiffness level."""
+        """Return a scalar measure of the membrane stiffness level.
+
+        :returns: Membrane stiffness scale used for drilling stabilization.
+        """
         scale = 0.0
         for layer in self.material.layers:
             c_mat = self.getLayerMatrix(layer)
@@ -397,8 +524,15 @@ class ReissnerMindlinShell(Element):
             )
         return max(1.0, scale)
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def iterateLayers(self):
-        """Yield layer data together with through-thickness integration points."""
+        """Yield layer data together with through-thickness integration points.
+
+        :yields: Tuples containing a laminate layer and its thickness integration
+            data.
+        """
         for i_lay, layer in enumerate(self.material.layers):
             z0 = self.material.h[i_lay]
             z1 = self.material.h[i_lay + 1]
@@ -412,8 +546,15 @@ class ReissnerMindlinShell(Element):
 
             yield layer, zdat
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getLayerMatrix(self, layer):
-        """Return the constitutive matrix for a laminate layer."""
+        """Return the constitutive matrix for a laminate layer.
+
+        :param layer: Laminate layer data.
+        :returns: Five-component shell constitutive matrix.
+        """
         name = layer.mat
         theta = layer.theta
 
@@ -426,8 +567,16 @@ class ReissnerMindlinShell(Element):
 
         return c_mat
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getDirector(self, rot, d0):
-        """Rotate a reference director using the nodal rotation vector."""
+        """Rotate a reference director using the nodal rotation vector.
+
+        :param rot: Nodal rotation vector.
+        :param d0: Reference director vector.
+        :returns: Rotated director vector.
+        """
         theta = norm(rot)
 
         if theta < 1.0e-14:
@@ -442,8 +591,16 @@ class ReissnerMindlinShell(Element):
 
         return rotation @ d0
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getDirectorJacobian(self, rot, d0):
-        """Compute the director derivative with respect to the rotation vector."""
+        """Compute the director derivative with respect to the rotation vector.
+
+        :param rot: Nodal rotation vector.
+        :param d0: Reference director vector.
+        :returns: Director derivative with respect to nodal rotations.
+        """
         jac = zeros(shape=(3, 3))
 
         for i_dir in range(3):
@@ -458,36 +615,77 @@ class ReissnerMindlinShell(Element):
 
         return jac
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getShapeData(self):
-        """Return parent-domain quadrature and shape-function data for Quad4 shells."""
+        """Return parent-domain quadrature and shape-function data for Quad4 shells.
+
+        :returns: Shape-function data for the standard Quad4 integration rule.
+        """
         return getShapeData(elemType="Quad4")
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getReducedShearPoint(self):
-        """Return the central integration point used for selective shear integration."""
+        """Return the central integration point used for selective shear integration.
+
+        :returns: Quad4 shape-function data at the element center.
+        """
         shape_data = getShapeQuad4(array([0.0, 0.0]))
         shape_data.weight = 4.0
         return shape_data
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getShapeWeight(self, coords, shapeData):
-        """Return the weighted midsurface Jacobian at a parent-domain integration point."""
+        """Return the weighted midsurface Jacobian at a parent-domain integration point.
+
+        :param coords: Element nodal coordinates.
+        :param shapeData: Shape-function data at the integration point.
+        :returns: Weighted midsurface Jacobian.
+        """
         g1_vec = coords.T @ shapeData.dhdxi[:, 0]
         g2_vec = coords.T @ shapeData.dhdxi[:, 1]
         return norm(cross(g1_vec, g2_vec)) * shapeData.weight
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def checkElementShape(self, coords):
-        """Validate the currently supported shell interpolation."""
+        """Validate the currently supported shell interpolation.
+
+        :param coords: Element nodal coordinates.
+        :raises NotImplementedError: If the element is not a Quad4 shell.
+        """
         if coords.shape[0] != 4:
             raise NotImplementedError(
                 "ReissnerMindlinShell currently only supports Quad4 elements."
             )
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getPerturbation(self, value):
-        """Return a finite-difference perturbation scaled to the local magnitude."""
+        """Return a finite-difference perturbation scaled to the local magnitude.
+
+        :param value: Value used to scale the perturbation.
+        :returns: Finite-difference perturbation size.
+        """
         scale = max(1.0, abs(value), self.material.thick)
         return self.tangentEps * scale
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getReferenceDirectors(self, coords):
-        """Construct reference directors at the shell nodes."""
+        """Construct reference directors at the shell nodes.
+
+        :param coords: Element nodal coordinates.
+        :returns: Reference director vector at each node.
+        """
         self.checkElementShape(coords)
         node_xi = [
             array([-1.0, -1.0]),
@@ -506,8 +704,18 @@ class ReissnerMindlinShell(Element):
 
         return dirs
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getReferenceBasis(self, coords, nodeDirectors, shapeData):
-        """Construct the reference basis and local in-plane mapping tensors."""
+        """Construct the reference basis and local in-plane mapping tensors.
+
+        :param coords: Element nodal coordinates.
+        :param nodeDirectors: Reference director vector at each node.
+        :param shapeData: Shape-function data at the integration point.
+        :returns: Reference shell basis data.
+        :raises RuntimeError: If the shell metric is degenerated.
+        """
         ref = ReferenceBasisData()
 
         g1_vec = coords.T @ shapeData.dhdxi[:, 0]
@@ -547,14 +755,28 @@ class ReissnerMindlinShell(Element):
 
         return ref
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getArea(self, coords):
-        """Compute the shell area from two triangular sub-surfaces."""
+        """Compute the shell area from two triangular sub-surfaces.
+
+        :param coords: Element nodal coordinates.
+        :returns: Approximate shell midsurface area.
+        """
         return 0.5 * norm(cross(coords[1] - coords[0], coords[3] - coords[0])) + 0.5 * norm(
             cross(coords[2] - coords[1], coords[3] - coords[1])
         )
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getElementRotation(self, coords):
-        """Build the local shell triad used by the Dawn implementation."""
+        """Build the local shell triad used by the Dawn implementation.
+
+        :param coords: Element nodal coordinates.
+        :returns: Element rotation matrix from local to global basis vectors.
+        """
         self.checkElementShape(coords)
         shear_point = self.getReducedShearPoint()
         node_directors = self.getReferenceDirectors(coords)
@@ -567,8 +789,15 @@ class ReissnerMindlinShell(Element):
 
         return rot
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getElementTransformation(self, rot):
-        """Return the block transformation from global to element coordinates."""
+        """Return the block transformation from global to element coordinates.
+
+        :param rot: Element rotation matrix.
+        :returns: Element block transformation matrix.
+        """
         transform = zeros(shape=(24, 24))
 
         for i_nod in range(4):
@@ -578,36 +807,80 @@ class ReissnerMindlinShell(Element):
 
         return transform
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getLocalCoordinates(self, coords, rot):
-        """Transform nodal coordinates to the local shell frame."""
+        """Transform nodal coordinates to the local shell frame.
+
+        :param coords: Element nodal coordinates in the global frame.
+        :param rot: Element rotation matrix.
+        :returns: Element nodal coordinates in the local shell frame.
+        """
         return coords @ rot.T
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def toElementCoordinates(self, data, transform):
-        """Transform a vector or matrix from global to local element coordinates."""
+        """Transform a vector or matrix from global to local element coordinates.
+
+        :param data: Vector or matrix in global coordinates.
+        :param transform: Element block transformation matrix.
+        :returns: Data transformed to element coordinates.
+        :raises NotImplementedError: If ``data`` is neither a vector nor a matrix.
+        """
         if len(data.shape) == 1:
             return transform @ data
         if len(data.shape) == 2:
             return transform @ data @ transform.T
         raise NotImplementedError("Unsupported data rank for shell transformation.")
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def toGlobalCoordinates(self, data, transform):
-        """Transform a vector or matrix from local to global element coordinates."""
+        """Transform a vector or matrix from local to global element coordinates.
+
+        :param data: Vector or matrix in element coordinates.
+        :param transform: Element block transformation matrix.
+        :returns: Data transformed to global coordinates.
+        :raises NotImplementedError: If ``data`` is neither a vector nor a matrix.
+        """
         if len(data.shape) == 1:
             return transform.T @ data
         if len(data.shape) == 2:
             return transform.T @ data @ transform
         raise NotImplementedError("Unsupported data rank for shell transformation.")
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def unit(self, a_vec):
-        """Return a unit vector in the direction of the input vector."""
+        """Return a unit vector in the direction of the input vector.
+
+        :param a_vec: Input vector.
+        :returns: Unit vector in the input direction.
+        :raises RuntimeError: If the input vector has near-zero length.
+        """
         a_len = norm(a_vec)
         if a_len < 1.0e-14:
             raise RuntimeError("Zero-length vector encountered in shell basis construction.")
 
         return a_vec / a_len
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def getStress(self, coords, state, shapeData, zeta):
-        """Evaluate the shell stress vector at an exact through-thickness location."""
+        """Evaluate the shell stress vector at an exact through-thickness location.
+
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param state: Element state vector in the local shell frame.
+        :param shapeData: Shape-function data at the sample point.
+        :param zeta: Through-thickness coordinate.
+        :returns: Generalized shell stress vector.
+        """
         node_directors = self.getReferenceDirectors(coords)
         ref = self.getReferenceBasis(coords, node_directors, shapeData)
         cur = self.getCurrentBasis(coords, node_directors, ref, shapeData, state, zeta)
@@ -630,8 +903,15 @@ class ReissnerMindlinShell(Element):
         stress[:] = c_mat @ strain
         return stress
 
+#------------------------------------------------------------------------------
+#
+#------------------------------------------------------------------------------
     def appendShellOutput(self, coords, state):
-        """Store Dawn-style top and bottom surface stresses at the shell nodes."""
+        """Store Dawn-style top and bottom surface stresses at the shell nodes.
+
+        :param coords: Element nodal coordinates in the local shell frame.
+        :param state: Element state vector in the local shell frame.
+        """
         sample_points = (
             getShapeQuad4(array([-1.0, -1.0])),
             getShapeQuad4(array([1.0, -1.0])),
