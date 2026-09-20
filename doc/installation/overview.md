@@ -29,9 +29,12 @@ It's recommended to install PyFEM in a virtual environment to avoid conflicts wi
 python3 -m venv pyfem-env
 # Activate on Linux / macOS
 source pyfem-env/bin/activate
-# Activate on Windows PowerShell
-pyfem-env\Scripts\activate
-# Activate on Windows Command Prompt
+```
+
+On Windows, use **Command Prompt** (`cmd.exe`) and activate the environment with:
+
+```cmd
+py -m venv pyfem-env
 pyfem-env\Scripts\activate.bat
 ```
 
@@ -207,8 +210,17 @@ brew install --cask xquartz
 **Windows:**
 1. Install Python 3.9+ from [python.org](https://www.python.org/downloads/)
 2. Ensure "Add Python to PATH" is checked
-3. Use PowerShell or Command Prompt
+3. Open **Command Prompt** (`cmd.exe`)
 4. Install Git for Windows: [git-scm.com](https://git-scm.com/)
+5. Run the installation commands from Command Prompt:
+
+   ```cmd
+   git clone https://github.com/jjcremmers/PyFEM.git
+   cd PyFEM
+   py -m venv pyfem-env
+   pyfem-env\Scripts\activate.bat
+   python -m pip install .
+   ```
 
 ## Running Examples
 ```bash
