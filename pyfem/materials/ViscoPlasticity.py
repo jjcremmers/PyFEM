@@ -71,8 +71,8 @@ class ViscoPlasticity(BaseMaterial):
     
     Notes
     -----
-    - For γ → 0, the model approaches rate-independent plasticity
-    - For γ → ∞, the model approaches perfect viscous behavior
+    - For γ → 0, the model suppresses plastic flow
+    - For γ → ∞, the model approaches rate-independent plasticity
     - The time integration uses a backward Euler scheme for stability
     """
 
@@ -87,7 +87,7 @@ class ViscoPlasticity(BaseMaterial):
             optional parameters n and hard.
         """
         BaseMaterial.__init__(self, props)
-
+    
         print(self)
         # Set default values
         if not hasattr(self, 'n'):
@@ -95,50 +95,50 @@ class ViscoPlasticity(BaseMaterial):
         
         if not hasattr(self, 'hard'):
             self.hard = 0.0
-
+    
         # Validate required parameters
         if not hasattr(self, 'gamma'):
             raise ValueError("Fluidity parameter 'gamma' must be specified for ViscoPlasticity")
         
         if not hasattr(self, 'syield'):
             raise ValueError("Yield stress 'syield' must be specified for ViscoPlasticity")
-
+    
         # Compute elastic constants
         self.ebulk3 = self.E / (1.0 - 2.0 * self.nu)
         self.eg2 = self.E / (1.0 + self.nu)
         self.eg = 0.5 * self.eg2
         self.eg3 = 3.0 * self.eg
         self.elam = (self.ebulk3 - self.eg2) / 3.0
-
+    
         # Construct elastic stiffness matrix
         self.ctang = zeros(shape=(6, 6))
         self.ctang[:3, :3] = self.elam
-
+    
         self.ctang[0, 0] += self.eg2
         self.ctang[1, 1] = self.ctang[0, 0]
         self.ctang[2, 2] = self.ctang[0, 0]
-
+    
         self.ctang[3, 3] = self.eg
         self.ctang[4, 4] = self.ctang[3, 3]
         self.ctang[5, 5] = self.ctang[3, 3]
-
+    
         # Initialize history variables
         self.setHistoryParameter('sigma', zeros(6))
         self.setHistoryParameter('eelas', zeros(6))
         self.setHistoryParameter('eplas', zeros(6))
         self.setHistoryParameter('eqplas', 0.0)
         self.setHistoryParameter('time_old', 0.0)
-
+    
         self.commitHistory()
-
+    
         # Set output labels
         self.outLabels = ["S11", "S22", "S33", "S23", "S13", "S12", "Epl", "EqPl"]
         self.outData = zeros(8)
-
+    
         # Convergence tolerance
         self.tolerance = 1.0e-8
         self.maxIter = 20
-
+    
     def getStress(self, kinematics) -> Tuple[array, array]:
         """
         Compute stress and tangent stiffness for the viscoplastic model.
@@ -177,127 +177,158 @@ class ViscoPlasticity(BaseMaterial):
         eqplas = self.getHistoryParameter('eqplas')
         sigma = self.getHistoryParameter('sigma')
         time_old = self.getHistoryParameter('time_old')
-
+    
         # Get time increment
         time_new = self.solverStat.time
         dtime = time_new - time_old
-
+    
         # Convert strain to 6 components if needed
         if len(kinematics.dstrain) == 6:
             dstrain = kinematics.dstrain
         else:
             dstrain = transform2To3(kinematics.dstrain)
-
+    
         # Elastic predictor
         eelas_trial = eelas + dstrain
         sigma_trial = dot(self.ctang, eelas_trial)
-
+    
         # Compute von Mises stress
         smises = vonMisesStress(sigma_trial)
-
+    
         # Current yield stress including hardening
         syield_current = self.syield + self.hard * eqplas
-
+    
         # Initialize tangent with elastic stiffness
         tang = self.ctang.copy()
-
+    
         # Check for viscoplastic loading
         if smises > syield_current and dtime > 0:
             # Compute overstress ratio
             overstress = (smises - syield_current) / syield_current
-
+    
             # Viscoplastic multiplier (per unit time)
             gamma_eff = self.gamma * (overstress ** self.n)
-
+    
             # Incremental viscoplastic strain
             deqpl = gamma_eff * dtime
-
+    
             # Extract deviatoric stress and compute flow direction
             shydro = hydrostaticStress(sigma_trial)
             flow = sigma_trial.copy()
             flow[:3] = flow[:3] - shydro * ones(3)
             flow *= 1.0 / smises
-
+    
             # Local Newton iteration for viscoplastic corrector
             converged = False
+            
             for iter in range(self.maxIter):
+            
                 # Current yield stress
                 syield_iter = self.syield + self.hard * (eqplas + deqpl)
-
-                # Residual
-                residual = smises - self.eg3 * deqpl - syield_iter
-
+            
+                # Viscous overstress factor
+                q = (deqpl / (self.gamma * dtime)) ** (1.0 / self.n)
+            
+                # Stress residual
+                residual = (
+                    smises
+                    - self.eg3 * deqpl
+                    - syield_iter
+                    - syield_iter * q
+                )
+                
+                jacobian = (
+                    -self.eg3
+                    - self.hard
+                    - self.hard * q
+                    - (syield_iter * q) / (self.n * deqpl)
+                )
+            
                 # Check convergence
                 if abs(residual) < self.tolerance * self.syield:
                     converged = True
                     break
-
-                # Jacobian (derivative of residual w.r.t. deqpl)
-                jacobian = -self.eg3 - self.hard
-
+            
                 # Newton update
                 deqpl_inc = -residual / jacobian
                 deqpl += deqpl_inc
-
+    
             if not converged:
                 import warnings
                 warnings.warn(f"Viscoplastic iteration did not converge after {self.maxIter} iterations")
-
+            
+            # Opional test to see whether Perzyna is implemented correctly. "check" should match "deqpl"    
+            """syield_final_test = self.syield + self.hard * (eqplas + deqpl)
+            smises_final_test = smises - self.eg3 * deqpl
+            
+            phi_final = (
+                (smises_final_test - syield_final_test)
+                / syield_final_test
+            )
+            
+            print(
+                f"gamma={self.gamma:.3e}, "
+                f"n={self.n:.1f}, "
+                f"dt={dtime:.3e}, "
+                f"trial={smises:.3e}, "
+                f"Y={syield_final_test:.3e}, "
+                f"phi={phi_final:.3e}, "
+                f"deqpl={deqpl:.3e}, "
+                f"check={self.gamma*dtime*(phi_final**self.n):.3e}"
+            )"""
+    
             # Update plastic strain
             eplas[:3] += 1.5 * flow[:3] * deqpl
             eplas[3:] += 3.0 * flow[3:] * deqpl
-
+    
             # Update elastic strain
             eelas[:3] = eelas_trial[:3] - 1.5 * flow[:3] * deqpl
             eelas[3:] = eelas_trial[3:] - 3.0 * flow[3:] * deqpl
-
+    
             # Update equivalent plastic strain
             eqplas += deqpl
-
+    
             # Compute final stress
-            syield_final = self.syield + self.hard * eqplas
-            sigma = flow * syield_final
+            sigma = flow * (smises - self.eg3*deqpl)
             sigma[:3] += shydro * ones(3)
-
+    
             # Compute consistent tangent (algorithmic tangent)
             # Effective shear moduli
-            effg = self.eg * syield_final / smises
+            effg = self.eg * (smises - self.eg3*deqpl) / smises
             effg2 = 2.0 * effg
-            effg3 = 3.0 * effg
             efflam = (self.ebulk3 - effg2) / 3.0
-
+            
             # Rate-dependent hardening contribution
-            rate_factor = self.gamma * self.n * (overstress ** (self.n - 1)) * dtime / syield_current
-            effhdr = self.eg3 * (self.hard + rate_factor) / (self.eg3 + self.hard + rate_factor) - effg3
-
+            effhdr = (self.eg3 ** 2) / smises * ((smises / jacobian) + deqpl)
+    
             # Construct tangent
             tang = zeros(shape=(6, 6))
             tang[:3, :3] = efflam
-
+    
             for i in range(3):
                 tang[i, i] += effg2
                 tang[i + 3, i + 3] += effg
-
+    
             # Add hardening contribution
             tang += effhdr * outer(flow, flow)
-
+    
         else:
             # Elastic response
             eelas = eelas_trial
             sigma = sigma_trial
-
+    
         # Update history variables
         self.setHistoryParameter('eelas', eelas)
         self.setHistoryParameter('eplas', eplas)
         self.setHistoryParameter('sigma', sigma)
         self.setHistoryParameter('eqplas', eqplas)
         self.setHistoryParameter('time_old', time_new)
-
+    
         # Store output data
         self.outData[:6] = sigma
         self.outData[6] = eplas[0]
         self.outData[7] = eqplas
-
+    
         # Return stress and tangent in appropriate format
         if len(kinematics.dstrain) == 6:
             return sigma, tang

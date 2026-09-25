@@ -86,7 +86,7 @@ class Hardening:
       dsyiel = self.Stresses[:]-syiel0
      
       hard = dsyiel / deqpl
-      return siyel0 + ( eqplas-eqpl0)*hard  , hard
+      return syiel0 + ( eqplas-eqpl0)*hard  , hard
       
 #
 #

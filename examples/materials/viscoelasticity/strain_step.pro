@@ -25,17 +25,17 @@
 ############################################################################
 
 #
-# Example: Viscoelastic creep test
+# Example: Viscoelastic strain step test
 #
-# This example demonstrates the time-dependent creep behavior of a viscoelastic
-# material subjected to constant stress. A single element is loaded with a
-# constant force and the displacement response is tracked over time.
+# This example demonstrates the relaxation behavior of a viscoelastic
+# material subjected to a strain step. A single element is subjected to a 
+# step in displacement and the stress response is tracked over time.
 #
 # The material uses a generalized Maxwell model with multiple relaxation times
 # to capture the viscoelastic response.
 #
 
-input = "creep_test.dat";
+input = "strain_step.dat";
 
 Continuum =
 {
@@ -60,14 +60,12 @@ Continuum =
 solver =
 {
   type = "NonlinearSolver";
-  
-  maxCycle = 100;
-  
-  # Time stepping
-  tmax = 50.0;
-  dtime = 0.5;
 
-  loadFunc = "t*(t<10)+10*(t>=10)";
+  dtime = 0.1;
+
+  loadTable = [
+    1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 
+  ];
 };
 
 outputModules = ["vtk", "GraphWriter"];
@@ -81,24 +79,16 @@ GraphWriter =
 {
   onScreen = true;
 
-  columns = ["time", "disp", "stress"];
+  columns = ["time", "stress"];
 
   time =
   {
     type = "time";
   };
 
-  disp =
-  {
-    type = "state";
-    node = 2;
-    dof  = 'u';
-  };
- 
   stress =
   {
-    type = "out";
-    node = 1;
-    label = "S11";
+    type = "S11";
+    node = 2;
   };
 };

@@ -100,12 +100,12 @@ The notched bar has:
 
 3. **Fluidity parameter**:
    ```
-   gamma = 0.0001;  # Less viscous, closer to rate-independent
-   gamma = 0.01;    # More viscous, significant rate effects
+   gamma = 0.0001;  # Smaller deviation from rate-independent behaviour
+   gamma = 0.01;    # Stronger rate-dependency for yielding
    ```
 
 4. **Compare with rate-independent**:
-   - Set gamma very small (e.g., 1e-10)
+   - Set gamma very large (e.g., 1e10)
    - Should match `IsotropicKinematicHardening` results
 
 ## Understanding the Results

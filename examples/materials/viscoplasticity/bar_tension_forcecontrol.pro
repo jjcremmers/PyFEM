@@ -25,17 +25,17 @@
 ############################################################################
 
 #
-# Example: Viscoelastic creep test
+# Example: Rate-dependent viscoplastic bar in tension
 #
-# This example demonstrates the time-dependent creep behavior of a viscoelastic
-# material subjected to constant stress. A single element is loaded with a
-# constant force and the displacement response is tracked over time.
+# This example demonstrates the rate-dependent behavior of a viscoplastic
+# material. A notched bar is subjected to tension with different loading rates.
+# The viscoplastic model shows that higher loading rates result in higher
+# peak stresses before plastic flow occurs.
 #
-# The material uses a generalized Maxwell model with multiple relaxation times
-# to capture the viscoelastic response.
+# The Perzyna overstress model is used to capture the rate dependency.
 #
 
-input = "creep_test.dat";
+input = "bar_tension_forcecontrol.dat";
 
 Continuum =
 {
@@ -43,31 +43,30 @@ Continuum =
 
   material =
   {
-    type = "ViscoElasticity";
+    type = "ViscoPlasticity";
     
     # Elastic properties
-    E    = 1000.0;         
-    nu   = 0.3;           
-    Einf = 100.0;         
+    E      = 200000.0;     
+    nu     = 0.3;         
     
-    # Viscoelastic properties - 3 Maxwell elements
-    nMaxwell = 3;
-    relaxTimes  = [0.1, 1.0, 10.0];   
-    relaxModuli = [300.0, 300.0, 300.0];
+    # Yield properties
+    syield = 10.0;       
+    hard   = 0.0;      
+    
+    # Viscoplastic properties
+    gamma  = 0.1;        
+    n      = 5.0;          
   };
 };
 
 solver =
 {
   type = "NonlinearSolver";
-  
-  maxCycle = 100;
-  
-  # Time stepping
-  tmax = 50.0;
+  iterMax = 50;
+
   dtime = 0.5;
 
-  loadFunc = "t*(t<10)+10*(t>=10)";
+  loadTable = [0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.34, 0.36, 0.38, 0.4, 0.42, 0.44, 0.46, 0.48, 0.5, 0.52, 0.54, 0.56, 0.58, 0.6, 0.62, 0.64, 0.66, 0.68, 0.7, 0.72, 0.74, 0.76, 0.78, 0.8, 0.82, 0.84, 0.86, 0.88, 0.9, 0.92, 0.94, 0.96, 0.98, 1.0];
 };
 
 outputModules = ["vtk", "GraphWriter"];
@@ -81,7 +80,7 @@ GraphWriter =
 {
   onScreen = true;
 
-  columns = ["time", "disp", "stress"];
+  columns = ["disp", "load"];
 
   time =
   {
@@ -91,14 +90,21 @@ GraphWriter =
   disp =
   {
     type = "state";
-    node = 2;
+    node = 17;
     dof  = 'u';
   };
  
-  stress =
+  load =
+  {
+    type = "fint";
+    node = load_nodes;
+    dof  = 'u';
+  };
+  
+  plastic =
   {
     type = "out";
-    node = 1;
-    label = "S11";
+    node = 8;
+    label = "EqPl";
   };
 };

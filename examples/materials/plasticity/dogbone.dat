@@ -112,7 +112,7 @@
   u[clamped]     = 0.0;
   v[clamped]     = 0.0;
   w[clamped]     = 0.0;
-  u[load_nodes1] = 0.01;
+  u[load_nodes1] = 0.15;
   v[load_nodes1] = 0.0;
   w[load_nodes1] = 0.0;    
   
