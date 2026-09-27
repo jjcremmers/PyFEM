@@ -9,7 +9,10 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from importlib.metadata import version
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - used on Python < 3.11
+    import tomli as tomllib
 
 import pyfem
 from pyfem import run
