@@ -303,10 +303,8 @@ class SLSkinematic:
         k1=   iNod * 3 + iDim
         k2= ( iNod + self.param.midNodes ) * 3 + iDim
                
-        hmat[iDim,k1] +=  psi[iNod]
-        hmat[iDim,k2] +=  psi[iNod]
-        hmat[iDim,k1] += -zeta * psi[iNod]
-        hmat[iDim,k2] +=  zeta * psi[iNod]
+        hmat[iDim,k1] += 0.5 * (1.0 - zeta) * psi[iNod]
+        hmat[iDim,k2] += 0.5 * (1.0 + zeta) * psi[iNod]
 
     return hmat
     
@@ -676,4 +674,3 @@ class SLSkinematic:
         stiff[jj+0,ii] += d[0] * add;
         stiff[jj+1,ii] += d[1] * add;
         stiff[jj+2,ii] += d[2] * add;
-
