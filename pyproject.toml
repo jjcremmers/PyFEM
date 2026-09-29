@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,14 +7,14 @@ name = "pyfem"
 dynamic = ["version"]
 description = "A Python finite element code (educational)"
 readme = "README.md"
-requires-python = ">=3.9"
-license = { text = "MIT" }
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
   { name = "J.J.C. Remmers" },
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Topic :: Scientific/Engineering",
 ]
@@ -32,11 +32,11 @@ gui = [
   "PySide6",
 ]
 docs = [
-  "sphinx>=5.0.0,<8.0.0",
-  "sphinx-rtd-theme>=1.2.0",
+  "sphinx>=7",
+  "furo>=2024.8.6",
   "myst-parser>=2.0.0",
   "sphinx-autoapi>=2.0.0",
-  "docutils>=0.18",
+  "sphinx-copybutton>=0.5.0",
 ]
 dev = [
   "pytest",
@@ -57,6 +57,8 @@ pyfem-gui = "pyfem.gui.app:main"
 [project.urls]
 Homepage = "https://github.com/jjcremmers/PyFEM"
 Issues = "https://github.com/jjcremmers/PyFEM/issues"
+Documentation = "https://pyfem.readthedocs.io/"
+Repository = "https://github.com/jjcremmers/PyFEM"
 
 [tool.setuptools]
 include-package-data = true

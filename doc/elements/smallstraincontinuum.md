@@ -143,6 +143,6 @@ examples directory:
 
 ## See Also
 
-- [materials documentation](materials.md) - Available material models
-- [tutorial1 documentation](tutorial1.md) - Introduction to PyFEM input files
-- [elements documentation](elements.md) - Overview of all element types
+- [Materials overview](../materials/overview.md) - Available material models
+- [Quickstart](../introduction/quickstart.md) - Introduction to PyFEM input files
+- [Elements overview](overview.md) - Overview of all element types

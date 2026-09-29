@@ -9,6 +9,7 @@ elements/overview.md
 materials/overview.md
 solvers/overview.md
 io/overview.md
+models/overview.md
 tutorials/overview.md
 ```
 
