@@ -1,8 +1,9 @@
 # PyFEM: A Python Finite Element Code
 
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![CI](https://github.com/jjcremmers/PyFEM/actions/workflows/ci.yml/badge.svg)](https://github.com/jjcremmers/PyFEM/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://github.com/jjcremmers/PyFEM/tree/main/doc)
+[![Documentation](https://img.shields.io/badge/docs-readthedocs-brightgreen.svg)](https://pyfem.readthedocs.io/)
 [![GitHub Stars](https://img.shields.io/github/stars/jjcremmers/PyFEM?style=social)](https://github.com/jjcremmers/PyFEM/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/jjcremmers/PyFEM)](https://github.com/jjcremmers/PyFEM/issues)
 [![Cite](https://img.shields.io/badge/Cite-How%20to%20cite-blue.svg)](CITATION.cff)
@@ -35,60 +36,59 @@ The code is open source and intended for educational and scientific purposes. If
 
 ### Requirements
 
-- Python 3.9 or higher
-- pip package manager
+- Python 3.10 or higher
+- [uv](https://docs.astral.sh/uv/) for the commands below, or pip
 - Git (for cloning the repository)
 
 ### Quick Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
-
-# Install with pip
-pip install .
+uv sync
+uv run pyfem --help
 ```
 
-The base installation includes VTK output support for ParaView. The graphical
-user interface dependency is optional.
-
-For the GUI, install:
+`uv sync` creates `.venv` and installs the package in editable mode. The base
+installation includes VTK output support for ParaView. The GUI is optional:
 
 ```bash
-pip install ".[gui]"
-```
-
-To install all optional dependencies:
-
-```bash
-pip install ".[all]"
+uv sync --extra gui
+uv run --no-sync pyfem-gui
 ```
 
 ### Development Installation
 
-For developers who want to make changes and test immediately:
+For contributors, install the test tools and run the suite:
 
 ```bash
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
-pip install -e ".[dev]"
+uv sync --extra dev
+uv run --no-sync pytest -q
 ```
 
-For development with the GUI as well, use `pip install -e ".[dev,all]"`.
+Add `--extra gui` to the sync command when developing the GUI.
 
-### Virtual Environment (Recommended)
+### Building documentation
 
 ```bash
-# Create and activate virtual environment
-python3 -m venv pyfem-env
-source pyfem-env/bin/activate  # Linux/macOS
-# or
-pyfem-env\Scripts\activate  # Windows
+uv sync --extra docs
+uv run --no-sync sphinx-build -b html doc doc/_build/html
+```
 
-# Install PyFEM
+The output is `doc/_build/html/index.html`. See [doc/README.md](doc/README.md)
+for hosting details.
+
+### Installation with pip
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS
 pip install .
 ```
+
+On Windows Command Prompt, use `py -m venv .venv` and
+`.venv\Scripts\activate.bat` before `pip install .`. For the optional GUI,
+install `pip install ".[gui]"`.
 
 For detailed installation instructions including platform-specific notes, see the [Installation Guide](doc/installation/overview.md).
 
@@ -103,17 +103,17 @@ Run a PyFEM analysis from the command line:
 cd examples/ch02
 
 # Run an example
-pyfem PatchTest8.pro
+uv run pyfem PatchTest8.pro
 ```
 
 Useful command-line options:
 
 ```bash
-pyfem --help                    # Show help
-pyfem --version                 # Show installed PyFEM version
-pyfem -i input.pro              # Specify input file
-pyfem -d state.dump             # Restart from dump file
-pyfem -p param=value            # Override parameter
+uv run pyfem --help                    # Show help
+uv run pyfem --version                 # Show installed PyFEM version
+uv run pyfem -i input.pro              # Specify input file
+uv run pyfem -d state.dump             # Restart from dump file
+uv run pyfem -p param=value            # Override parameter
 ```
 
 View results in [ParaView](https://www.paraview.org/download/):
@@ -127,7 +127,7 @@ paraview PatchTest8.pvd
 ### User Guide
 
 - **[Installation Guide](doc/installation/overview.md)** - Complete installation instructions
-- **[Quick Start Tutorial](doc/tutorials/quickstart.md)** - Get started with PyFEM
+- **[Quick Start Tutorial](doc/introduction/quickstart.md)** - Get started with PyFEM
 - **[Elements](doc/elements/overview.md)** - Available element formulations
 - **[Materials](doc/materials/overview.md)** - Material model documentation
 - **[Solvers](doc/solvers/overview.md)** - Solution algorithms
@@ -147,7 +147,7 @@ For contributors and those extending PyFEM:
 
 ### API Reference
 
-- **[API Documentation](doc/introduction/api.md)** - Python API reference
+- **[API Documentation](https://pyfem.readthedocs.io/en/latest/api/pyfem/index.html)** - Generated Python API reference
 - **[Documentation Index](doc/index.md)** - Full documentation table of contents
 
 ## 🎯 Example Gallery

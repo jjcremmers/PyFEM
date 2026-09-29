@@ -63,29 +63,37 @@ git clone https://github.com/<your-username>/PyFEM.git
 cd PyFEM
 ```
 
-Create and activate a virtual environment:
+Use Python 3.10 or newer.
+
+For local development, use [uv](https://docs.astral.sh/uv/) to create a virtual
+environment and install the test tools:
+
+```bash
+uv sync --extra dev
+uv run --no-sync pytest -q
+```
+
+To include the optional GUI, add `--extra gui` to `uv sync`.
+
+If you prefer pip, create and activate a virtual environment on Linux or macOS:
 
 ```bash
 python -m venv pyfem-env
-```
-
-On Linux or macOS:
-
-```bash
 source pyfem-env/bin/activate
 ```
 
 On Windows PowerShell:
 
 ```powershell
-pyfem-env\Scripts\Activate.ps1
+py -m venv pyfem-env
+.\pyfem-env\Scripts\Activate.ps1
 ```
 
-Install PyFEM in editable mode:
+Then install PyFEM in editable mode with the development extra:
 
 ```bash
 python -m pip install --upgrade pip
-pip install -e .
+python -m pip install -e ".[dev]"
 ```
 
 Create a branch for your contribution:
@@ -159,10 +167,11 @@ added, explain in the pull request how the change was verified.
 The canonical local test command is:
 
 ```bash
-python -m pytest test
+uv run --no-sync pytest -q
 ```
 
-The test suite also supports the standard-library unittest runner:
+If using the pip environment, run `python -m pytest test`. The test suite also
+supports the standard-library unittest runner:
 
 ```bash
 python -m unittest discover -s test -p "*.py"
