@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-suffix: test-${{ matrix.python-version }}
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgl1 libxkbcommon-x11-0
+      - run: uv sync --extra dev
+      - run: uv run --no-sync coverage run -m pytest -q
+      - run: uv run --no-sync coverage report
+      - name: Smoke test CLI and example
+        run: |
+          uv run --no-sync pyfem --help
+          uv run --no-sync pyfem --version
+          mkdir -p "$RUNNER_TEMP/pyfem-smoke"
+          cp examples/ch02/PatchTest8.pro examples/ch02/PatchTest8.dat "$RUNNER_TEMP/pyfem-smoke/"
+          cd "$RUNNER_TEMP/pyfem-smoke"
+          "$GITHUB_WORKSPACE/.venv/bin/pyfem" PatchTest8.pro
+
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.14"
+          enable-cache: true
+          cache-suffix: build
+      - run: uv build
+      - name: Verify wheel installs
+        run: |
+          uv venv "$RUNNER_TEMP/pyfem-wheel-check"
+          uv pip install --python "$RUNNER_TEMP/pyfem-wheel-check" dist/*.whl
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/pyfem-wheel-check/bin/python" -c "import pyfem; from importlib.metadata import version; assert pyfem.__version__ == version('pyfem')"
+          "$RUNNER_TEMP/pyfem-wheel-check/bin/pyfem" --help
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  docs:
+    name: Build documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.14"
+          enable-cache: true
+          cache-suffix: docs
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libgl1
+      - run: uv sync --extra docs
+      - run: uv run --no-sync sphinx-build -b html doc doc/_build/html
+      - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: doc/_build/html
+
+  deploy-docs:
+    name: Deploy documentation
+    needs: docs
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: pages-${{ github.ref }}
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v5
+        id: deployment

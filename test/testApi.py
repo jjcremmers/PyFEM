@@ -86,7 +86,7 @@ class TestPackageMetadata(unittest.TestCase):
         self.assertIn("vtk", dependencies)
         self.assertEqual(optional["gui"], ["PySide6"])
         self.assertIn("myst-parser>=2.0.0", optional["docs"])
-        self.assertIn("sphinx-rtd-theme>=1.2.0", optional["docs"])
+        self.assertIn("furo>=2024.8.6", optional["docs"])
         self.assertNotIn("vtk", optional["docs"])
         self.assertIn("pytest", optional["dev"])
         self.assertIn("coverage", optional["dev"])

@@ -16,6 +16,4 @@ These input files can be executed by typing:
 pyfem delam_buckling200.pro
 ```
 
-The result load displacement curve will look as follows:
-
-![Delamination Buckling Result](img/delam_buckling200.png)
+Run the example and inspect the output in the working directory.

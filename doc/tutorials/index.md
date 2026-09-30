@@ -44,6 +44,12 @@ Topics
 
 [Go to Tutorial 1](tutorial01.md)
 
+```{toctree}
+:hidden:
+
+tutorial01.md
+```
+
 ---
 
 ## 2. Boundary Conditions and Loads
@@ -57,7 +63,7 @@ Topics
 - Reaction forces
 - Singular stiffness matrices
 
-[Go to Tutorial 2](tutorial02.md)
+*Planned tutorial.*
 
 ---
 
@@ -72,7 +78,7 @@ Topics
 - Element quality
 - Stress singularities
 
-[Go to Tutorial 3](tutorial03.md)
+*Planned tutorial.*
 
 ---
 
@@ -88,7 +94,7 @@ Topics
 - Stress recovery
 - Averaging
 
-[Go to Tutorial 4](tutorial04.md)
+*Planned tutorial.*
 
 ---
 
@@ -103,7 +109,7 @@ Topics
 - Load stepping
 - Convergence
 
-[Go to Tutorial 5](tutorial05.md)
+*Planned tutorial.*
 
 ---
 
@@ -118,7 +124,7 @@ Topics
 - Return mapping
 - Internal variables
 
-[Go to Tutorial 6](tutorial06.md)
+*Planned tutorial.*
 
 ---
 
@@ -133,7 +139,7 @@ Topics
 - Constraint equations
 - Tied interfaces
 
-[Go to Tutorial 7](tutorial07.md)
+*Planned tutorial.*
 
 ---
 
@@ -148,7 +154,7 @@ Topics
 - Explicit solvers
 - Stability
 
-[Go to Tutorial 8](tutorial08.md)
+*Planned tutorial.*
 
 ---
 
@@ -163,7 +169,7 @@ Topics
 - Hourglassing
 - Mixed formulations
 
-[Go to Tutorial 9](tutorial09.md)
+*Planned tutorial.*
 
 ---
 
@@ -178,7 +184,7 @@ Topics
 - Energy balance
 - Error diagnosis
 
-[Go to Tutorial 10](tutorial10.md)
+*Planned tutorial.*
 
 ---
 

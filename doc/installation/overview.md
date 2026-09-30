@@ -6,8 +6,8 @@ Both the **Python API** and the **command-line interface (CLI)** are included.
 ## Requirements
 
 **System Requirements:**
-- Python 3.9 or newer
-- pip (Python package manager)
+- Python 3.10 or newer
+- [uv](https://docs.astral.sh/uv/) for the recommended workflow, or pip
 - Git (for cloning the repository)
 
 **Python Dependencies** (installed automatically):
@@ -21,56 +21,66 @@ Both the **Python API** and the **command-line interface (CLI)** are included.
 **Optional Dependencies:**
 - `PySide6`: graphical user interface support
 
-**Recommended: Virtual Environment**
-It's recommended to install PyFEM in a virtual environment to avoid conflicts with other Python packages:
+## Installation with uv
 
-```bash
-# Create virtual environment
-python3 -m venv pyfem-env
-# Activate on Linux / macOS
-source pyfem-env/bin/activate
-```
+From the repository root, uv creates a virtual environment and installs PyFEM:
 
-On Windows, use **Command Prompt** (`cmd.exe`) and activate the environment with:
-
-```cmd
-py -m venv pyfem-env
-pyfem-env\Scripts\activate.bat
-```
-
-## Installation Steps
-
-### Method 1: Standard Installation (Recommended)
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
+uv sync
+uv run pyfem --help
+```
+
+The package is installed in editable mode. To add the optional GUI:
+
+```bash
+uv sync --extra gui
+uv run --no-sync pyfem-gui
+```
+
+### Development setup
+
+```bash
+uv sync --extra dev
+uv run --no-sync pytest -q
+uv build
+```
+
+Add `--extra gui` to `uv sync` when developing the GUI.
+
+## Installation with pip
+
+Create a virtual environment first. On Linux or macOS:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install .
 ```
-This installs PyFEM with its core dependencies, including VTK output support for
-ParaView, and creates the `pyfem` command-line executable.
 
-To install the GUI dependencies:
+On Windows Command Prompt:
+
+```text
+py -m venv .venv
+.venv\Scripts\activate.bat
+python -m pip install .
+```
+
+This installs the core package and the `pyfem` command. When using pip in an
+activated environment, run `pyfem` directly. For the GUI, run:
 
 ```bash
 pip install ".[gui]"
 ```
 
-To install all optional dependencies:
+For an editable development installation with test tools:
 
 ```bash
-pip install ".[all]"
-```
-
-### Method 2: Development Installation
-```bash
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
 pip install -e ".[dev]"
 ```
-The `-e` flag installs in "editable" mode, so changes to the source code are immediately reflected without reinstalling.
-For development with the GUI as well, use `pip install -e ".[dev,all]"`.
 
-### Method 3: Direct from GitHub (Advanced)
+### Direct from GitHub
 ```bash
 pip install git+https://github.com/jjcremmers/PyFEM.git
 ```
@@ -81,9 +91,9 @@ After installation, verify that both the CLI and API work correctly.
 
 ### Checking the CLI
 ```bash
-pyfem --help
+uv run pyfem --help
 cd examples/ch02
-pyfem PatchTest8.pro
+uv run pyfem PatchTest8.pro
 ```
 Expected output includes solver iterations, convergence information, and generated output files.
 
@@ -100,21 +110,22 @@ If both tests complete without errors, the installation is successful.
 ### Command-Line Interface (CLI)
 **Basic Usage:**
 ```bash
-pyfem input_file.pro
+uv run pyfem input_file.pro
 ```
 **Command-Line Options:**
 ```bash
-pyfem --help                    # Show help
-pyfem --version                 # Show installed PyFEM version
-pyfem -i input.pro              # Specify input file
-pyfem -d state.dump             # Restart from dump file
-pyfem -p param=value            # Override parameter
+uv run pyfem --help                    # Show help
+uv run pyfem --version                 # Show installed PyFEM version
+uv run pyfem -i input.pro              # Specify input file
+uv run pyfem -d state.dump             # Restart from dump file
+uv run pyfem -p param=value            # Override parameter
 ```
 **Examples:**
 ```bash
-pyfem examples/ch03/cantilever8.pro
-pyfem -d results_cycle100.dump
-pyfem -i model.pro -p E=210000
+cd examples/ch03
+uv run pyfem cantilever8.pro
+uv run pyfem -d results_cycle100.dump
+uv run pyfem -i model.pro -p E=210000
 ```
 
 ### Python API
@@ -164,6 +175,8 @@ converged = globdat.solverStatus.converged
 ```bash
 cd PyFEM
 git pull origin main
+uv sync
+# Or, with pip in an activated environment:
 pip install --upgrade .
 # Or if installed directly from GitHub
 pip install --upgrade git+https://github.com/jjcremmers/PyFEM.git
@@ -179,22 +192,23 @@ pip uninstall pyfem
 ```bash
 which pyfem  # Linux/macOS
 where pyfem  # Windows
-~/.local/bin/pyfem input.pro
+uv run pyfem input.pro
 ```
 **2. Import errors**
 ```bash
-pip install --force-reinstall pyfem
+uv sync --reinstall
+# Or, with pip from the repository root:
+pip install --force-reinstall .
 ```
 **3. VTK or GUI issues**
 ```bash
-sudo apt-get install libgl1-mesa-glx libxkbcommon-x11-0  # Linux
+sudo apt-get install libgl1 libxkbcommon-x11-0  # Linux
 # On macOS, install XQuartz
 brew install --cask xquartz
 ```
 **4. Permission errors during installation**
-```bash
-pip install --user .
-```
+Use `uv sync` or an activated virtual environment instead of installing into
+the system Python.
 
 ## Platform-Specific Notes
 **Linux:**
@@ -208,13 +222,13 @@ brew install python@3.11
 brew install --cask xquartz
 ```
 **Windows:**
-1. Install Python 3.9+ from [python.org](https://www.python.org/downloads/)
+1. Install Python 3.10+ from [python.org](https://www.python.org/downloads/)
 2. Ensure "Add Python to PATH" is checked
 3. Open **Command Prompt** (`cmd.exe`)
 4. Install Git for Windows: [git-scm.com](https://git-scm.com/)
 5. Run the installation commands from Command Prompt:
 
-   ```cmd
+   ```text
    git clone https://github.com/jjcremmers/PyFEM.git
    cd PyFEM
    py -m venv pyfem-env
@@ -226,9 +240,9 @@ brew install --cask xquartz
 ```bash
 cd examples
 cd ch02
-pyfem PatchTest8.pro
-cd ch03
-pyfem cantilever8.pro
+uv run pyfem PatchTest8.pro
+cd ../ch03
+uv run pyfem cantilever8.pro
 paraview cantilever8.pvd
 ```
 Each example directory contains:
@@ -236,15 +250,15 @@ Each example directory contains:
 - `.dat` files: Mesh files
 - Output files: VTK, text, plots
 
-## Development Setup
+## Building documentation
+
 ```bash
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
-pip install -e ".[dev]"
-python -m pytest test/
-python -m black pyfem/
-python -m mypy pyfem/
+uv sync --extra docs
+uv run --no-sync sphinx-build -b html doc doc/_build/html
 ```
+
+Open `doc/_build/html/index.html`. The API reference is generated from source
+by Sphinx. On Linux, install `libgl1` if VTK cannot load during the build.
 
 ## Getting Help
 - **Documentation**: https://pyfem.readthedocs.io/
@@ -255,5 +269,5 @@ python -m mypy pyfem/
 ## Next Steps
 1. Read the [Quickstart guide](../introduction/quickstart.md)
 2. Explore examples in the `examples/` directory
-3. Review the [module documentation](../pyfem.md)
+3. Review the [generated API reference](https://pyfem.readthedocs.io/en/latest/api/pyfem/index.html)
 4. For development, see the [developer overview](../develop/overview.md)

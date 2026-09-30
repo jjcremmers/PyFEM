@@ -114,7 +114,7 @@ If you need environment setup details or platform-specific notes, refer to the
 ## License
 
 PyFEM is released under the MIT License, enabling broad use for education and research. 
-For full license details, see the [LICENSE](../LICENSE) file.
+For full license details, see the [LICENSE](../../LICENSE) file.
 
 Under the MIT License terms, you may use, copy, modify, merge, publish,
 distribute, sublicense, and/or sell copies of the software, provided that you
@@ -124,7 +124,7 @@ include the copyright notice and permission notice. The software is provided
 ### Important
 
 - The official PyFEM repository and its releases are licensed under the MIT
-  License as described above (see [LICENSE](../LICENSE)).
+  License as described above (see [LICENSE](../../LICENSE)).
 - If you obtain PyFEM as part of a third-party distribution, fork, or bundled
   project, the licensing of that distribution may differ; always consult that
   project's license in addition to the original MIT-licensed PyFEM sources.
