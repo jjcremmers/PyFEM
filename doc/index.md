@@ -201,6 +201,16 @@ The code accompanies the textbook by de Borst, Crisfield, Remmers, and Verhoosel
 
 [paraViewURL]: paraview.org
 
+```{toctree}
+:maxdepth: 3
+
+introduction/introduction.md
+installation/overview.md
+introduction/quickstart.md
+usermanual.md
+develop/overview.md
+api.md
+```
 
 ## Indices and Tables
 
