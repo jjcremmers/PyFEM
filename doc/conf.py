@@ -43,6 +43,13 @@ extensions = [
     'myst_parser',            # Support for Markdown files
 ]
 
+# Enable dollar-delimited inline and display mathematics in Markdown files,
+# for example ``$x$`` and ``$$x^2$$``.  The explicit ``{math}`` directive
+# remains available for multiline equations.
+myst_enable_extensions = [
+    'dollarmath',
+]
+
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
