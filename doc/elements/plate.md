@@ -2,9 +2,13 @@
 
 `Plate` is a flat, small-displacement plate element for meshes in the global
 `x-y` plane. Each node has five degrees of freedom: `u`, `v`, `w`, `rx`, and
-`ry`. The element supports 4-node elements. Other surface elements (3-, 6- and 8-node 
-elements) can be used, subject to the
-shape functions used by the mesh. However, this is not tested.
+`ry`.
+
+:::{warning}
+The plate element supports 4-node elements. Other surface elements (3-, 6-,
+and 8-node elements) can be used subject to the shape functions used by the
+mesh, but these configurations have not been tested.
+:::
 
 The element accepts either a single material or a laminate. Layer angles are
 given in degrees. Layers are integrated about the laminate mid-plane, so their
@@ -20,14 +24,26 @@ strains from `w`, `rx`, and `ry`.
 The membrane resultants and bending moments use the laminate constitutive
 matrices:
 
-```text
-[N]   [A B] [eps0]
-[M] = [B D] [kappa]
-```
+$$
+\begin{bmatrix}
+\boldsymbol{N} \\
+\boldsymbol{M}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\boldsymbol{A} & \boldsymbol{B} \\
+\boldsymbol{B} & \boldsymbol{D}
+\end{bmatrix}
+\begin{bmatrix}
+\boldsymbol{\varepsilon}^{0} \\
+\boldsymbol{\kappa}
+\end{bmatrix}.
+$$
 
 `A` is the extensional stiffness, `B` is the membrane-bending coupling
 stiffness, and `D` is the bending stiffness. Transverse shear uses the
-laminate shear matrix and a default shear-correction factor of `5/6`.
+laminate shear matrix and a default shear-correction factor of
+$k_s = \frac{5}{6}$.
 
 The element also provides a consistent mass matrix. Mass and rotary inertia
 are calculated from the layer densities and layer positions; therefore `rho`
@@ -39,12 +55,12 @@ Stress output is evaluated at the bottom and top surfaces with these labels:
 s11bot, s22bot, s12bot, s11top, s22top, s12top
 ```
 
-## User options (data)
+## Input parameters
 
 The element block must contain `type = "Plate"` and one of the following
 material definitions.
 
-### Single material
+### Single isotropic material
 
 Use `material` and `thickness` for a single-layer plate:
 
@@ -52,28 +68,24 @@ Use `material` and `thickness` for a single-layer plate:
 PlateElem =
 {
   type = "Plate";
+
   material =
   {
-    type = "PlaneStress";  # optional material type tag
     E       = 1.0e6;
     nu      = 0.25;
     rho     = 1.0e3;
   };
+
   thickness = 0.1;
 };
 ```
 
 The material properties consumed by the plate are:
 
-- `E`: Young's modulus. A scalar gives `E1 = E2`; a two-entry list gives
-  `[E1, E2]`.
-- `nu` or `nu12`: Poisson's ratio in the material axes.
-- `G12`: in-plane shear modulus. If omitted, it is computed as
-  `E1 / (2 * (1 + nu12))`.
-- `G13` and `G23`: optional transverse shear moduli. If omitted, `G12` is
-  used for both directions.
+- `E`: Young's modulus.
+- `nu` `: Poisson's ratio .
 - `rho`: density.
-- `thickness`: layer/plate thickness.
+- `thickness`: plate thickness.
 
 For this form, the layer angle defaults to `0` degrees.
 
@@ -106,7 +118,11 @@ PlateElem =
 Each layer requires `material` and `thickness`; `theta` is optional and
 defaults to `0` degrees. The order in `layers` is the order through the
 thickness, from bottom to top. Total thickness is the sum of the layer
-thicknesses.
+thicknesses:
+
+$$
+t = \sum_{i=1}^{n} t_i.
+$$
 
 The optional element property `shearCorrection` overrides the default `5/6`:
 
@@ -119,17 +135,19 @@ not read `stack`; use the ordered `layers` list to define the laminate.
 
 ## Examples
 
-- [Single-material cantilever](../../examples/elements/plate/plate_cantilever01.pro)
-  demonstrates the basic `material` and `thickness` form.
-- [Layered cantilever](../../examples/elements/plate/plate_cantilever02.pro)
-  demonstrates a three-layer orthotropic laminate.
-- [Plate tests](../../examples/plate/plate_test_01.pro) and the other
-  `examples/plate/plate_test_*.pro` files show alternative material and layer
-  definitions.
-- [Dynamic plate](../../examples/plate/platedyn.pro) demonstrates eigenvalue
-  analysis and the use of density.
+The two files in `examples/elements/plate` are the reference examples for this
+element:
 
-A minimal static model is:
+- [Single-material cantilever](../../examples/elements/plate/plate_cantilever01.pro)
+  uses `material` with isotropic properties (`E`, `nu`, and `rho`) and a
+  plate-level `thickness` of `0.1`.
+- [Layered cantilever](../../examples/elements/plate/plate_cantilever02.pro)
+  uses one orthotropic material (`UD`) and the layer sequence
+  `l0`–`l90`–`l0`, with each layer assigned its own angle and thickness.
+
+Both examples use a `LinearSolver`, write VTK output with `MeshWriter`, and
+enable screen output with `OutputWriter`. The essential single-material input
+from the first example is:
 
 ```text
 input = "plate_cantilever01.dat";
@@ -137,7 +155,7 @@ input = "plate_cantilever01.dat";
 PlateElem =
 {
   type = "Plate";
-  material = { E = 1.0e6; nu = 0.25; rho = 1.0e3; };
+  material = { E = 1.0e6; nu = 0.0; rho = 1.0e3; };
   thickness = 0.1;
 };
 
