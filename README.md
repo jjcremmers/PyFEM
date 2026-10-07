@@ -53,18 +53,6 @@ pip install .
 The base installation includes VTK output support for ParaView. The graphical
 user interface dependency is optional.
 
-For the GUI, install:
-
-```bash
-pip install ".[gui]"
-```
-
-To install all optional dependencies:
-
-```bash
-pip install ".[all]"
-```
-
 ### Development Installation
 
 For developers who want to make changes and test immediately:
@@ -74,8 +62,6 @@ git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
 pip install -e ".[dev]"
 ```
-
-For development with the GUI as well, use `pip install -e ".[dev,all]"`.
 
 ### Virtual Environment (Recommended)
 
@@ -90,7 +76,8 @@ pyfem-env\Scripts\activate  # Windows
 pip install .
 ```
 
-For detailed installation instructions including platform-specific notes, see the [Installation Guide](doc/installation/overview.md).
+For detailed installation instructions including platform-specific notes
+and development releases, see the [Installation Guide](doc/installation/overview.md).
 
 ## 🚀 Quick Start
 
@@ -114,6 +101,8 @@ pyfem --version                 # Show installed PyFEM version
 pyfem -i input.pro              # Specify input file
 pyfem -d state.dump             # Restart from dump file
 pyfem -p param=value            # Override parameter
+pyfem -test                     # Run the unit tests
+pyfem -coverage                 # Run tests and print coverage
 ```
 
 View results in [ParaView](https://www.paraview.org/download/):
@@ -166,8 +155,7 @@ examples/
 ├── ch15/    # Damage and fracture
 ├── elements/ # Element-specific examples
 ├── materials/ # Material model examples
-├── models/   # Special models (RVE)
-└── plate/    # Plate and shell examples
+└── models/   # Special models (RVE)
 ```
 
 Each directory contains input files (`.pro`), mesh files (`.dat`), and generates output files for visualization.

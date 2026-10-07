@@ -13,7 +13,10 @@ and object factories are delegated to `InputReader`, `Solver` and
 """
 
 import sys
+import importlib.util
 from argparse import ArgumentParser, Namespace
+from pathlib import Path
+import subprocess
 
 from pyfem import __version__
 from pyfem.core.metaData import (
@@ -25,6 +28,33 @@ from pyfem.io.InputReader   import InputRead
 from pyfem.io.OutputManager import OutputManager
 from pyfem.solvers.Solver   import Solver
 from pyfem.util.logger import setLogger
+
+
+def run_tests() -> int:
+    """Run the PyFEM test suite and return pytest's exit status."""
+    repository_root = Path(__file__).resolve().parents[2]
+    return subprocess.call(
+        [sys.executable, "-m", "pytest", "test"],
+        cwd=repository_root,
+    )
+
+
+def run_coverage() -> int:
+    """Run the PyFEM test suite with coverage and print the report."""
+    if importlib.util.find_spec("coverage") is None:
+        print("Coverage is not installed. Install it with: python -m pip install coverage")
+        return 1
+
+    repository_root = Path(__file__).resolve().parents[2]
+    test_status = subprocess.call(
+        [sys.executable, "-m", "coverage", "run", "-m", "pytest", "test"],
+        cwd=repository_root,
+    )
+    report_status = subprocess.call(
+        [sys.executable, "-m", "coverage", "report"],
+        cwd=repository_root,
+    )
+    return test_status if test_status else report_status
 
 
 def parse_arguments(argv: list[str] | None = None) -> Namespace:
@@ -60,6 +90,18 @@ def parse_arguments(argv: list[str] | None = None) -> Namespace:
         help="Override an input parameter. May be supplied multiple times.",
     )
     parser.add_argument(
+        "-test",
+        dest="run_tests",
+        action="store_true",
+        help="Run the PyFEM unit tests.",
+    )
+    parser.add_argument(
+        "-coverage",
+        dest="run_coverage",
+        action="store_true",
+        help="Run the unit tests and print a coverage report.",
+    )
+    parser.add_argument(
         "--version",
         action="version",
         version=f"PyFEM {__version__}",
@@ -72,7 +114,10 @@ def parse_arguments(argv: list[str] | None = None) -> Namespace:
 
     args.input_file = args.input_option or args.input_file
 
-    if not args.input_file and not args.dump_file:
+    if args.run_tests and args.run_coverage:
+        parser.error("choose either -test or -coverage, not both")
+
+    if not args.run_tests and not args.run_coverage and not args.input_file and not args.dump_file:
         parser.error("an input file or dump file is required")
 
     return args
@@ -94,6 +139,11 @@ def main(argv: list[str] | None = None) -> None:
     """
 
     args = parse_arguments(argv)
+    if args.run_tests:
+        raise SystemExit(run_tests())
+    if args.run_coverage:
+        raise SystemExit(run_coverage())
+
     wall_clock_time = get_wall_clock_time()
     props, globdat = InputRead(args.input_file, args.dump_file, args.parameters)
     setLogger(props)

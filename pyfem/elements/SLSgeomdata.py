@@ -9,7 +9,7 @@ from numpy import zeros, dot, sqrt,cos,sin,cross
 from numpy import pi
 from numpy.linalg import norm,det
 from scipy.linalg import eigvals,inv
-from scipy.special.orthogonal import p_roots as gauss_scheme
+from scipy.special import p_roots as gauss_scheme
 
 #------------------------------------------------------------------------------
 #  Utiliy functions
