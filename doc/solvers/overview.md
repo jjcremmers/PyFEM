@@ -7,6 +7,7 @@ PyFEM provides nonlinear and other solver drivers to advance analyses. Use the p
 
 BuckEigSolver.md
 DynEigSolver.md
+DissipatedEnergySolver.md
 ExplicitSolver.md
 LinearSolver.md
 ModalSolver.md
