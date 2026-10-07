@@ -3,7 +3,7 @@
 PyFEM provides nonlinear and other solver drivers to advance analyses. Use the pages below for parameters, usage notes, and examples.
 
 ```{toctree}
-:maxdepth: 1
+:maxdepth: -1
 
 BuckEigSolver.md
 DynEigSolver.md

@@ -22,7 +22,7 @@ The `type` parameter specifies which material model to use, and subsequent param
 ## Available Material Models
 
 ```{toctree}
-:maxdepth: 1
+:maxdepth: -1
 
 crystal.md
 dummy.md

@@ -66,9 +66,18 @@ html_static_path = ['_static']
 html_logo = "_static/pyfem_logo.png"
 html_favicon = "_static/pyfem.ico"
 html_css_files = ["custom.css"]
+html_sidebars = {
+    '**': [
+        'searchbox.html',
+        'home-link.html',
+        'globaltoc.html',
+        'relations.html',
+        'sourcelink.html',
+    ],
+}
 html_theme_options = {
-    'collapse_navigation': False,
-    # Keep all levels of the documentation tree visible in the sidebar.
+    # Keep the top-level menu visible while expanding only the active branch.
+    'collapse_navigation': True,
     'navigation_depth': -1,
 }
 
@@ -93,3 +102,5 @@ latex_documents = [
 
 # Ensure LaTeX handles chapters properly
 latex_toplevel_sectioning = 'chapter'
+
+html_extra_path = ['../CONTRIBUTING.md']

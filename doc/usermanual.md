@@ -3,7 +3,7 @@
 This user manual provides comprehensive documentation for PyFEM's main components. Use the sections below to find detailed information about elements, materials, solvers, input/output modules, and tutorials.
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: -1
 
 elements/overview.md
 materials/overview.md

@@ -13,7 +13,7 @@ All output modules share a common configuration pattern and can be combined to p
 ## Available I/O Pages
 
 ```{toctree}
-:maxdepth: 1
+:maxdepth: -1
 
 ContourWriter.md
 DataDump.md

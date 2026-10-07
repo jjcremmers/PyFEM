@@ -8,7 +8,7 @@ Elements are defined by creating named element groups in the `.pro` file. Each g
 ## Available Element Models
 
 ```{toctree}
-:maxdepth: 1
+:maxdepth: -1
 
 beam3d.md
 beamnl.md
