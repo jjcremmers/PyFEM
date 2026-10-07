@@ -4,12 +4,10 @@ The `Plate` element models flat plates in the global `x-y` plane under small
 displacements. Each node has five degrees of freedom: `u`, `v`, `w`, `rx`,
 and `ry`.
 
-:::{admonition} Element support
-:class: plate-support-warning
+```{warning}
 The plate element supports 4-node elements. Other surface elements (3-, 6-,
 and 8-node elements) can be used subject to the shape functions used by the
 mesh, but these configurations have not been tested.
-:::
 
 The element supports both a single material layer and a multilayer laminate.
 Layer angles are specified in degrees. Layers are integrated about the
