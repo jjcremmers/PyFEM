@@ -25,7 +25,7 @@ transverse shear strains from `w`, `rx`, and `ry`.
 The membrane resultants and bending moments use the laminate constitutive
 matrices:
 
-$$
+```{math}
 \begin{bmatrix}
 \boldsymbol{N} \\
 \boldsymbol{M}
@@ -39,7 +39,7 @@ $$
 \boldsymbol{\varepsilon}^{0} \\
 \boldsymbol{\kappa}
 \end{bmatrix}.
-$$
+```
 
 Here, `A` is the extensional stiffness, `B` is the membrane-bending coupling
 stiffness, and `D` is the bending stiffness. Transverse shear uses the
@@ -157,9 +157,9 @@ Define one layer block for each name in the `layers` list:
 The order in `layers` is the order through the thickness, from bottom to top.
 The total laminate thickness is the sum of the individual layer thicknesses:
 
-$$
+```{math}
 t = \sum_{i=1}^{n} t_i.
-$$
+```
 
 ## Examples
 
