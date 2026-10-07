@@ -68,7 +68,8 @@ html_favicon = "_static/pyfem.ico"
 html_css_files = ["custom.css"]
 html_theme_options = {
     'collapse_navigation': False,
-    'navigation_depth': 3,
+    # Keep all levels of the documentation tree visible in the sidebar.
+    'navigation_depth': -1,
 }
 
 # -- Options for LaTeX output ------------------------------------------------
