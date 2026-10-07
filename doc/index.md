@@ -1,5 +1,11 @@
 # PyFEM: A Python Finite Element Code
 
+AA
+
+```{include} ../README.md
+
+BB
+
 PyFEM is a Python-based finite element code designed for educational and research purposes in computational solid mechanics. The code emphasizes clarity and readability, making it ideal for learning, teaching, and prototyping finite element methods for nonlinear analysis.
 
 ## ✨ Features
