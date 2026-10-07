@@ -204,9 +204,8 @@ The code accompanies the textbook by de Borst, Crisfield, Remmers, and Verhoosel
 ```{toctree}
 :maxdepth: 3
 
-index.md
-introduction/quickstart.md
 introduction/introduction.md
+introduction/quickstart.md
 installation/overview.md
 usermanual.md
 develop/overview.md
