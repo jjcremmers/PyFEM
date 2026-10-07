@@ -8,6 +8,7 @@ and `ry`.
 The plate element supports 4-node elements. Other surface elements (3-, 6-,
 and 8-node elements) can be used subject to the shape functions used by the
 mesh, but these configurations have not been tested.
+```
 
 The element supports both a single material layer and a multilayer laminate.
 Layer angles are specified in degrees. Layers are integrated about the
