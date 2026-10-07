@@ -1,7 +1,7 @@
 # PyFEM: A Python Finite Element Code
 
 AA
-
+```markdown
 ```{include} ../README.md
 
 BB
