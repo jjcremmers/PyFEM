@@ -1,4 +1,4 @@
-# PyFEM Installation Guide
+# Advanced Installation Guide
 
 PyFEM can be installed directly from the [GitHub source](https://github.com/jjcremmers/PyFEM).
 Both the **Python API** and the **command-line interface (CLI)** are included.

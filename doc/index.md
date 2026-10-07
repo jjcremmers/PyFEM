@@ -1,10 +1,9 @@
-```markdown
 ```{include} ../README.md
+```
 
 ```{toctree}
 :maxdepth: 3
 
-../README.md
 introduction/introduction.md
 introduction/quickstart.md
 installation/overview.md
