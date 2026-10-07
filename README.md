@@ -46,6 +46,14 @@ The code is open source and intended for educational and scientific purposes. If
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
 
+# Create and activate a virtual environment on Linux/macOS
+python3 -m venv pyfem-env
+source pyfem-env/bin/activate
+
+# On Windows (Command Prompt), use:
+# py -m venv pyfem-env
+# pyfem-env\\Scripts\\activate.bat
+
 # Install with pip
 pip install .
 ```
@@ -60,20 +68,16 @@ For developers who want to make changes and test immediately:
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
-pip install -e ".[dev]"
-```
 
-### Virtual Environment (Recommended)
-
-```bash
-# Create and activate virtual environment
+# Create and activate a virtual environment on Linux/macOS
 python3 -m venv pyfem-env
-source pyfem-env/bin/activate  # Linux/macOS
-# or
-pyfem-env\Scripts\activate  # Windows
+source pyfem-env/bin/activate
 
-# Install PyFEM
-pip install .
+# On Windows (Command Prompt), use:
+# py -m venv pyfem-env
+# pyfem-env\\Scripts\\activate.bat
+
+pip install -e ".[dev]"
 ```
 
 For detailed installation instructions including platform-specific notes
