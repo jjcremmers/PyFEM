@@ -1,8 +1,8 @@
 # Plate
 
-`Plate` is a flat, small-displacement plate element for meshes in the global
-`x-y` plane. Each node has five degrees of freedom: `u`, `v`, `w`, `rx`, and
-`ry`.
+The `Plate` element models flat plates in the global `x-y` plane under small
+displacements. Each node has five degrees of freedom: `u`, `v`, `w`, `rx`,
+and `ry`.
 
 :::{warning}
 The plate element supports 4-node elements. Other surface elements (3-, 6-,
@@ -10,16 +10,17 @@ and 8-node elements) can be used subject to the shape functions used by the
 mesh, but these configurations have not been tested.
 :::
 
-The element accepts either a single material or a laminate. Layer angles are
-given in degrees. Layers are integrated about the laminate mid-plane, so their
-ordered thicknesses define the total plate thickness.
+The element supports both a single material layer and a multilayer laminate.
+Layer angles are specified in degrees. Layers are integrated about the
+laminate mid-plane; their ordered thicknesses determine the total plate
+thickness.
 
 ## Implementation
 
-The implementation is in `pyfem/elements/Plate.py` and uses `Laminate` from
-`pyfem/elements/Composite.py`. At each integration point it computes membrane
-strains from `u` and `v`, curvatures from `rx` and `ry`, and transverse shear
-strains from `w`, `rx`, and `ry`.
+The implementation is in `pyfem/elements/Plate.py` and uses the `Laminate`
+class from `pyfem/elements/Composite.py`. At each integration point, it
+computes membrane strains from `u` and `v`, curvatures from `rx` and `ry`, and
+transverse shear strains from `w`, `rx`, and `ry`.
 
 The membrane resultants and bending moments use the laminate constitutive
 matrices:
@@ -40,14 +41,14 @@ $$
 \end{bmatrix}.
 $$
 
-`A` is the extensional stiffness, `B` is the membrane-bending coupling
+Here, `A` is the extensional stiffness, `B` is the membrane-bending coupling
 stiffness, and `D` is the bending stiffness. Transverse shear uses the
-laminate shear matrix and a default shear-correction factor of
+laminate shear matrix with the default correction factor
 $k_s = \frac{5}{6}$.
 
 The element also provides a consistent mass matrix. Mass and rotary inertia
-are calculated from the layer densities and layer positions; therefore `rho`
-is required for dynamic analyses.
+are calculated from the layer densities and layer positions, so `rho` must be
+provided when dynamic effects are included.
 
 Stress output is evaluated at the bottom and top surfaces with these labels:
 
@@ -80,7 +81,7 @@ PlateElem =
 };
 ```
 
-The input parameters of the plate as a single isotropic layer are:
+The element-level parameters for a single isotropic layer are:
 
 | Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
@@ -95,7 +96,7 @@ The material definition is:
 | ---  | --- | --- | --- |
 | `E`  | Young's modulus; a scalar gives equal principal moduli. | Float | — |
 | `nu` | Poisson's ratio. | Float | — |
-| `rho` | Density, used for the mass matrix. | Float | Optional, default = 0.0 |
+| `rho` | Density, used for the mass matrix. | Float | Required |
 
 
 ### Laminate
@@ -124,7 +125,7 @@ PlateElem =
 };
 ```
 
-The input parametera are:
+The element-level parameters are:
 
 | Parameter | Description | Type |  Remarks  |
 | ---  | --- | --- | --- |
@@ -133,7 +134,7 @@ The input parametera are:
 | `layers` | Ordered layer-block names, from bottom to top. | List of strings | — |
 | `shearCorrection` | Transverse shear correction factor. | Float | Optional, default = $5/6$ |
 
-For each material in the `materials` list a unique block is created:
+Define one material block for each name in the `materials` list:
 
 | Parameter | Description | Type |  Remarks  |
 | ---  | --- | --- | --- |
@@ -144,7 +145,7 @@ For each material in the `materials` list a unique block is created:
 | `G13` | 1–3 shear modulus. | Float | Optional, default = `G12` |
 | `G23` | 2–3 shear modulus. | Float | Optional, default = `G12` |
 
-For each layer in the  `layers` list a unique block is created:
+Define one layer block for each name in the `layers` list:
 
 | Parameter | Description | Type |  Remarks  |
 | ---  | --- | --- | --- |
@@ -153,9 +154,8 @@ For each layer in the  `layers` list a unique block is created:
 | `theta` | Layer orientation in degrees. | Float | Optional, default = $0^\circ$ |
 
 
-The order in `layers` is the order through the
-thickness, from bottom to top. Total thickness is the sum of the layer
-thicknesses:
+The order in `layers` is the order through the thickness, from bottom to top.
+The total laminate thickness is the sum of the individual layer thicknesses:
 
 $$
 t = \sum_{i=1}^{n} t_i.
