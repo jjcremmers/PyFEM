@@ -60,6 +60,25 @@ s11bot, s22bot, s12bot, s11top, s22top, s12top
 The element block must contain `type = "Plate"` and one of the following
 material definitions.
 
+### Single isotropic layer: parameter overview
+
+This is the compact form used by
+[plate_cantilever01.pro](../../examples/elements/plate/plate_cantilever01.pro).
+
+| Parameter | Location | Required? | Default | Description |
+| --- | --- | --- | --- | --- |
+| `type` | element block | Mandatory | — | Must be `"Plate"`. |
+| `material` | element block | Mandatory | — | Single material definition. |
+| `E` | `material` | Mandatory | — | Young's modulus; a scalar gives equal principal moduli. |
+| `nu` or `nu12` | `material` | Mandatory | — | Poisson's ratio. |
+| `rho` | `material` | Mandatory | — | Density, used for the mass matrix. |
+| `thickness` | element block | Mandatory | — | Plate thickness. |
+| `G12` | `material` | Optional | $E/[2(1+\nu)]$ | In-plane shear modulus. |
+| `G13` | `material` | Optional | `G12` | 1–3 shear modulus. |
+| `G23` | `material` | Optional | `G12` | 2–3 shear modulus. |
+| `theta` | element block | Optional | $0^\circ$ | Material orientation in degrees. |
+| `shearCorrection` | element block | Optional | $5/6$ | Transverse shear correction factor. |
+
 ### Single isotropic material
 
 Use `material` and `thickness` for a single-layer plate:
@@ -93,6 +112,34 @@ For this form, the layer angle defaults to `0` degrees.
 
 For multiple materials or layers, define the material names in `materials`
 and the layer names in `layers`:
+
+### Multiple layers: parameter overview
+
+This is the form used by
+[plate_cantilever02.pro](../../examples/elements/plate/plate_cantilever02.pro).
+The `layers` list defines the order through the thickness.
+
+| Parameter | Location | Required? | Default | Description |
+| --- | --- | --- | --- | --- |
+| `type` | element block | Mandatory | — | Must be `"Plate"`. |
+| `materials` | element block | Mandatory | — | Names of material blocks. |
+| `layers` | element block | Mandatory | — | Ordered layer-block names, from bottom to top. |
+| `E1` and `E2`, or `E` | material block | Mandatory | — | Principal Young's moduli; `E` may be scalar or a two-entry list. |
+| `nu12` or `nu` | material block | Mandatory | — | Poisson's ratio in material axes. |
+| `rho` | material block | Mandatory | — | Material density. |
+| `G12` | material block | Optional | $E_1/[2(1+\nu_{12})]$ | In-plane shear modulus. |
+| `G13` | material block | Optional | `G12` | 1–3 shear modulus. |
+| `G23` | material block | Optional | `G12` | 2–3 shear modulus. |
+| `material` | layer block | Mandatory | — | Name of a material in `materials`. |
+| `thickness` | layer block | Mandatory | — | Thickness of the layer. |
+| `theta` | layer block | Optional | $0^\circ$ | Layer orientation in degrees. |
+| `shearCorrection` | element block | Optional | $5/6$ | Transverse shear correction factor. |
+
+The total laminate thickness is
+
+$$
+t = \sum_{i=1}^{n} t_i.
+$$
 
 ```text
 PlateElem =
