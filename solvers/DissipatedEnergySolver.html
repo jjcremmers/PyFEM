@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DissipatedEnergySolver &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ExplicitSolver" href="ExplicitSolver.html" />
+    <link rel="prev" title="DynEigSolver" href="DynEigSolver.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">Advanced Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements/overview.html">Elements Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Solvers</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="BuckEigSolver.html">BuckEigSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="DynEigSolver.html">DynEigSolver</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">DissipatedEnergySolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#input-parameters">Input parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#dissipation-support">Dissipation support</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="ExplicitSolver.html">ExplicitSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="LinearSolver.html">LinearSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ModalSolver.html">ModalSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MultiSolver.html">MultiSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="NonlinearSolver.html">NonlinearSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ROMBasisBuilder.html">ROMBasisBuilder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ReducedOrderSolver.html">ReducedOrderSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="RiksSolver.html">RiksSolver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="StaggeredSolver.html">StaggeredSolver</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Solvers</a></li>
+      <li class="breadcrumb-item active">DissipatedEnergySolver</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/solvers/DissipatedEnergySolver.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="dissipatedenergysolver">
+<h1>DissipatedEnergySolver<a class="headerlink" href="#dissipatedenergysolver" title="Link to this heading"></a></h1>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">DissipatedEnergySolver</span></code> is a path-following solver for nonlinear
+problems with material failure, softening, delamination, or other phenomena
+that can make conventional load control difficult. It follows the equilibrium
+path through limit points by controlling the energy dissipated during an
+increment.</p>
+<p>The method is particularly useful when the load–displacement response contains
+snap-back or unstable branches. It is described in:</p>
+<blockquote>
+<div><p>E. Börjesson, J.J.C. Remmers, and M. Fagerström, “A generalised
+path-following solver for robust analysis of material failure,”
+<em>Computational Mechanics</em> (2023).</p>
+<p><a class="reference external" href="https://doi.org/10.1007/s00466-022-02175-w">doi:10.1007/s00466-022-02175-w</a></p>
+</div></blockquote>
+<p>The solver requires elements or material models that provide a dissipation
+contribution. During assembly, PyFEM collects the element dissipation vector
+and the total dissipated energy. Interface elements with cohesive material
+models and continuum elements with inelastic material models are typical
+applications.</p>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h2>
+<p>The implementation is in <code class="docutils literal notranslate"><span class="pre">pyfem/solvers/DissipatedEnergySolver.py</span></code>. Each load
+cycle uses Newton–Raphson iterations. The solver assembles:</p>
+<ul class="simple">
+<li><p>the tangent stiffness and internal force;</p></li>
+<li><p>the external reference load vector;</p></li>
+<li><p>the dissipation gradient and the accumulated dissipated energy.</p></li>
+</ul>
+<p>The solver starts with an arc-length-controlled predictor–corrector step. Once
+the dissipated energy in a converged step exceeds <code class="docutils literal notranslate"><span class="pre">switchEnergy</span></code>, it switches
+to dissipated-energy control. In the default <code class="docutils literal notranslate"><span class="pre">Local</span></code> formulation, the energy
+constraint is based directly on the assembled dissipation:</p>
+<div class="math notranslate nohighlight">
+\[g = \mathcal{D} - \Delta\tau,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> is the current dissipated energy and <span class="math notranslate nohighlight">\(\Delta\tau\)</span> is the
+target energy increment. The corresponding dissipation gradient is used in the
+Newton correction.</p>
+<p>The alternative <code class="docutils literal notranslate"><span class="pre">Classic</span></code> formulation evaluates the energy constraint from
+the load factor and displacement increments. The solver adapts the target
+energy increment using the number of Newton iterations. The adaptation aims
+to approach <code class="docutils literal notranslate"><span class="pre">optiter</span></code> iterations and is limited by <code class="docutils literal notranslate"><span class="pre">maxdTau</span></code>.</p>
+<p>After convergence, the solver stores the converged increment, updates the
+target energy increment, commits element history, and stops when either
+<code class="docutils literal notranslate"><span class="pre">maxLam</span></code> or <code class="docutils literal notranslate"><span class="pre">maxCycle</span></code> is reached.</p>
+<p>:::{warning}
+<code class="docutils literal notranslate"><span class="pre">switchEnergy</span></code> is required by the implementation. A model must also contain
+elements or materials that implement <code class="docutils literal notranslate"><span class="pre">getDissipation</span></code>; otherwise the
+dissipation contribution remains zero and energy control cannot represent the
+intended failure process.
+:::</p>
+</section>
+<section id="input-parameters">
+<h2>Input parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<p>The solver is selected with:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>solver =
+{
+  type = &quot;DissipatedEnergySolver&quot;;
+};
+</pre></div>
+</div>
+<p>The available solver parameters are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Remarks</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be <code class="docutils literal notranslate"><span class="pre">&quot;DissipatedEnergySolver&quot;</span></code>.</p></td>
+<td><p>String</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">tol</span></code></p></td>
+<td><p>Relative residual tolerance for Newton–Raphson convergence.</p></td>
+<td><p>Float</p></td>
+<td><p>Optional, default = <span class="math notranslate nohighlight">\(10^{-4}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">optiter</span></code></p></td>
+<td><p>Target number of Newton iterations used for step-size adaptation.</p></td>
+<td><p>Int</p></td>
+<td><p>Optional, default = 5</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">iterMax</span></code></p></td>
+<td><p>Maximum Newton iterations.</p></td>
+<td><p>Int</p></td>
+<td><p>Optional, default = 10</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">maxdTau</span></code></p></td>
+<td><p>Upper bound for the target dissipated-energy increment.</p></td>
+<td><p>Float</p></td>
+<td><p>Optional, default = <span class="math notranslate nohighlight">\(10^{20}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">maxLam</span></code></p></td>
+<td><p>Maximum load factor.</p></td>
+<td><p>Float</p></td>
+<td><p>Optional, default = <span class="math notranslate nohighlight">\(10^{20}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lam</span></code></p></td>
+<td><p>Initial load factor.</p></td>
+<td><p>Float</p></td>
+<td><p>Optional, default = 1.0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">disstype</span></code></p></td>
+<td><p>Dissipation constraint formulation: <code class="docutils literal notranslate"><span class="pre">&quot;Local&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;Classic&quot;</span></code>.</p></td>
+<td><p>String</p></td>
+<td><p>Optional, default = ‘“Local”`</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">switchEnergy</span></code></p></td>
+<td><p>Dissipated energy at which the solver switches from arc-length to energy control.</p></td>
+<td><p>Float</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">maxCycle</span></code></p></td>
+<td><p>Maximum number of load cycles.</p></td>
+<td><p>Int</p></td>
+<td><p>Optional, default = 1000</p></td>
+</tr>
+</tbody>
+</table>
+<p>The solver starts internally in <code class="docutils literal notranslate"><span class="pre">arclength-controlled</span></code> mode. The current
+implementation does not expose the initial control method as an input option;
+<code class="docutils literal notranslate"><span class="pre">switchEnergy</span></code> determines when energy control begins.</p>
+<section id="dissipation-support">
+<h3>Dissipation support<a class="headerlink" href="#dissipation-support" title="Link to this heading"></a></h3>
+<p>Elements contribute dissipation through a <code class="docutils literal notranslate"><span class="pre">getDissipation</span></code> method. The
+assembled contribution is based on the element’s current state and material
+history. For example, the <code class="docutils literal notranslate"><span class="pre">Interface</span></code> element and continuum elements with
+inelastic constitutive models can contribute to the solver’s energy measure.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>The reference examples are:</p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../_downloads/25774b075e93d847a5262784e1738717/delam_buckling100.pro"><span class="xref download myst">Delamination buckling with 100 elements</span></a>
+uses a finite-strain continuum together with interface elements.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/87fca6867e979b44ff33adb05423a844/delam_buckling200.pro"><span class="xref download myst">Delamination buckling with 200 elements</span></a>
+uses the same model with a finer mesh.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/8fcf80601e4e7f7f82bf420f9163406c/PeelTest.pro"><span class="xref download myst">Interface peel test</span></a>
+demonstrates local dissipation control for a cohesive interface.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/3ea27fc1f7778a34a371d75e6ca19053/PeelTest60.pro"><span class="xref download myst">Peel test from Chapter 13</span></a>
+combines the solver with graph, contour, and HDF5 output.</p></li>
+</ul>
+<p>A typical solver block is:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>solver =
+{
+  type         = &quot;DissipatedEnergySolver&quot;;
+  maxCycle     = 60;
+  tol          = 1.0e-3;
+  maxLam       = 50;
+  lam          = 1.0;
+  disstype     = &quot;Local&quot;;
+  switchEnergy = 1.0e-3;
+  maxdTau      = 0.05;
+};
+</pre></div>
+</div>
+<p>The detailed tutorial for the delamination buckling case is available in
+<a class="reference internal" href="../tutorials/dissnrg_tutorial.html"><span class="std std-doc">The dissipated energy path-following solver</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="DynEigSolver.html" class="btn btn-neutral float-left" title="DynEigSolver" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ExplicitSolver.html" class="btn btn-neutral float-right" title="ExplicitSolver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

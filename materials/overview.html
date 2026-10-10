@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Materials &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Crystal" href="crystal.html" />
+    <link rel="prev" title="Truss" href="../elements/truss.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">Advanced Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../elements/overview.html">Elements Overview</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-in-input-files">Configuration in Input Files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-syntax">Basic Syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#available-material-models">Available Material Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="crystal.html">Crystal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dummy.html">Dummy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hookeslaw.html">HookesLaw</a></li>
+<li class="toctree-l4"><a class="reference internal" href="isokinematichardening.html">IsotropicKinematicHardening</a></li>
+<li class="toctree-l4"><a class="reference internal" href="isotropic.html">Isotropic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="isotropichardeningplasticity.html">IsotropicHardeningPlasticity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="larc03.html">Larc03</a></li>
+<li class="toctree-l4"><a class="reference internal" href="micromodel.html">MicroModel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="multimaterial.html">MultiMaterial</a></li>
+<li class="toctree-l4"><a class="reference internal" href="planestrain.html">PlaneStrain</a></li>
+<li class="toctree-l4"><a class="reference internal" href="planestress.html">PlaneStress</a></li>
+<li class="toctree-l4"><a class="reference internal" href="powerlawmodei.html">PowerLawModeI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sandwichcore.html">SandwichCore material</a></li>
+<li class="toctree-l4"><a class="reference internal" href="thoulessmodei.html">ThoulessModeI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transverseisotropic.html">TransverseIsotropic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vonmises.html">VonMises</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xuneedleman.html">Xu–Needleman</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+      <li class="breadcrumb-item active">Materials</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/materials/overview.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="materials">
+<h1>Materials<a class="headerlink" href="#materials" title="Link to this heading"></a></h1>
+<p>PyFEM provides a range of material models for linear and nonlinear analysis, including elastic, elastoplastic, and cohesive zone models. Material models define the constitutive behavior that relates stress to strain (or traction to displacement jump for cohesive elements).</p>
+<section id="configuration-in-input-files">
+<h2>Configuration in Input Files<a class="headerlink" href="#configuration-in-input-files" title="Link to this heading"></a></h2>
+<p>Material models are configured within element definitions in the <code class="docutils literal notranslate"><span class="pre">.pro</span></code> input file. Each element group can have its own material definition, or materials can be defined globally and referenced by name.</p>
+<section id="basic-syntax">
+<h3>Basic Syntax<a class="headerlink" href="#basic-syntax" title="Link to this heading"></a></h3>
+<p>The material block is nested inside an element definition:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ElementGroup = {
+  type = &quot;SmallStrainContinuum&quot;;
+  material = {
+    type = &quot;PlaneStress&quot;;
+    E    = 100.0;
+    nu   = 0.3;
+  };
+};
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">type</span></code> parameter specifies which material model to use, and subsequent parameters define the material properties (e.g., Young’s modulus <code class="docutils literal notranslate"><span class="pre">E</span></code>, Poisson’s ratio <code class="docutils literal notranslate"><span class="pre">nu</span></code>).</p>
+</section>
+</section>
+<section id="available-material-models">
+<h2>Available Material Models<a class="headerlink" href="#available-material-models" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="crystal.html">Crystal</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="crystal.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crystal.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="crystal.html#elastic-data">Elastic data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystal.html#slip-system-definition">Slip-system definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystal.html#crystal-orientation">Crystal orientation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystal.html#slip-kinetics-and-hardening">Slip kinetics and hardening</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crystal.html#integration-controls">Integration controls</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="crystal.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crystal.html#example-files">Example Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="crystal.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dummy.html">Dummy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dummy.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dummy.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dummy.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dummy.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hookeslaw.html">HookesLaw</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hookeslaw.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hookeslaw.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hookeslaw.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isokinematichardening.html">IsotropicKinematicHardening</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isokinematichardening.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isokinematichardening.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="isokinematichardening.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isotropic.html">Isotropic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isotropic.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotropic.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="isotropic.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isotropichardeningplasticity.html">IsotropicHardeningPlasticity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isotropichardeningplasticity.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isotropichardeningplasticity.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="isotropichardeningplasticity.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="larc03.html">Larc03</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="larc03.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="larc03.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="larc03.html#mandatory-elastic-constants">Mandatory elastic constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="larc03.html#mandatory-strengths">Mandatory strengths</a></li>
+<li class="toctree-l3"><a class="reference internal" href="larc03.html#in-situ-data">In-situ data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="larc03.html#optional-parameters">Optional parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="larc03.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="larc03.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="micromodel.html">MicroModel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#required-structure-of-the-micro-problem">Required Structure of the Micro Problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="micromodel.html#mandatory">Mandatory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="micromodel.html#optional">Optional</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#output">Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#default-export-naming">Default Export Naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="micromodel.html#minimal-fe2-example">Minimal FE2 Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="micromodel.html#bending-example-with-fibre-microstructure">Bending Example with Fibre Microstructure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="micromodel.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multimaterial.html">MultiMaterial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multimaterial.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multimaterial.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="multimaterial.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="planestrain.html">PlaneStrain</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="planestrain.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planestrain.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="planestrain.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="planestress.html">PlaneStress</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="planestress.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="planestress.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="planestress.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="powerlawmodei.html">PowerLawModeI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="powerlawmodei.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="powerlawmodei.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sandwichcore.html">SandwichCore material</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sandwichcore.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sandwichcore.html#input-parameters">Input parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sandwichcore.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="thoulessmodei.html">ThoulessModeI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="thoulessmodei.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="thoulessmodei.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="thoulessmodei.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="thoulessmodei.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="transverseisotropic.html">TransverseIsotropic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="transverseisotropic.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transverseisotropic.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="transverseisotropic.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vonmises.html">VonMises</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vonmises.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vonmises.html#parameters">Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vonmises.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vonmises.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="xuneedleman.html">Xu–Needleman</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="xuneedleman.html#implementation">Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xuneedleman.html#input-parameters">Input parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xuneedleman.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../elements/truss.html" class="btn btn-neutral float-left" title="Truss" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="crystal.html" class="btn btn-neutral float-right" title="Crystal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

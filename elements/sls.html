@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SLS (solid-like shell) &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SmallStrainAxiSym" href="smallstrainaxisym.html" />
+    <link rel="prev" title="Reissner–Mindlin shell" href="reissnermindlinshell.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">Advanced Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Elements Overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#configuration">Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#available-element-models">Available Element Models</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="beam3d.html">Beam3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beamnl.html">BeamNL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="finitestrainaxisym.html">FiniteStrainAxiSym</a></li>
+<li class="toctree-l4"><a class="reference internal" href="finitestraincontinuum.html">FiniteStrainContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interface.html">Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kirchhoffbeam.html">KirchhoffBeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plate.html">Plate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reissnermindlinshell.html">Reissner–Mindlin shell</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SLS (solid-like shell)</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#input-parameters">Input parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#single-material">Single material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#layered-material">Layered material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#multiple-materials">Multiple materials</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#output-and-examples">Output and examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="smallstrainaxisym.html">SmallStrainAxiSym</a></li>
+<li class="toctree-l4"><a class="reference internal" href="smallstraincontinuum.html">SmallStrainContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spring.html">Spring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="timoshenkobeam.html">TimoshenkoBeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="truss.html">Truss</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Elements Overview</a></li>
+      <li class="breadcrumb-item active">SLS (solid-like shell)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/sls.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="sls-solid-like-shell">
+<h1>SLS (solid-like shell)<a class="headerlink" href="#sls-solid-like-shell" title="Link to this heading"></a></h1>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">SLS</span></code> element is a solid-like shell formulation for layered and laminated
+structures. It is intended for composite plates, sandwich panels, and other
+shells for which the through-thickness material response is important.</p>
+<p>Unlike conventional shell elements, the SLS formulation uses only the three
+translational degrees of freedom at the external nodes:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>u, v, w
+</pre></div>
+</div>
+<p>Additional kinematic variables are introduced internally and statically
+condensed at element level. The resulting global system therefore contains
+only the translational degrees of freedom, while still representing bending,
+transverse shear, and through-thickness behavior.</p>
+<p>:::{warning}
+The current implementation supports only 8-node and 16-node SLS elements.
+The 8-node formulation uses an assumed-natural-strain treatment; the 16-node
+formulation uses the higher-order interpolation without that treatment.
+:::</p>
+<p><code class="docutils literal notranslate"><span class="pre">SLS</span></code> is a backward-compatible name for the <code class="docutils literal notranslate"><span class="pre">SolidLikeShell</span></code> implementation.
+It supports both geometrically nonlinear analyses and material models with
+incremental behavior.</p>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h2>
+<p>The compatibility class is defined in <code class="docutils literal notranslate"><span class="pre">pyfem/elements/SLS.py</span></code>; the element
+implementation is in <code class="docutils literal notranslate"><span class="pre">pyfem/elements/SolidLikeShell.py</span></code>. The element performs
+the following operations at each integration point:</p>
+<ol class="arabic simple">
+<li><p>Construct the shell kinematics from the current nodal translations.</p></li>
+<li><p>Evaluate the material response at each through-thickness layer point.</p></li>
+<li><p>Assemble material and geometric stiffness contributions.</p></li>
+<li><p>Condense the internal element degrees of freedom before returning the
+element stiffness and internal force.</p></li>
+</ol>
+<p>For a layer at thickness coordinate <span class="math notranslate nohighlight">\(z\)</span>, the generalized shell strain is
+represented in the usual membrane-bending form:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{\varepsilon}(z)
+=
+\boldsymbol{\varepsilon}^{0}
++ z\,\boldsymbol{\kappa},\]</div>
+<p>where <span class="math notranslate nohighlight">\(\boldsymbol{\varepsilon}^{0}\)</span> is the midsurface strain and
+<span class="math notranslate nohighlight">\(\boldsymbol{\kappa}\)</span> is the curvature vector. Transverse shear strains are
+included in the six-component material strain state. The layer stresses are
+transformed to the shell local frame before the element force and stiffness
+are assembled.</p>
+<p>The element uses the layer thicknesses to define the total thickness:</p>
+<div class="math notranslate nohighlight">
+\[t = \sum_{i=1}^{n} t_i.\]</div>
+<p>For a single-layer definition without <code class="docutils literal notranslate"><span class="pre">layers</span></code>, the implementation uses a
+default thickness of <code class="docutils literal notranslate"><span class="pre">1.0</span></code> and a default orientation of <span class="math notranslate nohighlight">\(0^\circ\)</span>.</p>
+</section>
+<section id="input-parameters">
+<h2>Input parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<p>The element block must contain <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;SLS&quot;</span></code> and a <code class="docutils literal notranslate"><span class="pre">material</span></code> block. A
+single material can be used for all layers, or a <code class="docutils literal notranslate"><span class="pre">MultiMaterial</span></code> block can be
+used when different layers refer to different material definitions.</p>
+<section id="single-material">
+<h3>Single material<a class="headerlink" href="#single-material" title="Link to this heading"></a></h3>
+<p>This is the compact form used by
+<a class="reference download internal" download="" href="../_downloads/50f54d7dd9273123362b2b4473b2e282/sls_cantilever01.pro"><span class="xref download myst">sls_cantilever01.pro</span></a>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SLSElem =
+{
+  type = &quot;SLS&quot;;
+
+  material =
+  {
+    type = &quot;Isotropic&quot;;
+    E    = 1.0e6;
+    nu   = 0.0;
+    rho  = 1.11e3;
+  };
+};
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be <code class="docutils literal notranslate"><span class="pre">&quot;SLS&quot;</span></code>.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>Material definition used by the element.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">theta</span></code></p></td>
+<td><p>Material orientation in degrees.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(0^\circ\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p>Young’s modulus for an isotropic material.</p></td>
+<td><p>Depends on material model</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nu</span></code></p></td>
+<td><p>Poisson’s ratio for an isotropic material.</p></td>
+<td><p>Depends on material model</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rho</span></code></p></td>
+<td><p>Density, used for the mass matrix.</p></td>
+<td><p>Depends on material model</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">incremental</span></code></p></td>
+<td><p>Selects the incremental material formulation when supported.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The SLS implementation does not use a top-level <code class="docutils literal notranslate"><span class="pre">thickness</span></code> property in this
+form. If no <code class="docutils literal notranslate"><span class="pre">layers</span></code> list is supplied, it creates one layer with thickness
+<code class="docutils literal notranslate"><span class="pre">1.0</span></code>. To specify a physical thickness, use the layered form below.</p>
+</section>
+<section id="layered-material">
+<h3>Layered material<a class="headerlink" href="#layered-material" title="Link to this heading"></a></h3>
+<p>Define the layer names in <code class="docutils literal notranslate"><span class="pre">layers</span></code>. Each layer specifies its thickness,
+orientation, and material identifier. This pattern is used by
+<a class="reference download internal" download="" href="../_downloads/76c9acc4f2bc28d25471c1f9d3daf659/sls_cantilever03.pro"><span class="xref download myst">sls_cantilever03.pro</span></a>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>SLSElem =
+{
+  type   = &quot;SLS&quot;;
+  layers = [&quot;c0&quot;, &quot;c90&quot;, &quot;c0&quot;];
+
+  c0  = { thickness = 1.0; theta = 0.0;  material = 0; };
+  c90 = { thickness = 1.0; theta = 90.0; material = 0; };
+
+  material =
+  {
+    type = &quot;TransverseIsotropic&quot;;
+    E1   = 1.0e6;
+    E2   = 1.0e5;
+    nu12 = 0.25;
+    G12  = 1.0e5;
+    rho  = 1.23e4;
+  };
+};
+</pre></div>
+</div>
+<p>The element-level parameters are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be <code class="docutils literal notranslate"><span class="pre">&quot;SLS&quot;</span></code>.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">layers</span></code></p></td>
+<td><p>Ordered list of layer-block names through the thickness.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>One material block, or a <code class="docutils literal notranslate"><span class="pre">MultiMaterial</span></code> block.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+<p>Each layer block contains:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thickness</span></code></p></td>
+<td><p>Layer thickness.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">theta</span></code></p></td>
+<td><p>Layer orientation in degrees.</p></td>
+<td><p>No in layered form</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>Material index or material name.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+<p>For a single <code class="docutils literal notranslate"><span class="pre">material</span></code> block, the material properties depend on its type:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Material model, for example <code class="docutils literal notranslate"><span class="pre">&quot;Isotropic&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;TransverseIsotropic&quot;</span></code>.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p>Isotropic Young’s modulus.</p></td>
+<td><p>Required for <code class="docutils literal notranslate"><span class="pre">Isotropic</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nu</span></code></p></td>
+<td><p>Isotropic Poisson’s ratio.</p></td>
+<td><p>Required for <code class="docutils literal notranslate"><span class="pre">Isotropic</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E1</span></code>, <code class="docutils literal notranslate"><span class="pre">E2</span></code></p></td>
+<td><p>Principal Young’s moduli.</p></td>
+<td><p>Required for <code class="docutils literal notranslate"><span class="pre">TransverseIsotropic</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nu12</span></code></p></td>
+<td><p>Principal Poisson’s ratio.</p></td>
+<td><p>Required for <code class="docutils literal notranslate"><span class="pre">TransverseIsotropic</span></code></p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+<td><p>In-plane shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(E_1/[2(1+\nu_{12})]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">G13</span></code></p></td>
+<td><p>1–3 shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">G23</span></code></p></td>
+<td><p>2–3 shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rho</span></code></p></td>
+<td><p>Material density.</p></td>
+<td><p>No for dynamic analysis</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">incremental</span></code></p></td>
+<td><p>Uses the incremental formulation when supported.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="multiple-materials">
+<h3>Multiple materials<a class="headerlink" href="#multiple-materials" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;MultiMaterial&quot;</span></code> when different layers use different material
+blocks. The layer’s <code class="docutils literal notranslate"><span class="pre">material</span></code> value must match one of the names in the
+<code class="docutils literal notranslate"><span class="pre">materials</span></code> list. This is demonstrated by
+<a class="reference download internal" download="" href="../_downloads/48f9cd4f325c5bb98db5a153e4573204/sls_cantilever04.pro"><span class="xref download myst">sls_cantilever04.pro</span></a>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>material =
+{
+  type      = &quot;MultiMaterial&quot;;
+  materials = [&quot;AA&quot;, &quot;BB&quot;];
+
+  AA = { type = &quot;TransverseIsotropic&quot;; E1 = 1.0e6; E2 = 1.0e5;
+         nu12 = 0.25; G12 = 1.0e5; rho = 1.23e4; };
+  BB = { type = &quot;TransverseIsotropic&quot;; E1 = 1.0e6; E2 = 1.0e5;
+         nu12 = 0.25; G12 = 1.0e5; rho = 2.23e4; };
+};
+</pre></div>
+</div>
+</section>
+</section>
+<section id="output-and-examples">
+<h2>Output and examples<a class="headerlink" href="#output-and-examples" title="Link to this heading"></a></h2>
+<p>Stress output is generated by the selected material model. For the standard
+six-component solid stress state, the labels are typically:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>S11, S22, S33, S23, S13, S12
+</pre></div>
+</div>
+<p>The examples in <code class="docutils literal notranslate"><span class="pre">examples/elements/sls</span></code> cover the main use cases:</p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../_downloads/50f54d7dd9273123362b2b4473b2e282/sls_cantilever01.pro"><span class="xref download myst">Single-material nonlinear cantilever</span></a>
+demonstrates the basic SLS definition.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/8ca5184e0c94b59b636264d6208e6019/sls_cantilever02.pro"><span class="xref download myst">Oriented single-layer materials</span></a>
+demonstrates separate SLS element blocks with different orientations and
+densities.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/76c9acc4f2bc28d25471c1f9d3daf659/sls_cantilever03.pro"><span class="xref download myst">Layered transverse-isotropic shell</span></a>
+demonstrates a three-layer definition using one material block.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/48f9cd4f325c5bb98db5a153e4573204/sls_cantilever04.pro"><span class="xref download myst">Multi-material laminate</span></a>
+demonstrates layers that refer to different material blocks.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/98a03a44dd584c25ee8c07df2f26bd55/sls_cantilever_dyn.pro"><span class="xref download myst">Dynamic SLS cantilever</span></a>
+demonstrates eigenvalue analysis and the use of density.</p></li>
+</ul>
+<p>The examples select either a <code class="docutils literal notranslate"><span class="pre">LinearSolver</span></code>, <code class="docutils literal notranslate"><span class="pre">NonlinearSolver</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">DynEigSolver</span></code> according to the analysis type.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reissnermindlinshell.html" class="btn btn-neutral float-left" title="Reissner–Mindlin shell" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="smallstrainaxisym.html" class="btn btn-neutral float-right" title="SmallStrainAxiSym" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

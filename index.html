@@ -1,0 +1,711 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyFEM Documentation &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="_static/pyfem.ico"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="introduction/introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            PyFEM
+              <img src="_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">Advanced Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyFEM Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="pyfem-documentation">
+<h1>PyFEM Documentation<a class="headerlink" href="#pyfem-documentation" title="Link to this heading"></a></h1>
+<p>User and developer documentation for the PyFEM finite element code.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction/introduction.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction/introduction.html#goals-and-scope">Goals and Scope</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/introduction.html#how-to-cite">How to Cite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/introduction.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/introduction.html#license">License</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="introduction/introduction.html#important">Important</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="introduction/quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction/quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/quickstart.html#verifying-the-installation">Verifying the Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/quickstart.html#running-a-pyfem-example">Running a PyFEM Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/quickstart.html#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installation/overview.html">Advanced Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#method-1-standard-installation-recommended">Method 1: Standard Installation (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#method-2-development-installation">Method 2: Development Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#method-3-direct-from-github-advanced">Method 3: Direct from GitHub (Advanced)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#verifying-the-installation">Verifying the Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#checking-the-cli">Checking the CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#checking-the-api">Checking the API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#using-pyfem">Using PyFEM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#command-line-interface-cli">Command-Line Interface (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation/overview.html#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#updating-pyfem">Updating PyFEM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#platform-specific-notes">Platform-Specific Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#running-examples">Running Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#development-setup">Development Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#getting-help">Getting Help</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/overview.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usermanual.html">User Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="elements/overview.html">Elements Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="elements/overview.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="elements/overview.html#available-element-models">Available Element Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="elements/beam3d.html">Beam3D</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#local-axes">Local Axes</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#material-and-section-properties">Material And Section Properties</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/beam3d.html#standard-scalar-input">Standard scalar input</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/beam3d.html#explicit-scalar-stiffness-input">Explicit scalar stiffness input</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/beam3d.html#section-stiffness-matrix">Section stiffness matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#mass-and-rotary-inertia">Mass And Rotary Inertia</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#example">Example</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#examples">Examples</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beam3d.html#current-scope-and-limitations">Current Scope And Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/beamnl.html">BeamNL</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/beamnl.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/beamnl.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/beamnl.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/beamnl.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/finitestrainaxisym.html">FiniteStrainAxiSym</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/finitestrainaxisym.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/finitestrainaxisym.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/finitestrainaxisym.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/finitestrainaxisym.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/finitestraincontinuum.html">FiniteStrainContinuum</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/finitestraincontinuum.html#overview">Overview</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/interface.html">Interface</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/interface.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/interface.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/interface.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/interface.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/kirchhoffbeam.html">KirchhoffBeam</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/kirchhoffbeam.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/kirchhoffbeam.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/kirchhoffbeam.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/kirchhoffbeam.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/plate.html">Plate</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/plate.html#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/plate.html#input-parameters">Input parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/plate.html#single-isotropic-material">Single isotropic material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/plate.html#laminate">Laminate</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="elements/plate.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/reissnermindlinshell.html">Reissner–Mindlin shell</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/reissnermindlinshell.html#background">Background</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/reissnermindlinshell.html#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/reissnermindlinshell.html#input-parameters">Input parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/reissnermindlinshell.html#single-material">Single material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/reissnermindlinshell.html#laminate">Laminate</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="elements/reissnermindlinshell.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/sls.html">SLS (solid-like shell)</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/sls.html#background">Background</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/sls.html#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/sls.html#input-parameters">Input parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/sls.html#single-material">Single material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/sls.html#layered-material">Layered material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/sls.html#multiple-materials">Multiple materials</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="elements/sls.html#output-and-examples">Output and examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/smallstrainaxisym.html">SmallStrainAxiSym</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstrainaxisym.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstrainaxisym.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstrainaxisym.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstrainaxisym.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/smallstraincontinuum.html">SmallStrainContinuum</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstraincontinuum.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstraincontinuum.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstraincontinuum.html#mandatory-parameters">Mandatory parameters</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstraincontinuum.html#optional-parameters">Optional parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstraincontinuum.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstraincontinuum.html#example-1-2d-plane-stress-analysis">Example 1: 2D Plane Stress Analysis</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstraincontinuum.html#example-2-3d-isotropic-elasticity">Example 2: 3D Isotropic Elasticity</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/smallstraincontinuum.html#example-3-nonlinear-material-behavior">Example 3: Nonlinear Material Behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstraincontinuum.html#additional-examples">Additional Examples</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/smallstraincontinuum.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/spring.html">Spring</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/spring.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/spring.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/spring.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/spring.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/timoshenkobeam.html">TimoshenkoBeam</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/timoshenkobeam.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/timoshenkobeam.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/timoshenkobeam.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/timoshenkobeam.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="elements/truss.html">Truss</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="elements/truss.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="elements/truss.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="elements/truss.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="elements/truss.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="materials/overview.html">Materials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="materials/overview.html#configuration-in-input-files">Configuration in Input Files</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="materials/overview.html#basic-syntax">Basic Syntax</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="materials/overview.html#available-material-models">Available Material Models</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="materials/crystal.html">Crystal</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/crystal.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/crystal.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/crystal.html#elastic-data">Elastic data</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/crystal.html#slip-system-definition">Slip-system definition</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/crystal.html#crystal-orientation">Crystal orientation</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/crystal.html#slip-kinetics-and-hardening">Slip kinetics and hardening</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/crystal.html#integration-controls">Integration controls</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/crystal.html#example">Example</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/crystal.html#example-files">Example Files</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/crystal.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/dummy.html">Dummy</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/dummy.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/dummy.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/dummy.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/dummy.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/hookeslaw.html">HookesLaw</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/hookeslaw.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/hookeslaw.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/hookeslaw.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/isokinematichardening.html">IsotropicKinematicHardening</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/isokinematichardening.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/isokinematichardening.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/isokinematichardening.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/isotropic.html">Isotropic</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/isotropic.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/isotropic.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/isotropic.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/isotropichardeningplasticity.html">IsotropicHardeningPlasticity</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/isotropichardeningplasticity.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/isotropichardeningplasticity.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/isotropichardeningplasticity.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/larc03.html">Larc03</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/larc03.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/larc03.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/larc03.html#mandatory-elastic-constants">Mandatory elastic constants</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/larc03.html#mandatory-strengths">Mandatory strengths</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/larc03.html#in-situ-data">In-situ data</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/larc03.html#optional-parameters">Optional parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/larc03.html#example">Example</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/larc03.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/micromodel.html">MicroModel</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#how-it-works">How It Works</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#required-structure-of-the-micro-problem">Required Structure of the Micro Problem</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/micromodel.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/micromodel.html#optional">Optional</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#output">Output</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#default-export-naming">Default Export Naming</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#examples">Examples</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/micromodel.html#minimal-fe2-example">Minimal FE2 Example</a></li>
+<li class="toctree-l6"><a class="reference internal" href="materials/micromodel.html#bending-example-with-fibre-microstructure">Bending Example with Fibre Microstructure</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/micromodel.html#limitations">Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/multimaterial.html">MultiMaterial</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/multimaterial.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/multimaterial.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/multimaterial.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/planestrain.html">PlaneStrain</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/planestrain.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/planestrain.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/planestrain.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/planestress.html">PlaneStress</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/planestress.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/planestress.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/planestress.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/powerlawmodei.html">PowerLawModeI</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/powerlawmodei.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/powerlawmodei.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/powerlawmodei.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/powerlawmodei.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/sandwichcore.html">SandwichCore material</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/sandwichcore.html#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/sandwichcore.html#input-parameters">Input parameters</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/sandwichcore.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/thoulessmodei.html">ThoulessModeI</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/thoulessmodei.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/thoulessmodei.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/thoulessmodei.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/thoulessmodei.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/transverseisotropic.html">TransverseIsotropic</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/transverseisotropic.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/transverseisotropic.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/transverseisotropic.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/vonmises.html">VonMises</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/vonmises.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/vonmises.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="materials/vonmises.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="materials/vonmises.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="materials/xuneedleman.html">Xu–Needleman</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="materials/xuneedleman.html#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/xuneedleman.html#input-parameters">Input parameters</a></li>
+<li class="toctree-l5"><a class="reference internal" href="materials/xuneedleman.html#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="solvers/overview.html">Solvers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="solvers/BuckEigSolver.html">BuckEigSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/BuckEigSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/BuckEigSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/BuckEigSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/DynEigSolver.html">DynEigSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/DynEigSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/DynEigSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/DynEigSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/DissipatedEnergySolver.html">DissipatedEnergySolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/DissipatedEnergySolver.html#background">Background</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/DissipatedEnergySolver.html#implementation">Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/DissipatedEnergySolver.html#input-parameters">Input parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/DissipatedEnergySolver.html#dissipation-support">Dissipation support</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/DissipatedEnergySolver.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/ExplicitSolver.html">ExplicitSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ExplicitSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ExplicitSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/ExplicitSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/LinearSolver.html">LinearSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/LinearSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/LinearSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/LinearSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/ModalSolver.html">ModalSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ModalSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ModalSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/ModalSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/MultiSolver.html">MultiSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/MultiSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/MultiSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/MultiSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/NonlinearSolver.html">NonlinearSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/NonlinearSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/NonlinearSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/NonlinearSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/ROMBasisBuilder.html">ROMBasisBuilder</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ROMBasisBuilder.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ROMBasisBuilder.html#parameters">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ROMBasisBuilder.html#logged-output">Logged Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ROMBasisBuilder.html#singular-values-and-energy">Singular Values and Energy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ROMBasisBuilder.html#example">Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ROMBasisBuilder.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/ReducedOrderSolver.html">ReducedOrderSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ReducedOrderSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ReducedOrderSolver.html#parameters">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ReducedOrderSolver.html#example">Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ReducedOrderSolver.html#choosing-the-number-of-modes">Choosing the Number of Modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/ReducedOrderSolver.html#notes">Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/RiksSolver.html">RiksSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/RiksSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/RiksSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/RiksSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="solvers/StaggeredSolver.html">StaggeredSolver</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="solvers/StaggeredSolver.html#overview">Overview</a></li>
+<li class="toctree-l4"><a class="reference internal" href="solvers/StaggeredSolver.html#parameters">Parameters</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="solvers/StaggeredSolver.html#mandatory">Mandatory</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="io/overview.html">I/O Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="io/overview.html#overview">Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="io/overview.html#available-i-o-pages">Available I/O Pages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="io/ContourWriter.html">ContourWriter</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/ContourWriter.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/ContourWriter.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="io/ContourWriter.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="io/ContourWriter.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/DataDump.html">DataDump</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/DataDump.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/DataDump.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="io/DataDump.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="io/DataDump.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/GraphWriter.html">GraphWriter</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/GraphWriter.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/GraphWriter.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="io/GraphWriter.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="io/GraphWriter.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/HDF5Writer.html">HDF5Writer</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/HDF5Writer.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/HDF5Writer.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="io/HDF5Writer.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="io/HDF5Writer.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/InputReader.html">InputReader</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/InputReader.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/InputReader.html#command-line-arguments">Command-Line Arguments</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/InputReader.html#programmatic-use">Programmatic Use</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/MeshWriter.html">MeshWriter</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/MeshWriter.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/MeshWriter.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="io/MeshWriter.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="io/MeshWriter.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/OutputWriter.html">OutputWriter</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/OutputWriter.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/OutputWriter.html#parameters">Parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="io/OutputWriter.html#mandatory">Mandatory</a></li>
+<li class="toctree-l6"><a class="reference internal" href="io/OutputWriter.html#optional">Optional</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="io/ROMSnapshotWriter.html">ROMSnapshotWriter</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="io/ROMSnapshotWriter.html#overview">Overview</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/ROMSnapshotWriter.html#parameters">Parameters</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/ROMSnapshotWriter.html#behavior">Behavior</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/ROMSnapshotWriter.html#example">Example</a></li>
+<li class="toctree-l5"><a class="reference internal" href="io/ROMSnapshotWriter.html#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="io/overview.html#configuration">Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/overview.html">Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/dissnrg_tutorial.html">Tutorial: The dissipated energy pathfollowing solver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html">Tutorial: Using GMSH Input Files in PyFEM</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#overview-of-files">1. Overview of Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#creating-the-mesh-with-gmsh">2. Creating the Mesh with GMSH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#pyfem-input-file-structure">3. PyFEM Input File Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#running-the-simulation">4. Running the Simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#visualizing-results">5. Visualizing Results</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#more-examples">6. More Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tutorials/gmsh_input_tutorial.html#tips">7. Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/quickstart.html">Quickstart</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="develop/overview.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#theoretical-foundation">Theoretical Foundation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#development-topics">Development Topics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#element-development">Element Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#material-model-development">Material Model Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#solver-development">Solver Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#i-o-module-development">I/O Module Development</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#development-workflow">Development Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#code-style-and-conventions">Code Style and Conventions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#documentation">Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#type-hints">Type Hints</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#testing-guidelines">Testing Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#contributing">Contributing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#additional-resources">Additional Resources</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#example-implementations">Example Implementations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#utility-modules">Utility Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="develop/overview.html#developer-documentation">Developer Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#references">References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="develop/overview.html#support-and-contact">Support and Contact</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction/introduction.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

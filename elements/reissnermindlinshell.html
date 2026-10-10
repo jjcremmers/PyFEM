@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reissner–Mindlin shell &mdash; PyFEM  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="SLS (solid-like shell)" href="sls.html" />
+    <link rel="prev" title="Plate" href="plate.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/overview.html">Advanced Installation Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../usermanual.html">User Manual</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="overview.html">Elements Overview</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="overview.html#configuration">Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="overview.html#available-element-models">Available Element Models</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="beam3d.html">Beam3D</a></li>
+<li class="toctree-l4"><a class="reference internal" href="beamnl.html">BeamNL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="finitestrainaxisym.html">FiniteStrainAxiSym</a></li>
+<li class="toctree-l4"><a class="reference internal" href="finitestraincontinuum.html">FiniteStrainContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="interface.html">Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kirchhoffbeam.html">KirchhoffBeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="plate.html">Plate</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Reissner–Mindlin shell</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#background">Background</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#implementation">Implementation</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#input-parameters">Input parameters</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="#single-material">Single material</a></li>
+<li class="toctree-l6"><a class="reference internal" href="#laminate">Laminate</a></li>
+</ul>
+</li>
+<li class="toctree-l5"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="sls.html">SLS (solid-like shell)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="smallstrainaxisym.html">SmallStrainAxiSym</a></li>
+<li class="toctree-l4"><a class="reference internal" href="smallstraincontinuum.html">SmallStrainContinuum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="spring.html">Spring</a></li>
+<li class="toctree-l4"><a class="reference internal" href="timoshenkobeam.html">TimoshenkoBeam</a></li>
+<li class="toctree-l4"><a class="reference internal" href="truss.html">Truss</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../solvers/overview.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/overview.html">I/O Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials/overview.html">Tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../usermanual.html">User Manual</a></li>
+          <li class="breadcrumb-item"><a href="overview.html">Elements Overview</a></li>
+      <li class="breadcrumb-item active">Reissner–Mindlin shell</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/elements/reissnermindlinshell.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="reissnermindlin-shell">
+<h1>Reissner–Mindlin shell<a class="headerlink" href="#reissnermindlin-shell" title="Link to this heading"></a></h1>
+<section id="background">
+<h2>Background<a class="headerlink" href="#background" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">ReissnerMindlinShell</span></code> element models flat and curved shell midsurfaces
+with transverse shear deformation and geometrically nonlinear kinematics. It
+is a four-node quadrilateral element with six degrees of freedom per node:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>u, v, w, rx, ry, rz
+</pre></div>
+</div>
+<p>The translational degrees of freedom are <code class="docutils literal notranslate"><span class="pre">u</span></code>, <code class="docutils literal notranslate"><span class="pre">v</span></code>, and <code class="docutils literal notranslate"><span class="pre">w</span></code>; <code class="docutils literal notranslate"><span class="pre">rx</span></code> and <code class="docutils literal notranslate"><span class="pre">ry</span></code> are
+the director rotations, and <code class="docutils literal notranslate"><span class="pre">rz</span></code> is the drilling rotation. The element is
+formulated in a local shell frame and supports layer-wise integration through
+the thickness.</p>
+<p>:::{warning}
+Only four-node quadrilateral midsurfaces are supported. The element can be
+used for flat and initially curved geometries, but other interpolation types
+are not supported.
+:::</p>
+</section>
+<section id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Link to this heading"></a></h2>
+<p>The implementation is in <code class="docutils literal notranslate"><span class="pre">pyfem/elements/ReissnerMindlinShell.py</span></code>. It uses
+the same material and laminate definitions as the <a class="reference internal" href="plate.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">Plate</span></code></span></a>
+element.</p>
+<p>At each integration point, the element evaluates the current shell basis and
+director, then computes the generalized membrane, bending, and transverse
+shear strains. The material response is evaluated layer by layer. In compact
+form, the in-plane resultants and bending moments follow the laminate relation</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{bmatrix}
+\boldsymbol{N} \\
+\boldsymbol{M}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\boldsymbol{A} &amp; \boldsymbol{B} \\
+\boldsymbol{B} &amp; \boldsymbol{D}
+\end{bmatrix}
+\begin{bmatrix}
+\boldsymbol{\varepsilon}^{0} \\
+\boldsymbol{\kappa}
+\end{bmatrix},
+\end{split}\]</div>
+<p>while transverse shear uses the layer shear stiffness and the shear-correction
+factor. The tangent stiffness contains both material and geometric
+contributions. The director Jacobian is evaluated locally, and the tangent is
+obtained using the perturbation specified by <code class="docutils literal notranslate"><span class="pre">tangentPerturbation</span></code>.</p>
+<p>By default, the transverse shear terms use selective reduced integration. A
+small drilling stabilization prevents the <code class="docutils literal notranslate"><span class="pre">rz</span></code> degree of freedom from being
+singular. The default drilling scale is deliberately small so that it does
+not significantly affect the shell response.</p>
+<p>Stress output is reported at the top and bottom surfaces using these labels:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>S11_top, S22_top, S12_top, S13_top, S23_top,
+S11_bot, S22_bot, S12_bot, S13_bot, S23_bot
+</pre></div>
+</div>
+</section>
+<section id="input-parameters">
+<h2>Input parameters<a class="headerlink" href="#input-parameters" title="Link to this heading"></a></h2>
+<p>The element block must contain <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">=</span> <span class="pre">&quot;ReissnerMindlinShell&quot;</span></code> and either a
+single material definition or a laminate definition.</p>
+<section id="single-material">
+<h3>Single material<a class="headerlink" href="#single-material" title="Link to this heading"></a></h3>
+<p>This is the form used by
+<a class="reference download internal" download="" href="../_downloads/511484ed89fa2633c8269162c2fa18b7/clamped_bending.pro"><span class="xref download myst">clamped_bending.pro</span></a>:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ShellElem =
+{
+  type = &quot;ReissnerMindlinShell&quot;;
+
+  material =
+  {
+    E   = 2.1e5;
+    nu  = 0.3;
+    rho = 7.85e-9;
+  };
+
+  thickness    = 1.0;
+  drillingScale = 1.0e-6;
+};
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be <code class="docutils literal notranslate"><span class="pre">&quot;ReissnerMindlinShell&quot;</span></code>.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>Single material definition.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">thickness</span></code></p></td>
+<td><p>Shell thickness.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p>Young’s modulus; a scalar gives equal principal moduli.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nu</span></code> or <code class="docutils literal notranslate"><span class="pre">nu12</span></code></p></td>
+<td><p>Poisson’s ratio.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rho</span></code></p></td>
+<td><p>Density, used for inertia.</p></td>
+<td><p>No</p></td>
+<td><p>Required</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+<td><p>In-plane shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(E/[2(1+\nu)]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">G13</span></code></p></td>
+<td><p>1–3 shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">G23</span></code></p></td>
+<td><p>2–3 shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shearCorrection</span></code></p></td>
+<td><p>Transverse shear correction factor.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(5/6\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tangentPerturbation</span></code></p></td>
+<td><p>Perturbation used to compute the numerical tangent.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-7}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">drillingScale</span></code></p></td>
+<td><p>Stabilization scale for <code class="docutils literal notranslate"><span class="pre">rz</span></code>.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-6}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reducedShearIntegration</span></code></p></td>
+<td><p>Enables selective reduced integration of shear terms.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="laminate">
+<h3>Laminate<a class="headerlink" href="#laminate" title="Link to this heading"></a></h3>
+<p>For a layered shell, define the material names in <code class="docutils literal notranslate"><span class="pre">materials</span></code> and the layer
+names in <code class="docutils literal notranslate"><span class="pre">layers</span></code>. This is demonstrated by
+<a class="reference download internal" download="" href="../_downloads/51e14fca42f74f26f361f2d915701607/curved_cantilever_composite.pro"><span class="xref download myst">curved_cantilever_composite.pro</span></a>.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ShellElem =
+{
+  type      = &quot;ReissnerMindlinShell&quot;;
+  materials = [&quot;UD&quot;];
+  layers    = [&quot;ply0_bot&quot;, &quot;ply90_bot&quot;, &quot;ply90_top&quot;, &quot;ply0_top&quot;];
+
+  UD =
+  {
+    E1   = 1.35e5;
+    E2   = 1.0e4;
+    nu12 = 0.3;
+    G12  = 5.0e3;
+    G13  = 4.0e3;
+    G23  = 3.8e3;
+    rho  = 1.6e-9;
+  };
+
+  ply0_bot  = { material = &quot;UD&quot;; theta = 0.0;  thickness = 0.005; };
+  ply90_bot = { material = &quot;UD&quot;; theta = 90.0; thickness = 0.005; };
+  ply90_top = { material = &quot;UD&quot;; theta = 90.0; thickness = 0.005; };
+  ply0_top  = { material = &quot;UD&quot;; theta = 0.0;  thickness = 0.005; };
+};
+</pre></div>
+</div>
+<p>The element-level parameters are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">type</span></code></p></td>
+<td><p>Must be <code class="docutils literal notranslate"><span class="pre">&quot;ReissnerMindlinShell&quot;</span></code>.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">materials</span></code></p></td>
+<td><p>Names of material blocks.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">layers</span></code></p></td>
+<td><p>Ordered layer-block names, from bottom to top.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">shearCorrection</span></code></p></td>
+<td><p>Transverse shear correction factor.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(5/6\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tangentPerturbation</span></code></p></td>
+<td><p>Perturbation used to compute the numerical tangent.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-7}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">drillingScale</span></code></p></td>
+<td><p>Stabilization scale for <code class="docutils literal notranslate"><span class="pre">rz</span></code>.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-6}\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reducedShearIntegration</span></code></p></td>
+<td><p>Enables selective reduced integration of shear terms.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Material and layer blocks use the same parameters as the plate laminate:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Optional</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">E1</span></code> and <code class="docutils literal notranslate"><span class="pre">E2</span></code>, or <code class="docutils literal notranslate"><span class="pre">E</span></code></p></td>
+<td><p>Principal Young’s moduli; <code class="docutils literal notranslate"><span class="pre">E</span></code> may be scalar or a two-entry list.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nu12</span></code> or <code class="docutils literal notranslate"><span class="pre">nu</span></code></p></td>
+<td><p>Poisson’s ratio in material axes.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rho</span></code></p></td>
+<td><p>Material density.</p></td>
+<td><p>No</p></td>
+<td><p>Required</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+<td><p>In-plane shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(E_1/[2(1+\nu_{12})]\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">G13</span></code></p></td>
+<td><p>1–3 shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">G23</span></code></p></td>
+<td><p>2–3 shear modulus.</p></td>
+<td><p>Yes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">G12</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">material</span></code></p></td>
+<td><p>Name of a material in <code class="docutils literal notranslate"><span class="pre">materials</span></code>.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">thickness</span></code></p></td>
+<td><p>Thickness of the layer.</p></td>
+<td><p>No</p></td>
+<td><p>—</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">theta</span></code></p></td>
+<td><p>Layer orientation in degrees.</p></td>
+<td><p>Yes</p></td>
+<td><p><span class="math notranslate nohighlight">\(0^\circ\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<p>The total shell thickness is the sum of the layer thicknesses:</p>
+<div class="math notranslate nohighlight">
+\[
+t = \sum_{i=1}^{n} t_i.
+\]</div>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<p>The examples in <code class="docutils literal notranslate"><span class="pre">examples/elements/reissnermindlin</span></code> cover the main use cases:</p>
+<ul class="simple">
+<li><p><a class="reference download internal" download="" href="../_downloads/511484ed89fa2633c8269162c2fa18b7/clamped_bending.pro"><span class="xref download myst">Clamped bending</span></a>
+demonstrates a linear analysis of a single-material shell.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/51e14fca42f74f26f361f2d915701607/curved_cantilever_composite.pro"><span class="xref download myst">Curved composite cantilever</span></a>
+demonstrates a curved shell with four orthotropic layers.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/d6a5f14b478795e8b891a7ff4d7f39e7/pinched_hemisphere.pro"><span class="xref download myst">Pinched hemisphere</span></a>
+demonstrates geometrically nonlinear analysis.</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/72036cc1925513018775e1b486feb01c/panel_eigenfrequencies.pro"><span class="xref download myst">Panel eigenfrequencies</span></a>
+demonstrates dynamic analysis using shell inertia.</p></li>
+</ul>
+<p>The shell can be used with a linear, nonlinear, or eigenvalue solver. The
+appropriate solver and output modules are selected in each example.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="plate.html" class="btn btn-neutral float-left" title="Plate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sls.html" class="btn btn-neutral float-right" title="SLS (solid-like shell)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
