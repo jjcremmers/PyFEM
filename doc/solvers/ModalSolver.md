@@ -4,7 +4,7 @@ The `ModalSolver` computes eigenmodes via the generalized eigenvalue problem for
 
 ## Overview
 - **Solver type:** `ModalSolver`
-- Problem: solves `K v = λ M v`
+- Problem: solves `$K v = \lambda M v$`
 - Outputs: eigenvectors and eigenvalues
 - Termination: deactivates model after solve
 

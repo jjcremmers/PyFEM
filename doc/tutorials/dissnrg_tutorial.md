@@ -18,4 +18,4 @@ pyfem delam_buckling200.pro
 
 The result load displacement curve will look as follows:
 
-![Delamination Buckling Result](img/delam_buckling200.png)
+![Delamination Buckling Result](../img/delam_buckling200.png)

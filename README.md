@@ -54,31 +54,12 @@ source pyfem-env/bin/activate
 # py -m venv pyfem-env
 # pyfem-env\\Scripts\\activate.bat
 
-# Install with pip
+# Install PyFEM with pip
 pip install .
 ```
 
 The base installation includes VTK output support for ParaView. The graphical
 user interface dependency is optional.
-
-### Development Installation
-
-For developers who want to make changes and test immediately:
-
-```bash
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
-
-# Create and activate a virtual environment on Linux/macOS
-python3 -m venv pyfem-env
-source pyfem-env/bin/activate
-
-# On Windows (Command Prompt), use:
-# py -m venv pyfem-env
-# pyfem-env\\Scripts\\activate.bat
-
-pip install -e ".[dev]"
-```
 
 For detailed installation instructions including platform-specific notes
 and development releases, see the [Installation Guide](doc/installation/overview.md).
@@ -100,19 +81,20 @@ pyfem PatchTest8.pro
 Useful command-line options:
 
 ```bash
+pyfem input.pro                 # specify input file
 pyfem --help                    # Show help
 pyfem --version                 # Show installed PyFEM version
-pyfem -i input.pro              # Specify input file
 pyfem -d state.dump             # Restart from dump file
-pyfem -p param=value            # Override parameter
+pyfem input.pro -p param=value  # Override parameter in input file
 pyfem -test                     # Run the unit tests
 pyfem -coverage                 # Run tests and print coverage
 ```
 
-View results in [ParaView](https://www.paraview.org/download/):
+If you use the VTK writer to write the output to the harddisk, you can 
+view the results using [ParaView](https://www.paraview.org/download/):
 
 ```bash
-paraview PatchTest8.pvd
+paraview input.pvd
 ```
 
 ## 📖 Documentation

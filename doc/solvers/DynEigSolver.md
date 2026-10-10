@@ -4,7 +4,7 @@
 
 ## Overview
 - **Solver type:** `DynEigSolver`
-- Problem: solves `K v = λ M v` and reports `ω = sqrt(λ)`
+- Problem: solves `$K v = \lambda M v$` and reports `$\omega = \sqrt{\lambda}$`
 - Outputs: `eigenvecs` and `eigenvals` (rad/s)
 - Reporting: logs mode number, angular frequency, and frequency in Hz
 

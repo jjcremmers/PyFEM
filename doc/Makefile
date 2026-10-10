@@ -12,13 +12,17 @@ BUILDDIR      = _build
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile apidoc
+.PHONY: help Makefile apidoc pdf
 
 # Auto-generate API documentation from source code
 apidoc:
 	mkdir -p _api
 	sphinx-apidoc -f -e -M -o _api ../pyfem
 	@echo "API documentation generated. Run 'make html' to build."
+
+# Sphinx 8+ no longer provides a standalone ``pdf`` builder.  Keep the
+# historical target name as an alias for the supported LaTeX-to-PDF build.
+pdf: latexpdf
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
