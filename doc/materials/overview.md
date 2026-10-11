@@ -23,8 +23,9 @@ The `type` parameter specifies which material model to use, and subsequent param
 
 ## Continuum Constitutive Models
 
-These models describe elasticity, plasticity, anisotropy, and multiscale
-constitutive response in continuum materials.
+Continuum constitutive models define how bulk materials respond to deformation.
+They relate strain to stress and may represent elastic, plastic, anisotropic,
+or multiscale behavior in solid continuum elements.
 
 ```{toctree}
 :maxdepth: -1
