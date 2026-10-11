@@ -23,9 +23,8 @@ The `type` parameter specifies which material model to use, and subsequent param
 
 ## Continuum Constitutive Models
 
-Continuum constitutive models define how bulk materials respond to deformation.
-They relate strain to stress and may represent elastic, plastic, anisotropic,
-or multiscale behavior in solid continuum elements.
+These models describe elasticity, plasticity, anisotropy, and multiscale
+constitutive response in continuum materials.
 
 ```{toctree}
 :maxdepth: -1
@@ -45,8 +44,17 @@ transverseisotropic.md
 
 ## Cohesive Zone Models
 
-These models define traction–separation laws for interfaces, delamination,
-debonding, and other cohesive-zone applications.
+Cohesive constitutive models describe the local relation between the
+displacement jump across two adjoining surfaces and the tractions transferred
+between them. The response generally includes an initial elastic or penalty
+regime, followed by damage and softening as the interface opens or slides, and
+may end in complete decohesion. Parameters such as the peak traction and
+fracture energy control the onset and evolution of failure. These models are
+used for delamination, adhesive failure, peeling, and other debonding
+processes. They must be assigned within the material block of the
+[`Interface` element](../elements/interface.md), which supplies the interface
+kinematics and transfers the resulting normal and tangential tractions to the
+adjacent continuum parts.
 
 ```{toctree}
 :maxdepth: -1
