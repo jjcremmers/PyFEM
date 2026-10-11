@@ -66,22 +66,11 @@ material =
 };
 ```
 
-| Parameter | Description | Type |
-| --- | --- | --- |
-| `type` | Must be `"PlaneStrain"`. | String |
-| `E` | Young's modulus. | Float |
-| `nu` | Poisson's ratio. | Float |
+| Parameter | Description | Type | Remarks |
+| --- | --- | --- | --- |
+| `type` | Must be `"PlaneStrain"`. | String | |
+| `E` | Young's modulus. | Float | |
+| `nu` | Poisson's ratio. | Float | |
 
 Use a consistent unit system for `E` and the resulting stresses. The selected
 element must provide a compatible two-dimensional strain vector.
-
-## Examples
-
-The repository contains several examples that use `PlaneStrain`:
-
-- [Stress-wave example](../../examples/ch05/StressWave_20x20.pro)
-- [Peel test](../../examples/ch13/PeelTest.pro)
-- [Delamination buckling example](../../examples/solver/dissipatedEnergySolver/delam_buckling200.pro)
-
-These examples also demonstrate how the material is combined with continuum
-and interface elements in complete analyses.
