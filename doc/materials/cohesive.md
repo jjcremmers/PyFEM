@@ -1,7 +1,7 @@
 # Cohesive Zone Models
 
 These models define traction–separation laws for interfaces, delamination,
-debonding, and other cohesive-zone applications.
+debonding, and other cohesive-zone applications. And can be used as material model in the interface element.
 
 ```{toctree}
 :maxdepth: -1
