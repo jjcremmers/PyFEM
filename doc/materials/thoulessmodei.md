@@ -50,13 +50,13 @@ material =
 };
 ```
 
-| Parameter | Description | Type |
-| --- | --- | --- |
-| `type` | Must be `"ThoulessModeI"`. | String |
-| `Gc` | Fracture energy. | Float |
-| `Tult` | Peak normal traction. | Float |
-| `d1d3` | Ratio \(\delta_1/\delta_3\). | Float |
-| `d2d3` | Ratio \(\delta_2/\delta_3\). | Float |
+| Parameter | Description | Type | Remarks |
+| --- | --- | --- | --- |
+| `type` | Must be `"ThoulessModeI"`. | String | Required |
+| `Gc` | Fracture energy. | Float | Required |
+| `Tult` | Peak normal traction. | Float | Required |
+| `d1d3` | Ratio \(\delta_1/\delta_3\). | Float | Required |
+| `d2d3` | Ratio \(\delta_2/\delta_3\). | Float | Required |
 
 ## Examples
 

@@ -38,8 +38,12 @@ micromodel.md
 multimaterial.md
 planestrain.md
 planestress.md
+PlaneStrainDamage.md
 sandwichcore.md
 transverseisotropic.md
+ViscoElasticity.md
+ViscoPlasticity.md
+SOVS.md
 ```
 
 ## Cohesive Zone Models
@@ -73,6 +77,9 @@ These models evaluate stress-based or composite-specific failure criteria.
 :maxdepth: -1
 
 larc03.md
+MaxStrain.md
+MaxStress.md
+TsaiWu.md
 vonmises.md
 ```
 

@@ -6,7 +6,7 @@ uses `E1` in the preferred direction, `E2` in the transverse directions, and
 the shear modulus `G12` for the shear terms.
 
 ```{warning}
-This page was generated with the assistance of AI and must be checked
+This section was generated with the assistance of AI and must be checked
 carefully against the implementation and the conventions of the element being
 used. It is documentation support, not a substitute for verification of the
 underlying equations or code.
@@ -61,13 +61,13 @@ material =
 };
 ```
 
-| Parameter | Description | Type |
-| --- | --- | --- |
-| `type` | Must be `"TransverseIsotropic"`. | String |
-| `E1` | Young's modulus in the preferred material direction. | Float |
-| `E2` | Young's modulus in the transverse directions. | Float |
-| `nu12` | Major Poisson's ratio. | Float |
-| `G12` | Shear modulus used by the constitutive matrix. | Float |
+| Parameter | Description | Type | Remarks |
+| --- | --- | --- | --- |
+| `type` | Must be `"TransverseIsotropic"`. | String | Required |
+| `E1` | Young's modulus in the preferred material direction. | Float | Required |
+| `E2` | Young's modulus in the transverse directions. | Float | Required |
+| `nu12` | Major Poisson's ratio. | Float | Required |
+| `G12` | Shear modulus used by the constitutive matrix. | Float | Required |
 
 Use a consistent unit system for all elastic parameters and the resulting
 stresses.

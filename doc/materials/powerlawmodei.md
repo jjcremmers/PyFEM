@@ -49,11 +49,11 @@ material =
 };
 ```
 
-| Parameter | Description | Type |
-| --- | --- | --- |
-| `type` | Must be `"PowerLawModeI"`. | String |
-| `Gc` | Fracture energy. | Float |
-| `Tult` | Ultimate or peak normal traction. | Float |
+| Parameter | Description | Type | Remarks |
+| --- | --- | --- | --- |
+| `type` | Must be `"PowerLawModeI"`. | String | Required |
+| `Gc` | Fracture energy. | Float | Required |
+| `Tult` | Ultimate or peak normal traction. | Float | Required |
 
 ## Examples
 

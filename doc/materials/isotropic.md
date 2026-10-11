@@ -5,7 +5,7 @@ homogeneous isotropic solids. It can be used with small-strain or finite-strain
 continuum elements, depending on the selected element formulation.
 
 ```{warning}
-This page was generated with the assistance of AI and must be checked
+This section was generated with the assistance of AI and must be checked
 carefully against the implementation and the conventions of the element being
 used. It is documentation support, not a substitute for verification of the
 underlying equations or code.
@@ -68,11 +68,11 @@ material =
 };
 ```
 
-| Parameter | Description | Type |
-| --- | --- | --- |
-| `type` | Must be `"Isotropic"`. | String |
-| `E` | Young's modulus. | Float |
-| `nu` | Poisson's ratio. | Float |
+| Parameter | Description | Type | Remarks |
+| --- | --- | --- | --- |
+| `type` | Must be `"Isotropic"`. | String | Required |
+| `E` | Young's modulus. | Float | Required |
+| `nu` | Poisson's ratio. | Float | Required |
 
 Use a consistent unit system for `E` and the resulting stresses.
 

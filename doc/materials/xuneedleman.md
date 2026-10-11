@@ -13,11 +13,6 @@ The material supports both two-dimensional interfaces, with one normal and one
 tangential component, and three-dimensional interfaces, with one normal and
 two tangential components.
 
-```{warning}
-`XuNeedleman` is an interface material. It must be assigned to an interface
-element, such as `Interface`; it is not a bulk continuum material.
-```
-
 ## Implementation
 
 The implementation is in `pyfem/materials/XuNeedleman.py`. For a two-dimensional

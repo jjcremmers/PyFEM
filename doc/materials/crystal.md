@@ -5,6 +5,12 @@ plasticity formulation for single crystals. Plastic flow occurs through slip on
 user-defined crystallographic systems, with optional crystal orientation,
 power-law slip kinetics, and self/latent hardening.
 
+```{warning}
+This page was generated with the assistance of AI and must be checked
+carefully against the implementation and the conventions of the element being
+used.
+```
+
 ## Overview
 - **Material type:** `Crystal`
 - **Typical use:** single-crystal or strongly textured material response with slip-system-based plasticity

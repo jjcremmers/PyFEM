@@ -5,6 +5,12 @@ plies under quasi-2D stress states. It distinguishes between matrix tension,
 matrix compression, fiber tension, and fiber compression, and uses a
 misaligned-frame check for fiber compression.
 
+```{warning}
+This page was generated with the assistance of AI and must be checked
+carefully against the implementation and the conventions of the element being
+used.
+```
+
 ## Overview
 - **Failure type:** `Larc03`
 - **Configured through:** `failureType` in the material block

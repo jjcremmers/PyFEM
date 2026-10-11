@@ -68,9 +68,9 @@ material =
 
 | Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `type` | Must be `"PlaneStrain"`. | String | |
-| `E` | Young's modulus. | Float | |
-| `nu` | Poisson's ratio. | Float | |
+| `type` | Must be `"PlaneStrain"`. | String | Required |
+| `E` | Young's modulus. | Float | Required |
+| `nu` | Poisson's ratio. | Float | Required |
 
 Use a consistent unit system for `E` and the resulting stresses. The selected
 element must provide a compatible two-dimensional strain vector.
