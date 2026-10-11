@@ -1,6 +1,6 @@
-# SandwichCore material
+# SandwichCore Material
 
-`SandwichCore` is a linear elastic material model for sandwich-panel cores.
+`SandwichCore` is a linear elastic material model for sandwich panel cores.
 It represents a core that is comparatively soft in the in-plane directions
 and stiffer in the through-thickness direction. The model is useful for
 idealized foam, honeycomb, and other lightweight core materials when a simple
@@ -25,7 +25,7 @@ the six-component Voigt ordering
 [S11, S22, S33, S23, S13, S12]
 ```
 
-and computes the stress from the engineering strain vector as
+and computes the stress from the engineering strain vector using
 
 ```{math}
 \boldsymbol{\sigma} = \boldsymbol{H}\,\boldsymbol{\varepsilon}.
@@ -50,7 +50,7 @@ returns this matrix as its consistent tangent and reports the computed stress
 components as output data.
 
 :::{warning}
-The shear terms follow the component ordering and assignments implemented in
+The shear terms follow the component order and assignments implemented in
 `SandwichCore.py`. Verify the resulting material response against the chosen
 element's strain and stress convention before using non-default `G13` and
 `G23` values.
@@ -82,7 +82,7 @@ The available parameters are:
 | `G23` | Shear modulus supplied to the constitutive matrix. | Float | Optional, default = `G` |
 
 All material parameters must use a consistent unit system. For example, if
-`E3` and `G` are specified in force per area, the resulting stresses have the
+`E3` and `G` are specified in force per unit area, the resulting stresses have the
 same units.
 
 ## Examples
