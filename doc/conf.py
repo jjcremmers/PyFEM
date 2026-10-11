@@ -10,6 +10,8 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 
+from pyfem import __version__
+
 # Auto-generate API documentation
 def run_apidoc(_):
     from sphinx.ext.apidoc import main
@@ -27,6 +29,8 @@ def setup(app):
 project = 'PyFEM'
 copyright = '2026, Joris Remmers'
 author = 'Joris Remmers'
+version = __version__
+release = __version__
 
 # Use index.md as master document (MyST)
 master_doc = 'index'
@@ -90,8 +94,26 @@ latex_elements = {
     'preamble': r'''
         \usepackage{bookmark}
         \setcounter{secnumdepth}{2}
-        \setcounter{tocdepth}{3}
+        % Include chapters, sections, and subsections in the table of contents.
+        % LaTeX numbers chapters as level 0, so level 2 is the third visible level.
+        \setcounter{tocdepth}{2}
     ''',
+    'maketitle': r'''
+        \begin{titlepage}
+            \centering
+            \vspace*{1.5cm}
+            \includegraphics[width=0.55\textwidth]{../../_static/pyfem_logo.png}
+            \vspace{2cm}
+
+            {\Huge\normalfont PyFEM Documentation\par}
+            \vspace{1cm}
+            {\Large\normalfont Joris Remmers\par}
+            \vspace{0.5cm}
+            {\large\normalfont Version %s\par}
+            \vfill
+            {\large\normalfont \today\par}
+        \end{titlepage}
+    ''' % __version__,
     'figure_align': 'htbp',
 }
 
