@@ -23,12 +23,6 @@
 #  free from errors. Furthermore, the authors shall not be liable in any   #
 #  event caused by the use of the program.                                 #
 ############################################################################
-############################################################################
-#  Description: The general PyFEM input file of the example presented in   #
-#               section 2.6 of the book, pages 53--62.                     #
-#                                                                          #
-#  Use:         pyfem PatchTest4.pro                                       #
-############################################################################
 
 input = "plate_cantilever01.dat";
 
