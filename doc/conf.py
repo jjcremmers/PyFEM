@@ -18,13 +18,15 @@ def run_apidoc(_):
     import os
     here = os.path.abspath(os.path.dirname(__file__))
     module = os.path.join(here, "..", "pyfem")
-    output = os.path.join(here, "_build")
+    output = os.path.join(here, "_api")
     if not os.path.exists(output):
         os.makedirs(output)
     main(['-f', '-e', '-M', '-o', output, module])
 
 def setup(app):
-    app.connect('builder-inited', run_apidoc)
+    # API generation is disabled temporarily. Re-enable this connection when
+    # the generated API chapter is ready to be included again.
+    pass
 
 project = 'PyFEM'
 copyright = '2026, Joris Remmers'

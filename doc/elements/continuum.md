@@ -10,4 +10,9 @@ finitestrainaxisym.md
 finitestraincontinuum.md
 smallstrainaxisym.md
 smallstraincontinuum.md
+thermoaxiym.md
+thermocontinuum.md
+thermosmallstrainaxiym.md
+thermosmallstraincontinuum.md
+thermosurface.md
 ```
