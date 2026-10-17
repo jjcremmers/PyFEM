@@ -172,6 +172,53 @@ results = run("examples/ch02/PatchTest8.pro")
 print(results["globdat"].state)
 ```
 
+### Run the unit tests
+
+The development dependencies include `pytest` and `coverage`. If you have not
+installed them yet, activate the virtual environment and run:
+
+```bash
+python -m pip install -e ".[dev]"
+```
+
+PyFEM also provides shortcuts through the `pyfem` command:
+
+```bash
+pyfem -test       # Run the unit tests
+pyfem -coverage   # Run tests, print coverage, and create an HTML report
+```
+
+Both commands create the HTML report at `htmlcov/index.html`. The `-coverage`
+shortcut also prints the coverage summary in the terminal.
+
+The equivalent direct `pytest` command is:
+
+```bash
+python -m pytest test
+```
+
+The tests can also be run with Python's standard-library `unittest` runner:
+
+```bash
+python -m unittest discover -s test -p "*.py"
+```
+
+To run the tests with the standard-library `unittest` runner and coverage,
+then display a summary, use:
+
+```bash
+python -m coverage run -m unittest discover -s test -p "*.py"
+python -m coverage report -m
+```
+
+To create an HTML coverage report instead, run:
+
+```bash
+python -m coverage html
+```
+
+Then open `htmlcov/index.html` in a browser.
+
 ## Updating, uninstalling, and troubleshooting
 
 From the cloned repository, update an existing installation with:
@@ -193,10 +240,4 @@ If `pyfem` cannot be found, activate `pyfem-env` again. On Linux or macOS,
 
 ```bash
 python -m pip install --force-reinstall .
-```
-
-For development, run the test suite with:
-
-```bash
-python -m pytest test/
 ```

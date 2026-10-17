@@ -31,16 +31,25 @@ from pyfem.util.logger import setLogger
 
 
 def run_tests() -> int:
-    """Run the PyFEM test suite and return pytest's exit status."""
+    """Run the test suite and create an HTML coverage report."""
     repository_root = Path(__file__).resolve().parents[2]
-    return subprocess.call(
-        [sys.executable, "-m", "pytest", "test"],
+    if importlib.util.find_spec("coverage") is None:
+        print("Coverage is not installed. Install it with: python -m pip install coverage")
+        return 1
+
+    test_status = subprocess.call(
+        [sys.executable, "-m", "coverage", "run", "-m", "pytest", "test"],
         cwd=repository_root,
     )
+    html_status = subprocess.call(
+        [sys.executable, "-m", "coverage", "html"],
+        cwd=repository_root,
+    )
+    return test_status if test_status else html_status
 
 
 def run_coverage() -> int:
-    """Run the PyFEM test suite with coverage and print the report."""
+    """Run the test suite, print coverage, and create an HTML report."""
     if importlib.util.find_spec("coverage") is None:
         print("Coverage is not installed. Install it with: python -m pip install coverage")
         return 1
@@ -54,7 +63,13 @@ def run_coverage() -> int:
         [sys.executable, "-m", "coverage", "report"],
         cwd=repository_root,
     )
-    return test_status if test_status else report_status
+    html_status = subprocess.call(
+        [sys.executable, "-m", "coverage", "html"],
+        cwd=repository_root,
+    )
+    if test_status:
+        return test_status
+    return report_status if report_status else html_status
 
 
 def parse_arguments(argv: list[str] | None = None) -> Namespace:
@@ -93,13 +108,13 @@ def parse_arguments(argv: list[str] | None = None) -> Namespace:
         "-test",
         dest="run_tests",
         action="store_true",
-        help="Run the PyFEM unit tests.",
+        help="Run the unit tests and create an HTML coverage report.",
     )
     parser.add_argument(
         "-coverage",
         dest="run_coverage",
         action="store_true",
-        help="Run the unit tests and print a coverage report.",
+        help="Run the unit tests, print coverage, and create an HTML report.",
     )
     parser.add_argument(
         "--version",
