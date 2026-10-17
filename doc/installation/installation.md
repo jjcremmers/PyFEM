@@ -4,11 +4,11 @@ PyFEM currently supports Python 3.9 through 3.14, as well as `pip` and Git.
 The commands below install PyFEM from the source repository and create the
 `pyfem` command-line tool.
 
-> **Warning: Python 3.15 is not supported.**
->
-> Do not continue if the selected interpreter is Python 3.15. PyFEM or one of
-> its dependencies may not yet be compatible with that version. Use Python
-> 3.9–3.14 instead.
+```{warning}
+Python 3.15 is not supported. Do not continue if the selected interpreter is
+Python 3.15. PyFEM or one of its dependencies may not yet be compatible with
+that version. Use Python 3.9–3.14 instead.
+```
 
 ## Quick installation
 
@@ -188,36 +188,8 @@ pyfem -test       # Run the unit tests
 pyfem -coverage   # Run tests, print coverage, and create an HTML report
 ```
 
-Both commands create the HTML report at `htmlcov/index.html`. The `-coverage`
-shortcut also prints the coverage summary in the terminal.
-
-The equivalent direct `pytest` command is:
-
-```bash
-python -m pytest test
-```
-
-The tests can also be run with Python's standard-library `unittest` runner:
-
-```bash
-python -m unittest discover -s test -p "*.py"
-```
-
-To run the tests with the standard-library `unittest` runner and coverage,
-then display a summary, use:
-
-```bash
-python -m coverage run -m unittest discover -s test -p "*.py"
-python -m coverage report -m
-```
-
-To create an HTML coverage report instead, run:
-
-```bash
-python -m coverage html
-```
-
-Then open `htmlcov/index.html` in a browser.
+Both commands create the HTML report at `htmlcov/index.html`, which can be opened in a browser.
+The `-coverage` shortcut also prints the coverage summary in the terminal.
 
 ## Updating, uninstalling, and troubleshooting
 

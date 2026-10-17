@@ -33,48 +33,21 @@ The code is open source and intended for educational and scientific purposes. If
 
 ## 📥 Download and Installation
 
-For all installation instructions, including platform-specific quick and
-advanced installations, see the [Installation Guide](doc/installation/installation.md).
+For a quick setup, see the [Quick installation instructions](doc/installation/installation.md#quick-installation).
+For all platform-specific instructions and advanced development setup, see the
+[Installation Guide](doc/installation/installation.md).
 
 ## 🚀 Quick Start
 
-### Command-Line Interface
-
-Run a PyFEM analysis from the command line:
-
-```bash
-# Navigate to examples
-cd examples/ch02
-
-# Run an example
-pyfem PatchTest8.pro
-```
-
-Useful command-line options:
-
-```bash
-pyfem input.pro                 # specify input file
-pyfem --help                    # Show help
-pyfem --version                 # Show installed PyFEM version
-pyfem -d state.dump             # Restart from dump file
-pyfem input.pro -p param=value  # Override parameter in input file
-pyfem -test                     # Run the unit tests
-pyfem -coverage                 # Run tests and print coverage
-```
-
-If you use the VTK writer to write the output to the harddisk, you can 
-view the results using [ParaView](https://www.paraview.org/download/):
-
-```bash
-paraview input.pvd
-```
+For command-line usage, examples, input-file basics, visualization, and test
+shortcuts, see the [Quickstart guide](doc/introduction/quickstart.md).
 
 ## 📖 Documentation
 
 ### User Guide
 
 - **[Installation Guide](doc/installation/installation.md)** - Complete installation instructions
-- **[Quick Start Tutorial](doc/tutorials/quickstart.md)** - Get started with PyFEM
+- **[Quickstart Guide](doc/introduction/quickstart.md)** - Run your first example
 - **[Elements](doc/elements/overview.md)** - Available element formulations
 - **[Materials](doc/materials/overview.md)** - Material model documentation
 - **[Solvers](doc/solvers/overview.md)** - Solution algorithms
@@ -96,27 +69,6 @@ For contributors and those extending PyFEM:
 
 - **[API Documentation](doc/introduction/api.md)** - Python API reference
 - **[Documentation Index](doc/index.md)** - Full documentation table of contents
-
-## 🎯 Example Gallery
-
-PyFEM includes numerous examples organized by chapter from the book:
-
-```bash
-examples/
-├── ch02/    # Linear elasticity and patch tests
-├── ch03/    # Nonlinear analysis
-├── ch04/    # Isoparametric elements
-├── ch05/    # Element technology
-├── ch06/    # Plasticity
-├── ch09/    # Dynamics
-├── ch13/    # Contact mechanics
-├── ch15/    # Damage and fracture
-├── elements/ # Element-specific examples
-├── materials/ # Material model examples
-└── models/   # Special models (RVE)
-```
-
-Each directory contains input files (`.pro`), mesh files (`.dat`), and generates output files for visualization.
 
 ## 🤝 Contributing
 
