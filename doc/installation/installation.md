@@ -1,19 +1,16 @@
 # PyFEM Installation
 
-PyFEM requires Python 3.9 or newer, `pip`, and Git. This page describes how to
-install PyFEM from its source repository and provides platform-specific
-instructions for Windows, Linux, WSL, and macOS.
-
-The standard installation includes the core dependencies and VTK output
-support. It also creates the `pyfem` command-line tool. A virtual environment
-is recommended because it keeps PyFEM's dependencies separate from other
-Python projects.
+PyFEM requires Python 3.9 or newer, `pip`, and Git. The commands below install
+PyFEM from the source repository and create the `pyfem` command-line tool.
 
 ## Quick installation
 
+If you want to use PyFEM to run your own finite element simulations but do not want 
+to develop new features, this Quick installation guide is for you.
+
 ### Windows (Command Prompt)
 
-After installing Python and Git, open **Command Prompt** (`cmd.exe`) and run:
+Open **Command Prompt** (`cmd.exe`) and run:
 
 ```cmd
 git clone https://github.com/jjcremmers/PyFEM.git
@@ -24,14 +21,13 @@ python -m pip install --upgrade pip
 python -m pip install .
 ```
 
-If Python or Git is not already available, install Python 3.9 or newer from
-[python.org](https://www.python.org/downloads/) and Git from
-[git-scm.com](https://git-scm.com/). When installing Python, enable **Add
-Python to PATH**.
+Install Python 3.9 or newer from [python.org](https://www.python.org/downloads/)
+and Git from [git-scm.com](https://git-scm.com/) if they are not already
+available. When installing Python, enable **Add Python to PATH**.
 
-### Linux and WSL
+### Linux or WSL
 
-In a terminal, or in a WSL shell, run:
+In a terminal (or a WSL shell), run:
 
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
@@ -62,8 +58,7 @@ python -m pip install --upgrade pip
 python -m pip install .
 ```
 
-If Python or Git is not already installed, install them with
-[Homebrew](https://brew.sh/):
+If Python or Git is not installed, install them with [Homebrew](https://brew.sh/):
 
 ```bash
 brew install python git
@@ -72,8 +67,9 @@ brew install python git
 ## Advanced installation
 
 The virtual environment should be activated before running the commands in
-this section. Use the `gui` extra to add graphical user interface support and
-the `all` extra to install all optional dependencies.
+this section. The core installation includes VTK output support. The GUI is
+optional; install it with the `gui` extra. The `all` extra installs all
+optional dependencies.
 
 ### Windows (Command Prompt)
 
@@ -93,7 +89,7 @@ latest source directly from GitHub instead:
 python -m pip install git+https://github.com/jjcremmers/PyFEM.git
 ```
 
-### Linux and WSL
+### Linux or WSL
 
 For an editable development installation, changes to the source are available
 without reinstalling:
@@ -111,7 +107,7 @@ latest source directly from GitHub instead:
 python -m pip install git+https://github.com/jjcremmers/PyFEM.git
 ```
 
-On headless Linux systems, GUI or VTK issues may require these system libraries:
+On headless Linux systems, GUI or VTK issues may require:
 
 ```bash
 sudo apt-get install libgl1-mesa-glx libxkbcommon-x11-0
@@ -141,7 +137,7 @@ If graphical applications require it, install XQuartz:
 brew install --cask xquartz
 ```
 
-## Verify your installation
+## Verify the installation
 
 With the virtual environment active, run:
 
@@ -150,14 +146,14 @@ pyfem --version
 pyfem --help
 ```
 
-You can also run an example from the repository. From the repository root:
+You can also run an example from the repository:
 
 ```bash
 cd examples/ch02
 pyfem PatchTest8.pro
 ```
 
-To verify the Python API, run the following from the repository root:
+To verify the Python API:
 
 ```python
 from pyfem import run
@@ -181,9 +177,9 @@ Uninstall PyFEM with:
 python -m pip uninstall pyfem
 ```
 
-If the `pyfem` command cannot be found, activate `pyfem-env` again. On Linux or
-macOS, use `which pyfem` to show the executable location; in Windows Command
-Prompt, use `where pyfem`. To repair the installation, run:
+If `pyfem` cannot be found, activate `pyfem-env` again. On Linux or macOS,
+`which pyfem` shows the executable location; on Windows Command Prompt, use
+`where pyfem`. For a broken installation, reinstall it with:
 
 ```bash
 python -m pip install --force-reinstall .
