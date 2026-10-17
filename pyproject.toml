@@ -7,7 +7,7 @@ name = "pyfem"
 dynamic = ["version"]
 description = "A Python finite element code (educational)"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.9,<3.15"
 license = { text = "MIT" }
 authors = [
   { name = "J.J.C. Remmers" },

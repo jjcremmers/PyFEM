@@ -1,12 +1,19 @@
 # PyFEM Installation
 
-PyFEM requires Python 3.9 or newer, `pip`, and Git. The commands below install
-PyFEM from the source repository and create the `pyfem` command-line tool.
+PyFEM currently supports Python 3.9 through 3.14, as well as `pip` and Git.
+The commands below install PyFEM from the source repository and create the
+`pyfem` command-line tool.
+
+> **Warning: Python 3.15 is not supported.**
+>
+> Do not continue if the selected interpreter is Python 3.15. PyFEM or one of
+> its dependencies may not yet be compatible with that version. Use Python
+> 3.9–3.14 instead.
 
 ## Quick installation
 
-If you want to use PyFEM to run your own finite element simulations but do not want 
-to develop new features, this Quick installation guide is for you.
+If you want to use PyFEM to run your own finite element simulations but do not
+plan to develop new features, this quick installation guide is for you.
 
 ### Windows (Command Prompt)
 
@@ -15,13 +22,14 @@ Open **Command Prompt** (`cmd.exe`) and run:
 ```cmd
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
+py -c "import sys; raise SystemExit('Python 3.15 is not supported; use Python 3.9-3.14.') if sys.version_info[:2] == (3, 15) else None"
 py -m venv pyfem-env
 pyfem-env\Scripts\activate.bat
 python -m pip install --upgrade pip
 python -m pip install .
 ```
 
-Install Python 3.9 or newer from [python.org](https://www.python.org/downloads/)
+Install Python 3.9 through 3.14 from [python.org](https://www.python.org/downloads/)
 and Git from [git-scm.com](https://git-scm.com/) if they are not already
 available. When installing Python, enable **Add Python to PATH**.
 
@@ -32,6 +40,7 @@ In a terminal (or a WSL shell), run:
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
+python3 -c 'import sys; raise SystemExit("Python 3.15 is not supported; use Python 3.9-3.14.") if sys.version_info[:2] == (3, 15) else None'
 python3 -m venv pyfem-env
 source pyfem-env/bin/activate
 python -m pip install --upgrade pip
@@ -52,6 +61,7 @@ In Terminal, run:
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
 cd PyFEM
+python3 -c 'import sys; raise SystemExit("Python 3.15 is not supported; use Python 3.9-3.14.") if sys.version_info[:2] == (3, 15) else None'
 python3 -m venv pyfem-env
 source pyfem-env/bin/activate
 python -m pip install --upgrade pip
