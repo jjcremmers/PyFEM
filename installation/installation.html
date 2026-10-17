@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PyFEM Installation &mdash; PyFEM 2026.10 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f463f479"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quickstart" href="../introduction/quickstart.html" />
+    <link rel="prev" title="Introduction" href="../introduction/introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyFEM Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#quick-installation">Quick installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#windows-command-prompt">Windows (Command Prompt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linux-or-wsl">Linux or WSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#macos">macOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-installation">Advanced installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Windows (Command Prompt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Linux or WSL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">macOS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#verify-the-installation">Verify the installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#run-the-unit-tests">Run the unit tests</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#updating-uninstalling-and-troubleshooting">Updating, uninstalling, and troubleshooting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elements/overview.html">Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/overview.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyFEM Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/installation/installation.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="pyfem-installation">
+<h1>PyFEM Installation<a class="headerlink" href="#pyfem-installation" title="Link to this heading"></a></h1>
+<p>PyFEM currently supports Python 3.9 through 3.14, as well as <code class="docutils literal notranslate"><span class="pre">pip</span></code> and Git.
+The commands below install PyFEM from the source repository and create the
+<code class="docutils literal notranslate"><span class="pre">pyfem</span></code> command-line tool.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Python 3.15 is not supported. Do not continue if the selected interpreter is
+Python 3.15. PyFEM or one of its dependencies may not yet be compatible with
+that version. Use Python 3.9–3.14 instead.</p>
+</div>
+<section id="quick-installation">
+<h2>Quick installation<a class="headerlink" href="#quick-installation" title="Link to this heading"></a></h2>
+<p>If you want to use PyFEM to run your own finite element simulations but do not
+plan to develop new features, this quick installation guide is for you.</p>
+<section id="windows-command-prompt">
+<h3>Windows (Command Prompt)<a class="headerlink" href="#windows-command-prompt" title="Link to this heading"></a></h3>
+<p>Open <strong>Command Prompt</strong> (<code class="docutils literal notranslate"><span class="pre">cmd.exe</span></code>) and run:</p>
+<div class="highlight-cmd notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/jjcremmers/PyFEM.git
+cd PyFEM
+py -c &quot;import sys; raise SystemExit(&#39;Python 3.15 is not supported; use Python 3.9-3.14.&#39;) if sys.version_info[:2] == (3, 15) else None&quot;
+py -m venv pyfem-env
+pyfem-env\Scripts\activate.bat
+python -m pip install --upgrade pip
+python -m pip install .
+</pre></div>
+</div>
+<p>Install Python 3.9 through 3.14 from <a class="reference external" href="https://www.python.org/downloads/">python.org</a>
+and Git from <a class="reference external" href="https://git-scm.com/">git-scm.com</a> if they are not already
+available. When installing Python, enable <strong>Add Python to PATH</strong>.</p>
+</section>
+<section id="linux-or-wsl">
+<h3>Linux or WSL<a class="headerlink" href="#linux-or-wsl" title="Link to this heading"></a></h3>
+<p>In a terminal (or a WSL shell), run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jjcremmers/PyFEM.git
+<span class="nb">cd</span><span class="w"> </span>PyFEM
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import sys; raise SystemExit(&quot;Python 3.15 is not supported; use Python 3.9-3.14.&quot;) if sys.version_info[:2] == (3, 15) else None&#39;</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>pyfem-env
+<span class="nb">source</span><span class="w"> </span>pyfem-env/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p>On Debian or Ubuntu, install the system prerequisites first if necessary:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python3<span class="w"> </span>python3-venv<span class="w"> </span>python3-pip<span class="w"> </span>git
+</pre></div>
+</div>
+</section>
+<section id="macos">
+<h3>macOS<a class="headerlink" href="#macos" title="Link to this heading"></a></h3>
+<p>In Terminal, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/jjcremmers/PyFEM.git
+<span class="nb">cd</span><span class="w"> </span>PyFEM
+python3<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import sys; raise SystemExit(&quot;Python 3.15 is not supported; use Python 3.9-3.14.&quot;) if sys.version_info[:2] == (3, 15) else None&#39;</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>pyfem-env
+<span class="nb">source</span><span class="w"> </span>pyfem-env/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p>If Python or Git is not installed, install them with <a class="reference external" href="https://brew.sh/">Homebrew</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>python<span class="w"> </span>git
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-installation">
+<h2>Advanced installation<a class="headerlink" href="#advanced-installation" title="Link to this heading"></a></h2>
+<p>The virtual environment should be activated before running the commands in
+this section. The core installation includes VTK output support. The GUI is
+optional; install it with the <code class="docutils literal notranslate"><span class="pre">gui</span></code> extra. The <code class="docutils literal notranslate"><span class="pre">all</span></code> extra installs all
+optional dependencies.</p>
+<section id="id1">
+<h3>Windows (Command Prompt)<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>For an editable development installation, changes to the source are available
+without reinstalling:</p>
+<div class="highlight-cmd notranslate"><div class="highlight"><pre><span></span>cd PyFEM
+pyfem-env\Scripts\activate.bat
+python -m pip install -e &quot;.[dev]&quot;
+</pre></div>
+</div>
+<p>For GUI support use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev,all]&quot;</span></code>. To install the
+latest source directly from GitHub instead:</p>
+<div class="highlight-cmd notranslate"><div class="highlight"><pre><span></span>python -m pip install git+https://github.com/jjcremmers/PyFEM.git
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Linux or WSL<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>For an editable development installation, changes to the source are available
+without reinstalling:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>PyFEM
+<span class="nb">source</span><span class="w"> </span>pyfem-env/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p>For GUI support use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev,all]&quot;</span></code>. To install the
+latest source directly from GitHub instead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/jjcremmers/PyFEM.git
+</pre></div>
+</div>
+<p>On headless Linux systems, GUI or VTK issues may require:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libgl1-mesa-glx<span class="w"> </span>libxkbcommon-x11-0
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h3>macOS<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>For an editable development installation, changes to the source are available
+without reinstalling:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>PyFEM
+<span class="nb">source</span><span class="w"> </span>pyfem-env/bin/activate
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p>For GUI support use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">&quot;.[dev,all]&quot;</span></code>. To install the
+latest source directly from GitHub instead:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/jjcremmers/PyFEM.git
+</pre></div>
+</div>
+<p>If graphical applications require it, install XQuartz:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>--cask<span class="w"> </span>xquartz
+</pre></div>
+</div>
+</section>
+</section>
+<section id="verify-the-installation">
+<h2>Verify the installation<a class="headerlink" href="#verify-the-installation" title="Link to this heading"></a></h2>
+<p>With the virtual environment active, run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>--version
+pyfem<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>You can also run an example from the repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/ch02
+pyfem<span class="w"> </span>PatchTest8.pro
+</pre></div>
+</div>
+<p>To verify the Python API:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyfem</span> <span class="kn">import</span> <span class="n">run</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="s2">&quot;examples/ch02/PatchTest8.pro&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="s2">&quot;globdat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">state</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="run-the-unit-tests">
+<h3>Run the unit tests<a class="headerlink" href="#run-the-unit-tests" title="Link to this heading"></a></h3>
+<p>The development dependencies include <code class="docutils literal notranslate"><span class="pre">pytest</span></code> and <code class="docutils literal notranslate"><span class="pre">coverage</span></code>. If you have not
+installed them yet, activate the virtual environment and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+<p>PyFEM also provides shortcuts through the <code class="docutils literal notranslate"><span class="pre">pyfem</span></code> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>-test<span class="w">       </span><span class="c1"># Run the unit tests</span>
+pyfem<span class="w"> </span>-coverage<span class="w">   </span><span class="c1"># Run tests, print coverage, and create an HTML report</span>
+</pre></div>
+</div>
+<p>Both commands create the HTML report at <code class="docutils literal notranslate"><span class="pre">htmlcov/index.html</span></code>, which can be opened in a browser.
+The <code class="docutils literal notranslate"><span class="pre">-coverage</span></code> shortcut also prints the coverage summary in the terminal.</p>
+</section>
+</section>
+<section id="updating-uninstalling-and-troubleshooting">
+<h2>Updating, uninstalling, and troubleshooting<a class="headerlink" href="#updating-uninstalling-and-troubleshooting" title="Link to this heading"></a></h2>
+<p>From the cloned repository, update an existing installation with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>.
+</pre></div>
+</div>
+<p>Uninstall PyFEM with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>uninstall<span class="w"> </span>pyfem
+</pre></div>
+</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">pyfem</span></code> cannot be found, activate <code class="docutils literal notranslate"><span class="pre">pyfem-env</span></code> again. On Linux or macOS,
+<code class="docutils literal notranslate"><span class="pre">which</span> <span class="pre">pyfem</span></code> shows the executable location; on Windows Command Prompt, use
+<code class="docutils literal notranslate"><span class="pre">where</span> <span class="pre">pyfem</span></code>. For a broken installation, reinstall it with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../introduction/introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../introduction/quickstart.html" class="btn btn-neutral float-right" title="Quickstart" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

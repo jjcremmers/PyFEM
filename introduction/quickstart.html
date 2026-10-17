@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; PyFEM 2026.10 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=087ec98a" />
+
+  
+    <link rel="shortcut icon" href="../_static/pyfem.ico"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=f463f479"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="User Manual" href="../usermanual.html" />
+    <link rel="prev" title="PyFEM Installation" href="../installation/installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyFEM
+              <img src="../_static/pyfem_logo.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">PyFEM Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#before-you-start">Before you start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-your-first-example">Run your first example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-a-pyfem-input-file">Understanding a PyFEM Input File</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../usermanual.html">User Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elements/overview.html">Elements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../materials/overview.html">Materials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/overview.html">Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../develop/overview.html">Developer’s Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyFEM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/introduction/quickstart.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section class="tex2jax_ignore mathjax_ignore" id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
+<p>Getting started with PyFEM is straightforward. Follow these steps to install
+and run your first simulation.</p>
+<section id="before-you-start">
+<h2>Before you start<a class="headerlink" href="#before-you-start" title="Link to this heading"></a></h2>
+<p>Install PyFEM by following the <a class="reference internal" href="../installation/installation.html"><span class="std std-doc">installation guide</span></a>.
+The examples below assume that the virtual environment is active and that the
+<code class="docutils literal notranslate"><span class="pre">pyfem</span></code> command is available.</p>
+<p>If you have cloned the repository, run all example commands from its root
+directory unless stated otherwise.</p>
+</section>
+<section id="run-your-first-example">
+<h2>Run your first example<a class="headerlink" href="#run-your-first-example" title="Link to this heading"></a></h2>
+<p>Run a basic patch test from the <code class="docutils literal notranslate"><span class="pre">examples/ch02</span></code> directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>examples/ch02
+pyfem<span class="w"> </span>PatchTest8.pro
+</pre></div>
+</div>
+<p>This runs a simple patch test. You should see solver output with convergence
+information and generated result files.</p>
+<p>To run the standalone Python example in the same directory, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>PatchTest.py
+</pre></div>
+</div>
+<p>The command-line interface also supports:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>--help<span class="w">                    </span><span class="c1"># Show all options</span>
+pyfem<span class="w"> </span>--version<span class="w">                 </span><span class="c1"># Show the installed version</span>
+pyfem<span class="w"> </span>input.pro<span class="w">                 </span><span class="c1"># Run an input file</span>
+pyfem<span class="w"> </span>-d<span class="w"> </span>state.dump<span class="w">             </span><span class="c1"># Restart from a dump file</span>
+pyfem<span class="w"> </span>input.pro<span class="w"> </span>-p<span class="w"> </span><span class="nv">E</span><span class="o">=</span><span class="m">210000</span><span class="w">    </span><span class="c1"># Override an input parameter</span>
+</pre></div>
+</div>
+<p>The test shortcuts are documented in the installation guide and can be run
+from the repository root:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyfem<span class="w"> </span>-test
+pyfem<span class="w"> </span>-coverage
+</pre></div>
+</div>
+<p>PyFEM includes numerous examples organized by chapter:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run a nonlinear truss analysis</span>
+<span class="nb">cd</span><span class="w"> </span>examples/ch04
+pyfem<span class="w"> </span>ShallowtrussRiks.pro
+
+<span class="c1"># Run a cantilever beam example</span>
+<span class="nb">cd</span><span class="w"> </span>../ch03
+pyfem<span class="w"> </span>cantilever8.pro
+</pre></div>
+</div>
+<p>Each example produces output files, including VTK files for visualization and
+other result files. VTK output can be viewed with
+<a class="reference external" href="https://www.paraview.org/download/">ParaView</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>paraview<span class="w"> </span>path/to/output.pvd
+</pre></div>
+</div>
+</section>
+<section id="understanding-a-pyfem-input-file">
+<h2>Understanding a PyFEM Input File<a class="headerlink" href="#understanding-a-pyfem-input-file" title="Link to this heading"></a></h2>
+<p>PyFEM input files conventionally end with <code class="docutils literal notranslate"><span class="pre">.pro</span></code>. A typical input file points
+to the mesh or data file and defines the active elements and solver settings:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>input = &quot;ShallowTrussRiks.dat&quot;;
+TrussElem  = {
+   ...
+}
+SpringElem = {
+   ...
+}
+solver = {
+   ...
+}
+</pre></div>
+</div>
+<p>See the user manual and example files for the complete syntax and available
+options.</p>
+<p>For platform-specific installation, development setup, testing, coverage, and
+troubleshooting, see the <a class="reference internal" href="../installation/installation.html"><span class="std std-doc">installation guide</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../installation/installation.html" class="btn btn-neutral float-left" title="PyFEM Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../usermanual.html" class="btn btn-neutral float-right" title="User Manual" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Joris Remmers.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
