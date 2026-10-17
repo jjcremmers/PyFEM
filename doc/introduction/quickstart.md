@@ -87,4 +87,4 @@ options.
 
 For more detailed installation instructions including virtual environments,
 platform-specific notes, and advanced CLI usage, please refer to the
-[installation guide](../installation/overview.md).
+[installation guide](../installation/installation.md).

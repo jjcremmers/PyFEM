@@ -109,7 +109,7 @@ For installation, verification steps, and a first runnable PyFEM example, see
 the [Quickstart](quickstart.md) guide.
 
 If you need environment setup details or platform-specific notes, refer to the
-[installation guide](../installation/overview.md).
+[installation guide](../installation/installation.md).
 
 ## License
 

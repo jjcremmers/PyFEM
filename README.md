@@ -33,36 +33,8 @@ The code is open source and intended for educational and scientific purposes. If
 
 ## 📥 Download and Installation
 
-### Requirements
-
-- Python 3.9 or higher
-- pip package manager
-- Git (for cloning the repository)
-
-### Quick Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/jjcremmers/PyFEM.git
-cd PyFEM
-
-# Create and activate a virtual environment on Linux/macOS
-python3 -m venv pyfem-env
-source pyfem-env/bin/activate
-
-# On Windows (Command Prompt), use:
-# py -m venv pyfem-env
-# pyfem-env\\Scripts\\activate.bat
-
-# Install PyFEM with pip
-pip install .
-```
-
-The base installation includes VTK output support for ParaView. The graphical
-user interface dependency is optional.
-
-For detailed installation instructions including platform-specific notes
-and development releases, see the [Installation Guide](doc/installation/overview.md).
+For all installation instructions, including platform-specific quick and
+advanced installations, see the [Installation Guide](doc/installation/installation.md).
 
 ## 🚀 Quick Start
 
@@ -101,7 +73,7 @@ paraview input.pvd
 
 ### User Guide
 
-- **[Installation Guide](doc/installation/overview.md)** - Complete installation instructions
+- **[Installation Guide](doc/installation/installation.md)** - Complete installation instructions
 - **[Quick Start Tutorial](doc/tutorials/quickstart.md)** - Get started with PyFEM
 - **[Elements](doc/elements/overview.md)** - Available element formulations
 - **[Materials](doc/materials/overview.md)** - Material model documentation

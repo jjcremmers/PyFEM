@@ -6,8 +6,8 @@ User and developer documentation for the PyFEM finite element code.
 :maxdepth: -1
 
 introduction/introduction.md
+installation/installation.md
 introduction/quickstart.md
-installation/overview.md
 usermanual.md
 elements/overview.md
 materials/overview.md
