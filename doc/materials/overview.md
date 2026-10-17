@@ -1,12 +1,15 @@
 # Materials
 
-PyFEM provides a range of material models for linear and nonlinear analysis, including elastic, elastoplastic, and cohesive zone models. Material models define the constitutive behavior that relates stress to strain (or traction to displacement jump for cohesive elements).
+PyFEM provides material models for linear and nonlinear analysis, including
+elastic, elastoplastic, anisotropic, cohesive-zone, and failure models. A
+material model defines the constitutive behavior that relates stress to strain,
+or traction to displacement jump for cohesive elements. Materials are
+configured within element definitions in the `.pro` input file. Each element
+group can have its own material definition, or materials can be defined
+globally and referenced by name.
 
-## Introduction
+## Basic syntax
 
-Material models are configured within element definitions in the `.pro` input file. Each element group can have its own material definition, or materials can be defined globally and referenced by name.
-
-Basic Syntax:
 The material block is nested inside an element definition:
 ```text
 ElementGroup = {
@@ -19,15 +22,24 @@ ElementGroup = {
 };
 ```
 
-The `type` parameter specifies which material model to use, and subsequent parameters define the material properties (e.g., Young's modulus `E`, Poisson's ratio `nu`).
+The `type` parameter selects the material model. The remaining parameters
+define its material properties, such as Young's modulus `E` and Poisson's
+ratio `nu`. Refer to the individual material pages for required parameters,
+units, assumptions, and examples.
 
 ## Continuum Constitutive Models
 
-These models describe elasticity, plasticity, anisotropy, and multiscale
-constitutive response in continuum materials.
+These models describe the constitutive response of bulk materials under
+elastic, plastic, anisotropic, thermal, and multiscale assumptions. They cover
+linear elasticity, isotropic and kinematic hardening, finite-strain behavior,
+damage, viscoelasticity, viscoplasticity, composite and sandwich materials,
+and specialized crystal or micromechanical models. Select a model according
+to the material behavior, strain regime, internal variables, and element
+formulation used in the analysis. The individual pages document the supported
+parameters and their physical interpretation.
 
 ```{toctree}
-:maxdepth: -1
+:maxdepth: 1
 
 crystal.md
 hookeslaw.md
@@ -61,7 +73,7 @@ kinematics and transfers the resulting normal and tangential tractions to the
 adjacent continuum parts.
 
 ```{toctree}
-:maxdepth: -1
+:maxdepth: 1
 
 dummy.md
 powerlawmodei.md
@@ -72,9 +84,16 @@ xuneedleman.md
 ## Failure Models
 
 These models evaluate stress-based or composite-specific failure criteria.
+They identify the onset of failure by comparing computed stresses or strains
+with material limits, and can distinguish common modes such as tension,
+compression, shear, or interaction between them. The collection includes
+general stress and strain limits, von Mises yielding, and composite criteria
+such as Tsai–Wu and LaRC03. Failure models are used to assess a simulation's
+state and should be selected consistently with the material orientation,
+loading conditions, and intended failure definition.
 
 ```{toctree}
-:maxdepth: -1
+:maxdepth: 1
 
 larc03.md
 MaxStrain.md
