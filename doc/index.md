@@ -7,6 +7,19 @@ by R. de Borst, M.A. Crisfield, J.J.C. Remmers, and C.V. Verhoosel. The book
 provides the theoretical background, while PyFEM provides executable
 implementations and examples of the methods discussed there.
 
+```{rubric} About the book
+```
+
+```{image} img/cover-eps-converted-to.pdf
+:alt: Cover of Non-Linear Finite Element Analysis of Solids and Structures
+:width: 200px
+```
+
+**Non-Linear Finite Element Analysis of Solids and Structures**<br>
+R. de Borst, M.A. Crisfield, J.J.C. Remmers, and C.V. Verhoosel<br>
+John Wiley & Sons, 2nd edition, 2012<br>
+ISBN: 978-0-470-66644-9
+
 Start with the [introduction](introduction/introduction.md), follow the
 [installation guide](installation/installation.md), or go directly to the
 [quickstart](introduction/quickstart.md). The remaining sections describe the
@@ -14,7 +27,7 @@ available elements, materials, models, solvers, input/output modules, and
 development conventions.
 
 ```{toctree}
-:maxdepth: 2
+:maxdepth: -1
 
 introduction/introduction.md
 installation/installation.md

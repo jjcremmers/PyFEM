@@ -71,7 +71,7 @@ class TestPackageMetadata(unittest.TestCase):
 
     def test_package_version_matches_installed_metadata(self) -> None:
         """Test that pyfem.__version__ follows the installed package version."""
-        self.assertEqual(pyfem.__version__, "2026.9")
+        self.assertEqual(pyfem.__version__, "2026.10")
         self.assertEqual(version("pyfem"), pyfem.__version__)
 
     def test_gui_dependency_is_optional_and_vtk_is_core(self) -> None:

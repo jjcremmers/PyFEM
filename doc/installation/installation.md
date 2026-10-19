@@ -21,11 +21,13 @@ Open **Command Prompt** (`cmd.exe`) and run:
 
 ```cmd
 git clone https://github.com/jjcremmers/PyFEM.git
+
 cd PyFEM
-py -c "import sys; raise SystemExit('Python 3.15 is not supported; use Python 3.9-3.14.') if sys.version_info[:2] == (3, 15) else None"
-py -m venv pyfem-env
+
+python -m venv pyfem-env
+
 pyfem-env\Scripts\activate.bat
-python -m pip install --upgrade pip
+
 python -m pip install .
 ```
 
@@ -39,11 +41,13 @@ In a terminal (or a WSL shell), run:
 
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
+
 cd PyFEM
-python3 -c 'import sys; raise SystemExit("Python 3.15 is not supported; use Python 3.9-3.14.") if sys.version_info[:2] == (3, 15) else None'
-python3 -m venv pyfem-env
+
+python -m venv pyfem-env
+
 source pyfem-env/bin/activate
-python -m pip install --upgrade pip
+
 python -m pip install .
 ```
 
@@ -51,6 +55,7 @@ On Debian or Ubuntu, install the system prerequisites first if necessary:
 
 ```bash
 sudo apt-get update
+
 sudo apt-get install python3 python3-venv python3-pip git
 ```
 
@@ -60,11 +65,13 @@ In Terminal, run:
 
 ```bash
 git clone https://github.com/jjcremmers/PyFEM.git
+
 cd PyFEM
-python3 -c 'import sys; raise SystemExit("Python 3.15 is not supported; use Python 3.9-3.14.") if sys.version_info[:2] == (3, 15) else None'
+
 python3 -m venv pyfem-env
+
 source pyfem-env/bin/activate
-python -m pip install --upgrade pip
+
 python -m pip install .
 ```
 
@@ -88,7 +95,9 @@ without reinstalling:
 
 ```cmd
 cd PyFEM
+
 pyfem-env\Scripts\activate.bat
+
 python -m pip install -e ".[dev]"
 ```
 
@@ -106,7 +115,9 @@ without reinstalling:
 
 ```bash
 cd PyFEM
+
 source pyfem-env/bin/activate
+
 python -m pip install -e ".[dev]"
 ```
 
@@ -130,7 +141,9 @@ without reinstalling:
 
 ```bash
 cd PyFEM
+
 source pyfem-env/bin/activate
+
 python -m pip install -e ".[dev]"
 ```
 
@@ -153,6 +166,7 @@ With the virtual environment active, run:
 
 ```bash
 pyfem --version
+
 pyfem --help
 ```
 
@@ -160,6 +174,7 @@ You can also run an example from the repository:
 
 ```bash
 cd examples/ch02
+
 pyfem PatchTest8.pro
 ```
 
@@ -185,6 +200,7 @@ PyFEM also provides shortcuts through the `pyfem` command:
 
 ```bash
 pyfem -test       # Run the unit tests
+
 pyfem -coverage   # Run tests, print coverage, and create an HTML report
 ```
 
@@ -197,6 +213,7 @@ From the cloned repository, update an existing installation with:
 
 ```bash
 git pull origin main
+
 python -m pip install --upgrade .
 ```
 
