@@ -90,6 +90,14 @@ html_theme_options = {
 # -- Options for LaTeX output ------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-latex-output
 
+# API docstrings use Unicode mathematical symbols (for example ε, γ, and
+# superscript/subscript characters).  XeLaTeX handles these directly, while
+# pdfLaTeX stops at the first unsupported character.
+latex_engine = 'xelatex'
+# xindy is not available in all TeX installations; makeindex is sufficient
+# for the generated API index and is included in the standard distribution.
+latex_use_xindy = False
+
 latex_elements = {
     'papersize': 'a4paper',
     'pointsize': '11pt',

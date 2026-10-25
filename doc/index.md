@@ -37,5 +37,6 @@ elements/overview.md
 materials/overview.md
 models/overview.md
 modules.md
+api.md
 develop/overview.md
 ```

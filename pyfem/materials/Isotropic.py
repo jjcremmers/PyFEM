@@ -15,8 +15,8 @@ class Isotropic(BaseMaterial):
     elastic constants: Young's modulus (E) and Poisson's ratio (nu).
     
     The model can operate in two modes:
-    - Total formulation: stress = H · strain
-    - Incremental formulation: Δσ = H · Δε
+    - Total formulation: stress = H * strain
+    - Incremental formulation: Delta-sigma = H * Delta-epsilon
     
     Attributes
     ----------
@@ -34,7 +34,7 @@ class Isotropic(BaseMaterial):
     Notes
     -----
     The stress and strain vectors follow Voigt notation:
-    [σ11, σ22, σ33, σ23, σ13, σ12]
+    [S11, S22, S33, S23, S13, S12]
     """
 
     def __init__(self, props) -> None:
@@ -97,6 +97,7 @@ class Isotropic(BaseMaterial):
         ----------
         deformation : object
             Deformation object containing strain information. Must have:
+
             - strain : ndarray
                 Total strain vector (for total formulation).
             - dstrain : ndarray
@@ -105,7 +106,7 @@ class Isotropic(BaseMaterial):
         Returns
         -------
         sigma : ndarray
-            Stress vector in Voigt notation [σ11, σ22, σ33, σ23, σ13, σ12].
+            Stress vector in Voigt notation [S11, S22, S33, S23, S13, S12].
         H : ndarray
             Material tangent stiffness matrix (6x6).
         """
