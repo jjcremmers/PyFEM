@@ -91,19 +91,15 @@ SLSElem =
 };
 ```
 
-| Parameter | Description | Optional | Default value |
+| Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `type` | Must be `"SLS"`. | No | — |
-| `material` | Material definition used by the element. | No | — |
-| `theta` | Material orientation in degrees. | Yes | $0^\circ$ |
-| `E` | Young's modulus for an isotropic material. | Depends on material model | — |
-| `nu` | Poisson's ratio for an isotropic material. | Depends on material model | — |
-| `rho` | Density, used for the mass matrix. | Depends on material model | — |
-| `incremental` | Selects the incremental material formulation when supported. | Yes | `false` |
+| `type` | Element formulation. | String | Required; must be `"SLS"`. |
+| `material` | Continuum material formulation used by the element. | String | Required; This must refer to a new input block of that name. |
 
+Material model descriptions can be found in [Materials](../materials/overview.md). 
 The SLS implementation does not use a top-level `thickness` property in this
-form. If no `layers` list is supplied, it creates one layer with thickness
-`1.0`. To specify a physical thickness, use the layered form below.
+form. The thickness is the actual physicall thickness of the element. It is not possbile to introduce a
+material orientation.
 
 ### Layered material
 
@@ -134,34 +130,34 @@ SLSElem =
 
 The element-level parameters are:
 
-| Parameter | Description | Optional | Default value |
+| Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `type` | Must be `"SLS"`. | No | — |
-| `layers` | Ordered list of layer-block names through the thickness. | No | — |
-| `material` | One material block, or a `MultiMaterial` block. | No | — |
+| `type` | Element formulation. | String | Required; must be `"SLS"`. |
+| `layers` | Ordered list of layer-block names through the thickness. | List of strings | Required for a layered definition. |
+| `material` | Continuum material formulation, or a `MultiMaterial` block. | Block | Required; see [Materials](../materials/overview.md). |
 
 Each layer block contains:
 
-| Parameter | Description | Optional | Default value |
+| Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `thickness` | Layer thickness. | No | — |
-| `theta` | Layer orientation in degrees. | No in layered form | — |
-| `material` | Material index or material name. | No | — |
+| `thickness` | Layer thickness. | Float | Required. |
+| `theta` | Layer orientation in degrees. | Float | Required in layered form. |
+| `material` | Material index or material name. | Integer or string | Required; identifies the continuum material formulation. |
 
 For a single `material` block, the material properties depend on its type:
 
-| Parameter | Description | Optional | Default value |
+| Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `type` | Material model, for example `"Isotropic"` or `"TransverseIsotropic"`. | No | — |
-| `E` | Isotropic Young's modulus. | Required for `Isotropic` | — |
-| `nu` | Isotropic Poisson's ratio. | Required for `Isotropic` | — |
-| `E1`, `E2` | Principal Young's moduli. | Required for `TransverseIsotropic` | — |
-| `nu12` | Principal Poisson's ratio. | Required for `TransverseIsotropic` | — |
-| `G12` | In-plane shear modulus. | Yes | $E_1/[2(1+\nu_{12})]$ |
-| `G13` | 1–3 shear modulus. | Yes | `G12` |
-| `G23` | 2–3 shear modulus. | Yes | `G12` |
-| `rho` | Material density. | No for dynamic analysis | — |
-| `incremental` | Uses the incremental formulation when supported. | Yes | `false` |
+| `type` | Material model, for example `"Isotropic"` or `"TransverseIsotropic"`. | String | Required; selects the continuum material formulation. |
+| `E` | Isotropic Young's modulus. | Float | Required for `Isotropic`. |
+| `nu` | Isotropic Poisson's ratio. | Float | Required for `Isotropic`. |
+| `E1`, `E2` | Principal Young's moduli. | Float | Required for `TransverseIsotropic`. |
+| `nu12` | Principal Poisson's ratio. | Float | Required for `TransverseIsotropic`. |
+| `G12` | In-plane shear modulus. | Float | Optional; defaults to $E_1/[2(1+\nu_{12})]$. |
+| `G13` | 1–3 shear modulus. | Float | Optional; defaults to `G12`. |
+| `G23` | 2–3 shear modulus. | Float | Optional; defaults to `G12`. |
+| `rho` | Material density. | Float | Required for dynamic analysis. |
+| `incremental` | Uses the incremental formulation when supported. | Boolean | Optional; defaults to `false`. |
 
 ### Multiple materials
 
