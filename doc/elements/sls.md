@@ -67,9 +67,11 @@ default thickness of `1.0` and a default orientation of $0^\circ$.
 
 ## Input parameters
 
-The element block must contain `type = "SLS"` and a `material` block. A
-single material can be used for all layers, or a `MultiMaterial` block can be
-used when different layers refer to different material definitions.
+The element block must contain `type = "SLS"` and a required `material`
+reference. The reference identifies the continuum material formulation used
+by the element. A single material can be used for all layers, or a
+`MultiMaterial` block can be used when different layers refer to different
+material definitions.
 
 ### Single material
 
@@ -94,12 +96,15 @@ SLSElem =
 | Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
 | `type` | Element formulation. | String | Required; must be `"SLS"`. |
-| `material` | Continuum material formulation used by the element. | String | Required; This must refer to a new input block of that name. |
+| `material` | Continuum material formulation used by the element. | String | Required; refers to the corresponding material input block. |
 
-Material model descriptions can be found in [Materials](../materials/overview.md). 
+Material model descriptions can be found in the
+[Materials overview](../materials/overview.md). The compact form uses one
+material for the complete element. Its thickness is fixed at `1.0`; use the
+layered form to define a physical thickness or multiple material regions.
 The SLS implementation does not use a top-level `thickness` property in this
-form. The thickness is the actual physicall thickness of the element. It is not possbile to introduce a
-material orientation.
+form. A top-level `theta` property may be used to set the orientation of the
+single layer; otherwise the orientation defaults to $0^\circ$.
 
 ### Layered material
 
@@ -144,7 +149,8 @@ Each layer block contains:
 | `theta` | Layer orientation in degrees. | Float | Required in layered form. |
 | `material` | Material index or material name. | Integer or string | Required; identifies the continuum material formulation. |
 
-For a single `material` block, the material properties depend on its type:
+For a single `material` block, the material properties depend on its
+continuum formulation type:
 
 | Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
@@ -165,6 +171,10 @@ Use `type = "MultiMaterial"` when different layers use different material
 blocks. The layer's `material` value must match one of the names in the
 `materials` list. This is demonstrated by
 [sls_cantilever04.pro](../../examples/elements/sls/sls_cantilever04.pro).
+
+Each named material block must define a supported continuum material
+formulation. The layer identifier is resolved through `materials`; it is not
+the material model's `type` value.
 
 ```text
 material =

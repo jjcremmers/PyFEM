@@ -14,9 +14,10 @@ used.
 
 | Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `type` | Must be `"ThermoAxiSym"`. | String | Required |
+| `type` | Element formulation. | String | Required; must be `"ThermoAxiSym"`. |
 | `rank` | Must match the axisymmetric formulation. | Integer | Required |
-| `material` | Thermo-mechanical material block. | Block | Required |
+| `material` | Continuum thermo-mechanical material formulation. | Block | Required; the block must contain a material-model `type`. |
 
 Use this element only when the geometry, material orientation, and loading are
-axisymmetric.
+axisymmetric. See the [materials overview](../materials/overview.md) for the
+available material formulations and their required parameters.

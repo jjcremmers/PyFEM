@@ -1,7 +1,7 @@
 # SmallStrainContinuum
 
-The `SmallStrainContinuum` element is a standard displacement-based finite 
-element for 2D and 3D small strain continuum analysis. This element formulation 
+The `SmallStrainContinuum` element is a standard displacement-based finite
+element for 2D and 3D small-strain continuum analysis. This element formulation
 is suitable for linear and non-linear material behavior under the assumption of 
 small strains and small displacements. It supports various material models 
 including elastic, plastic, and damage constitutive laws.
@@ -29,16 +29,14 @@ mass matrix (for dynamic analysis), and dissipation (for inelastic materials).
 
 ## Parameters
 
-### Mandatory parameters
+The element requires an element type and a continuum material formulation:
 
-**`type`**
+| Parameter | Description | Type | Remarks |
+| --- | --- | --- | --- |
+| `type` | Element formulation. | String | Required; must be `"SmallStrainContinuum"`. |
+| `material` | Continuum material formulation used to compute the constitutive response. | Block | Required; the block must contain a material-model `type`. |
 
-Must be set to `"SmallStrainContinuum"`
-
-**`material`**
-
-A material block defining the constitutive behavior. The material block must 
-include a `type` parameter specifying the material model.
+The material model is selected by the `type` entry in the `material` block.
 
 Common material types include:
 
@@ -47,7 +45,7 @@ Common material types include:
 - `"Isotropic"`: For 3D isotropic elasticity
 - Other material models (e.g., plasticity, damage) as available
 
-Within the material block, material-specific parameters must be provided, 
+Within the material block, material-specific parameters must be provided,
 such as:
 
 - `E`: Young's modulus
@@ -55,11 +53,10 @@ such as:
 - Additional parameters depending on the material type (e.g., yield stress, 
   hardening parameters)
 
-### Optional parameters
-
-The `SmallStrainContinuum` element itself does not require additional optional 
-parameters beyond the mandatory material definition. However, specific material 
-models may have optional parameters (refer to the material documentation).
+The `SmallStrainContinuum` element itself has no additional element-level
+parameters. Optional parameters depend on the selected material model; refer
+to the [materials overview](../materials/overview.md) and the corresponding
+material page for their types, defaults, and assumptions.
 
 ## Examples
 
@@ -67,7 +64,7 @@ models may have optional parameters (refer to the material documentation).
 
 A 2D continuum element with plane stress material:
 
-```
+```text
 ContElem =
 {
   type = "SmallStrainContinuum";
@@ -88,7 +85,7 @@ This configuration is used in the patch test example:
 
 A 3D continuum element with isotropic material:
 
-```
+```text
 ContElem =
 {
   type = "SmallStrainContinuum";
@@ -110,7 +107,7 @@ This configuration is used in the 3D patch test example:
 The element can be combined with more advanced material models for nonlinear 
 analysis. For damage mechanics:
 
-```
+```text
 ContElem =
 {
   type = "SmallStrainContinuum";
@@ -143,6 +140,5 @@ examples directory:
 
 ## See Also
 
-- [materials documentation](materials.md) - Available material models
-- [tutorial1 documentation](tutorial1.md) - Introduction to PyFEM input files
-- [elements documentation](elements.md) - Overview of all element types
+- [Materials overview](../materials/overview.md) - Available material models
+- [Elements overview](overview.md) - Overview of element types

@@ -14,6 +14,9 @@ used.
 
 | Parameter | Description | Type | Remarks |
 | --- | --- | --- | --- |
-| `type` | Must be `"ThermoSmallStrainAxiSym"`. | String | Required |
+| `type` | Element formulation. | String | Required; must be `"ThermoSmallStrainAxiSym"`. |
 | `rank` | Must be 2 for the axisymmetric formulation. | Integer | Required |
-| `material` | Thermo-mechanical material block. | Block | Required |
+| `material` | Continuum thermo-mechanical material formulation. | Block | Required; the block must contain a material-model `type`. |
+
+See the [materials overview](../materials/overview.md) for the available
+thermo-mechanical material formulations and their required parameters.
