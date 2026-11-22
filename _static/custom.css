@@ -1,0 +1,17 @@
+.wy-side-nav-search .logo {
+    max-width: 200px; /* Adjust size as needed */
+}
+
+/* Highlight implementation limitations in the element documentation. */
+.plate-support-warning {
+    background-color: #fff4e5;
+    border-left: 4px solid #e67e22;
+    color: #4a3424;
+    margin: 1em 0;
+    padding: 0.8em 1em;
+}
+
+.plate-support-warning .admonition-title {
+    color: #a44a00;
+    font-weight: 700;
+}
