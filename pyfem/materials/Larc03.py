@@ -140,6 +140,13 @@ class Larc03(BaseFailure):
     def check(self, stress: ndarray, deformation) -> float:
         """Evaluate the LARC03 failure index.
 
+        The returned value is the maximum of the active matrix and fiber
+        criteria.  In terms of the paper, these are matrix tension (#2),
+        matrix compression (#1), fiber tension (#3), and fiber kinking (#4
+        and #5).  The matrix-compression branch determines its fracture-plane
+        angle by maximizing criterion #1; the fiber-compression branch uses
+        the stresses rotated through the load-dependent misalignment angle.
+
         Parameters
         ----------
         stress : ndarray
@@ -168,9 +175,12 @@ class Larc03(BaseFailure):
         if sigma22 >= 0.0:
             matrix_fi = self._compute_matrix_tension_index(sigma22, tau12)
         else:
-            matrix_fi = self._compute_matrix_compression_index(
-                sigma22, tau12, self.alpha0
-            )
+            # LaRC03 #1 requires the fracture-plane angle to maximize the
+            # interaction of the two effective shear stresses.  ``alpha0``
+            # is only the angle obtained from the uniaxial transverse-
+            # compression calibration; it is not the fracture angle for an
+            # arbitrary (sigma22, tau12) stress state.
+            matrix_fi = self._maximize_matrix_compression_index(sigma22, tau12)
 
         if sigma11 >= 0.0:
             fiber_fi = sigma11 / self.Xt
@@ -190,6 +200,48 @@ class Larc03(BaseFailure):
             )
 
         return max(matrix_fi, fiber_fi, extra_fi)
+
+    def _maximize_matrix_compression_index(
+        self, sigma22: float, tau12: float
+    ) -> float:
+        """Maximize the matrix-compression index over the fracture plane.
+
+        The paper defines the matrix-compression failure plane by maximizing
+        Eq. (4) over ``0 <= alpha <= pi/2``.  The objective is continuous but
+        contains Macaulay brackets, so a bounded scalar search is preferable
+        to using a closed-form derivative at the kinks.
+        """
+
+        # A coarse scan brackets the global maximum, including the endpoint
+        # and Macaulay-bracket kinks.  Golden-section refinement then gives a
+        # stable, inexpensive result without adding a scipy dependency.
+        n = 181
+        step = (pi / 2.0) / (n - 1)
+        values = [
+            self._compute_matrix_compression_index(sigma22, tau12, i * step)
+            for i in range(n)
+        ]
+        best = max(range(n), key=values.__getitem__)
+        if best == 0 or best == n - 1:
+            return values[best]
+
+        left = (best - 1) * step
+        right = (best + 1) * step
+        golden = (sqrt(5.0) - 1.0) / 2.0
+        x1 = right - golden * (right - left)
+        x2 = left + golden * (right - left)
+        f1 = self._compute_matrix_compression_index(sigma22, tau12, x1)
+        f2 = self._compute_matrix_compression_index(sigma22, tau12, x2)
+        for _ in range(40):
+            if f1 < f2:
+                left, x1, f1 = x1, x2, f2
+                x2 = left + golden * (right - left)
+                f2 = self._compute_matrix_compression_index(sigma22, tau12, x2)
+            else:
+                right, x2, f2 = x2, x1, f1
+                x1 = right - golden * (right - left)
+                f1 = self._compute_matrix_compression_index(sigma22, tau12, x1)
+        return max(values[best], f1, f2)
 
     def _require_property(self, name: str) -> Any:
         """Return a mandatory property value.
@@ -267,6 +319,13 @@ class Larc03(BaseFailure):
     ) -> float:
         """Compute the matrix-compression failure index.
 
+        This is LaRC03 criterion #1, Eq. (4).  The stresses acting on a
+        candidate fracture plane are obtained from Eq. (5), and the
+        transverse and longitudinal effective shear stresses are formed with
+        Eq. (6).  The caller is responsible for selecting the fracture-plane
+        angle; use :meth:`_maximize_matrix_compression_index` for a general
+        stress state.
+
         Parameters
         ----------
         sigma22 : float
@@ -297,6 +356,10 @@ class Larc03(BaseFailure):
     def _compute_matrix_tension_index(self, sigma22: float, tau12: float) -> float:
         """Compute the matrix-tension failure index.
 
+        Implements LaRC03 criterion #2, Eq. (20), using the in-situ
+        transverse tensile and longitudinal shear strengths.  The parameter
+        ``g`` is the toughness ratio from Eq. (19).
+
         Parameters
         ----------
         sigma22 : float
@@ -319,6 +382,10 @@ class Larc03(BaseFailure):
         self, sigma11: float, sigma22: float, tau12: float
     ) -> float:
         """Compute the fiber-misalignment angle for fiber compression.
+
+        Implements the load-dependent total misalignment angle from Eq. (34).
+        The absolute shear stress is used because the paper defines the angle
+        as positive independently of the sign of ``tau12``.
 
         Parameters
         ----------
@@ -353,6 +420,9 @@ class Larc03(BaseFailure):
         self, sigma11: float, sigma22: float, tau12: float, phi: float
     ) -> tuple[float, float, float]:
         """Rotate stresses to the misaligned fiber frame.
+
+        Implements the plane-stress transformation in Eq. (29), where the
+        first material axis is rotated toward the local kink-band direction.
 
         Parameters
         ----------
